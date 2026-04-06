@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season History — PSL5</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Tabs ── */
+.tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab-btn { font-size: 13px; padding: 7px 16px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid #535c2f; color: #888; transition: all 0.15s; }
+.tab-btn.active { background: #363C1F; border-color: #D7DBC8; color: #D7DBC8; }
+
+/* ── Groups ── */
+.groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 2rem; }
+.group-card { background: #363C1F; border: 1px solid #535c2f; border-radius: 12px; padding: 1.25rem; }
+.group-title { font-size: 14px; font-weight: 500; color: #D7DBC8; margin-bottom: 10px; }
+.group-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.group-table th { color: #888; padding: 3px 6px; text-align: center; border-bottom: 1px solid #282d15; }
+.group-table th:first-child { text-align: left; }
+.group-table td { padding: 4px 6px; text-align: center; border-bottom: 1px solid #282d15; color: #D7DBC8; }
+.group-table td:first-child { text-align: left; font-weight: 500; }
+.group-table tr:last-child td { border-bottom: none; }
+.group-qual { border-left: 3px solid #39c877; }
+.group-best4 { border-left: 3px solid #f5c842; }
+.group-elim { border-left: 3px solid #535c2f; }
+.fixtures-section { margin-top: 1rem; }
+.fixtures-title { font-size: 11px; color: #888; margin-bottom: 6px; font-weight: 500; }
+.group-fixture { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 0; border-bottom: 1px solid #282d15; }
+.group-fixture:last-child { border-bottom: none; }
+.gf-team { flex: 1; color: #D7DBC8; }
+.gf-team.right { text-align: right; }
+.gf-score { font-weight: 500; color: #39c877; min-width: 36px; text-align: center; }
+
+/* ── Cup Bracket ── */
+.bracket-wrap { overflow-x: auto; }
+.bracket { display: flex; gap: 0; align-items: stretch; min-width: 700px; }
+.bracket-round { display: flex; flex-direction: column; flex: 1; }
+.bracket-round-title { font-size: 11px; font-weight: 500; color: #888; padding: 0 12px 10px; text-align: center; }
+.bracket-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 8px; padding: 0 6px; }
+.bracket-match { background: #363C1F; border: 1px solid #535c2f; border-radius: 8px; overflow: hidden; }
+.bracket-team { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; font-size: 12px; border-bottom: 1px solid #282d15; }
+.bracket-team:last-child { border-bottom: none; }
+.bracket-team.winner { color: #39c877; font-weight: 500; }
+.bracket-team.loser { color: #535c2f; }
+.bracket-score { font-size: 12px; font-weight: 500; }
+.bracket-match.final-match { border-color: #f5c842; }
+.bracket-match.final-match .bracket-team.winner { color: #f5c842; }
+.bye-slot { height: 52px; }
+.ff-note { font-size: 10px; color: #888; padding: 2px 8px 4px; }
+</style>
+</head>
+<body>
+<div class="container" style="max-width:1000px;">
+  <div class="nav">
+    <a href="index.html" class="back">← Home</a>
+  </div>
+  <h1>Season History</h1>
+  <p class="subtitle">PSL5 — Group Stage & PSL Cup</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('groups')">Group Stage</button>
+    <button class="tab-btn" onclick="showTab('cup')">PSL Cup</button>
+  </div>
+
+  <!-- ── GROUP STAGE ── -->
+  <div id="tab-groups">
+    <p style="font-size:13px;color:#888;margin-bottom:1.5rem;">Top 3 from each group qualified directly. The best 4th-placed team also advanced.</p>
+
+    <div class="groups-grid" id="groups-container"></div>
+
+    <div style="display:flex;gap:16px;font-size:12px;color:#888;flex-wrap:wrap;margin-top:-0.5rem;margin-bottom:2rem;">
+      <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:2px;background:#39c877;"></div> Qualified (top 3)</div>
+      <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:2px;background:#f5c842;"></div> Best 4th place</div>
+      <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:2px;background:#535c2f;"></div> Eliminated</div>
+    </div>
+  </div>
+
+  <!-- ── CUP BRACKET ── -->
+  <div id="tab-cup" style="display:none;">
+    <div class="bracket-wrap">
+      <div class="bracket" id="cup-bracket"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// GROUP STAGE DATA
+// To edit: add/change team names, results below.
+// Format: {h: "Home Team", a: "Away Team", hs: homeScore, as: awayScore}
+// ═══════════════════════════════════════════════
+
+const groups = [
+  {
+    name: "Group A",
+    teams: ["BADiles", "Midi Kidz", "Spasmena Mila", "Snipers", "A/C", "Trixes"],
+    penaltyPts: {"Trixes": -15},
+    fixtures: [
+      {h:"BADiles",      a:"Spasmena Mila", hs:5, as:2},
+      {h:"A/C",          a:"Snipers",       hs:0, as:5},
+      {h:"Midi Kidz",    a:"Trixes",        hs:5, as:0},
+      {h:"Snipers",      a:"BADiles",       hs:0, as:5},
+      {h:"Trixes",       a:"Spasmena Mila", hs:0, as:5},
+      {h:"Midi Kidz",    a:"A/C",           hs:5, as:2},
+      {h:"BADiles",      a:"Trixes",        hs:5, as:0},
+      {h:"Snipers",      a:"Midi Kidz",     hs:5, as:7},
+      {h:"Spasmena Mila",a:"A/C",           hs:5, as:2},
+      {h:"Midi Kidz",    a:"BADiles",       hs:0, as:5},
+      {h:"A/C",          a:"Trixes",        hs:5, as:0},
+      {h:"Spasmena Mila",a:"Snipers",       hs:6, as:4},
+      {h:"BADiles",      a:"A/C",           hs:5, as:0},
+      {h:"Midi Kidz",    a:"Spasmena Mila", hs:5, as:2},
+      {h:"Trixes",       a:"Snipers",       hs:0, as:5},
+    ]
+  },
+  {
+    name: "Group B",
+    teams: ["Phoenix", "Basement Boys", "Volos Drummers", "Warriors", "Hoopers", "Team Till Death"],
+    penaltyPts: {},
+    fixtures: [
+      {h:"Phoenix",       a:"Team Till Death", hs:5, as:0},
+      {h:"Basement Boys", a:"Volos Drummers",  hs:5, as:3},
+      {h:"Hoopers",       a:"Warriors",        hs:0, as:5},
+      {h:"Volos Drummers",a:"Phoenix",         hs:2, as:5},
+      {h:"Warriors",      a:"Team Till Death", hs:5, as:1},
+      {h:"Hoopers",       a:"Basement Boys",   hs:2, as:5},
+      {h:"Phoenix",       a:"Warriors",        hs:5, as:1},
+      {h:"Volos Drummers",a:"Hoopers",         hs:5, as:3},
+      {h:"Team Till Death",a:"Basement Boys",  hs:3, as:5},
+      {h:"Hoopers",       a:"Phoenix",         hs:3, as:5},
+      {h:"Basement Boys", a:"Warriors",        hs:5, as:2},
+      {h:"Team Till Death",a:"Volos Drummers", hs:3, as:5},
+      {h:"Phoenix",       a:"Basement Boys",   hs:1, as:5},
+      {h:"Hoopers",       a:"Team Till Death", hs:6, as:4},
+      {h:"Warriors",      a:"Volos Drummers",  hs:5, as:5},
+    ]
+  },
+  {
+    name: "Group C",
+    teams: ["Y&Y", "R1", "Babiniotes", "Chewbacca", "Axtarmades", "Fintani"],
+    penaltyPts: {},
+    fixtures: [
+      {h:"Babiniotes",  a:"Chewbacca",  hs:6, as:4},
+      {h:"Axtarmades",  a:"R1",         hs:2, as:5},
+      {h:"Y&Y",         a:"Fintani",    hs:5, as:0},
+      {h:"R1",          a:"Babiniotes", hs:5, as:2},
+      {h:"Fintani",     a:"Chewbacca",  hs:5, as:7},
+      {h:"Y&Y",         a:"Axtarmades", hs:5, as:0},
+      {h:"Babiniotes",  a:"Fintani",    hs:1, as:5},
+      {h:"R1",          a:"Y&Y",        hs:0, as:5},
+      {h:"Chewbacca",   a:"Axtarmades", hs:3, as:5},
+      {h:"Y&Y",         a:"Babiniotes", hs:7, as:5},
+      {h:"Axtarmades",  a:"Fintani",    hs:8, as:10},
+      {h:"Chewbacca",   a:"R1",         hs:7, as:5},
+      {h:"Babiniotes",  a:"Axtarmades", hs:5, as:1},
+      {h:"Y&Y",         a:"Chewbacca",  hs:5, as:2},
+      {h:"Fintani",     a:"R1",         hs:0, as:5},
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════
+// CUP BRACKET DATA
+// ═══════════════════════════════════════════════
+
+const cupRounds = [
+  {
+    title: "Play-in",
+    matches: [
+      {h:"Team Till Death", a:"Axtarmades", hs:5, as:4, ff:false},
+    ]
+  },
+  {
+    title: "Round of 16",
+    matches: [
+      {h:"BADiles",        a:"Team Till Death", hs:5, as:0, ff:false},
+      {h:"Volos Drummers", a:"Chewbacca",       hs:5, as:1, ff:false},
+      {h:"A/C",            a:"Midi Kidz",       hs:2, as:5, ff:false},
+      {h:"Spasmena Mila",  a:"Snipers",         hs:5, as:2, ff:false},
+      {h:"Y&Y",            a:"Warriors",        hs:5, as:4, ff:false},
+      {h:"Fintani",        a:"R1",              hs:2, as:5, ff:false},
+      {h:"Babiniotes",     a:"Phoenix",         hs:5, as:0, ff:true},
+      {h:"Basement Boys",  a:"Hoopers",         hs:5, as:1, ff:false},
+    ]
+  },
+  {
+    title: "Quarter-Finals",
+    matches: [
+      {h:"BADiles",       a:"Volos Drummers", hs:5, as:2, ff:false},
+      {h:"Midi Kidz",     a:"Spasmena Mila",  hs:1, as:5, ff:false},
+      {h:"Y&Y",           a:"R1",             hs:5, as:2, ff:false},
+      {h:"Babiniotes",    a:"Basement Boys",  hs:4, as:5, ff:false},
+    ]
+  },
+  {
+    title: "Semi-Finals",
+    matches: [
+      {h:"BADiles",      a:"Spasmena Mila", hs:5, as:1, ff:false},
+      {h:"Y&Y",          a:"Basement Boys", hs:5, as:1, ff:false},
+    ]
+  },
+  {
+    title: "Final",
+    matches: [
+      {h:"BADiles", a:"Y&Y", hs:6, as:7, ff:false},
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════
+// RENDERING — no need to edit below this line
+// ═══════════════════════════════════════════════
+
+function computeGroupStandings(teams, fixtures, penaltyPts) {
+  const s = {};
+  teams.forEach(t => s[t] = {team:t, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts: (penaltyPts&&penaltyPts[t])||0});
+  fixtures.forEach(f => {
+    if(f.hs===null||f.as===null||f.hs===undefined) return;
+    const h=s[f.h], a=s[f.a];
+    if(!h||!a) return;
+    h.p++; a.p++;
+    h.gf+=f.hs; h.ga+=f.as; a.gf+=f.as; a.ga+=f.hs;
+    h.gd+=f.hs-f.as; a.gd+=f.as-f.hs;
+    if(f.hs>f.as){h.w++;h.pts+=3;a.l++;}
+    else if(f.as>f.hs){a.w++;a.pts+=3;h.l++;}
+    else{h.d++;a.d++;h.pts++;a.pts++;}
+  });
+  const manualOrder = {"Babiniotes": -1, "Chewbacca": 1};
+  return Object.values(s).sort((a,b)=>{
+    if(b.pts!==a.pts) return b.pts-a.pts;
+    if(b.gd!==a.gd) return b.gd-a.gd;
+    if(b.gf!==a.gf) return b.gf-a.gf;
+    const ma = manualOrder[a.team]||0, mb = manualOrder[b.team]||0;
+    return ma-mb;
+  });
+}
+
+const LOGOS = {
+  "BADiles":"logos/badiles.png","Y&Y":"logos/yy.png","R1":"logos/r1.png",
+  "Basement Boys":"logos/basement.png","Volos Drummers":"logos/volos.png",
+  "Warriors":"logos/warriors.png","Midi Kidz":"logos/midi.png",
+  "Babiniotes":"logos/babiniotes.png","Spasmena Mila":"logos/spasmena.png",
+  "Phoenix":"logos/phoenix.png","Snipers":"logos/snipers.png",
+  "Team Till Death":"logos/ttd.png","A/C":"logos/ac.png",
+  "Fintani":"logos/fintani.png","Axtarmades":"logos/axtarmades.png",
+  "Chewbacca":"logos/chewbacca.png","Hoopers":"logos/hoopers.png",
+  "Trixes":"logos/trixes.png"
+};
+function tlogo(name,size=16){
+  return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:'';
+}
+
+function renderGroups() {
+  const container = document.getElementById('groups-container');
+  container.innerHTML = groups.map(g => {
+    const standings = computeGroupStandings(g.teams, g.fixtures, g.penaltyPts||{});
+    const rows = standings.map((r,i) => {
+      const cls = i<3 ? 'group-qual' : i===3 ? 'group-best4' : 'group-elim';
+      const gdStr = r.gd>0?'+'+r.gd:String(r.gd);
+      const ptsStyle = r.pts<0 ? 'color:#d86254;' : '';
+      return `<tr class="${cls}">
+        <td>${tlogo(r.team)}${r.team}</td>
+        <td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+        <td>${gdStr}</td>
+        <td><strong style="${ptsStyle}">${r.pts}</strong></td>
+      </tr>`;
+    }).join('');
+
+    const fixHTML = g.fixtures.filter(f=>f.hs!==null&&f.hs!==undefined).map(f=>`
+      <div class="group-fixture">
+        <span class="gf-team right">${f.h}${tlogo(f.h)}</span>
+        <span class="gf-score">${f.hs}–${f.as}</span>
+        <span class="gf-team">${tlogo(f.a)}${f.a}</span>
+      </div>`).join('') || '<div style="font-size:11px;color:#535c2f;padding:4px 0;">No results yet</div>';
+
+    return `<div class="group-card">
+      <div class="group-title">${g.name}</div>
+      <table class="group-table">
+        <thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="fixtures-section">
+        <div class="fixtures-title">Results</div>
+        ${fixHTML}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCup() {
+  const bracket = document.getElementById('cup-bracket');
+  bracket.innerHTML = cupRounds.map(round => {
+    const isFinal = round.title === 'Final';
+    const matchHTML = round.matches.map(m => {
+      const hWon = m.hs > m.as;
+      const aWon = m.as > m.hs;
+      return `<div class="bracket-match${isFinal?' final-match':''}">
+        <div class="bracket-team ${hWon?'winner':'loser'}">
+          <span>${tlogo(m.h,14)}${m.h}</span>
+          <span class="bracket-score">${m.hs}</span>
+        </div>
+        <div class="bracket-team ${aWon?'winner':'loser'}">
+          <span>${tlogo(m.a,14)}${m.a}</span>
+          <span class="bracket-score">${m.as}</span>
+        </div>
+        ${m.ff?'<div class="ff-note">FF</div>':''}
+      </div>`;
+    }).join('');
+    return `<div class="bracket-round">
+      <div class="bracket-round-title">${round.title}</div>
+      <div class="bracket-matches">${matchHTML}</div>
+    </div>`;
+  }).join('');
+}
+
+function showTab(tab) {
+  document.getElementById('tab-groups').style.display = tab==='groups' ? 'block' : 'none';
+  document.getElementById('tab-cup').style.display = tab==='cup' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0&&tab==='groups')||(i===1&&tab==='cup'));
+  });
+}
+
+renderGroups();
+renderCup();
+</script>
+</body>
+</html>

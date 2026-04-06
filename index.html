@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitchball Super League</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, sans-serif;
+  background: #111;
+  color: #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+.logo { font-size: 48px; font-weight: 500; letter-spacing: -2px; margin-bottom: 4px; }
+.logo span { color: #4caf7d; }
+.tagline { font-size: 13px; color: #555; margin-bottom: 3rem; text-align: center; }
+.seasons { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 420px; }
+.season-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px;
+  padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.1s;
+}
+.season-row:hover { border-color: #4caf7d; transform: translateX(4px); }
+.season-row.current { border-color: #4caf7d; }
+.season-row.current .season-num { color: #4caf7d; }
+.season-num { font-size: 18px; font-weight: 500; }
+.season-meta { font-size: 12px; color: #555; margin-top: 2px; }
+.season-badge-pill { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+.pill-live { background: #1a3d2a; color: #4caf7d; }
+.pill-done { background: #1a1a1a; color: #555; border: 1px solid #2a2a2a; }
+.footer { margin-top: 3rem; font-size: 12px; color: #333; }
+</style>
+</head>
+<body>
+  <div class="logo">Pitch<span>ball</span></div>
+  <p class="tagline">Super League — All Seasons</p>
+  <div class="seasons">
+    <a href="players/index.html" class="season-row" style="border-color:#f5c842;">
+      <div><div class="season-num" style="color:#f5c842;">Players</div><div class="season-meta">Every player in Pitchball history</div></div>
+      <span class="season-badge-pill" style="background:#3d3010;color:#f5c842;">Encyclopedia</span>
+    </a>
+    <a href="psl5/index.html" class="season-row current">
+      <div><div class="season-num">PSL5</div><div class="season-meta">The fifth and ongoing season of PSL, consisting of 18 teams.</div></div>
+      <span class="season-badge-pill pill-live">LIVE</span>
+    </a>
+    <a href="psl4/hub.html" class="season-row">
+      <div><div class="season-num">PSL4</div><div class="season-meta">The fourth PSL Season, consisting of 18 teams.</div></div>
+      <span class="season-badge-pill pill-done">Completed</span>
+    </a>
+    <a href="psl3/hub.html" class="season-row">
+      <div><div class="season-num">PSL3</div><div class="season-meta">The third PSL Season, consisting of 14 teams. Also the first instance of the PSL Cup.</div></div>
+      <span class="season-badge-pill pill-done">Completed</span>
+    </a>
+    <a href="psl2/hub.html" class="season-row">
+      <div><div class="season-num">PSL2</div><div class="season-meta">The second PSL Season, consisting of 16 teams.</div></div>
+      <span class="season-badge-pill pill-done">Completed</span>
+    </a>
+    <a href="psl1/hub.html" class="season-row">
+      <div><div class="season-num">PSL1</div><div class="season-meta">The first PSL Season, consisting of 8 teams.</div></div>
+      <span class="season-badge-pill pill-done">Completed</span>
+    </a>
+  </div>
+  <p class="footer">You are on Version v0.5 · Added new hub, players list, old seasons.</p>
+  <p class="footer">Created by Thanos · Pitchball © 2026</p>
+</body>
+</html>

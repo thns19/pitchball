@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSL1 History — Pitchball</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container" style="max-width:800px;">
+  <div class="nav">
+    <a href="hub.html" class="back">← PSL1</a>
+  </div>
+  <h1>PSL1 — Season History</h1>
+  <p class="subtitle">The first ever Pitchball Super League season.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('league')">League Stage</button>
+    <button class="tab-btn" onclick="showTab('bracket')">Final Four</button>
+  </div>
+
+  <!-- LEAGUE STAGE -->
+  <div id="tab-league">
+    <p style="font-size:12px;color:#888;margin-bottom:1rem;">Win = 3pts · Draw = 2pts · Loss = 1pt · Top 4 advance to Final Four</p>
+    <div class="table-wrap">
+      <table id="league-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>+/-</th><th>GD</th><th>Pts</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <div class="section-title" style="margin-top:1.5rem;">Fixtures</div>
+    <div id="fixtures-list"></div>
+  </div>
+
+  <!-- FINAL FOUR -->
+  <div id="tab-bracket" style="display:none;">
+    <p style="font-size:12px;color:#888;margin-bottom:1.5rem;">Best of 3 sets in Semi-Finals · Best of 5 sets in the Final</p>
+    <div class="bracket-wrap">
+      <div class="bracket" id="bracket"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEAMS = ["BADiles","R1","AXR","Clippers","Nikolado","Temachio","Mpesala","Taximi"];
+const PENALTY = {"Taximi": -18};
+const PENALTY_INFO = {"Taximi": "Taximi forfeited all their league matches\n(-18 points deducted)"};
+
+const fixtures = [
+  {md:1, h:"BADiles",  a:"Mpesala",   hs:5, as:3},
+  {md:1, h:"AXR",      a:"Nikolado",  hs:5, as:2},
+  {md:1, h:"Taximi",   a:"Clippers",  hs:4, as:6},
+  {md:1, h:"Temachio", a:"R1",        hs:7, as:9},
+  {md:2, h:"R1",       a:"BADiles",   hs:0, as:5},
+  {md:2, h:"Clippers", a:"AXR",       hs:5, as:0},
+  {md:2, h:"Mpesala",  a:"Taximi",    hs:5, as:0},
+  {md:2, h:"Nikolado", a:"Temachio",  hs:2, as:5},
+  {md:3, h:"BADiles",  a:"Nikolado",  hs:5, as:3},
+  {md:3, h:"AXR",      a:"Mpesala",   hs:5, as:1},
+  {md:3, h:"Taximi",   a:"R1",        hs:2, as:5},
+  {md:3, h:"Temachio", a:"Clippers",  hs:6, as:4},
+  {md:4, h:"BADiles",  a:"Clippers",  hs:6, as:6},
+  {md:4, h:"R1",       a:"AXR",       hs:7, as:5},
+  {md:4, h:"Nikolado", a:"Taximi",    hs:5, as:0},
+  {md:4, h:"Mpesala",  a:"Temachio",  hs:4, as:6},
+  {md:5, h:"BADiles",  a:"Taximi",    hs:5, as:0},
+  {md:5, h:"Clippers", a:"Nikolado",  hs:5, as:1},
+  {md:5, h:"AXR",      a:"Temachio",  hs:5, as:3},
+  {md:5, h:"R1",       a:"Mpesala",   hs:2, as:5},
+  {md:6, h:"Taximi",   a:"AXR",       hs:0, as:5},
+  {md:6, h:"Clippers", a:"Mpesala",   hs:1, as:5},
+  {md:6, h:"Temachio", a:"BADiles",   hs:3, as:5},
+  {md:6, h:"R1",       a:"Nikolado",  hs:5, as:3},
+  {md:7, h:"Taximi",   a:"Temachio",  hs:0, as:5},
+  {md:7, h:"Nikolado", a:"Mpesala",   hs:0, as:5},
+  {md:7, h:"BADiles",  a:"AXR",       hs:6, as:4},
+  {md:7, h:"R1",       a:"Clippers",  hs:5, as:3},
+];
+
+const bracket = [
+  {
+    title: "Semi-Finals (Best of 3)",
+    matches: [
+      {
+        h:"BADiles", a:"Temachio",
+        sets: [{hs:5,as:0},{hs:5,as:2}],
+        hSets:2, aSets:0
+      },
+      {
+        h:"R1", a:"AXR",
+        sets: [{hs:5,as:3},{hs:3,as:5},{hs:3,as:1}],
+        hSets:2, aSets:1
+      }
+    ]
+  },
+  {
+    title: "Final (Best of 5)",
+    matches: [
+      {
+        h:"BADiles", a:"R1",
+        sets: [{hs:3,as:5},{hs:5,as:3},{hs:1,as:5},{hs:3,as:5}],
+        hSets:1, aSets:3
+      }
+    ]
+  }
+];
+
+const LOGOS = {
+  "BADiles":"logos/badiles.png","R1":"logos/r1.png","AXR":"logos/axr.png",
+  "Clippers":"logos/clippers.png","Nikolado":"logos/nikolado.png",
+  "Temachio":"logos/temachio.png","Mpesala":"logos/mpesala.png","Taximi":"logos/taximi.png"
+};
+function tlogo(name,size=16){
+  return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:'';
+}
+
+function computeTable() {
+  const s = {};
+  TEAMS.forEach(t => s[t] = {team:t, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts: PENALTY[t]||0});
+  fixtures.forEach(f => {
+    const h=s[f.h], a=s[f.a];
+    h.p++; a.p++;
+    h.gf+=f.hs; h.ga+=f.as; a.gf+=f.as; a.ga+=f.hs;
+    h.gd+=f.hs-f.as; a.gd+=f.as-f.hs;
+    if(f.hs>f.as){h.w++;h.pts+=3;a.l++;a.pts+=1;}
+    else if(f.as>f.hs){a.w++;a.pts+=3;h.l++;h.pts+=1;}
+    else{h.d++;a.d++;h.pts+=2;a.pts+=2;}
+  });
+  const manualOrder = {"BADiles":1,"R1":2,"AXR":3,"Temachio":4,"Mpesala":5,"Clippers":6,"Nikolado":7,"Taximi":8};
+  return Object.values(s).sort((a,b)=>{
+    if(b.pts!==a.pts) return b.pts-a.pts;
+    if(b.gd!==a.gd) return b.gd-a.gd;
+    return (manualOrder[a.team]||9)-(manualOrder[b.team]||9);
+  });
+}
+
+function renderTable() {
+  const rows = computeTable();
+  document.getElementById('table-body').innerHTML = rows.map((r,i) => {
+    const cls = i<4 ? 'qualification' : 'elimination';
+    const ptsStyle = r.pts<0 ? 'color:#c0392b;' : '';
+    const deduct = PENALTY_INFO[r.team]
+      ? `<span class="deduction-icon">!<span class="tooltip">${PENALTY_INFO[r.team]}</span></span>` : '';
+    return `<tr class="${cls}">
+      <td class="pos">${i+1}</td>
+      <td class="team-cell">${tlogo(r.team)}${r.team}${deduct}</td>
+      <td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+      <td>${r.gf}:${r.ga}</td>
+      <td>${r.gd>0?'+':''}${r.gd}</td>
+      <td><strong style="${ptsStyle}">${r.pts}</strong></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderFixtures() {
+  const byMd = {};
+  fixtures.forEach(f => { if(!byMd[f.md]) byMd[f.md]=[]; byMd[f.md].push(f); });
+  document.getElementById('fixtures-list').innerHTML = Object.keys(byMd).sort((a,b)=>a-b).map(md => `
+    <div class="md-title">Matchday ${md}</div>
+    <div class="card" style="padding:0.75rem 1rem;margin-bottom:0.5rem;">
+      ${byMd[md].map(f=>`
+        <div class="fixture">
+          <span class="fix-team right">${f.h}${tlogo(f.h)}</span>
+          <span class="fix-score">${f.hs}–${f.as}</span>
+          <span class="fix-team">${tlogo(f.a)}${f.a}</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function renderBracket() {
+  document.getElementById('bracket').innerHTML = bracket.map(round => {
+    const isFinal = round.title.includes('Final');
+    return `<div class="bracket-round">
+      <div class="bracket-round-title">${round.title}</div>
+      <div class="bracket-matches">
+        ${round.matches.map(m => {
+          const hWon = m.hSets > m.aSets;
+          const setStr = m.sets.map(s=>`${s.hs}-${s.as}`).join(', ');
+          return `<div class="bracket-match${isFinal?' final-match':''}">
+            <div class="bracket-team ${hWon?'winner':'loser'}">
+              <span>${tlogo(m.h,14)}${m.h}</span>
+              <span class="bracket-score">${m.hSets}</span>
+            </div>
+            <div class="bracket-team ${!hWon?'winner':'loser'}">
+              <span>${tlogo(m.a,14)}${m.a}</span>
+              <span class="bracket-score">${m.aSets}</span>
+            </div>
+            <div class="set-scores">Sets: ${setStr}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showTab(tab) {
+  document.getElementById('tab-league').style.display = tab==='league'?'block':'none';
+  document.getElementById('tab-bracket').style.display = tab==='bracket'?'block':'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&tab==='league')||(i===1&&tab==='bracket')));
+}
+
+renderTable();
+renderFixtures();
+renderBracket();
+
+document.addEventListener('mousemove', e => {
+  document.querySelectorAll('.deduction-icon .tooltip').forEach(t => {
+    t.style.left = (e.clientX + 12) + 'px';
+    t.style.top = (e.clientY + 12) + 'px';
+  });
+});
+</script>
+</body>
+</html>

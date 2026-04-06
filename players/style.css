@@ -1,0 +1,163 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, sans-serif;
+  background: #1D1810;
+  color: #D7DBC8;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.container { max-width: 900px; margin: 0 auto; }
+
+/* ── Navigation ── */
+.nav { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+.back { font-size: 13px; color: #888; text-decoration: none; }
+.back:hover { color: #D7DBC8; }
+
+/* ── Typography ── */
+h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; color: #D7DBC8; }
+h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; }
+.subtitle { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
+
+/* ── Search / Filter ── */
+.search-row { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.search-input {
+  flex: 1; min-width: 200px; padding: 8px 12px;
+  border: 1px solid #535c2f; border-radius: 8px;
+  font-size: 14px; background: #282d15; color: #D7DBC8;
+}
+.search-input:focus { outline: none; border-color: #D7DBC8; }
+.search-input::placeholder { color: #535c2f; }
+.filter-btn {
+  font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  background: transparent; border: 1px solid #535c2f; color: #888; transition: all 0.15s;
+}
+.filter-btn.active { background: #363C1F; border-color: #D7DBC8; color: #D7DBC8; }
+
+/* ── Player Grid ── */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.player-card {
+  background: #363C1F;
+  border: 1px solid #535c2f;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.player-card:hover { border-color: #D7DBC8; transform: translateY(-2px); }
+.player-card.active-player { border-color: #39c877; }
+
+.player-photo {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  background: #282d15;
+  border: 2px solid #535c2f;
+}
+.player-card.active-player .player-photo { border-color: #39c877; }
+
+.player-name { font-size: 13px; font-weight: 500; color: #D7DBC8; margin-bottom: 3px; }
+.player-status { font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 500; margin-bottom: 6px; }
+.status-active { background: #1a3d2a; color: #39c877; }
+.status-retired { background: #282d15; color: #888; }
+.player-titles { font-size: 11px; color: #888; }
+.title-icon { color: #f5c842; }
+
+/* ── Individual Player Page ── */
+.player-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.player-header-photo {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #535c2f;
+  flex-shrink: 0;
+}
+.player-header-photo.active { border-color: #39c877; }
+.player-header-info { flex: 1; min-width: 200px; }
+.player-full-name { font-size: 24px; font-weight: 500; color: #D7DBC8; margin-bottom: 6px; }
+.player-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.badge-active { background: #1a3d2a; color: #39c877; }
+.badge-retired { background: #282d15; color: #888; border: 1px solid #535c2f; }
+.badge-title { background: #3d3010; color: #f5c842; }
+.player-desc { font-size: 13px; color: #888; line-height: 1.7; }
+
+/* ── Section Cards ── */
+.section-card {
+  background: #363C1F;
+  border: 1px solid #535c2f;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Career Timeline ── */
+.career-entry {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #282d15;
+}
+.career-entry:last-child { border-bottom: none; }
+.career-season { font-size: 12px; color: #888; width: 36px; flex-shrink: 0; padding-top: 2px; }
+.career-team-logo {
+  width: 28px; height: 28px;
+  border-radius: 4px;
+  object-fit: contain;
+  background: #282d15;
+  flex-shrink: 0;
+}
+.career-info { flex: 1; }
+.career-team-name { font-size: 13px; font-weight: 500; color: #D7DBC8; }
+.career-detail { font-size: 11px; color: #888; margin-top: 2px; }
+.career-trophy { color: #f5c842; font-size: 11px; margin-top: 2px; }
+
+/* ── Upcoming match ── */
+.upcoming-match {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.upcoming-team { font-size: 14px; font-weight: 500; color: #D7DBC8; }
+.upcoming-vs { font-size: 13px; color: #535c2f; }
+.upcoming-meta { font-size: 12px; color: #888; margin-top: 4px; }
+
+/* ── Titles grid ── */
+.titles-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.title-card {
+  background: #282d15;
+  border: 1px solid #3d3010;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: #f5c842;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Utility ── */
+.hidden { display: none; }
+.section-label { font-size: 11px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }

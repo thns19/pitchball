@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Stats — PSL5</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.team-card { background: #363C1F; border: 1px solid #535c2f; border-radius: 12px; padding: 1.25rem; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+.team-card:hover { border-color: #D7DBC8; transform: translateY(-2px); }
+.team-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+.team-card-name { font-size: 15px; font-weight: 500; color: #D7DBC8; }
+.tier-badge { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; }
+.tier-elite { background: #1a3d2a; color: #39c877; }
+.tier-mid { background: #1a2a3d; color: #a4cde8; }
+.tier-low { background: #282d15; color: #888; }
+.rating-bars { display: flex; flex-direction: column; gap: 6px; }
+.rating-row { display: flex; align-items: center; gap: 8px; }
+.rating-label { font-size: 11px; color: #888; width: 28px; flex-shrink: 0; }
+.rating-track { flex: 1; height: 5px; background: #282d15; border-radius: 3px; overflow: hidden; }
+.rating-fill { height: 100%; border-radius: 3px; }
+.fill-att { background: #d86254; }
+.fill-def { background: #a4cde8; }
+.fill-stm { background: #f5c842; }
+.fill-con { background: #39c877; }
+.rating-val { font-size: 11px; color: #D7DBC8; width: 16px; text-align: right; flex-shrink: 0; }
+.overall-score { font-size: 28px; font-weight: 500; color: #D7DBC8; }
+.overall-label { font-size: 10px; color: #888; margin-top: 2px; }
+.filter-row { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.filter-btn { font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; background: transparent; border: 1px solid #535c2f; color: #888; transition: all 0.15s; }
+.filter-btn.active { background: #363C1F; border-color: #D7DBC8; color: #D7DBC8; }
+.sort-row { display: flex; gap: 8px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.sort-row label { font-size: 12px; color: #888; }
+.legend-bars { display: flex; gap: 16px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.legend-bar-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+.legend-bar-dot { width: 10px; height: 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="container" style="max-width:900px;">
+  <div class="nav">
+    <a href="index.html" class="back">← Home</a>
+  </div>
+  <h1>Team Stats</h1>
+  <p class="subtitle">PSL5 — Season 5 team ratings and overview</p>
+  <p class="subtitle">Note: These statistics attempt to be as close to reality as possible and change depending on team form.</p>
+
+  <div class="legend-bars">
+    <div class="legend-bar-item"><div class="legend-bar-dot fill-att"></div> Attack</div>
+    <div class="legend-bar-item"><div class="legend-bar-dot fill-def"></div> Defense</div>
+    <div class="legend-bar-item"><div class="legend-bar-dot fill-stm"></div> Stamina</div>
+    <div class="legend-bar-item"><div class="legend-bar-dot fill-con"></div> Consistency</div>
+    <div class="legend-bar-item"><div class="legend-bar-dot" style="background:#c084fc;"></div> Att. Tendency</div>
+  </div>
+
+  <div class="sort-row">
+    <label>Sort by</label>
+    <select id="sort-select" onchange="render()" style="flex:0;min-width:0;width:160px;">
+      <option value="overall">Overall rating</option>
+      <option value="att">Attack</option>
+      <option value="def">Defense</option>
+      <option value="stm">Stamina</option>
+      <option value="con">Consistency</option>
+      <option value="ten">Att. Tendency</option>
+      <option value="name">Name</option>
+    </select>
+  </div>
+
+  <div id="teams-grid" class="teams-grid"></div>
+</div>
+
+<script>
+const teams = {
+  "BADiles":         {att:8,def:8,stm:7,con:9,ten:7, tactic:"Zonal", notes:"Dimitris Gavalas, Thanos Chatziiordanou"},
+  "Y&Y":             {att:9,def:8,stm:8,con:7,ten:9, tactic:"Zonal", notes:"Giannis Akridas, Giorgos Filippou"},
+  "R1":              {att:8,def:8,stm:8,con:6,ten:8, tactic:"Front-Back", notes:"Michalis Lerogiannis, Nikolas Moschonas"},
+  "Basement Boys":   {att:8,def:8,stm:7,con:7,ten:7, tactic:"Front-Back", notes:"Iordanis Aslanis, Spyros Koskinas"},
+  "Volos Drummers":  {att:5,def:7,stm:7,con:7,ten:4, tactic:"Undefined", notes:"Vasilis Tziovanis, Giorgos Zacharopoulos"},
+  "Warriors":        {att:5,def:5,stm:6,con:7,ten:2, tactic:"Front-Back", notes:"Panos Chardas, Sokratis Gkiolias"},
+  "Midi Kidz":       {att:6,def:5,stm:6,con:6,ten:4, tactic:"Front-Back", notes:"Tzannis Mermigkas, Stefanos Mavrogiannis"},
+  "Babiniotes":      {att:6,def:6,stm:7,con:5,ten:6, tactic:"Front-Back", notes:"Johan Pilichos, Stavros Stavropoulos"},
+  "Spasmena Mila":   {att:7,def:6,stm:6,con:6,ten:6, tactic:"Front-Back", notes:"Aris Tsertos, Iasonas Miliaras, Petros Papaspyropoulos"},
+  "Phoenix":         {att:7,def:7,stm:7,con:3,ten:8, tactic:"Front-Back", notes:"Filippos Efstathiou, Nikos Kalisperis"},
+  "Snipers":         {att:5,def:5,stm:6,con:5,ten:6, tactic:"Front-Back", notes:"Giannis Stefanis, Antonis Iliadis"},
+  "Team Till Death": {att:3,def:3,stm:5,con:4,ten:3, tactic:"Front-Back", notes:"Giorgos Karamolegkos, Miltos Kapnakis"},
+  "A/C":             {att:3,def:3,stm:5,con:4,ten:4, tactic:"Undefined", notes:"Giannis Kordopatis, Orfeas Maragkos"},
+  "Fintani":         {att:4,def:4,stm:5,con:6,ten:5, tactic:"Front-Back", notes:"Daniel Chortikoglou, Iasonas Kepelyan"},
+  "Axtarmades":      {att:5,def:3,stm:4,con:5,ten:4, tactic:"Front-Back", notes:"Haris Rigas, Dimitris Antoninis"},
+  "Chewbacca":       {att:6,def:5,stm:6,con:4,ten:6, tactic:"Front-Back", notes:"Vasilis Mavraganis, Spyros Paliouras"},
+  "Hoopers":         {att:4,def:4,stm:6,con:4,ten:6, tactic:"Front-Back", notes:"Petros Mpogeas, Ilias Loverdos"}
+};
+
+const logos = {
+  "BADiles":"logos/badiles.png","Y&Y":"logos/yy.png","R1":"logos/r1.png",
+  "Basement Boys":"logos/basement.png","Volos Drummers":"logos/volos.png",
+  "Warriors":"logos/warriors.png","Midi Kidz":"logos/midi.png",
+  "Babiniotes":"logos/babiniotes.png","Spasmena Mila":"logos/spasmena.png",
+  "Phoenix":"logos/phoenix.png","Snipers":"logos/snipers.png",
+  "Team Till Death":"logos/ttd.png","A/C":"logos/ac.png",
+  "Fintani":"logos/fintani.png","Axtarmades":"logos/axtarmades.png",
+  "Chewbacca":"logos/chewbacca.png","Hoopers":"logos/hoopers.png"
+};
+
+function overall(t) {
+  return +(t.att*0.35 + t.def*0.3 + t.stm*0.15 + t.con*0.2).toFixed(1);
+}
+
+function tier(o) {
+  if(o >= 7.5) return {label:'Elite', cls:'tier-elite'};
+  if(o >= 5.5) return {label:'Mid', cls:'tier-mid'};
+  return {label:'Lower', cls:'tier-low'};
+}
+
+function render() {
+  const sortBy = document.getElementById('sort-select').value;
+  let entries = Object.entries(teams).map(([name, t]) => ({name, ...t, overall: overall(t)}));
+
+  entries.sort((a,b) => {
+    if(sortBy === 'name') return a.name.localeCompare(b.name);
+    if(sortBy === 'overall') return b.overall - a.overall;
+    return b[sortBy] - a[sortBy];
+  });
+
+  const grid = document.getElementById('teams-grid');
+  grid.innerHTML = entries.map(t => {
+    const tr = tier(t.overall);
+    return `<div class="team-card">
+      <div class="team-card-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="${logos[t.name]||''}" onerror="this.style.display='none'" style="width:36px;height:36px;object-fit:contain;border-radius:6px;background:#282d15;padding:2px;">
+          <div>
+            <div class="team-card-name">${t.name}</div>
+            <div style="font-size:11px;color:#888;margin-top:2px;">${t.tactic}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div class="overall-score">${t.overall}</div>
+          <div class="overall-label">overall</div>
+          <span class="tier-badge ${tr.cls}" style="margin-top:4px;display:inline-block;">${tr.label}</span>
+        </div>
+      </div>
+      <div class="rating-bars">
+        <div class="rating-row">
+          <span class="rating-label">ATT</span>
+          <div class="rating-track"><div class="rating-fill fill-att" style="width:${t.att*10}%"></div></div>
+          <span class="rating-val">${t.att}</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-label">DEF</span>
+          <div class="rating-track"><div class="rating-fill fill-def" style="width:${t.def*10}%"></div></div>
+          <span class="rating-val">${t.def}</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-label">STM</span>
+          <div class="rating-track"><div class="rating-fill fill-stm" style="width:${t.stm*10}%"></div></div>
+          <span class="rating-val">${t.stm}</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-label">CON</span>
+          <div class="rating-track"><div class="rating-fill fill-con" style="width:${t.con*10}%"></div></div>
+          <span class="rating-val">${t.con}</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-label">TEN</span>
+          <div class="rating-track"><div class="rating-fill" style="width:${t.ten*10}%;background:#c084fc;"></div></div>
+          <span class="rating-val">${t.ten}</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#888;line-height:1.5;">${t.notes}</div>
+    </div>`;
+  }).join('');
+}
+
+render();
+</script>
+</body>
+</html>
