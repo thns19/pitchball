@@ -1,6 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Google Analytics (blocked until consent) -->
+<script>
+  function loadAnalytics() {
+    var script1 = document.createElement("script");
+    script1.async = true;
+    script1.src = "https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578";
+    document.head.appendChild(script1);
+
+    script1.onload = function () {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+    };
+  }
+</script>
 <head>
+<!-- Cookie Banner -->
+<div id="cookie-banner" style="
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #222;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-family: Arial;
+  z-index: 1000;
+">
+  This site uses cookies for analytics.
+  <button onclick="acceptCookies()" style="margin-left:10px;">Accept</button>
+  <button onclick="rejectCookies()" style="margin-left:5px;">Reject</button>
+</div>
+
+<script>
+  function acceptCookies() {
+    localStorage.setItem("cookieConsent", "accepted");
+    document.getElementById("cookie-banner").style.display = "none";
+    loadAnalytics();
+  }
+
+  function rejectCookies() {
+    localStorage.setItem("cookieConsent", "rejected");
+    document.getElementById("cookie-banner").style.display = "none";
+  }
+
+  window.onload = function () {
+    const consent = localStorage.getItem("cookieConsent");
+
+    if (consent === "accepted") {
+      document.getElementById("cookie-banner").style.display = "none";
+      loadAnalytics();
+    } else if (consent === "rejected") {
+      document.getElementById("cookie-banner").style.display = "none";
+    }
+  };
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pitchball Super League</title>
