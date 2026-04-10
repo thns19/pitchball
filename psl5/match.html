@@ -6,201 +6,95 @@
 <title>Match — PSL5</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.match-header {
-  background: #363C1F;
-  border: 1px solid #535c2f;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-.match-teams {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-  flex-wrap: wrap;
-}
-.match-team {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 120px;
-}
-.match-team-logo {
-  width: 52px; height: 52px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: #282d15;
-  padding: 3px;
-}
-.match-team-name { font-size: 14px; font-weight: 500; color: #D7DBC8; }
-.match-score {
-  font-size: 48px;
-  font-weight: 500;
-  color: #D7DBC8;
-  line-height: 1;
-  min-width: 80px;
-  text-align: center;
-}
-.match-meta { font-size: 12px; color: #888; margin-top: 6px; }
-.match-meta span { margin: 0 8px; }
-
-.breakdown-card {
-  background: #363C1F;
-  border: 1px solid #535c2f;
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-}
-.breakdown-title { font-size: 11px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
-
-.breakdown-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.breakdown-row:last-child { margin-bottom: 0; }
-.bd-team { font-size: 13px; font-weight: 500; color: #D7DBC8; width: 130px; flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
-.bd-team img { width: 18px; height: 18px; object-fit: contain; border-radius: 2px; }
-.bd-bars { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-.bd-bar-row { display: flex; align-items: center; gap: 8px; }
-.bd-label { font-size: 11px; color: #888; width: 70px; flex-shrink: 0; }
-.bd-track { flex: 1; height: 6px; background: #282d15; border-radius: 3px; overflow: hidden; }
-.bd-fill-point { height: 100%; background: #39c877; border-radius: 3px; }
-.bd-fill-og { height: 100%; background: #d86254; border-radius: 3px; }
-.bd-val { font-size: 12px; color: #D7DBC8; width: 16px; text-align: right; flex-shrink: 0; }
-
-.mvp-card {
-  background: #363C1F;
-  border: 1px solid #f5c842;
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.mvp-icon { font-size: 24px; }
-.mvp-label { font-size: 11px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-.mvp-name { font-size: 16px; font-weight: 500; color: #f5c842; margin-top: 2px; }
-
-.no-data { font-size: 13px; color: #535c2f; padding: 1rem 0; }
+.match-header{background:#363C1F;border:1px solid #535c2f;border-radius:12px;padding:1.5rem;margin-bottom:1rem;text-align:center;}
+.match-teams{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:0.75rem;flex-wrap:wrap;}
+.match-team{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:120px;}
+.match-team-logo{width:52px;height:52px;object-fit:contain;border-radius:8px;background:#282d15;padding:3px;}
+.match-team-name{font-size:14px;font-weight:500;color:#D7DBC8;}
+.match-score{font-size:48px;font-weight:500;color:#D7DBC8;line-height:1;min-width:80px;text-align:center;}
+.match-meta{font-size:12px;color:#888;margin-top:8px;}
+.match-meta span{margin:0 6px;}
+.mvp-card{background:#363C1F;border:1px solid #f5c842;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
+.mvp-label{font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+.mvp-name{font-size:15px;font-weight:500;color:#f5c842;margin-top:2px;}
+.events-card{background:#363C1F;border:1px solid #535c2f;border-radius:12px;overflow:hidden;margin-bottom:1rem;}
+.events-title{font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;border-bottom:1px solid #282d15;}
+.event-row{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid #282d15;gap:10px;}
+.event-row:last-child{border-bottom:none;}
+.event-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.icon-goal{background:#1a3d2a;color:#39c877;}
+.icon-og{background:#3d1a1a;color:#d86254;}
+.icon-sub{background:#1a2a3d;color:#a4cde8;}
+.event-body{flex:1;}
+.event-main{font-size:13px;color:#D7DBC8;}
+.event-detail{font-size:11px;color:#888;margin-top:1px;}
+.event-score{font-size:13px;font-weight:500;color:#D7DBC8;flex-shrink:0;min-width:36px;text-align:right;}
+.stats-row-match{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
+.stat-mini{background:#363C1F;border:1px solid #535c2f;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.stat-mini-label{font-size:11px;color:#888;}
+.stat-mini-val{font-size:14px;font-weight:500;color:#D7DBC8;}
+.no-data{font-size:13px;color:#535c2f;padding:1rem;}
 </style>
 </head>
 <body>
 <div class="container" style="max-width:680px;">
-  <div class="nav">
-    <a href="league.html" class="back">← League</a>
-  </div>
+  <div class="nav"><a href="league.html" class="back">← League</a></div>
   <div id="match-content"></div>
 </div>
-
 <script src="matches.js"></script>
 <script>
-const id = new URLSearchParams(window.location.search).get('id');
-const match = matchData.find(m => m.id === id);
-
-if(!match) {
-  document.getElementById('match-content').innerHTML = `<p class="no-data">Match not found. <a href="league.html" style="color:#39c877;">← Back to league</a></p>`;
+const LOGOS={"BADiles":"logos/badiles.png","Y&Y":"logos/yy.png","R1":"logos/r1.png","Basement Boys":"logos/basement.png","Volos Drummers":"logos/volos.png","Warriors":"logos/warriors.png","Midi Kidz":"logos/midi.png","Babiniotes":"logos/babiniotes.png","Spasmena Mila":"logos/spasmena.png","Phoenix":"logos/phoenix.png","Snipers":"logos/snipers.png","Team Till Death":"logos/ttd.png","A/C":"logos/ac.png","Fintani":"logos/fintani.png","Axtarmades":"logos/axtarmades.png","Chewbacca":"logos/chewbacca.png","Hoopers":"logos/hoopers.png"};
+function tlogo(name,size=16){return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:''}
+const id=new URLSearchParams(window.location.search).get('id');
+const match=matchData.find(m=>m.id===id);
+if(!match){
+  document.getElementById('match-content').innerHTML=`<p class="no-data">Match not found. <a href="league.html" style="color:#39c877;">← Back</a></p>`;
 } else {
-  const maxScore = Math.max(match.hs, match.as, 1);
-  const hb = match.breakdown.home;
-  const ab = match.breakdown.away;
-  const maxVal = Math.max(hb.points, hb.ownGoals, ab.points, ab.ownGoals, 1);
-
-  function logoImg(name, src, size=52) {
-    return src ? `<img class="match-team-logo" src="${src}" onerror="this.style.display='none'" alt="${name}">` : '';
-  }
-
-  const LOGOS = {
-    "BADiles":"logos/badiles.png","Y&Y":"logos/yy.png","R1":"logos/r1.png",
-    "Basement Boys":"logos/basement.png","Volos Drummers":"logos/volos.png",
-    "Warriors":"logos/warriors.png","Midi Kidz":"logos/midi.png",
-    "Babiniotes":"logos/babiniotes.png","Spasmena Mila":"logos/spasmena.png",
-    "Phoenix":"logos/phoenix.png","Snipers":"logos/snipers.png",
-    "Team Till Death":"logos/ttd.png","A/C":"logos/ac.png",
-    "Fintani":"logos/fintani.png","Axtarmades":"logos/axtarmades.png",
-    "Chewbacca":"logos/chewbacca.png","Hoopers":"logos/hoopers.png"
-  };
-
-  const mvpHTML = match.mvp ? `
-    <div class="mvp-card">
-      <div class="mvp-icon">🏅</div>
-      <div>
-        <div class="mvp-label">Match MVP</div>
-        <div class="mvp-name">${match.mvp}</div>
-      </div>
-    </div>` : '';
-
-  const hasBreakdown = hb.points + hb.ownGoals + ab.points + ab.ownGoals > 0;
-
-  const breakdownHTML = hasBreakdown ? `
-    <div class="breakdown-card">
-      <div class="breakdown-title">Point Breakdown</div>
-      <div class="breakdown-row">
-        <div class="bd-team">
-          <img src="${LOGOS[match.home]||''}" onerror="this.style.display='none'">
-          ${match.home}
-        </div>
-        <div class="bd-bars">
-          <div class="bd-bar-row">
-            <span class="bd-label">Clean pts</span>
-            <div class="bd-track"><div class="bd-fill-point" style="width:${(hb.points/maxVal)*100}%"></div></div>
-            <span class="bd-val">${hb.points}</span>
-          </div>
-          <div class="bd-bar-row">
-            <span class="bd-label">Opp. own goals</span>
-            <div class="bd-track"><div class="bd-fill-og" style="width:${(hb.ownGoals/maxVal)*100}%"></div></div>
-            <span class="bd-val">${hb.ownGoals}</span>
-          </div>
-        </div>
-      </div>
-      <div class="breakdown-row">
-        <div class="bd-team">
-          <img src="${LOGOS[match.away]||''}" onerror="this.style.display='none'">
-          ${match.away}
-        </div>
-        <div class="bd-bars">
-          <div class="bd-bar-row">
-            <span class="bd-label">Clean pts</span>
-            <div class="bd-track"><div class="bd-fill-point" style="width:${(ab.points/maxVal)*100}%"></div></div>
-            <span class="bd-val">${ab.points}</span>
-          </div>
-          <div class="bd-bar-row">
-            <span class="bd-label">Opp. own goals</span>
-            <div class="bd-track"><div class="bd-fill-og" style="width:${(ab.ownGoals/maxVal)*100}%"></div></div>
-            <span class="bd-val">${ab.ownGoals}</span>
-          </div>
-        </div>
-      </div>
-    </div>` : `<div class="breakdown-card"><div class="breakdown-title">Point Breakdown</div><p class="no-data">No breakdown data available for this match.</p></div>`;
-
-  document.title = `${match.home} vs ${match.away} — PSL5`;
-  document.getElementById('match-content').innerHTML = `
-    <div class="match-header">
-      <div class="match-teams">
-        <div class="match-team">
-          ${logoImg(match.home, LOGOS[match.home])}
-          <div class="match-team-name">${match.home}</div>
-        </div>
-        <div class="match-score">${match.hs}–${match.as}</div>
-        <div class="match-team">
-          ${logoImg(match.away, LOGOS[match.away])}
-          <div class="match-team-name">${match.away}</div>
-        </div>
-      </div>
-      <div class="match-meta">
-        ${match.date ? `<span>📅 ${match.date}</span>` : ''}
-        <span>PSL5 League Phase</span>
-      </div>
+  document.title=`${match.home} vs ${match.away} — PSL5`;
+  let hGoals=0,hOGs=0,aGoals=0,aOGs=0;
+  (match.events||[]).forEach(e=>{
+    if(e.type==='goal'){if(e.team===match.home)hGoals++;else aGoals++;}
+    else if(e.type==='og'){if(e.team===match.home)aOGs++;else hOGs++;}
+  });
+  const header=`<div class="match-header">
+    <div class="match-teams">
+      <div class="match-team"><img class="match-team-logo" src="${LOGOS[match.home]||''}" onerror="this.style.display='none'"><div class="match-team-name">${match.home}</div></div>
+      <div class="match-score">${match.hs}–${match.as}</div>
+      <div class="match-team"><img class="match-team-logo" src="${LOGOS[match.away]||''}" onerror="this.style.display='none'"><div class="match-team-name">${match.away}</div></div>
     </div>
-    ${mvpHTML}
-    ${breakdownHTML}`;
+    <div class="match-meta">${match.date?`<span>📅 ${match.date}</span>`:''}<span>PSL5 League Phase</span></div>
+  </div>`;
+  const mvp=match.mvp?`<div class="mvp-card"><span style="font-size:22px;">🏅</span><div><div class="mvp-label">Match MVP</div><div class="mvp-name">${match.mvp}</div></div></div>`:'';
+  const stats=(match.events&&match.events.length)?`<div class="stats-row-match">
+    <div class="stat-mini"><span class="stat-mini-label">${match.home} goals</span><span class="stat-mini-val">${hGoals}</span></div>
+    <div class="stat-mini"><span class="stat-mini-label">${match.away} goals</span><span class="stat-mini-val">${aGoals}</span></div>
+    <div class="stat-mini"><span class="stat-mini-label">${match.home} own goals</span><span class="stat-mini-val">${hOGs}</span></div>
+    <div class="stat-mini"><span class="stat-mini-label">${match.away} own goals</span><span class="stat-mini-val">${aOGs}</span></div>
+  </div>`:'';
+  let eventRows='';
+  if(match.events&&match.events.length){
+    eventRows=match.events.map(e=>{
+      if(e.type==='goal') return `<div class="event-row">
+        <div class="event-icon icon-goal">G</div>
+        <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.player}</strong></div><div class="event-detail">Goal · ${e.team}</div></div>
+        <div class="event-score">${e.hs}–${e.as}</div></div>`;
+      if(e.type==='og'){
+        const errTeam=e.team===match.home?match.away:match.home;
+        return `<div class="event-row">
+          <div class="event-icon icon-og">OG</div>
+          <div class="event-body"><div class="event-main">${tlogo(errTeam)}<strong>${e.player}</strong></div><div class="event-detail">Own goal · point to ${e.team}</div></div>
+          <div class="event-score">${e.hs}–${e.as}</div></div>`;
+      }
+      if(e.type==='sub') return `<div class="event-row">
+        <div class="event-icon icon-sub">↕</div>
+        <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.team}</strong></div><div class="event-detail"><span style="color:#39c877;">▲ ${e.in}</span><span style="color:#d86254;margin-left:8px;">▼ ${e.out}</span></div></div>
+        <div class="event-score">–</div></div>`;
+      return '';
+    }).join('');
+  } else {
+    eventRows=`<div class="no-data">No event data available for this match yet.</div>`;
+  }
+  document.getElementById('match-content').innerHTML=header+mvp+stats+`<div class="events-card"><div class="events-title">Match Events</div>${eventRows}</div>`;
 }
 </script>
 </body>
