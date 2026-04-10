@@ -82,10 +82,14 @@
     <div id="bracket-mc-results"></div>
   </div>
 
+  <div class="section-title" style="margin-top:2rem;">Top Scorers [incl. PSL Cup and Group Stages]</div>
+  <div id="top-scorers" style="margin-bottom:2rem;"></div>
+
   <div class="section-title" style="margin-top:2rem;">Fixtures</div>
   <div id="fixtures-list"></div>
 </div>
 
+<script src="matches.js"></script>
 <script>
 const TEAMS = {
   BAD: "BADiles", YY: "Y&Y", R1: "R1", BMB: "Basement Boys",
@@ -296,7 +300,11 @@ function renderFixtures() {
         : `<button class="sim-btn" onclick="simulateOne(${f.id})">Simulate</button>`;
 
       const scoreDisplay = hasResult
-        ? `<span class="${f.confirmed ? 'confirmed' : 'projected'}" style="font-weight:500;min-width:40px;text-align:center;">${f.hs}–${f.as}</span>`
+        ? (() => {
+            const matchId = `MD${f.md}_${f.home.replace(/[^a-zA-Z0-9]/g,'')}_${f.away.replace(/[^a-zA-Z0-9]/g,'')}`;
+            const scoreEl = `<span style="font-weight:500;min-width:40px;text-align:center;" class="${f.confirmed?'confirmed':'projected'}">${f.hs}–${f.as}</span>`;
+            return f.confirmed ? `<a href="match.html?id=${matchId}" style="text-decoration:none;">${scoreEl}</a>` : scoreEl;
+          })()
         : `<input type="number" min="0" id="hs-${f.id}" placeholder="–" onchange="manualScore(${f.id})">
            <span>–</span>
            <input type="number" min="0" id="as-${f.id}" placeholder="–" onchange="manualScore(${f.id})">`;
@@ -730,7 +738,27 @@ function runLeagueMC() {
   document.getElementById('league-mc-section').style.display = 'block';
 }
 
+function renderTopScorers() {
+  if(typeof topScorers === 'undefined' || !topScorers.length) return;
+  const max = topScorers[0].goals;
+  document.getElementById('top-scorers').innerHTML = `
+    <div class="card" style="padding:0.75rem 1rem;">
+      ${topScorers.map((p,i) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #282d15;">
+          <span style="font-size:12px;color:#888;width:18px;flex-shrink:0;">${i+1}</span>
+          <img src="${p.logo}" onerror="this.style.display='none'" style="width:20px;height:20px;object-fit:contain;border-radius:3px;flex-shrink:0;">
+          <span style="flex:1;font-size:13px;font-weight:500;color:#D7DBC8;">${p.name}</span>
+          <span style="font-size:11px;color:#888;margin-right:8px;">${p.team}</span>
+          <div style="width:100px;height:5px;background:#282d15;border-radius:3px;overflow:hidden;flex-shrink:0;">
+            <div style="height:100%;background:#39c877;border-radius:3px;width:${(p.goals/max)*100}%"></div>
+          </div>
+          <span style="font-size:13px;font-weight:500;color:#39c877;width:24px;text-align:right;flex-shrink:0;">${p.goals}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
 buildSeedInputs();
+renderTopScorers();
 </script>
 </body>
 </html>
