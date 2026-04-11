@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSL2 Simulator — Pitchball</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="nav">
+    <a href="hub.html" class="back">← PSL2</a>
+  </div>
+  <h1>PSL2 Match Simulator</h1>
+  <p class="subtitle">Simulate matches between Season 2 teams</p>
+
+  <div class="card">
+    <div class="row">
+      <select id="team1"></select>
+      <span class="vs">vs</span>
+      <select id="team2"></select>
+    </div>
+    <div class="row">
+      <label>First to</label>
+      <select id="target" style="flex:0;width:80px;">
+        <option value="5">5</option>
+        <option value="7">7</option>
+      </select>
+      <label>— win by 2</label>
+      <button onclick="simulate()">Simulate match</button>
+    </div>
+  </div>
+
+  <div id="scoreboard" class="scoreboard hidden">
+    <div class="score-card" id="card1">
+      <div class="team-name" id="sname1"></div>
+      <div class="score-num" id="sscore1">0</div>
+      <div class="breakdown" id="breakdown1"></div>
+    </div>
+    <div class="score-card" id="card2">
+      <div class="team-name" id="sname2"></div>
+      <div class="score-num" id="sscore2">0</div>
+      <div class="breakdown" id="breakdown2"></div>
+    </div>
+  </div>
+
+  <div id="statsrow" class="stats-row hidden">
+    <div class="stat-card"><div class="stat-label">Rallies</div><div class="stat-val" id="st-rallies">0</div></div>
+    <div class="stat-card"><div class="stat-label">Avg rally (s)</div><div class="stat-val" id="st-avg">0</div></div>
+    <div class="stat-card"><div class="stat-label">T1 errors</div><div class="stat-val" id="st-err1">0</div></div>
+    <div class="stat-card"><div class="stat-label">T2 errors</div><div class="stat-val" id="st-err2">0</div></div>
+    <div class="stat-card"><div class="stat-label">Duration</div><div class="stat-val" id="st-dur">0m</div></div>
+  </div>
+
+  <div id="result-banner" class="result-banner hidden"></div>
+  <div class="match-log hidden" id="log"></div>
+
+  <div class="section-title" style="margin-top:2rem;">Team Ratings</div>
+  <div class="teams-grid" id="teams-grid" style="margin-top:1rem;"></div>
+</div>
+
+<script>
+const teams = {
+  "AXR":         {att:8, def:8, stm:8, con:8, ten:8,  players:"Achilleas & Christos"},
+  "Melpon":      {att:5, def:6, stm:6, con:7, ten:5,  players:"Melidis & Poniros"},
+  "Nikolado":    {att:4, def:5, stm:5, con:4, ten:4,  players:"Nikos & Ladas"},
+  "Grivnikikos": {att:3, def:4, stm:3, con:4, ten:4,  players:"Zois & Nikolopoulos"},
+  "R1":          {att:7, def:7, stm:8, con:7, ten:7,  players:"Lerogiannis & Gavalas"},
+  "Taximi":      {att:6, def:6, stm:5, con:6, ten:5,  players:"Mpekos & Tax"},
+  "Kalyma":      {att:4, def:3, stm:4, con:5, ten:4,  players:"Kalisperis & Moschonas"},
+  "Panannaikos": {att:3, def:2, stm:2, con:3, ten:1,  players:"Mantikou & Chardas"},
+  "Brazil":      {att:9, def:7, stm:7, con:8, ten:8,  players:"Thanos & Kostas K."},
+  "Mpesala":     {att:6, def:7, stm:7, con:8, ten:5,  players:"Vasilis & Alex"},
+  "Oi Kapoioi":  {att:5, def:4, stm:4, con:4, ten:3,  players:"Tsertos & Rontogiannis"},
+  "Karronios":   {att:3, def:4, stm:3, con:3, ten:2,  players:"Karampampas & Vasileiou"},
+  "Temachio":    {att:7, def:6, stm:7, con:6, ten:6,  players:"Teo & Marios G."},
+  "Maralers":    {att:5, def:5, stm:5, con:7, ten:3,  players:"Kapsopoulos & Kalofolias"},
+  "S Tiers":     {att:4, def:4, stm:5, con:3, ten:3,  players:"Telloglou & Miliaras"},
+  "Koseveikos":  {att:2, def:2, stm:3, con:1, ten:1,  players:"Kalfiotis & Evelyn"},
+};
+
+const LOGOS = {
+  "AXR":"logos/axr.png","Melpon":"logos/melpon.png","Nikolado":"logos/nikolado.png",
+  "Grivnikikos":"logos/grivnikikos.png","R1":"logos/r1.png","Taximi":"logos/taximi.png",
+  "Kalyma":"logos/kalyma.png","Panannaikos":"logos/panannaikos.png","Brazil":"logos/brazil.png",
+  "Mpesala":"logos/mpesala.png","Oi Kapoioi":"logos/oikapoioi.png","Karronios":"logos/karronios.png",
+  "Temachio":"logos/temachio.png","Maralers":"logos/maralers.png","S Tiers":"logos/stiers.png",
+  "Koseveikos":"logos/koseveikos.png"
+};
+function tlogo(name,size=20){
+  return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:6px;">`:'';
+}
+
+const names = Object.keys(teams);
+const s1 = document.getElementById('team1');
+const s2 = document.getElementById('team2');
+names.forEach(n => {
+  s1.innerHTML += `<option value="${n}">${n}</option>`;
+  s2.innerHTML += `<option value="${n}">${n}</option>`;
+});
+s2.selectedIndex = 1;
+
+function rand() { return Math.random(); }
+function rng(min,max) { return min+rand()*(max-min); }
+function pick(arr) { return arr[Math.floor(rand()*arr.length)]; }
+function overallRating(t) { return t.att*0.35+t.def*0.3+t.stm*0.15+t.con*0.2; }
+
+function winProbability(t1,t2,f1,f2,serving) {
+  const r1=overallRating(t1)*(1-f1*0.25);
+  const r2=overallRating(t2)*(1-f2*0.25);
+  const e1=r1*(0.85+rand()*0.3)*(serving===1?1.04:0.96);
+  const e2=r2*(0.85+rand()*0.3)*(serving===2?1.04:0.96);
+  return Math.max(0.04,Math.min(0.96,0.5+(e1-e2)*0.07));
+}
+
+function errorRate(t1,t2,f1,f2) {
+  const skill=(overallRating(t1)+overallRating(t2))/2;
+  const avgTen=((t1.ten||5)+(t2.ten||5))/2;
+  return Math.min(0.94,0.72-(skill/10)*0.3+(f1+f2)/2*0.2+(avgTen-5)*0.015);
+}
+
+function rallyDuration(t1,t2,f1,f2) {
+  const avgStm=((t1.stm*(1-f1*0.5))+(t2.stm*(1-f2*0.5)))/2;
+  const skill=(overallRating(t1)+overallRating(t2))/2;
+  const tenMult=1.3-((t1.ten+t2.ten)/2/10)*0.6;
+  return Math.round(rng(10,70)*(0.5+avgStm/10)*(0.8+skill/10*0.6)*tenMult);
+}
+
+const serveWords=["fires in the serve","launches the serve","pitches it in","sends the serve over","steps up and serves"];
+const bounceWords=["drops it perfectly into the corner","places a precise double bounce","finds the back corner","lands it perfectly twice","forces the double bounce"];
+const outWords=["sends it long","fires it wide","overpowers the shot out","hits it out of bounds","can't control the smash — wide"];
+const netWords=["clips the net","hits the tape","drives it into the net","can't clear the net","smashes it into the tape"];
+
+function show(id){document.getElementById(id).classList.remove('hidden');}
+
+function simulate() {
+  const n1=s1.value,n2=s2.value;
+  if(n1===n2){alert("Pick two different teams.");return;}
+  const t1=teams[n1],t2=teams[n2];
+  const target=parseInt(document.getElementById('target').value);
+  let sc1=0,sc2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
+  let totalTime=0,totalRallies=0,err1=0,err2=0,cp1=0,cp2=0;
+  const log=[];
+  log.push({cls:'log-serve',text:`${serving===1?n1:n2} wins the coin toss and serves first.`});
+  while(true){
+    totalTime+=rallyDuration(t1,t2,f1,f2); totalRallies++;
+    log.push({cls:'log-serve',text:`Rally ${totalRallies}: ${serving===1?n1:n2} ${pick(serveWords)}.`});
+    const p1w=winProbability(t1,t2,f1,f2,serving);
+    const winner=rand()<p1w?1:2,loser=winner===1?2:1;
+    f1=Math.min(0.7,f1+0.018);f2=Math.min(0.7,f2+0.018);
+    const reason=rand()<errorRate(t1,t2,f1,f2)?(rand()<0.55?'out':'net'):'double bounce';
+    const wname=winner===1?n1:n2,lname=winner===1?n2:n1,scorer=loser===1?n2:n1;
+    if(reason==='double bounce'){
+      if(winner===1){sc1++;cp1++;}else{sc2++;cp2++;}
+      log.push({cls:'log-point',text:`${wname} ${pick(bounceWords)}! Point. (${sc1}-${sc2})`});
+    } else {
+      if(loser===1){sc2++;err1++;}else{sc1++;err2++;}
+      log.push({cls:'log-error',text:`${lname} ${reason==='out'?pick(outWords):pick(netWords)} — point to ${scorer}. (${sc1}-${sc2})`});
+    }
+    serving=winner;
+    if(Math.max(sc1,sc2)>=target&&Math.abs(sc1-sc2)>=2) break;
+    if(totalRallies>300) break;
+  }
+  const winner=sc1>sc2?n1:n2;
+  log.push({cls:'log-point',text:`Match over! ${winner} wins ${sc1}-${sc2}.`});
+  show('scoreboard');show('statsrow');show('result-banner');show('log');
+  document.getElementById('sname1').innerHTML=`${tlogo(n1,24)}${n1}`;
+  document.getElementById('sname2').innerHTML=`${tlogo(n2,24)}${n2}`;
+  document.getElementById('sscore1').textContent=sc1;
+  document.getElementById('sscore2').textContent=sc2;
+  document.getElementById('breakdown1').textContent=`${cp1} clean / ${err2} from errors`;
+  document.getElementById('breakdown2').textContent=`${cp2} clean / ${err1} from errors`;
+  document.getElementById('card1').className='score-card'+(sc1>sc2?' winner':'');
+  document.getElementById('card2').className='score-card'+(sc2>sc1?' winner':'');
+  document.getElementById('st-rallies').textContent=totalRallies;
+  document.getElementById('st-avg').textContent=Math.round(totalTime/totalRallies);
+  document.getElementById('st-err1').textContent=err1;
+  document.getElementById('st-err2').textContent=err2;
+  const mins=Math.floor(totalTime/60),secs=totalTime%60;
+  document.getElementById('st-dur').textContent=`${mins}m ${secs}s`;
+  document.getElementById('result-banner').innerHTML=`${tlogo(winner,20)}${winner} wins ${sc1}-${sc2}`;
+  const logEl=document.getElementById('log');
+  logEl.innerHTML=log.map(e=>`<div class="log-entry ${e.cls}">${e.text}</div>`).join('');
+  logEl.scrollTop=logEl.scrollHeight;
+}
+
+document.getElementById('teams-grid').innerHTML = Object.entries(teams).map(([name,t])=>{
+  const overall=(t.att*0.35+t.def*0.3+t.stm*0.15+t.con*0.2).toFixed(1);
+  return `<div class="team-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="${LOGOS[name]||''}" onerror="this.style.display='none'" style="width:36px;height:36px;object-fit:contain;border-radius:6px;background:#f0f0ec;padding:2px;">
+        <div>
+          <div class="team-card-name">${name}</div>
+          ${t.players?`<div style="font-size:11px;color:#888;margin-top:2px;">${t.players}</div>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="overall-score">${overall}</div>
+        <div class="overall-label">overall</div>
+      </div>
+    </div>
+    <div class="rating-bars">
+      <div class="rating-row"><span class="rating-label">ATT</span><div class="rating-track"><div class="rating-fill fill-att" style="width:${t.att*10}%"></div></div><span class="rating-val">${t.att}</span></div>
+      <div class="rating-row"><span class="rating-label">DEF</span><div class="rating-track"><div class="rating-fill fill-def" style="width:${t.def*10}%"></div></div><span class="rating-val">${t.def}</span></div>
+      <div class="rating-row"><span class="rating-label">STM</span><div class="rating-track"><div class="rating-fill fill-stm" style="width:${t.stm*10}%"></div></div><span class="rating-val">${t.stm}</span></div>
+      <div class="rating-row"><span class="rating-label">CON</span><div class="rating-track"><div class="rating-fill fill-con" style="width:${t.con*10}%"></div></div><span class="rating-val">${t.con}</span></div>
+      <div class="rating-row"><span class="rating-label">TEN</span><div class="rating-track"><div class="rating-fill fill-ten" style="width:${t.ten*10}%"></div></div><span class="rating-val">${t.ten}</span></div>
+    </div>
+  </div>`;
+}).join('');
+</script>
+</body>
+</html>
