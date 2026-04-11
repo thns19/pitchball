@@ -5,8 +5,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Home — PSL5</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  #logo-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .falling-logo {
+    position: absolute;
+    top: -100px;
+    opacity: 0.12;
+    animation: fall linear infinite;
+    filter: grayscale(30%);
+  }
+
+  @keyframes fall {
+    0%   { transform: translateY(0px); }
+    100% { transform: translateY(calc(100vh + 120px)); }
+  }
+
+  .home-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .home-cards, .logo, .subtitle, .footer {
+    position: relative;
+    z-index: 2;
+  }
+
+  .home-card {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  body {
+    background-image: url('bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+</style>
 </head>
 <body class="home-body">
+
+  <div id="logo-bg"></div>
+
   <div class="logo">Pitch<span>ball</span> Super League 5</div>
   <p class="subtitle">The home of Pitchball's current running season, PSL5.</p>
 
@@ -38,6 +87,56 @@
     </a>
   </div>
 
-  <p class="footer"><a href="../index.html" style="color:#888;text-decoration:none;">← All Seasons</a> &nbsp;·&nbsp; Created by Thanos, with help from Claude AI · Pitchball © 2026</p>all © 2026</p>
+  <p class="footer"><a href="../index.html" style="color:#888;text-decoration:none;">← All Seasons</a> &nbsp;·&nbsp; Created by Thanos, with help from Claude AI · Pitchball © 2026</p>
+
+<script>
+const logos = [
+  "logos/ac.png",
+  "logos/axtarmades.png",
+  "logos/babiniotes.png",
+  "logos/badiles.png",
+  "logos/basement.png",
+  "logos/chewbacca.png",
+  "logos/fintani.png",
+  "logos/hoopers.png",
+  "logos/midi.png",
+  "logos/phoenix.png",
+  "logos/r1.png",
+  "logos/snipers.png",
+  "logos/spasmena.png",
+  "logos/trixes.png",
+  "logos/ttd.png",
+  "logos/volos.png",
+  "logos/warriors.png",
+  "logos/yy.png"
+];
+
+const bg = document.getElementById('logo-bg');
+const COUNT = 30;
+
+for (let i = 0; i < COUNT; i++) {
+  const img = document.createElement('img');
+  img.className = 'falling-logo';
+  img.src = logos[i % logos.length];
+
+  // Random horizontal position
+  const left = Math.random() * 100;
+  // Random size between 48px and 90px
+  const size = 48 + Math.random() * 42;
+  // Random duration between 12s and 28s
+  const duration = 12 + Math.random() * 16;
+  // Random delay so they don't all start together
+  const delay = -(Math.random() * duration);
+
+  img.style.left = left + 'vw';
+  img.style.width = size + 'px';
+  img.style.height = size + 'px';
+  img.style.animationDuration = duration + 's';
+  img.style.animationDelay = delay + 's';
+  img.style.objectFit = 'contain';
+
+  bg.appendChild(img);
+}
+</script>
 </body>
 </html>
