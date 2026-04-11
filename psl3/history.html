@@ -5,7 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PSL3 History — Pitchball</title>
 <link rel="stylesheet" href="style.css">
-<style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }</style>
+<style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }
+
+body.dark-tab { color: #f0f0ec; }
+body.dark-tab h1 { color: #f0f0ec; }
+body.dark-tab .subtitle { color: #aaa; }
+body.dark-tab .back { color: #aaa; }
+body.dark-tab .back:hover { color: #fff; }
+body.dark-tab p[style] { color: #aaa !important; }
+body.dark-tab .bracket-round-title { color: #aaa; }
+body.dark-tab .bracket-match { background: rgba(0,0,0,0.6); border-color: #444; }
+body.dark-tab .bracket-team { border-color: #333; color: #ccc; }
+body.dark-tab .bracket-team.winner { color: #f5c842; font-weight: 600; }
+body.dark-tab .bracket-team.loser { color: #555; }
+body.dark-tab .bracket-score { color: #f0f0ec; }
+body.dark-tab .set-scores { color: #888; border-color: #333; }
+body.dark-tab div[style*="font-size:10px"] { color: #888; }
+body.dark-tab .bracket-match.final-match { border-color: #f5c842; }
+body.dark-tab .bracket-match.final-match .bracket-team.winner { color: #f5c842; }
+</style>
 </head>
 <body>
 <div class="container" style="max-width:860px;">
@@ -42,7 +60,7 @@
 
   <!-- PLAY-OFFS -->
   <div id="tab-playoffs" style="display:none;">
-    <p style="font-size:12px;color:#888;margin-bottom:1.5rem;">Top 4 teams from league stage · Quarter-Finals · Semi-Finals · Final</p>
+    <p style="font-size:12px;color:#888;margin-bottom:1.5rem;">Top 8 teams from league stage · Quarter-Finals · Semi-Finals · Final</p>
     <div class="bracket-wrap">
       <div class="bracket" id="bracket-playoffs"></div>
     </div>
@@ -263,6 +281,14 @@ function showTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => {
     b.classList.toggle('active', i===['league','playoffs','cup'].indexOf(tab));
   });
+  const bgs = { league: 'bg.png', playoffs: 'pobg.png', cup: 'cupbg.png' };
+  document.body.style.backgroundImage = `url('${bgs[tab]}')`;
+
+  if (tab === 'playoffs') {
+    document.body.classList.add('dark-tab');
+  } else {
+    document.body.classList.remove('dark-tab');
+  }
 }
 
 renderTable();
