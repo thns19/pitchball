@@ -291,9 +291,9 @@ function renderFixtures() {
     html += `<div class="card" style="padding: 0.75rem 1rem; margin-bottom: 0.5rem;">`;
     byMd[md].forEach(f => {
       const hasResult = f.hs !== null && f.as !== null;
-      const badge = f.confirmed ? `<span class="fix-badge badge-confirmed">confirmed</span>`
-                  : f.projected ? `<span class="fix-badge badge-projected">projected</span>`
-                  : `<span class="fix-badge badge-pending">pending</span>`;
+      const badge = f.confirmed ? `<span style="width:8px;height:8px;border-radius:50%;background:#39c877;flex-shrink:0;display:inline-block;"></span>`
+                  : f.projected ? `<span style="width:8px;height:8px;border-radius:50%;background:#a4cde8;flex-shrink:0;display:inline-block;"></span>`
+                  : `<span style="width:8px;height:8px;border-radius:50%;background:#535c2f;flex-shrink:0;display:inline-block;"></span>`;
 
       const btns = f.confirmed ? '' : hasResult
         ? `<button class="confirm-btn" onclick="confirmResult(${f.id})">Confirm</button>
@@ -310,12 +310,12 @@ function renderFixtures() {
            <span>–</span>
            <input type="number" min="0" id="as-${f.id}" placeholder="–" onchange="manualScore(${f.id})">`;
 
-      html += `<div class="fixture">
-        <span class="fix-team right">${f.home}${tlogo(f.home)}</span>
-        <div class="fix-score">${scoreDisplay}</div>
-        <span class="fix-team">${tlogo(f.away)}${f.away}</span>
+      html += `<div class="fixture" style="flex-wrap:nowrap;gap:6px;">
+        <span class="fix-team right" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${f.home}${tlogo(f.home)}</span>
+        <div class="fix-score" style="flex-shrink:0;">${scoreDisplay}</div>
+        <span class="fix-team" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${tlogo(f.away)}${f.away}</span>
         ${badge}
-        ${btns}
+        <span style="flex-shrink:0;">${btns}</span>
       </div>`;
     });
     html += `</div>`;
@@ -601,17 +601,17 @@ function renderBracket() {
             : `<button class="sim-btn" onclick="simulateMatch('${m.id}')">Sim</button>`;
 
           const badge = m.confirmed
-            ? `<span class="fix-badge badge-confirmed">confirmed</span>`
+            ? `<span style="width:8px;height:8px;border-radius:50%;background:#39c877;flex-shrink:0;display:inline-block;"></span>`
             : hasResult
-            ? `<span class="fix-badge badge-projected">projected</span>`
-            : `<span class="fix-badge badge-pending">${tbdMatch?'pending':'pending'}</span>`;
+            ? `<span style="width:8px;height:8px;border-radius:50%;background:#a4cde8;flex-shrink:0;display:inline-block;"></span>`
+            : `<span style="width:8px;height:8px;border-radius:50%;background:#535c2f;flex-shrink:0;display:inline-block;"></span>`;
 
-          return `<div class="fixture">
-            <span class="fix-team right" style="${homeWon?'color:#39c877;font-weight:500;':'color:#D7DBC8;'}">${m.home}${tlogo(m.home)}</span>
+          return `<div class="fixture" style="flex-wrap:nowrap;gap:6px;">
+            <span class="fix-team right" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;${homeWon?'color:#39c877;font-weight:500;':'color:#D7DBC8;'}">${m.home}${tlogo(m.home)}</span>
             ${scoreDisplay}
-            <span class="fix-team" style="${awayWon?'color:#39c877;font-weight:500;':'color:#D7DBC8;'}">${tlogo(m.away)}${m.away}</span>
-            ${badge}${btns}
-            <span style="font-size:10px;color:#535c2f;">${m.label}</span>
+            <span class="fix-team" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;${awayWon?'color:#39c877;font-weight:500;':'color:#D7DBC8;'}">${tlogo(m.away)}${m.away}</span>
+            ${badge}<span style="flex-shrink:0;">${btns}</span>
+            <span style="font-size:10px;color:#535c2f;flex-shrink:0;white-space:nowrap;">${m.label}</span>
           </div>`;
         }).join('')}
       </div>
@@ -741,19 +741,15 @@ function runLeagueMC() {
 
 function renderTopScorers() {
   if(typeof topScorers === 'undefined' || !topScorers.length) return;
-  const max = topScorers[0].goals;
   document.getElementById('top-scorers').innerHTML = `
     <div class="card" style="padding:0.75rem 1rem;">
       ${topScorers.map((p,i) => `
-        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #282d15;">
-          <span style="font-size:12px;color:#888;width:18px;flex-shrink:0;">${i+1}</span>
-          <img src="${p.logo}" onerror="this.style.display='none'" style="width:20px;height:20px;object-fit:contain;border-radius:3px;flex-shrink:0;">
-          <span style="flex:1;font-size:13px;font-weight:500;color:#D7DBC8;">${p.name}</span>
-          <span style="font-size:11px;color:#888;margin-right:8px;">${p.team}</span>
-          <div style="width:100px;height:5px;background:#282d15;border-radius:3px;overflow:hidden;flex-shrink:0;">
-            <div style="height:100%;background:#39c877;border-radius:3px;width:${(p.goals/max)*100}%"></div>
-          </div>
-          <span style="font-size:13px;font-weight:500;color:#39c877;width:24px;text-align:right;flex-shrink:0;">${p.goals}</span>
+        <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #282d15;">
+          <span style="font-size:12px;color:#888;width:18px;flex-shrink:0;text-align:right;">${i+1}</span>
+          <img src="${p.logo}" onerror="this.style.display='none'" style="width:22px;height:22px;object-fit:contain;border-radius:3px;flex-shrink:0;">
+          <span style="flex:1;font-size:13px;font-weight:500;color:#D7DBC8;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
+          <span style="font-size:11px;color:#888;flex-shrink:0;white-space:nowrap;">${p.team}</span>
+          <span style="font-size:14px;font-weight:600;color:#39c877;width:28px;text-align:right;flex-shrink:0;">${p.goals}</span>
         </div>`).join('')}
     </div>`;
 }
