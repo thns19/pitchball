@@ -48,7 +48,25 @@
 .bracket-match.final-match .bracket-team.winner { color: #f5c842; }
 .bye-slot { height: 52px; }
 .ff-note { font-size: 10px; color: #888; padding: 2px 8px 4px; }
+
+/* ── Cup tab overrides (on teal bg) ── */
+body.cup-active h1,
+body.cup-active .subtitle,
+body.cup-active .back { color: #0a2a22; }
+body.cup-active .back:hover { color: #000; }
+body.cup-active .bracket-round-title { color: #0a3d2a; font-weight: 600; }
+body.cup-active .bracket-match { background: rgba(255,255,255,0.88); border: 1px solid rgba(0,0,0,0.15); }
+body.cup-active .bracket-team { border-bottom-color: rgba(0,0,0,0.08); color: #1a1a1a; }
+body.cup-active .bracket-team.winner { color: #0a6640; font-weight: 600; }
+body.cup-active .bracket-team.loser { color: #999; }
+body.cup-active .bracket-score { color: #1a1a1a; }
+body.cup-active .bracket-match.final-match { border-color: #c8a800; }
+body.cup-active .bracket-match.final-match .bracket-team.winner { color: #7a6000; }
+body.cup-active .ff-note { color: #777; }
+body.cup-active .tab-btn { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
+body.cup-active .tab-btn.active { background: rgba(0,0,0,0.15); border-color: rgba(0,0,0,0.4); color: #000; }
 </style>
+<style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }</style>
 </head>
 <body>
 <div class="container" style="max-width:1000px;">
@@ -320,6 +338,8 @@ function showTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => {
     b.classList.toggle('active', (i===0&&tab==='groups')||(i===1&&tab==='cup'));
   });
+  document.body.style.backgroundImage = tab==='cup' ? "url('cupbg.png')" : "url('bg.png')";
+  document.body.classList.toggle('cup-active', tab==='cup');
 }
 
 renderGroups();
