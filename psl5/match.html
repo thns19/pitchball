@@ -6,34 +6,44 @@
 <title>Match — PSL5</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.match-header{background:#363C1F;border:1px solid #535c2f;border-radius:12px;padding:1.5rem;margin-bottom:1rem;text-align:center;}
-.match-teams{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:0.75rem;flex-wrap:wrap;}
-.match-team{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:120px;}
-.match-team-logo{width:52px;height:52px;object-fit:contain;border-radius:8px;background:#282d15;padding:3px;}
-.match-team-name{font-size:14px;font-weight:500;color:#D7DBC8;}
-.match-score{font-size:48px;font-weight:500;color:#D7DBC8;line-height:1;min-width:80px;text-align:center;}
-.match-meta{font-size:12px;color:#888;margin-top:8px;}
-.match-meta span{margin:0 6px;}
-.mvp-card{background:#363C1F;border:1px solid #f5c842;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
+.match-header{background:#363C1F;border:1px solid #535c2f;border-radius:12px;padding:1.25rem 1rem;margin-bottom:1rem;text-align:center;}
+.match-teams{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.75rem;}
+.match-team{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+.match-team-logo{width:48px;height:48px;object-fit:contain;border-radius:8px;background:#282d15;padding:3px;}
+.match-team-name{font-size:13px;font-weight:500;color:#D7DBC8;text-align:center;line-height:1.3;word-break:break-word;}
+.match-score{font-size:42px;font-weight:500;color:#D7DBC8;line-height:1;min-width:70px;text-align:center;flex-shrink:0;}
+.match-meta{font-size:11px;color:#888;margin-top:8px;line-height:1.6;}
+.match-meta span{display:inline-block;margin:0 4px;}
+.mvp-card{background:#363C1F;border:1px solid #f5c842;border-radius:12px;padding:0.9rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
 .mvp-label{font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
-.mvp-name{font-size:15px;font-weight:500;color:#f5c842;margin-top:2px;}
+.mvp-name{font-size:14px;font-weight:500;color:#f5c842;margin-top:2px;}
 .events-card{background:#363C1F;border:1px solid #535c2f;border-radius:12px;overflow:hidden;margin-bottom:1rem;}
 .events-title{font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;border-bottom:1px solid #282d15;}
-.event-row{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid #282d15;gap:10px;}
+.event-row{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid #282d15;gap:8px;}
 .event-row:last-child{border-bottom:none;}
-.event-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.event-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
 .icon-goal{background:#1a3d2a;color:#39c877;}
 .icon-og{background:#3d1a1a;color:#d86254;}
 .icon-sub{background:#1a2a3d;color:#a4cde8;}
-.event-body{flex:1;}
-.event-main{font-size:13px;color:#D7DBC8;}
-.event-detail{font-size:11px;color:#888;margin-top:1px;}
-.event-score{font-size:13px;font-weight:500;color:#D7DBC8;flex-shrink:0;min-width:36px;text-align:right;}
+.event-body{flex:1;min-width:0;}
+.event-main{font-size:13px;color:#D7DBC8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.event-detail{font-size:11px;color:#888;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.event-score{font-size:13px;font-weight:500;color:#D7DBC8;flex-shrink:0;min-width:34px;text-align:right;}
 .stats-row-match{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
-.stat-mini{background:#363C1F;border:1px solid #535c2f;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
-.stat-mini-label{font-size:11px;color:#888;}
-.stat-mini-val{font-size:14px;font-weight:500;color:#D7DBC8;}
+.stat-mini{background:#363C1F;border:1px solid #535c2f;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:6px;}
+.stat-mini-label{font-size:11px;color:#888;line-height:1.3;}
+.stat-mini-val{font-size:14px;font-weight:500;color:#D7DBC8;flex-shrink:0;}
 .no-data{font-size:13px;color:#535c2f;padding:1rem;}
+
+@media (max-width: 420px) {
+  .match-team-logo { width: 38px; height: 38px; }
+  .match-score { font-size: 34px; min-width: 56px; }
+  .match-team-name { font-size: 12px; }
+  .stats-row-match { grid-template-columns: 1fr; }
+  .event-main { font-size: 12px; }
+  .event-score { font-size: 12px; min-width: 28px; }
+  .mvp-name { font-size: 13px; }
+}
 </style>
 <style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }</style>
 </head>
