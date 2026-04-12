@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSL4 History — Pitchball</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Tabs ── */
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.tab-btn{font-size:13px;padding:7px 16px;border-radius:8px;cursor:pointer;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);transition:all 0.15s;backdrop-filter:blur(4px);}
+.tab-btn:hover{background:rgba(0,0,0,0.35);color:rgba(255,255,255,0.85);}
+.tab-btn.active{background:rgba(76,175,125,0.85);border-color:#4caf7d;color:#fff;}
+
+/* ── Page text (league default — semi-transparent bg so needs light text) ── */
+h1{color:#fff!important;}
+.subtitle{color:rgba(255,255,255,0.65)!important;}
+.back{color:rgba(255,255,255,0.6)!important;}
+.back:hover{color:#fff!important;}
+.md-title{color:rgba(255,255,255,0.5);}
+.section-title{color:#fff;}
+.legend{color:rgba(255,255,255,0.6);}
+
+/* ── League table ── */
+.table-wrap{overflow-x:auto;margin-bottom:1.5rem;}
+table{width:100%;border-collapse:collapse;font-size:13px;background:rgba(0,0,0,0.35);border-radius:12px;overflow:hidden;backdrop-filter:blur(6px);}
+th{text-align:left;padding:8px 10px;font-weight:500;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.1);white-space:nowrap;font-size:12px;}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap;color:rgba(255,255,255,0.88);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.04);}
+.pos{color:rgba(255,255,255,0.35);width:20px;}
+.team-cell{font-weight:500;}
+.qualification{border-left:3px solid #4caf7d;}
+.playoff-zone{border-left:3px solid #5dade2;}
+.elimination{border-left:3px solid rgba(255,255,255,0.15);}
+.deduction-icon{display:inline-block;cursor:help;font-size:11px;background:rgba(245,200,66,0.2);color:#f5c842;border-radius:3px;padding:1px 4px;margin-left:4px;position:relative;font-weight:600;}
+.deduction-icon .tooltip{display:none;position:fixed;background:#1a1a1a;color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;white-space:pre-line;min-width:220px;line-height:1.5;z-index:999;pointer-events:none;border:1px solid #333;}
+.deduction-icon:hover .tooltip{display:block;}
+
+/* ── Fixture cards ── */
+.card{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.75rem 1rem;margin-bottom:0.5rem;backdrop-filter:blur(6px);}
+.fixture{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:13px;flex-wrap:nowrap;}
+.fixture:last-child{border-bottom:none;}
+.fix-team{flex:1;color:rgba(255,255,255,0.85);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fix-team.right{text-align:right;}
+.fix-score{font-weight:600;color:#4caf7d;min-width:40px;text-align:center;flex-shrink:0;}
+.legend-item{display:flex;align-items:center;gap:6px;}
+.legend-dot{width:10px;height:10px;border-radius:2px;}
+
+/* ── Bracket (default — used by league tab, no bg override needed) ── */
+.bracket-wrap{overflow-x:auto;}
+.bracket{display:flex;gap:0;align-items:stretch;min-width:500px;}
+.bracket-round{display:flex;flex-direction:column;flex:1;}
+.bracket-round-title{font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);padding:0 8px 10px;text-align:center;letter-spacing:0.3px;}
+.bracket-matches{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:8px;padding:0 5px;}
+.bracket-match{background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.12);border-radius:10px;overflow:hidden;backdrop-filter:blur(6px);transition:border-color 0.15s;}
+.bracket-match:hover{border-color:rgba(255,255,255,0.25);}
+.bracket-team{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);}
+.bracket-team:last-child{border-bottom:none;}
+.bracket-team.winner{color:#4caf7d;font-weight:600;}
+.bracket-team.loser{color:rgba(255,255,255,0.3);}
+.bracket-score{font-size:12px;font-weight:600;}
+.bracket-match.final-match{border-color:rgba(245,200,66,0.4);}
+.bracket-match.final-match .bracket-team.winner{color:#f5c842;}
+.ff-note{font-size:10px;color:rgba(255,255,255,0.35);padding:2px 10px 5px;}
+
+/* ── Playoff tab overrides ── */
+body.po-active .tab-btn{background:rgba(0,0,0,0.35);border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);}
+body.po-active .tab-btn.active{background:rgba(245,200,66,0.8);border-color:#f5c842;color:#000;}
+body.po-active .bracket-team.winner{color:#f5c842;}
+body.po-active .bracket-match.final-match{border-color:#f5c842;}
+body.po-active .bracket-match.final-match .bracket-team.winner{color:#f5c842;}
+body.po-active .bracket-round-title{color:rgba(245,200,66,0.6);}
+
+/* ── Cup tab overrides ── */
+body.cup-active h1{color:#fff!important;}
+body.cup-active .subtitle{color:rgba(255,255,255,0.65)!important;}
+body.cup-active .back{color:rgba(255,255,255,0.6)!important;}
+body.cup-active .tab-btn{background:rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);}
+body.cup-active .tab-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.4);color:#fff;}
+body.cup-active .bracket-round-title{color:rgba(255,255,255,0.5);}
+body.cup-active .bracket-match.final-match{border-color:rgba(245,200,66,0.5);}
+body.cup-active .bracket-match.final-match .bracket-team.winner{color:#f5c842;}
+
+/* ── Top Scorers ── */
+.scorers-card{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden;backdrop-filter:blur(6px);}
+.scorer-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.scorer-row:last-child{border-bottom:none;}
+.scorer-rank{font-size:12px;color:rgba(255,255,255,0.3);width:22px;flex-shrink:0;text-align:right;}
+.scorer-rank.top3{color:#f5c842;font-weight:700;}
+.scorer-name{flex:1;font-size:13px;font-weight:500;color:rgba(255,255,255,0.9);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.scorer-team{font-size:11px;color:rgba(255,255,255,0.4);flex-shrink:0;white-space:nowrap;}
+.scorer-goals{font-size:15px;font-weight:700;color:#4caf7d;width:32px;text-align:right;flex-shrink:0;}
+</style>
+<style>body{background-image:url("bg.png");background-size:cover;background-position:center;background-attachment:fixed;background-repeat:no-repeat;}</style>
+</head>
+<body>
+<div class="container" style="max-width:900px;">
+  <div class="nav"><a href="hub.html" class="back">← PSL4</a></div>
+  <h1>PSL4 — Season History</h1>
+  <p class="subtitle">The fourth PSL season, consisting of 18 teams.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('league')">League Stage</button>
+    <button class="tab-btn" onclick="showTab('playoffs')">Play-offs</button>
+    <button class="tab-btn" onclick="showTab('cup')">PSL Cup</button>
+    <button class="tab-btn" onclick="showTab('scorers')">Top Scorers</button>
+  </div>
+
+  <!-- LEAGUE -->
+  <div id="tab-league">
+    <p style="font-size:12px;color:#888;margin-bottom:1rem;">Win = 3pts · Draw = 1pt · Loss = 0pts · Top 6 advance directly · 7th–10th enter play-ins</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>+/-</th><th>GD</th><th>Pts</th></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4caf7d;"></div> Direct play-off</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2471a3;"></div> Play-in</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e0e0d8;"></div> Eliminated</div>
+    </div>
+    <div class="section-title" style="margin-top:1.5rem;">Fixtures</div>
+    <div id="fixtures-list"></div>
+  </div>
+
+  <!-- PLAYOFFS -->
+  <div id="tab-playoffs" style="display:none;">
+    <p style="font-size:12px;color:#888;margin-bottom:1.5rem;">Play-ins → Quarter-Finals (Best of 3) → Semi-Finals (Best of 3) → Final (Best of 5)</p>
+    <div class="bracket-wrap"><div class="bracket" id="bracket-playoffs"></div></div>
+  </div>
+
+  <!-- CUP -->
+  <div id="tab-cup" style="display:none;">
+    <p style="font-size:12px;color:#888;margin-bottom:1.5rem;">Play-in → Round of 16 → Quarter-Finals → Semi-Finals → Final</p>
+    <div class="bracket-wrap"><div class="bracket" id="bracket-cup"></div></div>
+  </div>
+
+  <!-- TOP SCORERS -->
+  <div id="tab-scorers" style="display:none;">
+    <p style="font-size:12px;color:#888;margin-bottom:1.5rem;">Season 4 top scorers across all competitions.</p>
+    <div id="scorers-list"></div>
+  </div>
+</div>
+
+<script>
+const LOGOS={
+  "Kleftes":"logos/kleftes.png","BADiles":"logos/badiles.png","Russia":"logos/russia.png",
+  "R1":"logos/r1.png","AXR":"logos/axr.png","MAKFI":"logos/makfi.png",
+  "Fintani":"logos/fintani.png","NFFC":"logos/nffc.png","Basement Boys":"logos/basement.png",
+  "Nanoi":"logos/nanoi.png","Spasmena Mila":"logos/spasmena.png","Mpesala":"logos/mpesala.png",
+  "Y&Y":"logos/yy.png","Didymoi Pyrgoi":"logos/didymoi.png","Axtarmades":"logos/axtarmades.png",
+  "Warriors":"logos/warriors.png","Mini Kidz":"logos/minikidz.png","SWMG":"logos/swmg.png"
+};
+function tlogo(name,size=16){return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:''}
+
+const TEAMS=["Kleftes","BADiles","Russia","R1","AXR","MAKFI","Fintani","NFFC","Basement Boys","Nanoi","Spasmena Mila","Mpesala","Y&Y","Didymoi Pyrgoi","Axtarmades","Warriors","Mini Kidz","SWMG"];
+
+const PENALTY={
+  "SWMG":-15,"Didymoi Pyrgoi":-15,"Mpesala":-6,"Warriors":-3,"AXR":-7
+};
+const PENALTY_INFO={
+  "SWMG":"15 points deducted\nfor forfeiting 5 league matches",
+  "Didymoi Pyrgoi":"15 points deducted\nfor forfeiting 5 league matches",
+  "Mpesala":"6 points deducted\nfor forfeiting 2 league matches",
+  "Warriors":"3 points deducted\nfor forfeiting 1 league match",
+  "AXR":"7 points deducted\nfor illegal transfer\n(Pitchball Administration ruling)"
+};
+
+const fixtures=[
+  // Round 1
+  {md:1,h:"R1",a:"Mpesala",hs:5,as:7},
+  {md:1,h:"Basement Boys",a:"Russia",hs:2,as:5},
+  {md:1,h:"Y&Y",a:"AXR",hs:2,as:5},
+  {md:1,h:"Fintani",a:"Nanoi",hs:5,as:1},
+  {md:1,h:"Mini Kidz",a:"SWMG",hs:0,as:5},
+  {md:1,h:"Didymoi Pyrgoi",a:"MAKFI",hs:6,as:4},
+  {md:1,h:"Warriors",a:"Axtarmades",hs:2,as:5},
+  {md:1,h:"BADiles",a:"Kleftes",hs:6,as:8},
+  {md:1,h:"Spasmena Mila",a:"NFFC",hs:8,as:6},
+  // Round 2
+  {md:2,h:"Russia",a:"R1",hs:3,as:5},
+  {md:2,h:"AXR",a:"Mpesala",hs:5,as:2},
+  {md:2,h:"Nanoi",a:"Basement Boys",hs:4,as:6},
+  {md:2,h:"SWMG",a:"Y&Y",hs:1,as:5},
+  {md:2,h:"MAKFI",a:"Fintani",hs:5,as:1},
+  {md:2,h:"Axtarmades",a:"Mini Kidz",hs:5,as:0},
+  {md:2,h:"Kleftes",a:"Didymoi Pyrgoi",hs:5,as:2},
+  {md:2,h:"NFFC",a:"Warriors",hs:5,as:0},
+  {md:2,h:"Spasmena Mila",a:"BADiles",hs:0,as:5},
+  // Round 3
+  {md:3,h:"R1",a:"AXR",hs:6,as:6},
+  {md:3,h:"Russia",a:"Nanoi",hs:5,as:2},
+  {md:3,h:"Mpesala",a:"SWMG",hs:5,as:1},
+  {md:3,h:"Basement Boys",a:"MAKFI",hs:1,as:5},
+  {md:3,h:"Y&Y",a:"Axtarmades",hs:5,as:2},
+  {md:3,h:"Fintani",a:"Kleftes",hs:1,as:5},
+  {md:3,h:"Mini Kidz",a:"NFFC",hs:0,as:5},
+  {md:3,h:"Didymoi Pyrgoi",a:"Spasmena Mila",hs:5,as:2},
+  {md:3,h:"Warriors",a:"BADiles",hs:1,as:5},
+  // Round 4
+  {md:4,h:"Nanoi",a:"R1",hs:2,as:5},
+  {md:4,h:"SWMG",a:"AXR",hs:3,as:5},
+  {md:4,h:"MAKFI",a:"Russia",hs:0,as:5},
+  {md:4,h:"Axtarmades",a:"Mpesala",hs:3,as:5},
+  {md:4,h:"Kleftes",a:"Basement Boys",hs:5,as:2},
+  {md:4,h:"NFFC",a:"Y&Y",hs:8,as:6},
+  {md:4,h:"Spasmena Mila",a:"Fintani",hs:5,as:2},
+  {md:4,h:"BADiles",a:"Mini Kidz",hs:5,as:0},
+  {md:4,h:"Warriors",a:"Didymoi Pyrgoi",hs:0,as:5},
+  // Round 5
+  {md:5,h:"R1",a:"SWMG",hs:5,as:1},
+  {md:5,h:"Nanoi",a:"MAKFI",hs:1,as:5},
+  {md:5,h:"AXR",a:"Axtarmades",hs:5,as:1},
+  {md:5,h:"Russia",a:"Kleftes",hs:7,as:9},
+  {md:5,h:"Mpesala",a:"NFFC",hs:2,as:5},
+  {md:5,h:"Basement Boys",a:"Spasmena Mila",hs:2,as:5},
+  {md:5,h:"Y&Y",a:"BADiles",hs:2,as:5},
+  {md:5,h:"Fintani",a:"Warriors",hs:5,as:1},
+  {md:5,h:"Mini Kidz",a:"Didymoi Pyrgoi",hs:2,as:5},
+  // Round 6
+  {md:6,h:"MAKFI",a:"R1",hs:0,as:5},
+  {md:6,h:"Axtarmades",a:"SWMG",hs:5,as:2},
+  {md:6,h:"Kleftes",a:"Nanoi",hs:5,as:1},
+  {md:6,h:"NFFC",a:"AXR",hs:5,as:3},
+  {md:6,h:"Spasmena Mila",a:"Russia",hs:0,as:5},
+  {md:6,h:"BADiles",a:"Mpesala",hs:5,as:1},
+  {md:6,h:"Warriors",a:"Basement Boys",hs:2,as:5},
+  {md:6,h:"Didymoi Pyrgoi",a:"Y&Y",hs:5,as:2},
+  {md:6,h:"Mini Kidz",a:"Fintani",hs:1,as:5},
+  // Round 7
+  {md:7,h:"R1",a:"Axtarmades",hs:6,as:4},
+  {md:7,h:"MAKFI",a:"Kleftes",hs:4,as:6},
+  {md:7,h:"SWMG",a:"NFFC",hs:5,as:7},
+  {md:7,h:"Nanoi",a:"Spasmena Mila",hs:6,as:4},
+  {md:7,h:"AXR",a:"BADiles",hs:5,as:3},
+  {md:7,h:"Russia",a:"Warriors",hs:5,as:1},
+  {md:7,h:"Mpesala",a:"Didymoi Pyrgoi",hs:9,as:10},
+  {md:7,h:"Basement Boys",a:"Mini Kidz",hs:5,as:1},
+  {md:7,h:"Y&Y",a:"Fintani",hs:1,as:5},
+  // Round 8
+  {md:8,h:"Kleftes",a:"R1",hs:5,as:2},
+  {md:8,h:"NFFC",a:"Axtarmades",hs:7,as:5},
+  {md:8,h:"Spasmena Mila",a:"MAKFI",hs:1,as:5},
+  {md:8,h:"BADiles",a:"SWMG",hs:5,as:1},
+  {md:8,h:"Warriors",a:"Nanoi",hs:2,as:5},
+  {md:8,h:"Didymoi Pyrgoi",a:"AXR",hs:3,as:5},
+  {md:8,h:"Mini Kidz",a:"Russia",hs:0,as:5},
+  {md:8,h:"Fintani",a:"Mpesala",hs:1,as:5},
+  {md:8,h:"Y&Y",a:"Basement Boys",hs:6,as:4},
+  // Round 9
+  {md:9,h:"R1",a:"NFFC",hs:5,as:3},
+  {md:9,h:"Kleftes",a:"Spasmena Mila",hs:5,as:2},
+  {md:9,h:"Axtarmades",a:"BADiles",hs:1,as:5},
+  {md:9,h:"MAKFI",a:"Warriors",hs:5,as:2},
+  {md:9,h:"SWMG",a:"Didymoi Pyrgoi",hs:1,as:5},
+  {md:9,h:"Nanoi",a:"Mini Kidz",hs:5,as:2},
+  {md:9,h:"AXR",a:"Fintani",hs:6,as:4},
+  {md:9,h:"Russia",a:"Y&Y",hs:5,as:2},
+  {md:9,h:"Mpesala",a:"Basement Boys",hs:5,as:3},
+  // Round 10
+  {md:10,h:"Spasmena Mila",a:"R1",hs:0,as:5},
+  {md:10,h:"BADiles",a:"NFFC",hs:5,as:2},
+  {md:10,h:"Warriors",a:"Kleftes",hs:2,as:5},
+  {md:10,h:"Didymoi Pyrgoi",a:"Axtarmades",hs:6,as:4},
+  {md:10,h:"Mini Kidz",a:"MAKFI",hs:1,as:5},
+  {md:10,h:"Fintani",a:"SWMG",hs:5,as:1},
+  {md:10,h:"Y&Y",a:"Nanoi",hs:2,as:5},
+  {md:10,h:"Basement Boys",a:"AXR",hs:1,as:5},
+  {md:10,h:"Mpesala",a:"Russia",hs:3,as:5},
+  // Round 11
+  {md:11,h:"R1",a:"BADiles",hs:6,as:4},
+  {md:11,h:"Spasmena Mila",a:"Warriors",hs:5,as:3},
+  {md:11,h:"NFFC",a:"Didymoi Pyrgoi",hs:5,as:3},
+  {md:11,h:"Kleftes",a:"Mini Kidz",hs:5,as:0},
+  {md:11,h:"Axtarmades",a:"Fintani",hs:2,as:5},
+  {md:11,h:"MAKFI",a:"Y&Y",hs:6,as:4},
+  {md:11,h:"SWMG",a:"Basement Boys",hs:3,as:5},
+  {md:11,h:"Nanoi",a:"Mpesala",hs:2,as:5},
+  {md:11,h:"AXR",a:"Russia",hs:4,as:6},
+  // Round 12
+  {md:12,h:"Warriors",a:"R1",hs:0,as:5},
+  {md:12,h:"Didymoi Pyrgoi",a:"BADiles",hs:1,as:5},
+  {md:12,h:"Mini Kidz",a:"Spasmena Mila",hs:2,as:5},
+  {md:12,h:"Fintani",a:"NFFC",hs:6,as:4},
+  {md:12,h:"Y&Y",a:"Kleftes",hs:1,as:5},
+  {md:12,h:"Basement Boys",a:"Axtarmades",hs:5,as:3},
+  {md:12,h:"Mpesala",a:"MAKFI",hs:1,as:5},
+  {md:12,h:"Russia",a:"SWMG",hs:5,as:0},
+  {md:12,h:"AXR",a:"Nanoi",hs:5,as:1},
+  // Round 13
+  {md:13,h:"R1",a:"Didymoi Pyrgoi",hs:5,as:0},
+  {md:13,h:"Warriors",a:"Mini Kidz",hs:5,as:3},
+  {md:13,h:"BADiles",a:"Fintani",hs:6,as:4},
+  {md:13,h:"Spasmena Mila",a:"Y&Y",hs:5,as:1},
+  {md:13,h:"NFFC",a:"Basement Boys",hs:2,as:5},
+  {md:13,h:"Kleftes",a:"Mpesala",hs:6,as:4},
+  {md:13,h:"Axtarmades",a:"Russia",hs:2,as:5},
+  {md:13,h:"MAKFI",a:"AXR",hs:5,as:7},
+  {md:13,h:"SWMG",a:"Nanoi",hs:0,as:5},
+  // Round 14
+  {md:14,h:"Mini Kidz",a:"R1",hs:2,as:5},
+  {md:14,h:"Fintani",a:"Didymoi Pyrgoi",hs:5,as:0},
+  {md:14,h:"Y&Y",a:"Warriors",hs:5,as:0},
+  {md:14,h:"Basement Boys",a:"BADiles",hs:0,as:5},
+  {md:14,h:"Mpesala",a:"Spasmena Mila",hs:6,as:4},
+  {md:14,h:"Russia",a:"NFFC",hs:5,as:3},
+  {md:14,h:"AXR",a:"Kleftes",hs:1,as:5},
+  {md:14,h:"Nanoi",a:"Axtarmades",hs:5,as:2},
+  {md:14,h:"SWMG",a:"MAKFI",hs:0,as:5},
+  // Round 15
+  {md:15,h:"R1",a:"Fintani",hs:3,as:5},
+  {md:15,h:"Mini Kidz",a:"Y&Y",hs:2,as:5},
+  {md:15,h:"Didymoi Pyrgoi",a:"Basement Boys",hs:0,as:5},
+  {md:15,h:"Warriors",a:"Mpesala",hs:2,as:5},
+  {md:15,h:"BADiles",a:"Russia",hs:7,as:5},
+  {md:15,h:"Spasmena Mila",a:"AXR",hs:2,as:5},
+  {md:15,h:"NFFC",a:"Nanoi",hs:3,as:5},
+  {md:15,h:"Kleftes",a:"SWMG",hs:5,as:0},
+  {md:15,h:"Axtarmades",a:"MAKFI",hs:0,as:5},
+  // Round 16
+  {md:16,h:"Y&Y",a:"R1",hs:4,as:6},
+  {md:16,h:"Basement Boys",a:"Fintani",hs:5,as:1},
+  {md:16,h:"Mpesala",a:"Mini Kidz",hs:0,as:5},
+  {md:16,h:"Russia",a:"Didymoi Pyrgoi",hs:5,as:0},
+  {md:16,h:"AXR",a:"Warriors",hs:5,as:0},
+  {md:16,h:"Nanoi",a:"BADiles",hs:0,as:5},
+  {md:16,h:"SWMG",a:"Spasmena Mila",hs:0,as:5},
+  {md:16,h:"MAKFI",a:"NFFC",hs:3,as:5},
+  {md:16,h:"Axtarmades",a:"Kleftes",hs:1,as:5},
+  // Round 17
+  {md:17,h:"R1",a:"Basement Boys",hs:4,as:6},
+  {md:17,h:"Y&Y",a:"Mpesala",hs:5,as:0},
+  {md:17,h:"Fintani",a:"Russia",hs:1,as:5},
+  {md:17,h:"Mini Kidz",a:"AXR",hs:1,as:5},
+  {md:17,h:"Didymoi Pyrgoi",a:"Nanoi",hs:0,as:5},
+  {md:17,h:"Warriors",a:"SWMG",hs:5,as:0},
+  {md:17,h:"BADiles",a:"MAKFI",hs:9,as:7},
+  {md:17,h:"Spasmena Mila",a:"Axtarmades",hs:5,as:3},
+  {md:17,h:"NFFC",a:"Kleftes",hs:0,as:5},
+];
+
+const playoffs=[
+  {
+    title:"Play-ins",
+    matches:[
+      {h:"NFFC",a:"Basement Boys",hs:0,as:7,sets:null},
+      {h:"Fintani",a:"Nanoi",hs:1,as:7,sets:null},
+    ]
+  },
+  {
+    title:"Quarter-Finals (Best of 3)",
+    matches:[
+      {h:"Kleftes",a:"Basement Boys",hSets:0,aSets:2,sets:[{hs:6,as:7},{hs:5,as:7}]},
+      {h:"R1",a:"AXR",hSets:0,aSets:2,sets:[{hs:1,as:7},{hs:5,as:7}]},
+      {h:"BADiles",a:"Nanoi",hSets:2,aSets:0,sets:[{hs:7,as:0},{hs:7,as:2}]},
+      {h:"Russia",a:"MAKFI",hSets:2,aSets:0,sets:[{hs:7,as:3},{hs:7,as:3}]},
+    ]
+  },
+  {
+    title:"Semi-Finals (Best of 3)",
+    matches:[
+      {h:"Basement Boys",a:"AXR",hSets:0,aSets:2,sets:[{hs:4,as:7},{hs:6,as:7}]},
+      {h:"BADiles",a:"Russia",hSets:0,aSets:2,sets:[{hs:5,as:7},{hs:6,as:7}]},
+    ]
+  },
+  {
+    title:"Final (Best of 5)",
+    isFinal:true,
+    matches:[
+      {h:"AXR",a:"Russia",hSets:0,aSets:3,sets:[{hs:6,as:7},{hs:5,as:7},{hs:3,as:7}]},
+    ]
+  }
+];
+
+const cup=[
+  {
+    title:"Play-in",
+    matches:[
+      {h:"Mini Kidz",a:"SWMG",hs:2,as:5},
+      {h:"Warriors",a:"Nanoi",hs:3,as:5},
+    ]
+  },
+  {
+    title:"Round of 16",
+    matches:[
+      {h:"Y&Y",a:"AXR",hs:3,as:5},
+      {h:"NFFC",a:"BADiles",hs:1,as:5},
+      {h:"R1",a:"MAKFI",hs:5,as:4},
+      {h:"Spasmena Mila",a:"Russia",hs:0,as:5},
+      {h:"Basement Boys",a:"Kleftes",hs:0,as:5},
+      {h:"Didymoi Pyrgoi",a:"Axtarmades",hs:5,as:2},
+      {h:"Mpesala",a:"SWMG",hs:5,as:0},
+      {h:"Nanoi",a:"Fintani",hs:4,as:5},
+    ]
+  },
+  {
+    title:"Quarter-Finals",
+    matches:[
+      {h:"AXR",a:"BADiles",hs:5,as:2},
+      {h:"R1",a:"Russia",hs:1,as:5},
+      {h:"Kleftes",a:"Didymoi Pyrgoi",hs:5,as:4},
+      {h:"Mpesala",a:"Fintani",hs:3,as:5},
+    ]
+  },
+  {
+    title:"Semi-Finals",
+    matches:[
+      {h:"AXR",a:"Russia",hs:5,as:4},
+      {h:"Kleftes",a:"Fintani",hs:5,as:3},
+    ]
+  },
+  {
+    title:"Final",
+    isFinal:true,
+    matches:[
+      {h:"AXR",a:"Kleftes",hs:7,as:2},
+    ]
+  }
+];
+
+function computeTable(){
+  const s={};
+  TEAMS.forEach(t=>s[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:PENALTY[t]||0});
+  fixtures.forEach(f=>{
+    const h=s[f.h],a=s[f.a];
+    if(!h||!a)return;
+    h.p++;a.p++;
+    h.gf+=f.hs;h.ga+=f.as;a.gf+=f.as;a.ga+=f.hs;
+    h.gd+=f.hs-f.as;a.gd+=f.as-f.hs;
+    if(f.hs>f.as){h.w++;h.pts+=3;a.l++;}
+    else if(f.as>f.hs){a.w++;a.pts+=3;h.l++;}
+    else{h.d++;h.pts+=1;a.d++;a.pts+=1;}
+  });
+  return Object.values(s).sort((a,b)=>{
+    if(b.pts!==a.pts)return b.pts-a.pts;
+    if(b.gd!==a.gd)return b.gd-a.gd;
+    return b.gf-a.gf;
+  });
+}
+
+function renderTable(){
+  const rows=computeTable();
+  document.getElementById('table-body').innerHTML=rows.map((r,i)=>{
+    const cls=i<6?'qualification':i<10?'playoff-zone':'elimination';
+    const ded=PENALTY_INFO[r.team]?`<span class="deduction-icon">!<span class="tooltip">${PENALTY_INFO[r.team]}</span></span>`:'';
+    const ptsStyle=r.pts<0?'color:#c0392b;':'';
+    return `<tr class="${cls}">
+      <td class="pos">${i+1}</td>
+      <td class="team-cell">${tlogo(r.team)}${r.team}${ded}</td>
+      <td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+      <td>${r.gf}:${r.ga}</td>
+      <td>${r.gd>0?'+':''}${r.gd}</td>
+      <td><strong style="${ptsStyle}">${r.pts}</strong></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderFixtures(){
+  const byMd={};
+  fixtures.forEach(f=>{if(!byMd[f.md])byMd[f.md]=[];byMd[f.md].push(f);});
+  document.getElementById('fixtures-list').innerHTML=Object.keys(byMd).sort((a,b)=>a-b).map(md=>`
+    <div class="md-title">Matchday ${md}</div>
+    <div class="card" style="padding:0.75rem 1rem;margin-bottom:0.5rem;">
+      ${byMd[md].map(f=>{
+        const matchId=`MD${f.md}_${f.h.replace(/[^a-zA-Z0-9]/g,'')}_${f.a.replace(/[^a-zA-Z0-9]/g,'')}`;
+        return `<div class="fixture">
+          <span class="fix-team right" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;">${f.h}${tlogo(f.h)}</span>
+          <a href="match.html?id=${matchId}" class="fix-score" style="text-decoration:none;color:#4caf7d;flex-shrink:0;">${f.hs}–${f.as}</a>
+          <span class="fix-team" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${tlogo(f.a)}${f.a}</span>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function renderPlayoffs(){
+  document.getElementById('bracket-playoffs').innerHTML=playoffs.map(round=>{
+    return `<div class="bracket-round">
+      <div class="bracket-round-title">${round.title}</div>
+      <div class="bracket-matches">
+        ${round.matches.map((m,mi)=>{
+          const matchId=`PO_${round.title.replace(/\W/g,'')}_${m.h.replace(/[^a-zA-Z0-9]/g,'')}_${m.a.replace(/[^a-zA-Z0-9]/g,'')}`;
+          if(!m.sets){
+            const hWon=m.hs>m.as;
+            return `<a href="pomatch.html?id=${matchId}" style="text-decoration:none;display:block;">
+              <div class="bracket-match${round.isFinal?' final-match':''}">
+                <div class="bracket-team ${hWon?'winner':'loser'}">${tlogo(m.h,14)}${m.h}<span class="bracket-score">${m.hs}</span></div>
+                <div class="bracket-team ${!hWon?'winner':'loser'}">${tlogo(m.a,14)}${m.a}<span class="bracket-score">${m.as}</span></div>
+              </div></a>`;
+          }
+          const hWon=m.hSets>m.aSets;
+          const setsSummary=m.sets.map(s=>`${s.hs}–${s.as}`).join(', ');
+          return `<a href="pomatch.html?id=${matchId}" style="text-decoration:none;display:block;">
+            <div class="bracket-match${round.isFinal?' final-match':''}">
+              <div class="bracket-team ${hWon?'winner':'loser'}">${tlogo(m.h,14)}${m.h}<span class="bracket-score">${m.hSets}</span></div>
+              <div class="bracket-team ${!hWon?'winner':'loser'}">${tlogo(m.a,14)}${m.a}<span class="bracket-score">${m.aSets}</span></div>
+              <div class="ff-note">${setsSummary}</div>
+            </div></a>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showSet(matchId,si){
+  const match=document.querySelector(`[id^="${matchId}_s"]`)?.closest('.bracket-match');
+  if(!match)return;
+  match.querySelectorAll('.set-scores-display').forEach((el,i)=>el.style.display=i===si?'block':'none');
+  match.querySelectorAll('.set-tab-btn').forEach((el,i)=>el.classList.toggle('active',i===si));
+}
+
+function renderCup(){
+  document.getElementById('bracket-cup').innerHTML=cup.map(round=>{
+    const isFinal=round.isFinal;
+    return `<div class="bracket-round">
+      <div class="bracket-round-title">${round.title}</div>
+      <div class="bracket-matches">
+        ${round.matches.map(m=>{
+          const hWon=m.hs>m.as;
+          const matchId=`CUP_${round.title.replace(/\W/g,'')}_${m.h.replace(/[^a-zA-Z0-9]/g,'')}_${m.a.replace(/[^a-zA-Z0-9]/g,'')}`;
+          return `<a href="cupmatch.html?id=${matchId}" style="text-decoration:none;display:block;">
+            <div class="bracket-match${isFinal?' final-match':''}">
+              <div class="bracket-team ${hWon?'winner':'loser'}">${tlogo(m.h,14)}${m.h}<span class="bracket-score">${m.hs}</span></div>
+              <div class="bracket-team ${!hWon?'winner':'loser'}">${tlogo(m.a,14)}${m.a}<span class="bracket-score">${m.as}</span></div>
+            </div></a>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const topScorers=[
+  // Add your PSL4 top scorers here
+  // {name:"Player Name",team:"Team",goals:0,logo:"logos/team.png"},
+];
+
+function renderScorers(){
+  const el=document.getElementById('scorers-list');
+  if(!topScorers.length){
+    el.innerHTML=`<div class="scorers-card" style="padding:2rem;text-align:center;color:rgba(255,255,255,0.3);font-size:13px;">Top scorer data coming soon.</div>`;
+    return;
+  }
+  el.innerHTML=`<div class="scorers-card">
+    ${topScorers.map((p,i)=>`
+      <div class="scorer-row">
+        <span class="scorer-rank${i<3?' top3':''}">${i+1}</span>
+        <img src="${p.logo}" onerror="this.style.display='none'" style="width:22px;height:22px;object-fit:contain;border-radius:3px;flex-shrink:0;">
+        <span class="scorer-name">${p.name}</span>
+        <span class="scorer-team">${p.team}</span>
+        <span class="scorer-goals">${p.goals}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+function showTab(tab){
+  ['league','playoffs','cup','scorers'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active',i===['league','playoffs','cup','scorers'].indexOf(tab));
+  });
+  const bgs={league:'bg.png',playoffs:'pobg.png',cup:'cupbg.png',scorers:'bg.png'};
+  document.body.style.backgroundImage=`url('${bgs[tab]}')`;
+  document.body.classList.toggle('cup-active',tab==='cup');
+  document.body.classList.toggle('po-active',tab==='playoffs');
+}
+
+renderTable();
+renderFixtures();
+renderPlayoffs();
+renderCup();
+renderScorers();
+
+// Auto-open tab from URL
+const urlTab=new URLSearchParams(window.location.search).get('tab');
+if(urlTab)showTab(urlTab);
+
+document.addEventListener('mousemove',e=>{
+  document.querySelectorAll('.deduction-icon .tooltip').forEach(t=>{
+    t.style.left=(e.clientX+12)+'px';
+    t.style.top=(e.clientY+12)+'px';
+  });
+});
+</script>
+</body>
+</html>
