@@ -285,12 +285,14 @@ function renderGroups() {
       </tr>`;
     }).join('');
 
-    const fixHTML = g.fixtures.filter(f=>f.hs!==null&&f.hs!==undefined).map(f=>`
-      <div class="group-fixture">
+    const fixHTML = g.fixtures.filter(f=>f.hs!==null&&f.hs!==undefined).map(f=>{
+      const matchId = `GS_${f.h.replace(/[^a-zA-Z0-9]/g,'')}_${f.a.replace(/[^a-zA-Z0-9]/g,'')}`;
+      return `<div class="group-fixture">
         <span class="gf-team right">${f.h}${tlogo(f.h)}</span>
-        <span class="gf-score">${f.hs}–${f.as}</span>
+        <a href="groupmatch.html?id=${matchId}" class="gf-score" style="text-decoration:none;color:#39c877;">${f.hs}–${f.as}</a>
         <span class="gf-team">${tlogo(f.a)}${f.a}</span>
-      </div>`).join('') || '<div style="font-size:11px;color:#535c2f;padding:4px 0;">No results yet</div>';
+      </div>`;
+    }).join('') || '<div style="font-size:11px;color:#535c2f;padding:4px 0;">No results yet</div>';
 
     return `<div class="group-card">
       <div class="group-title">${g.name}</div>
@@ -313,14 +315,16 @@ function renderCup() {
     const matchHTML = round.matches.map(m => {
       const hWon = m.hs > m.as;
       const aWon = m.as > m.hs;
+      const matchId = `CUP_${round.title.replace(/[^a-zA-Z0-9]/g,'')}_${m.h.replace(/[^a-zA-Z0-9]/g,'')}_${m.a.replace(/[^a-zA-Z0-9]/g,'')}`;
+      const scoreLink = `<a href="cupmatch.html?id=${matchId}" style="text-decoration:none;display:contents;">`;
       return `<div class="bracket-match${isFinal?' final-match':''}">
         <div class="bracket-team ${hWon?'winner':'loser'}">
           <span>${tlogo(m.h,14)}${m.h}</span>
-          <span class="bracket-score">${m.hs}</span>
+          ${scoreLink}<span class="bracket-score">${m.hs}</span></a>
         </div>
         <div class="bracket-team ${aWon?'winner':'loser'}">
           <span>${tlogo(m.a,14)}${m.a}</span>
-          <span class="bracket-score">${m.as}</span>
+          ${scoreLink}<span class="bracket-score">${m.as}</span></a>
         </div>
         ${m.ff?'<div class="ff-note">FF</div>':''}
       </div>`;
@@ -344,6 +348,9 @@ function showTab(tab) {
 
 renderGroups();
 renderCup();
+
+// Auto-open cup tab if ?tab=cup in URL
+if(new URLSearchParams(window.location.search).get('tab')==='cup') showTab('cup');
 </script>
 </body>
 </html>
