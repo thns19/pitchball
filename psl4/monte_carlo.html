@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -20,32 +21,40 @@ label{color:rgba(255,255,255,0.6)!important;}
 button{background:rgba(76,175,125,0.8)!important;border:none!important;color:#fff!important;}
 button:hover{background:rgba(76,175,125,1)!important;}
 button:disabled{background:rgba(255,255,255,0.15)!important;}
-.running{color:rgba(255,255,255,0.4)!important;}
+.running{color:rgba(255,255,255,0.4)!important;text-align:center;padding:1rem;font-size:13px;}
 
 /* Results card */
-.results{background:rgba(0,0,0,0.35)!important;border:1px solid rgba(255,255,255,0.1)!important;backdrop-filter:blur(8px);}
-.team-name{color:#fff!important;}
-.win-pct.high{color:#4caf7d!important;}
-.win-pct.low{color:rgba(255,255,255,0.3)!important;}
-#rwins1,#rwins2{color:rgba(255,255,255,0.4)!important;}
-.bar-track{background:rgba(255,255,255,0.08)!important;}
-.bar-fill{background:rgba(255,255,255,0.2)!important;}
-.bar-fill.green{background:#4caf7d!important;}
-.divider{background:rgba(255,255,255,0.1)!important;}
+.results{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1.5rem;margin-top:1rem;backdrop-filter:blur(8px);}
+
+/* Win bars */
+.win-bars{display:flex;gap:16px;align-items:stretch;margin-bottom:1.5rem;}
+.win-side{flex:1;text-align:center;}
+.team-name{color:#fff!important;font-size:14px;font-weight:500;margin-bottom:4px;}
+.win-pct{font-size:40px;font-weight:500;line-height:1;margin-bottom:4px;}
+.win-pct.high{color:#4caf7d;}
+.win-pct.low{color:rgba(255,255,255,0.3);}
+.win-wins{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;}
+.bar-track{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;background:rgba(255,255,255,0.2);transition:width 0.5s ease;}
+.bar-fill.green{background:#4caf7d;}
+.divider{width:1px;background:rgba(255,255,255,0.1);flex-shrink:0;}
 
 /* Stats grid */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem;}
-.stat-row{background:rgba(255,255,255,0.06)!important;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
-.stat-label{color:rgba(255,255,255,0.45)!important;font-size:12px;}
-.stat-val{color:#fff!important;font-size:14px;font-weight:500;}
+.stat-row{background:rgba(255,255,255,0.06);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.stat-label{color:rgba(255,255,255,0.45);font-size:12px;}
+.stat-val{color:#fff;font-size:14px;font-weight:500;}
 
 /* Score distribution */
-.score-dist-title{color:rgba(255,255,255,0.4)!important;}
-.score-label{color:rgba(255,255,255,0.5)!important;}
-.score-bar-track{background:rgba(255,255,255,0.08)!important;}
-.score-bar-fill{background:#4caf7d!important;}
-.score-pct{color:rgba(255,255,255,0.4)!important;}
+.score-dist{margin-top:1.25rem;}
+.score-dist-title{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:10px;}
+.score-item{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.score-label{font-size:12px;color:rgba(255,255,255,0.5);width:44px;flex-shrink:0;}
+.score-bar-track{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:3px;background:#4caf7d;}
+.score-pct{font-size:12px;color:rgba(255,255,255,0.4);width:38px;text-align:right;flex-shrink:0;}
 </style>
+
 </head>
 <body>
 <div class="container">
@@ -80,14 +89,14 @@ button:disabled{background:rgba(255,255,255,0.15)!important;}
       <div class="win-side">
         <div class="team-name" id="rname1"></div>
         <div class="win-pct" id="rpct1"></div>
-        <div style="font-size:12px;color:#888;" id="rwins1"></div>
+        <div class="win-wins" id="rwins1"></div>
         <div class="bar-track"><div class="bar-fill green" id="rbar1" style="width:0%"></div></div>
       </div>
       <div class="divider"></div>
       <div class="win-side">
         <div class="team-name" id="rname2"></div>
         <div class="win-pct" id="rpct2"></div>
-        <div style="font-size:12px;color:#888;" id="rwins2"></div>
+        <div class="win-wins" id="rwins2"></div>
         <div class="bar-track"><div class="bar-fill" id="rbar2" style="width:0%"></div></div>
       </div>
     </div>
@@ -226,5 +235,6 @@ function runMonteCarlo(){
   },50);
 }
 </script>
+
 </body>
 </html>
