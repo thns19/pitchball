@@ -87,7 +87,7 @@ function showApp() {
 document.getElementById(‘screen-auth’).classList.add(‘hidden’);
 document.getElementById(‘screen-app’).classList.remove(‘hidden’);
 document.getElementById(‘tn-user-label’).innerHTML = `Signed in as <strong>${currentUser.username}</strong>`;
-if (currentUser.isAdmin) document.getElementById(‘tab-admin’).style.display = ‘’;
+if (currentUser.isAdmin) document.getElementById(‘btn-tab-admin’).style.display = ‘’;
 showTab(‘predict’);
 }
 
@@ -181,7 +181,7 @@ _cache = null;
 currentUser = null;
 document.getElementById(‘screen-auth’).classList.remove(‘hidden’);
 document.getElementById(‘screen-app’).classList.add(‘hidden’);
-document.getElementById(‘tab-admin’).style.display = ‘none’;
+document.getElementById(‘btn-tab-admin’).style.display = ‘none’;
 showAuthTab(‘login’);
 }
 
