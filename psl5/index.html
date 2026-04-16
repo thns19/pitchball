@@ -1,142 +1,274 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Home — PSL5</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  #logo-bg {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* ── Falling logos ── */
+  #logo-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+  .falling-logo{position:absolute;top:-100px;opacity:0.1;animation:fall linear infinite;filter:grayscale(20%);}
+  @keyframes fall{0%{transform:translateY(0)}100%{transform:translateY(calc(100vh + 120px))}}
 
-  .falling-logo {
-    position: absolute;
-    top: -100px;
-    opacity: 0.12;
-    animation: fall linear infinite;
-    filter: grayscale(30%);
-  }
+/* ── Page shell ── */
+body{
+background-image:url(‘bg.png’);background-repeat:no-repeat;
+background-size:cover;background-position:center;background-attachment:fixed;
+min-height:100vh;display:flex;flex-direction:column;
+align-items:flex-start;justify-content:center;
+padding:0;overflow-x:hidden;
+}
 
-  @keyframes fall {
-    0%   { transform: translateY(0px); }
-    100% { transform: translateY(calc(100vh + 120px)); }
-  }
+/* ── Header block ── */
+.site-header{
+position:relative;z-index:2;
+padding:3rem 3rem 1.5rem;
+border-bottom:1px solid rgba(215,219,200,0.12);
+width:100%;
+}
+.site-eyebrow{
+font-family:‘DM Sans’,sans-serif;
+font-size:11px;font-weight:600;letter-spacing:2.5px;
+text-transform:uppercase;color:rgba(215,219,200,0.45);
+margin-bottom:8px;
+}
+.site-title{
+font-family:‘Bebas Neue’,sans-serif;
+font-size:clamp(3rem,10vw,7rem);
+letter-spacing:2px;line-height:0.92;
+color:#D7DBC8;
+}
+.site-title span{color:#39c877;}
+.site-sub{
+font-family:‘DM Sans’,sans-serif;
+font-size:13px;color:rgba(215,219,200,0.5);
+margin-top:10px;font-style:italic;
+}
 
-  .home-body {
-    position: relative;
-    z-index: 1;
-  }
+/* ── Nav list ── */
+.nav-list{
+position:relative;z-index:2;
+width:100%;
+border-bottom:1px solid rgba(215,219,200,0.12);
+}
 
-  .home-cards, .logo, .subtitle, .footer {
-    position: relative;
-    z-index: 2;
-  }
+.nav-item{
+display:flex;align-items:center;
+padding:0 3rem;
+border-top:1px solid rgba(215,219,200,0.08);
+text-decoration:none;color:inherit;
+position:relative;overflow:hidden;
+transition:padding-left 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+min-height:72px;
+cursor:pointer;
+}
 
-  .home-card {
-    position: relative;
-    z-index: 2;
-    overflow: hidden;
-  }
+/* sweep background on hover */
+.nav-item::before{
+content:’’;position:absolute;inset:0;
+background:linear-gradient(90deg,rgba(57,200,119,0.06) 0%,transparent 70%);
+transform:translateX(-100%);
+transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.nav-item:hover::before{transform:translateX(0);}
+.nav-item:hover{padding-left:calc(3rem + 12px);}
 
-  body {
-    background-image: url('bg.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-  }
+/* left accent line */
+.nav-item::after{
+content:’’;position:absolute;left:0;top:0;bottom:0;width:3px;
+background:#39c877;
+transform:scaleY(0);transform-origin:bottom;
+transition:transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.nav-item:hover::after{transform:scaleY(1);}
+
+.nav-num{
+font-family:‘Bebas Neue’,sans-serif;
+font-size:clamp(1.2rem,3vw,1.6rem);
+color:rgba(215,219,200,0.2);
+width:3rem;flex-shrink:0;
+transition:color 0.2s;
+}
+.nav-item:hover .nav-num{color:rgba(57,200,119,0.5);}
+
+.nav-icon{
+font-size:1.4rem;margin-right:1rem;flex-shrink:0;
+transition:transform 0.2s;
+}
+.nav-item:hover .nav-icon{transform:scale(1.15);}
+
+.nav-text{flex:1;min-width:0;}
+.nav-title{
+font-family:‘Bebas Neue’,sans-serif;
+font-size:clamp(1.3rem,4vw,2rem);
+letter-spacing:1px;color:#D7DBC8;line-height:1;
+transition:color 0.2s;
+}
+.nav-item:hover .nav-title{color:#39c877;}
+.nav-desc{
+font-family:‘DM Sans’,sans-serif;
+font-size:12px;color:rgba(215,219,200,0.4);
+margin-top:3px;line-height:1.4;
+}
+
+.nav-arrow{
+font-size:1.2rem;color:rgba(215,219,200,0.2);flex-shrink:0;margin-left:1rem;
+transition:transform 0.25s,color 0.2s;
+}
+.nav-item:hover .nav-arrow{transform:translateX(6px);color:#39c877;}
+
+/* ── Special: Predictions badge ── */
+.nav-item.predictions-item .nav-title{color:#f5c842;}
+.nav-item.predictions-item:hover .nav-title{color:#f5c842;filter:brightness(1.15);}
+.nav-item.predictions-item::after{background:#f5c842;}
+.nav-item.predictions-item::before{background:linear-gradient(90deg,rgba(245,200,66,0.06) 0%,transparent 70%);}
+.nav-item.predictions-item:hover .nav-num{color:rgba(245,200,66,0.5);}
+.nav-item.predictions-item:hover .nav-arrow{color:#f5c842;}
+.live-dot{
+display:inline-block;width:7px;height:7px;border-radius:50%;
+background:#39c877;margin-left:8px;vertical-align:middle;
+animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+
+/* ── Footer ── */
+.site-footer{
+position:relative;z-index:2;width:100%;
+padding:1.25rem 3rem;
+font-family:‘DM Sans’,sans-serif;
+font-size:11px;color:rgba(215,219,200,0.3);
+display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.site-footer a{color:rgba(215,219,200,0.3);text-decoration:none;}
+.site-footer a:hover{color:rgba(215,219,200,0.7);}
+
+/* ── Stagger animation on load ── */
+.nav-item{opacity:0;transform:translateY(16px);}
+.nav-item.visible{
+animation:slideIn 0.45s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+@keyframes slideIn{to{opacity:1;transform:translateY(0)}}
+.nav-item:nth-child(1){animation-delay:0.05s}
+.nav-item:nth-child(2){animation-delay:0.12s}
+.nav-item:nth-child(3){animation-delay:0.19s}
+.nav-item:nth-child(4){animation-delay:0.26s}
+.nav-item:nth-child(5){animation-delay:0.33s}
+.nav-item:nth-child(6){animation-delay:0.40s}
+
+@media(max-width:520px){
+.site-header{padding:2rem 1.5rem 1.25rem;}
+.nav-item{padding:0 1.5rem;min-height:64px;}
+.nav-item:hover{padding-left:calc(1.5rem + 10px);}
+.site-footer{padding:1rem 1.5rem;}
+.nav-desc{display:none;}
+}
 </style>
+
 </head>
-<body class="home-body">
+<body>
 
-  <div id="logo-bg"></div>
+<div id="logo-bg"></div>
 
-  <div class="logo">Pitch<span>ball</span> Super League 5</div>
-  <p class="subtitle">The home of Pitchball's current running season, PSL5.</p>
+<div class="site-header">
+  <div class="site-eyebrow">Pitchball Super League</div>
+  <div class="site-title">PSL<span>5</span></div>
+  <div class="site-sub">The home of Pitchball's current running season.</div>
+</div>
 
-  <div class="home-cards">
-    <a href="history.html" class="home-card">
-      <div class="card-icon">🏆</div>
-      <div class="card-title">Season History</div>
-      <div class="card-desc">Group stage standings and results, plus the full PSL Cup bracket.</div>
-    </a>
-    <a href="league.html" class="home-card">
-      <div class="card-icon">📋</div>
-      <div class="card-title">League Table</div>
-      <div class="card-desc">Live standings, fixture management and playoff bracket simulator.</div>
-    </a>
-    <a href="teams.html" class="home-card">
-      <div class="card-icon">🏅</div>
-      <div class="card-title">Team Stats</div>
-      <div class="card-desc">Ratings, tactics and overview for every PSL5 team.</div>
-    </a>
-    <a href="simulator.html" class="home-card">
-      <div class="card-icon">🏐</div>
-      <div class="card-title">Match Simulator</div>
-      <div class="card-desc">Simulate a single match with full rally-by-rally commentary.</div>
-    </a>
-    <a href="monte_carlo.html" class="home-card">
-      <div class="card-icon">📊</div>
-      <div class="card-title">Monte Carlo</div>
-      <div class="card-desc">Run thousands of simulations and see win probability percentages.</div>
-    </a>
-  </div>
+<nav class="nav-list">
+  <a href="history.html" class="nav-item">
+    <div class="nav-num">01</div>
+    <div class="nav-icon">🏆</div>
+    <div class="nav-text">
+      <div class="nav-title">Season History</div>
+      <div class="nav-desc">Group stage standings, results &amp; the full PSL Cup bracket</div>
+    </div>
+    <div class="nav-arrow">→</div>
+  </a>
 
-  <p class="footer"><a href="../index.html" style="color:#888;text-decoration:none;">← All Seasons</a> &nbsp;·&nbsp; Created by Thanos, with help from Claude AI · Pitchball © 2026</p>
+  <a href="league.html" class="nav-item">
+    <div class="nav-num">02</div>
+    <div class="nav-icon">📋</div>
+    <div class="nav-text">
+      <div class="nav-title">League Table</div>
+      <div class="nav-desc">Live standings, fixture management &amp; playoff bracket simulator</div>
+    </div>
+    <div class="nav-arrow">→</div>
+  </a>
+
+  <a href="teams.html" class="nav-item">
+    <div class="nav-num">03</div>
+    <div class="nav-icon">🏅</div>
+    <div class="nav-text">
+      <div class="nav-title">Team Stats</div>
+      <div class="nav-desc">Ratings, tactics and overview for every PSL5 team</div>
+    </div>
+    <div class="nav-arrow">→</div>
+  </a>
+
+  <a href="simulator.html" class="nav-item">
+    <div class="nav-num">04</div>
+    <div class="nav-icon">🏐</div>
+    <div class="nav-text">
+      <div class="nav-title">Match Simulator</div>
+      <div class="nav-desc">Simulate a single match with full rally-by-rally commentary</div>
+    </div>
+    <div class="nav-arrow">→</div>
+  </a>
+
+  <a href="monte_carlo.html" class="nav-item">
+    <div class="nav-num">05</div>
+    <div class="nav-icon">📊</div>
+    <div class="nav-text">
+      <div class="nav-title">Monte Carlo</div>
+      <div class="nav-desc">Run thousands of simulations and see win probability percentages</div>
+    </div>
+    <div class="nav-arrow">→</div>
+  </a>
+
+  <a href="predindex.html" class="nav-item predictions-item">
+    <div class="nav-num">06</div>
+    <div class="nav-icon">🎯</div>
+    <div class="nav-text">
+      <div class="nav-title">Predictions<span class="live-dot"></span></div>
+      <div class="nav-desc">Pick scores &amp; MVPs · Compete on the leaderboard</div>
+    </div>
+    <div class="nav-arrow">→</div>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <a href="../index.html">← All Seasons</a>
+  <span>Created by Thanos, with help from Claude AI · Pitchball © 2026</span>
+</footer>
 
 <script>
-const logos = [
-  "logos/ac.png",
-  "logos/axtarmades.png",
-  "logos/babiniotes.png",
-  "logos/badiles.png",
-  "logos/basement.png",
-  "logos/chewbacca.png",
-  "logos/fintani.png",
-  "logos/hoopers.png",
-  "logos/midi.png",
-  "logos/phoenix.png",
-  "logos/r1.png",
-  "logos/snipers.png",
-  "logos/spasmena.png",
-  "logos/trixes.png",
-  "logos/ttd.png",
-  "logos/volos.png",
-  "logos/warriors.png",
-  "logos/yy.png"
+const logos=[
+  "logos/ac.png","logos/axtarmades.png","logos/babiniotes.png","logos/badiles.png",
+  "logos/basement.png","logos/chewbacca.png","logos/fintani.png","logos/hoopers.png",
+  "logos/midi.png","logos/phoenix.png","logos/r1.png","logos/snipers.png",
+  "logos/spasmena.png","logos/trixes.png","logos/ttd.png","logos/volos.png",
+  "logos/warriors.png","logos/yy.png"
 ];
-
-const bg = document.getElementById('logo-bg');
-const COUNT = 30;
-
-for (let i = 0; i < COUNT; i++) {
-  const img = document.createElement('img');
-  img.className = 'falling-logo';
-  img.src = logos[i % logos.length];
-
-  // Random horizontal position
-  const left = Math.random() * 100;
-  // Random size between 48px and 90px
-  const size = 48 + Math.random() * 42;
-  // Random duration between 12s and 28s
-  const duration = 12 + Math.random() * 16;
-  // Random delay so they don't all start together
-  const delay = -(Math.random() * duration);
-
-  img.style.left = left + 'vw';
-  img.style.width = size + 'px';
-  img.style.height = size + 'px';
-  img.style.animationDuration = duration + 's';
-  img.style.animationDelay = delay + 's';
-  img.style.objectFit = 'contain';
-
+const bg=document.getElementById('logo-bg');
+for(let i=0;i<30;i++){
+  const img=document.createElement('img');
+  img.className='falling-logo';
+  img.src=logos[i%logos.length];
+  const size=44+Math.random()*42;
+  const dur=12+Math.random()*16;
+  img.style.cssText=`left:${Math.random()*100}vw;width:${size}px;height:${size}px;object-fit:contain;animation-duration:${dur}s;animation-delay:${-(Math.random()*dur)}s;`;
   bg.appendChild(img);
 }
+
+// Stagger items in on load
+document.querySelectorAll('.nav-item').forEach(el=>{
+  setTimeout(()=>el.classList.add('visible'),50);
+});
 </script>
+
 </body>
 </html>
