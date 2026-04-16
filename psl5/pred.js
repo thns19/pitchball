@@ -77,10 +77,14 @@ setTimeout(() => el.classList.remove(‘show’), 3200);
 // ── SCREEN / TAB ──────────────────────────────────────────────
 
 function showAuthTab(tab) {
-document.getElementById(‘auth-login’).classList.toggle(‘hidden’, tab !== ‘login’);
-document.getElementById(‘auth-register’).classList.toggle(‘hidden’, tab !== ‘register’);
-document.getElementById(‘li-err’).classList.add(‘hidden’);
-document.getElementById(‘rg-err’).classList.add(‘hidden’);
+const login = document.getElementById(‘auth-login’);
+const register = document.getElementById(‘auth-register’);
+if (login)    login.classList.toggle(‘hidden’, tab !== ‘login’);
+if (register) register.classList.toggle(‘hidden’, tab !== ‘register’);
+const liErr = document.getElementById(‘li-err’);
+const rgErr = document.getElementById(‘rg-err’);
+if (liErr) liErr.classList.add(‘hidden’);
+if (rgErr) rgErr.classList.add(‘hidden’);
 }
 
 function showApp() {
@@ -628,10 +632,16 @@ return `<div class="card tc" style="padding:3rem;">
 // ── BOOT ──────────────────────────────────────────────────────
 
 (async function init() {
-// Set button labels for loading state
-document.getElementById(‘li-btn’).dataset.label  = ‘Sign In’;
-document.getElementById(‘rg-btn’).dataset.label  = ‘Create Account’;
+// Show auth immediately — don’t wait for network
+showAuthTab(‘login’);
 
+// Set button labels
+const liBtnEl = document.getElementById(‘li-btn’);
+const rgBtnEl = document.getElementById(‘rg-btn’);
+if (liBtnEl) liBtnEl.dataset.label = ‘Sign In’;
+if (rgBtnEl) rgBtnEl.dataset.label = ‘Create Account’;
+
+// Try to restore session in background
 const session = loadSession();
 if (session) {
 try {
@@ -643,8 +653,9 @@ currentUser = { username: uData.username, email: uData.email, isAdmin: uData.use
 showApp();
 return;
 }
-} catch(e) {}
+} catch(e) {
+// Session restore failed, stay on auth screen
+}
 clearSession();
 }
-showAuthTab(‘login’);
 })();
