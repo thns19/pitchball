@@ -291,5 +291,18 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 
 <script src="pred.js"></script>
 
+<script>
+// Fallback — if pred.js loaded, this won't matter. If it didn't, show error.
+window.addEventListener('DOMContentLoaded', function() {
+  if (typeof showAuthTab === 'undefined') {
+    document.getElementById('screen-auth').innerHTML =
+      '<div style="color:#e74c3c;font-family:sans-serif;padding:2rem;text-align:center;">' +
+      '<h2>pred.js failed to load</h2><p>Check the file is in the correct folder.</p></div>';
+  } else {
+    showAuthTab('login');
+  }
+});
+</script>
+
 </body>
 </html>
