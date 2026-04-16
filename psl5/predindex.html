@@ -29,16 +29,39 @@ body::before{content:'';position:fixed;inset:0;background:rgba(10,12,18,0.82);po
 /* nav */
 .top-nav{background:rgba(0,0,0,0.5);border-bottom:1px solid var(–border);backdrop-filter:blur(10px);
 position:sticky;top:0;z-index:100;padding:0 1.25rem;}
-.top-nav-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:0;}
-.tn-brand{font-family:var(–fd);font-size:1.3rem;color:var(–accent);padding:13px 0;margin-right:1.5rem;flex-shrink:0;}
+.top-nav-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;height:48px;}
+.tn-brand{font-family:var(–fd);font-size:1.3rem;color:var(–accent);margin-right:auto;flex-shrink:0;}
 .tn-tabs{display:flex;flex:1;overflow-x:auto;}
 .tn-tab{font-size:12px;font-weight:500;padding:15px 13px;color:var(–muted);cursor:pointer;
 border:none;border-bottom:2px solid transparent;background:none;transition:all 0.15s;white-space:nowrap;}
 .tn-tab:hover{color:var(–text);}
 .tn-tab.active{color:var(–accent);border-bottom-color:var(–accent);}
-.tn-right{margin-left:auto;padding-left:1rem;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.tn-user{font-size:12px;color:var(–muted);}
-.tn-user strong{color:var(–text);}
+
+/* hamburger */
+.tn-hamburger{background:none;border:1px solid var(–border2);border-radius:8px;
+color:var(–text);cursor:pointer;padding:6px 10px;font-size:18px;flex-shrink:0;line-height:1;}
+.tn-hamburger:hover{background:rgba(255,255,255,0.06);}
+
+/* mobile menu dropdown */
+.mobile-menu{display:none;position:fixed;top:48px;left:0;right:0;bottom:0;z-index:99;
+background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);}
+.mobile-menu.open{display:block;}
+.mobile-menu-inner{background:var(–s1);border-bottom:1px solid var(–border);padding:0.5rem 0;}
+.mobile-menu-item{display:flex;align-items:center;gap:12px;padding:14px 1.5rem;
+font-size:14px;font-weight:500;color:var(–muted);cursor:pointer;border:none;
+background:none;width:100%;text-align:left;transition:all 0.1s;}
+.mobile-menu-item:hover,.mobile-menu-item.active{color:var(–accent);background:rgba(57,200,119,0.06);}
+.mobile-menu-item.active{border-left:3px solid var(–accent);}
+.mobile-menu-divider{border:none;border-top:1px solid var(–border);margin:4px 0;}
+.mobile-menu-user{padding:12px 1.5rem;font-size:12px;color:var(–muted);}
+.mobile-menu-user strong{color:var(–text);}
+
+/* desktop: show tabs, hide hamburger */
+@media(min-width:600px){
+.tn-tabs{display:flex;}
+.tn-hamburger{display:none;}
+.tn-brand{margin-right:1.5rem;}
+}
 
 /* cards */
 .card{background:rgba(0,0,0,0.4);border:1px solid var(–border);border-radius:14px;padding:1.25rem;
@@ -219,18 +242,32 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
   <nav class="top-nav">
     <div class="top-nav-inner">
       <div class="tn-brand">PSL5</div>
+      <!-- Desktop tabs -->
       <div class="tn-tabs">
         <button class="tn-tab active" onclick="showTab('predict')" data-tab="predict">Predict</button>
         <button class="tn-tab" onclick="showTab('leaderboard')" data-tab="leaderboard">Leaderboard</button>
         <button class="tn-tab" onclick="showTab('my-picks')" data-tab="my-picks">My Picks</button>
         <button class="tn-tab" onclick="showTab('admin')" data-tab="admin" id="btn-tab-admin" style="display:none;">⚙ Admin</button>
       </div>
-      <div class="tn-right">
-        <span class="tn-user" id="tn-user-label"></span>
-        <button class="btn btn-outline btn-sm" onclick="doLogout()">Sign out</button>
-      </div>
+      <!-- Hamburger -->
+      <button class="tn-hamburger" onclick="toggleMobileMenu()" id="hamburger-btn">☰</button>
     </div>
   </nav>
+
+  <!-- Mobile dropdown menu -->
+
+  <div class="mobile-menu" id="mobile-menu" onclick="closeMobileMenu()">
+    <div class="mobile-menu-inner" onclick="event.stopPropagation()">
+      <div class="mobile-menu-user">Signed in as <strong id="mobile-user-label"></strong></div>
+      <hr class="mobile-menu-divider">
+      <button class="mobile-menu-item active" onclick="mobileTab('predict')" data-mob-tab="predict">🏐 Predict</button>
+      <button class="mobile-menu-item" onclick="mobileTab('leaderboard')" data-mob-tab="leaderboard">🏆 Leaderboard</button>
+      <button class="mobile-menu-item" onclick="mobileTab('my-picks')" data-mob-tab="my-picks">🎯 My Picks</button>
+      <button class="mobile-menu-item" onclick="mobileTab('admin')" data-mob-tab="admin" id="mob-btn-admin" style="display:none;">⚙ Admin</button>
+      <hr class="mobile-menu-divider">
+      <button class="mobile-menu-item" onclick="doLogout()" style="color:var(--red);">Sign out</button>
+    </div>
+  </div>
 
   <div class="wrap">
 
@@ -382,21 +419,41 @@ function showAuthTab(tab) {
 function showApp() {
   document.getElementById('screen-auth').classList.add('hidden');
   document.getElementById('screen-app').classList.remove('hidden');
-  document.getElementById('tn-user-label').innerHTML = `Signed in as <strong>${currentUser.username}</strong>`;
-  if (currentUser.isAdmin) document.getElementById('btn-tab-admin').style.display = '';
+  document.getElementById('tn-user-label') && (document.getElementById('tn-user-label').innerHTML = `Signed in as <strong>${currentUser.username}</strong>`);
+  document.getElementById('mobile-user-label').textContent = currentUser.username;
+  if (currentUser.isAdmin) {
+    document.getElementById('btn-tab-admin').style.display = '';
+    document.getElementById('mob-btn-admin').style.display = '';
+  }
   showTab('predict');
 }
 
 function showTab(id) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('.tn-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.mobile-menu-item').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.remove('hidden');
   const btn = document.querySelector(`[data-tab="${id}"]`);
   if (btn) btn.classList.add('active');
+  const mobBtn = document.querySelector(`[data-mob-tab="${id}"]`);
+  if (mobBtn) mobBtn.classList.add('active');
   if (id === 'predict')     loadPredictTab();
   if (id === 'leaderboard') loadLeaderboard();
   if (id === 'my-picks')    loadMyPicks();
   if (id === 'admin')       loadAdmin();
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+function mobileTab(id) {
+  closeMobileMenu();
+  showTab(id);
 }
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -472,6 +529,8 @@ function doLogout() {
   document.getElementById('screen-auth').classList.remove('hidden');
   document.getElementById('screen-app').classList.add('hidden');
   document.getElementById('btn-tab-admin').style.display = 'none';
+  document.getElementById('mob-btn-admin').style.display = 'none';
+  closeMobileMenu();
   showAuthTab('login');
 }
 
