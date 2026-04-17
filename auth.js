@@ -4,7 +4,7 @@
 // Shares the same JSONBin as predictions.
 // ═══════════════════════════════════════════════════════════════
 
-const PSL_BIN_ID  = ‘69e085bdaaba88219704f684‘;
+const PSL_BIN_ID  = ‘69e2a95836566621a8c55b2a‘;
 const PSL_API_KEY = ’$2a$10$H0dlnXhL4nHxUrqvqIuX.uWVleB8A4engDopnjE.WngFBheJW.1gu‘;
 const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
 const PSL_ADMIN   = ‘thanos’;
