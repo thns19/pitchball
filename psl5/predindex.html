@@ -202,36 +202,17 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
+<!-- NOT LOGGED IN SCREEN -->
 
 <div id="screen-auth">
   <div class="auth-wrap">
-    <div class="auth-card">
+    <div class="auth-card" style="text-align:center;">
       <div class="auth-logo">PSL <span>5</span></div>
       <div class="auth-sub">Predictions League</div>
-
-```
-  <!-- Login -->
-  <div id="auth-login">
-    <div class="form-group"><label>Username or Email</label><input id="li-user" placeholder="Enter username or email" autocomplete="username"></div>
-    <div class="form-group"><label>Password</label><input id="li-pass" type="password" placeholder="Enter password" autocomplete="current-password"></div>
-    <div class="form-error hidden" id="li-err"></div>
-    <button class="btn btn-primary btn-block mt16" id="li-btn" onclick="doLogin()">Sign In</button>
-    <div class="auth-switch mt12">Don't have an account? <a onclick="showAuthTab('register')">Register here</a></div>
-  </div>
-
-  <!-- Register -->
-  <div id="auth-register" class="hidden">
-    <div class="form-group"><label>Username</label><input id="rg-user" placeholder="Choose a username" maxlength="20" autocomplete="username"></div>
-    <div class="form-group"><label>Email</label><input id="rg-email" type="email" placeholder="your@email.com" autocomplete="email"></div>
-    <div class="form-group"><label>Password</label><input id="rg-pass" type="password" placeholder="Min. 6 characters" autocomplete="new-password"></div>
-    <div class="form-error hidden" id="rg-err"></div>
-    <button class="btn btn-primary btn-block mt16" id="rg-btn" onclick="doRegister()">Create Account</button>
-    <div class="auth-switch mt12">Already have an account? <a onclick="showAuthTab('login')">Sign in</a></div>
-  </div>
-</div>
-```
-
+      <p style="font-size:13px;color:rgba(215,219,200,0.5);margin-bottom:1.5rem;line-height:1.6;">Sign in to your PSL account to make predictions and compete on the leaderboard.</p>
+      <button class="btn btn-primary btn-block" onclick="pslOpenAuth('login')">Sign In</button>
+      <div class="auth-switch mt12">No account? <a onclick="pslOpenAuth('register')">Register here</a></div>
+    </div>
   </div>
 </div>
 
@@ -325,73 +306,30 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 
 <div id="toast" class="toast"></div>
 
+<script src="/auth.js"></script>
+
 <script>
 // ═══════════════════════════════════════════════════════════════
 // PSL5 PREDICTIONS — predictions.js
 // Backend: JSONBin.io
 // ═══════════════════════════════════════════════════════════════
 
-const BIN_ID  = '69e085bdaaba88219704f684';
-const API_KEY = '$2a$10$H0dlnXhL4nHxUrqvqIuX.uWVleB8A4engDopnjE.WngFBheJW.1gu';
-const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
-const ADMIN_USER = 'thanos';
-
 const PSL5_PLAYERS = [
   'Dimitris Gavalas','Thanos Chatziiordanou','Giannis Akridas','Giorgos Filippou',
   'Iordanis Aslanis','Spyros Koskinas','Michalis Lerogiannis','Nikolas Moschonas',
   'Iasonas Miliaras','Petros Papaspyropoulos','Vasilis Tziovanis','Giorgos Zacharopoulos',
-  'Stefanos Mavrogiannis','Tzannis Mermigas','Nikos Kalisperis','Stavros Stavropoulos',
-  'Alexandros Kalofolias','Other / Unknown'
+  'Stefanos Mavrogiannis','Tzannis Mermigas','Johan Pilichos','Stavros Stavropoulos',
+  'Aris Tsertos','Sokratis Gkiolias','Panos Chardas'
 ];
 
-// ── JSONBin HELPERS ───────────────────────────────────────────
+// ── Use auth.js DB helpers ────────────────────────────────────
+// pslDbGet / pslDbSet / pslDbInvalidate come from auth.js
+// pslCurrentUser comes from auth.js
 
-let _cache = null;
-
-async function dbGet() {
-  if (_cache) return _cache;
-  const r = await fetch(`${BIN_URL}/latest`, {
-    headers: { 'X-Master-Key': API_KEY }
-  });
-  const j = await r.json();
-  _cache = j.record;
-  return _cache;
-}
-
-async function dbSet(data) {
-  _cache = data;
-  await fetch(BIN_URL, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-    body: JSON.stringify(data)
-  });
-}
-
-async function dbUpdate(fn) {
-  const data = await dbGet();
-  const updated = fn(data);
-  await dbSet(updated);
-  return updated;
-}
-
-// ── SIMPLE HASH ───────────────────────────────────────────────
-
-async function hashPass(pass) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass + 'psl5salt'));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-// ── SESSION ───────────────────────────────────────────────────
-
-let currentUser = null;
-
-function loadSession() {
-  const s = localStorage.getItem('psl5pred_session');
-  return s ? JSON.parse(s) : null;
-}
-function saveSession(u) { localStorage.setItem('psl5pred_session', JSON.stringify(u)); }
-function clearSession()  { localStorage.removeItem('psl5pred_session'); }
+function dbGet() { return pslDbGet(); }
+function dbSet(data) { return pslDbSet(data); }
+function invalidate() { pslDbInvalidate(); }
+function currentUser() { return pslCurrentUser; }
 
 // ── TOAST ─────────────────────────────────────────────────────
 
@@ -418,9 +356,9 @@ function showAuthTab(tab) {
 function showApp() {
   document.getElementById('screen-auth').classList.add('hidden');
   document.getElementById('screen-app').classList.remove('hidden');
-  document.getElementById('tn-user-label') && (document.getElementById('tn-user-label').innerHTML = `Signed in as <strong>${currentUser.username}</strong>`);
-  document.getElementById('mobile-user-label').textContent = currentUser.username;
-  if (currentUser.isAdmin) {
+  document.getElementById('tn-user-label') && (document.getElementById('tn-user-label').innerHTML = `Signed in as <strong>${pslCurrentUser.username}</strong>`);
+  document.getElementById('mobile-user-label').textContent = pslCurrentUser.username;
+  if (pslCurrentUser.isAdmin) {
     document.getElementById('btn-tab-admin').style.display = '';
     document.getElementById('mob-btn-admin').style.display = '';
   }
@@ -455,91 +393,39 @@ function mobileTab(id) {
   showTab(id);
 }
 
-// ── AUTH ──────────────────────────────────────────────────────
-
-async function doLogin() {
-  const raw  = document.getElementById('li-user').value.trim();
-  const pass = document.getElementById('li-pass').value;
-  const errEl = document.getElementById('li-err');
-  errEl.classList.add('hidden');
-
-  if (!raw || !pass) { errEl.textContent = 'Please fill in all fields.'; errEl.classList.remove('hidden'); return; }
-
-  setLoading('li-btn', true);
-  try {
-    const db = await dbGet();
-    const users = db.users || {};
-    const user = Object.values(users).find(u =>
-      u.username.toLowerCase() === raw.toLowerCase() ||
-      u.email.toLowerCase() === raw.toLowerCase()
-    );
-    if (!user) { errEl.textContent = 'Account not found.'; errEl.classList.remove('hidden'); return; }
-    const hash = await hashPass(pass);
-    if (hash !== user.passHash) { errEl.textContent = 'Incorrect password.'; errEl.classList.remove('hidden'); return; }
-
-    currentUser = { username: user.username, email: user.email, isAdmin: user.username.toLowerCase() === ADMIN_USER.toLowerCase() };
-    saveSession(currentUser);
-    showApp();
-  } catch(e) {
-    errEl.textContent = 'Connection error. Try again.'; errEl.classList.remove('hidden');
-  } finally {
-    setLoading('li-btn', false);
-  }
-}
-
-async function doRegister() {
-  const username = document.getElementById('rg-user').value.trim();
-  const email    = document.getElementById('rg-email').value.trim().toLowerCase();
-  const pass     = document.getElementById('rg-pass').value;
-  const errEl    = document.getElementById('rg-err');
-  errEl.classList.add('hidden');
-
-  if (!username || !email || !pass) { errEl.textContent = 'Please fill in all fields.'; errEl.classList.remove('hidden'); return; }
-  if (username.length < 2)          { errEl.textContent = 'Username must be at least 2 characters.'; errEl.classList.remove('hidden'); return; }
-  if (pass.length < 6)              { errEl.textContent = 'Password must be at least 6 characters.'; errEl.classList.remove('hidden'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email.'; errEl.classList.remove('hidden'); return; }
-
-  setLoading('rg-btn', true);
-  try {
-    const db = await dbGet();
-    const users = db.users || {};
-    if (users[username.toLowerCase()]) { errEl.textContent = 'Username already taken.'; errEl.classList.remove('hidden'); return; }
-    if (Object.values(users).find(u => u.email === email)) { errEl.textContent = 'Email already registered.'; errEl.classList.remove('hidden'); return; }
-
-    const passHash = await hashPass(pass);
-    users[username.toLowerCase()] = { username, email, passHash, joined: new Date().toISOString() };
-    await dbSet({ ...db, users });
-
-    currentUser = { username, email, isAdmin: username.toLowerCase() === ADMIN_USER.toLowerCase() };
-    saveSession(currentUser);
-    showApp();
-    toast(`Welcome, ${username}! 🎉`, 'ok');
-  } catch(e) {
-    errEl.textContent = 'Connection error. Try again.'; errEl.classList.remove('hidden');
-  } finally {
-    setLoading('rg-btn', false);
-  }
-}
+// ── LOGOUT (delegate to auth.js) ─────────────────────────────
 
 function doLogout() {
-  clearSession();
-  _cache = null;
-  currentUser = null;
+  pslLogout(); // auth.js handles session clear + widget update
   document.getElementById('screen-auth').classList.remove('hidden');
   document.getElementById('screen-app').classList.add('hidden');
   document.getElementById('btn-tab-admin').style.display = 'none';
   document.getElementById('mob-btn-admin').style.display = 'none';
   closeMobileMenu();
-  showAuthTab('login');
 }
 
-function setLoading(btnId, loading) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  btn.disabled = loading;
-  btn.textContent = loading ? 'Please wait...' : btn.dataset.label;
+// ── BOOT — wired to auth.js callbacks ────────────────────────
+// auth.js calls onPslLogin() when user signs in from anywhere
+
+function onPslLogin(user) {
+  showApp();
 }
 
+function onPslLogout() {
+  document.getElementById('screen-auth').classList.remove('hidden');
+  document.getElementById('screen-app').classList.add('hidden');
+  document.getElementById('btn-tab-admin').style.display = 'none';
+  document.getElementById('mob-btn-admin').style.display = 'none';
+  closeMobileMenu();
+}
+
+// On page load — check if already logged in via auth.js
+window.addEventListener('load', () => {
+  if (pslCurrentUser) {
+    showApp();
+  }
+  // else auth screen is already visible
+});
 // ── PREDICT TAB ───────────────────────────────────────────────
 
 async function loadPredictTab() {
@@ -549,7 +435,7 @@ async function loadPredictTab() {
     const db = await dbGet();
     const matchdays = db.matchdays || [];
     const allPreds  = db.predictions || {};
-    const myPreds   = allPreds[currentUser.username.toLowerCase()] || {};
+    const myPreds   = allPreds[pslCurrentUser.username.toLowerCase()] || {};
     const open   = matchdays.filter(md => md.status === 'open');
     const scored = matchdays.filter(md => md.status === 'scored');
 
@@ -674,7 +560,7 @@ async function submitPredictions(mdId) {
   const md = (db.matchdays||[]).find(m => m.id === mdId);
   if (!md) return;
 
-  const uKey = currentUser.username.toLowerCase();
+  const uKey = pslCurrentUser.username.toLowerCase();
   const allPreds = db.predictions || {};
   if (!allPreds[uKey]) allPreds[uKey] = {};
   if (!allPreds[uKey][mdId]) allPreds[uKey][mdId] = {};
@@ -713,9 +599,9 @@ async function loadLeaderboard() {
       return;
     }
 
-    const myScore = scores[currentUser.username.toLowerCase()];
+    const myScore = scores[pslCurrentUser.username.toLowerCase()];
     if (myScore) {
-      const myPos = sorted.findIndex(s => s.username.toLowerCase() === currentUser.username.toLowerCase()) + 1;
+      const myPos = sorted.findIndex(s => s.username.toLowerCase() === pslCurrentUser.username.toLowerCase()) + 1;
       myEl.style.display = '';
       myEl.innerHTML = `<div class="card-title mb12">Your Stats</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
@@ -732,7 +618,7 @@ async function loadLeaderboard() {
 
     lbEl.innerHTML = `<div class="card-title mb12">Season Standings</div>` +
       sorted.map((s,i) => {
-        const isMe = s.username.toLowerCase() === currentUser.username.toLowerCase();
+        const isMe = s.username.toLowerCase() === pslCurrentUser.username.toLowerCase();
         return `<div class="lb-row">
           <div class="lb-rank ${rankCls(i)}">${rankIcon(i)||i+1}</div>
           <div class="f1">
@@ -783,7 +669,7 @@ async function loadMyPicks() {
     const db = await dbGet();
     const matchdays = db.matchdays || [];
     const allPreds  = db.predictions || {};
-    const myPreds   = allPreds[currentUser.username.toLowerCase()] || {};
+    const myPreds   = allPreds[pslCurrentUser.username.toLowerCase()] || {};
 
     if (!Object.keys(myPreds).length) {
       el.innerHTML = emptyHtml('🎯', 'No predictions yet', 'Head to the Predict tab to make your picks!');
@@ -839,7 +725,7 @@ async function loadMyPicks() {
 // ── ADMIN ─────────────────────────────────────────────────────
 
 async function loadAdmin() {
-  if (!currentUser.isAdmin) return;
+  if (!pslCurrentUser.isAdmin) return;
   const el = document.getElementById('admin-content');
   el.innerHTML = loadingHtml();
   try {
@@ -977,36 +863,6 @@ function emptyHtml(icon, title, sub) {
   </div>`;
 }
 
-// ── BOOT ──────────────────────────────────────────────────────
-
-(async function init() {
-  // Show auth immediately — don't wait for network
-  showAuthTab('login');
-
-  // Set button labels
-  const liBtnEl = document.getElementById('li-btn');
-  const rgBtnEl = document.getElementById('rg-btn');
-  if (liBtnEl) liBtnEl.dataset.label = 'Sign In';
-  if (rgBtnEl) rgBtnEl.dataset.label = 'Create Account';
-
-  // Try to restore session in background
-  const session = loadSession();
-  if (session) {
-    try {
-      const db = await dbGet();
-      const users = db.users || {};
-      const uData = users[session.username.toLowerCase()];
-      if (uData) {
-        currentUser = { username: uData.username, email: uData.email, isAdmin: uData.username.toLowerCase() === ADMIN_USER.toLowerCase() };
-        showApp();
-        return;
-      }
-    } catch(e) {
-      // Session restore failed, stay on auth screen
-    }
-    clearSession();
-  }
-})();
 
 </script>
 
