@@ -161,6 +161,12 @@ document.head.appendChild(s);
 
 // ── Widget HTML ───────────────────────────────────────────────
 function renderWidget() {
+// Keep trying until body exists
+if (!document.body) {
+setTimeout(renderWidget, 50);
+return;
+}
+
 const existing = document.getElementById(‘psl-auth-widget’);
 if (existing) existing.remove();
 
@@ -342,14 +348,13 @@ if(uData){
 pslCurrentUser={username:uData.username,email:uData.email,isAdmin:uData.username.toLowerCase()===PSL_ADMIN};
 pslSaveSession(pslCurrentUser);
 } else { pslClearSession(); }
-}catch(e){ pslCurrentUser=session; } // offline fallback
+}catch(e){ pslCurrentUser=session; }
 }
 renderWidget();
 if(pslCurrentUser&&typeof onPslLogin===‘function’) onPslLogin(pslCurrentUser);
 }
 
-if(document.readyState===‘loading’){
+// Fire immediately AND on DOMContentLoaded as fallback
+injectAuthStyles();
+renderWidget(); // shows widget immediately (body may or may not exist yet — renderWidget handles it)
 document.addEventListener(‘DOMContentLoaded’, pslAuthInit);
-} else {
-pslAuthInit();
-}
