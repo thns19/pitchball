@@ -36,6 +36,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+  position: relative;
 }
 .logo { font-size: 48px; font-weight: 500; letter-spacing: -2px; margin-bottom: 4px; }
 .logo span { color: #4caf7d; }
@@ -137,11 +138,10 @@ body {
 
 <script>
 // ── PSL AUTH (inlined) ────────────────────────────────────────
-const PSL_BIN_ID  = ‘69e2a95836566621a8c55b2a‘;
-const PSL_API_KEY = ’$2a$10$H0dlnXhL4nHxUrqvqIuX.uWVleB8A4engDopnjE.WngFBheJW.1gu‘;
+const PSL_BIN_ID  = '';  // ← paste your Bin ID
+const PSL_API_KEY = '';  // ← paste your X-Master-Key
 const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
 const PSL_ADMIN   = 'thanos';
-const REACTIONS = ['❤️','🥎','🔥','😂','💥','😭','👏'];
 
 let _pslDbCache=null,_pslDbFetching=null;
 async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(`${PSL_BIN_URL}/latest`,{headers:{'X-Master-Key':PSL_API_KEY}}).then(r=>r.json()).then(j=>{_pslDbCache=j.record;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
