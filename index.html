@@ -1,79 +1,29 @@
 <!DOCTYPE html>
+
 <html lang="en">
-<!-- Google Analytics (blocked until consent) -->
-<!-- Google tag (gtag.js) -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitchball Super League</title>
+<meta name="description" content="Welcome to the new home of Pitchball, the new and rising sport born in Athens, Greece.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-XNNGKMS578');
+
+function loadAnalytics() {
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+window.gtag = gtag;
+gtag(‘js’, new Date());
+gtag(‘config’, ‘G-XNNGKMS578’);
+}
 </script>
-<script>
 
-  function loadAnalytics() {
-    var script1 = document.createElement("script");
-    script1.async = true;
-    script1.src = "https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578";
-    document.head.appendChild(script1);
-
-    script1.onload = function () {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      window.gtag = gtag;
-
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXX');
-    };
-  }
-</script>
-<head>
-<!-- Cookie Banner -->
-<div id="cookie-banner" style="
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #222;
-  color: white;
-  padding: 15px;
-  text-align: center;
-  font-family: Arial;
-  z-index: 1000;
-">
-  This site uses cookies for analytics.
-  <button onclick="acceptCookies()" style="margin-left:10px;">Accept</button>
-  <button onclick="rejectCookies()" style="margin-left:5px;">Reject</button>
-</div>
-
-<script>
-  function acceptCookies() {
-    localStorage.setItem("cookieConsent", "accepted");
-    document.getElementById("cookie-banner").style.display = "none";
-    loadAnalytics();
-  }
-
-  function rejectCookies() {
-    localStorage.setItem("cookieConsent", "rejected");
-    document.getElementById("cookie-banner").style.display = "none";
-  }
-
-  window.onload = function () {
-    const consent = localStorage.getItem("cookieConsent");
-
-    if (consent === "accepted") {
-      document.getElementById("cookie-banner").style.display = "none";
-      loadAnalytics();
-    } else if (consent === "rejected") {
-      document.getElementById("cookie-banner").style.display = "none";
-    }
-  };
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pitchball Super League</title>
-  <meta name="description" content="Welcome to the new home of Pitchball, the new and rising sport born in Athens, Greece.">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -105,42 +55,87 @@ body {
 .pill-live { background: #1a3d2a; color: #4caf7d; }
 .pill-done { background: #1a1a1a; color: #555; border: 1px solid #2a2a2a; }
 .footer { margin-top: 3rem; font-size: 12px; color: #333; }
+.nav { margin-top: 1rem; }
+.back { font-size: 13px; color: #555; text-decoration: none; }
+.back:hover { color: #aaa; }
+
+/* Cookie banner */
+#cookie-banner {
+  position: fixed; bottom: 0; width: 100%;
+  background: #222; color: white; padding: 15px;
+  text-align: center; font-family: Arial; z-index: 1000;
+}
+#cookie-banner button {
+  margin-left: 8px; padding: 4px 12px; cursor: pointer;
+  background: #333; color: #fff; border: 1px solid #555; border-radius: 4px;
+}
 </style>
+
 </head>
 <body>
-  <div class="logo">Pitch<span>ball</span></div>
-  <p class="tagline">Super League — All Seasons</p>
-  <div class="seasons">
-    <a href="players/index.html" class="season-row" style="border-color:#f5c842;">
-      <div><div class="season-num" style="color:#f5c842;">Players</div><div class="season-meta">Every player in Pitchball history</div></div>
-      <span class="season-badge-pill" style="background:#3d3010;color:#f5c842;">Encyclopedia</span>
-    </a>
-    <a href="psl5/index.html" class="season-row current">
-      <div><div class="season-num">PSL5</div><div class="season-meta">The fifth and ongoing season of PSL, consisting of 18 teams.</div></div>
-      <span class="season-badge-pill pill-live">LIVE</span>
-    </a>
-    <a href="psl4/hub.html" class="season-row">
-      <div><div class="season-num">PSL4</div><div class="season-meta">The fourth PSL Season, consisting of 18 teams.</div></div>
-      <span class="season-badge-pill pill-done">Completed</span>
-    </a>
-    <a href="psl3/hub.html" class="season-row">
-      <div><div class="season-num">PSL3</div><div class="season-meta">The third PSL Season, consisting of 14 teams. Also the first instance of the PSL Cup.</div></div>
-      <span class="season-badge-pill pill-done">Completed</span>
-    </a>
-    <a href="psl2/hub.html" class="season-row">
-      <div><div class="season-num">PSL2</div><div class="season-meta">The second PSL Season, consisting of 16 teams.</div></div>
-      <span class="season-badge-pill pill-done">Completed</span>
-    </a>
-    <a href="psl1/hub.html" class="season-row">
-      <div><div class="season-num">PSL1</div><div class="season-meta">The first PSL Season, consisting of 8 teams.</div></div>
-      <span class="season-badge-pill pill-done">Completed</span>
-    </a>
-  </div>
-  
-    <div class="nav">
-    <a href="changelog.html" class="back">Changelog</a>
-  </div>
-  <p class="footer">Created by Thanos · Pitchball © 2026</p>
-<script src="/auth_test.js"></script>
+
+<!-- Cookie Banner -->
+
+<div id="cookie-banner" style="display:none;">
+  This site uses cookies for analytics.
+  <button onclick="acceptCookies()">Accept</button>
+  <button onclick="rejectCookies()">Reject</button>
+</div>
+
+<div class="logo">Pitch<span>ball</span></div>
+<p class="tagline">Super League — All Seasons</p>
+
+<div class="seasons">
+  <a href="players/index.html" class="season-row" style="border-color:#f5c842;">
+    <div><div class="season-num" style="color:#f5c842;">Players</div><div class="season-meta">Every player in Pitchball history</div></div>
+    <span class="season-badge-pill" style="background:#3d3010;color:#f5c842;">Encyclopedia</span>
+  </a>
+  <a href="psl5/index.html" class="season-row current">
+    <div><div class="season-num">PSL5</div><div class="season-meta">The fifth and ongoing season of PSL, consisting of 18 teams.</div></div>
+    <span class="season-badge-pill pill-live">LIVE</span>
+  </a>
+  <a href="psl4/hub.html" class="season-row">
+    <div><div class="season-num">PSL4</div><div class="season-meta">The fourth PSL Season, consisting of 18 teams.</div></div>
+    <span class="season-badge-pill pill-done">Completed</span>
+  </a>
+  <a href="psl3/hub.html" class="season-row">
+    <div><div class="season-num">PSL3</div><div class="season-meta">The third PSL Season, consisting of 14 teams. Also the first instance of the PSL Cup.</div></div>
+    <span class="season-badge-pill pill-done">Completed</span>
+  </a>
+  <a href="psl2/hub.html" class="season-row">
+    <div><div class="season-num">PSL2</div><div class="season-meta">The second PSL Season, consisting of 16 teams.</div></div>
+    <span class="season-badge-pill pill-done">Completed</span>
+  </a>
+  <a href="psl1/hub.html" class="season-row">
+    <div><div class="season-num">PSL1</div><div class="season-meta">The first PSL Season, consisting of 8 teams.</div></div>
+    <span class="season-badge-pill pill-done">Completed</span>
+  </a>
+</div>
+
+<div class="nav">
+  <a href="changelog.html" class="back">Changelog</a>
+</div>
+<p class="footer">Created by Thanos · Pitchball © 2026</p>
+
+<script>
+  function acceptCookies() {
+    localStorage.setItem("cookieConsent", "accepted");
+    document.getElementById("cookie-banner").style.display = "none";
+    loadAnalytics();
+  }
+  function rejectCookies() {
+    localStorage.setItem("cookieConsent", "rejected");
+    document.getElementById("cookie-banner").style.display = "none";
+  }
+  const consent = localStorage.getItem("cookieConsent");
+  if (!consent) {
+    document.getElementById("cookie-banner").style.display = "block";
+  } else if (consent === "accepted") {
+    loadAnalytics();
+  }
+</script>
+
+<script src="/auth.js"></script>
+
 </body>
 </html>
