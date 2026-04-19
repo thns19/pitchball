@@ -20,6 +20,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
   background-attachment:fixed;background-repeat:no-repeat;position:relative;}
 body::before{content:'';position:fixed;inset:0;background:rgba(20,22,10,0.72);pointer-events:none;z-index:0;}
 
+/* Hide the global floating auth widget on this page — user info is in the nav */
+#psl-auth-widget{display:none!important;}
+
 .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 1.25rem 5rem;}
 .page-top{padding:1.5rem 0 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .page-title{font-family:var(–fd);font-size:2.2rem;letter-spacing:1px;}
@@ -192,7 +195,8 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 <div id="screen-app" class="hidden">
   <nav class="top-nav">
     <div class="top-nav-inner">
-      <div class="tn-brand">PSL5</div>
+      <a href="/psl5/index.html" style="font-size:12px;color:var(--muted);text-decoration:none;margin-right:12px;flex-shrink:0;white-space:nowrap;">← PSL5</a>
+      <div class="tn-brand">Predictions</div>
       <div class="tn-tabs">
         <button class="tn-tab active" onclick="showTab('predict')" data-tab="predict">Predict</button>
         <button class="tn-tab" onclick="showTab('leaderboard')" data-tab="leaderboard">Leaderboard</button>
@@ -264,8 +268,8 @@ const PSL5_PLAYERS = [
 ];
 
 // ── Inline auth block ─────────────────────────────────────────
-const PSL_BIN_ID  = '69e2a95836566621a8c55b2a';
-const PSL_API_KEY = ['$2a$10$H0dlnXhL4nHxUrqvqIuX', 'uWVleB8A4engDopnjE.WngFBheJW.1gu'].join('.');
+const PSL_BIN_ID  = '';
+const PSL_API_KEY = ['',''].join('.');
 const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
 const PSL_ADMIN   = 'thanos';
 const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
