@@ -17,16 +17,14 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;
   background-image:url("bg.png");background-size:cover;background-position:center;
-  background-attachment:fixed;background-repeat:no-repeat;}
+  background-attachment:fixed;background-repeat:no-repeat;position:relative;}
 body::before{content:'';position:fixed;inset:0;background:rgba(20,22,10,0.72);pointer-events:none;z-index:0;}
 
-/* layout */
 .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 1.25rem 5rem;}
 .page-top{padding:1.5rem 0 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .page-title{font-family:var(–fd);font-size:2.2rem;letter-spacing:1px;}
 .page-sub{font-size:12px;color:var(–muted);margin-top:2px;}
 
-/* nav */
 .top-nav{background:rgba(29,24,16,0.85);border-bottom:1px solid var(–border);backdrop-filter:blur(10px);
 position:sticky;top:0;z-index:100;padding:0 1.25rem;}
 .top-nav-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;height:48px;}
@@ -36,13 +34,10 @@ position:sticky;top:0;z-index:100;padding:0 1.25rem;}
 border:none;border-bottom:2px solid transparent;background:none;transition:all 0.15s;white-space:nowrap;}
 .tn-tab:hover{color:var(–text);}
 .tn-tab.active{color:var(–accent);border-bottom-color:var(–accent);}
-
-/* hamburger */
 .tn-hamburger{background:none;border:1px solid var(–border2);border-radius:8px;
 color:var(–text);cursor:pointer;padding:6px 10px;font-size:18px;flex-shrink:0;line-height:1;}
 .tn-hamburger:hover{background:rgba(215,219,200,0.06);}
 
-/* mobile menu dropdown */
 .mobile-menu{display:none;position:fixed;top:48px;left:0;right:0;bottom:0;z-index:99;
 background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
 .mobile-menu.open{display:block;}
@@ -56,18 +51,15 @@ background:none;width:100%;text-align:left;transition:all 0.1s;}
 .mobile-menu-user{padding:12px 1.5rem;font-size:12px;color:var(–muted);}
 .mobile-menu-user strong{color:var(–text);}
 
-/* desktop: show tabs, hide hamburger */
 @media(min-width:600px){
 .tn-tabs{display:flex;}
 .tn-hamburger{display:none;}
 .tn-brand{margin-right:1.5rem;}
 }
 
-/* cards */
 .card{background:#363C1F;border:1px solid var(–border);border-radius:14px;padding:1.25rem;margin-bottom:1rem;}
 .card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(–muted);margin-bottom:12px;}
 
-/* buttons */
 .btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
 border:none;transition:all 0.15s;font-family:var(–fb);}
 .btn-primary{background:var(–accent);color:#000;}
@@ -83,7 +75,6 @@ border:none;transition:all 0.15s;font-family:var(–fb);}
 .btn-block{width:100%;text-align:center;display:block;}
 .btn:disabled{opacity:0.3;cursor:not-allowed;transform:none!important;}
 
-/* inputs */
 input,select,textarea{background:rgba(255,255,255,0.06);border:1px solid var(–border2);color:var(–text);
 border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(–fb);width:100%;transition:border-color 0.15s;}
 input:focus,select:focus{outline:none;border-color:var(–accent);}
@@ -92,7 +83,6 @@ label{font-size:12px;color:var(–muted);margin-bottom:5px;display:block;font-we
 .form-group{margin-bottom:14px;}
 .form-error{font-size:11px;color:var(–red);margin-top:4px;}
 
-/* badges */
 .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.3px;}
 .bg-green{background:rgba(57,200,119,0.15);color:var(–accent);border:1px solid rgba(57,200,119,0.25);}
 .bg-gold{background:rgba(245,200,66,0.15);color:var(–gold);border:1px solid rgba(245,200,66,0.25);}
@@ -101,7 +91,6 @@ label{font-size:12px;color:var(–muted);margin-bottom:5px;display:block;font-we
 .bg-muted{background:rgba(255,255,255,0.07);color:var(–muted);border:1px solid var(–border);}
 .bg-purple{background:rgba(192,132,252,0.15);color:#c084fc;border:1px solid rgba(192,132,252,0.25);}
 
-/* leaderboard */
 .lb-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
 .lb-row:last-child{border-bottom:none;}
 .lb-rank{font-family:var(–fd);font-size:1.4rem;width:32px;flex-shrink:0;text-align:center;color:var(–muted);}
@@ -113,15 +102,11 @@ label{font-size:12px;color:var(–muted);margin-bottom:5px;display:block;font-we
 .lb-pts{font-family:var(–fd);font-size:1.5rem;color:var(–text);}
 .lb-breakdown{font-size:11px;color:var(–muted);}
 
-/* matchday card */
-.md-card{background:#363C1F;border:1px solid var(–border);border-radius:14px;
-margin-bottom:1rem;overflow:hidden;}
-.md-header{padding:12px 16px;border-bottom:1px solid var(–border);
-display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.md-card{background:#363C1F;border:1px solid var(–border);border-radius:14px;margin-bottom:1rem;overflow:hidden;}
+.md-header{padding:12px 16px;border-bottom:1px solid var(–border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .md-title{font-family:var(–fd);font-size:1.2rem;letter-spacing:0.5px;}
 .md-body{padding:0;}
 
-/* match prediction row */
 .pred-match{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05);}
 .pred-match:last-child{border-bottom:none;}
 .pred-teams{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
@@ -140,41 +125,29 @@ display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .pts-0{background:rgba(255,255,255,0.06);color:var(–muted);}
 .actual-score{font-size:12px;color:var(–muted);}
 
-/* auth screens */
 .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;position:relative;z-index:1;}
-.auth-card{background:#363C1F;border:1px solid var(–border2);border-radius:16px;
-padding:2rem;width:100%;max-width:400px;}
+.auth-card{background:#363C1F;border:1px solid var(–border2);border-radius:16px;padding:2rem;width:100%;max-width:400px;text-align:center;}
 .auth-logo{font-family:var(–fd);font-size:2.5rem;letter-spacing:2px;text-align:center;margin-bottom:4px;}
 .auth-logo span{color:var(–accent);}
 .auth-sub{font-size:13px;color:var(–muted);text-align:center;margin-bottom:2rem;}
 .auth-switch{font-size:12px;color:var(–muted);text-align:center;margin-top:1rem;}
 .auth-switch a{color:var(–accent);cursor:pointer;text-decoration:none;}
-.auth-switch a:hover{text-decoration:underline;}
-.divider-text{display:flex;align-items:center;gap:10px;margin:1rem 0;}
-.divider-text::before,.divider-text::after{content:’’;flex:1;height:1px;background:var(–border);}
-.divider-text span{font-size:11px;color:var(–muted);}
 
-/* admin panel */
 .admin-section{margin-bottom:1.5rem;}
-.admin-match-row{display:flex;align-items:center;gap:10px;padding:10px 0;
-border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;}
+.admin-match-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;}
 .admin-match-row:last-child{border-bottom:none;}
 .admin-teams{flex:1;font-size:13px;font-weight:500;min-width:120px;}
 .admin-score-inputs{display:flex;align-items:center;gap:6px;}
 .admin-score-inputs input{width:48px!important;text-align:center;padding:6px 4px!important;}
 
-/* stat mini */
-.stat-row-mini{display:flex;align-items:center;justify-content:space-between;
-padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.stat-row-mini{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .stat-row-mini:last-child{border-bottom:none;}
 
-/* loading */
 .loading{text-align:center;padding:3rem;color:var(–muted);font-size:13px;}
 .spinner{display:inline-block;width:20px;height:20px;border:2px solid var(–border2);
 border-top-color:var(–accent);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:10px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* toast */
 .toast{position:fixed;bottom:24px;right:24px;background:#363C1F;border:1px solid var(–border2);
 border-radius:10px;padding:11px 16px;font-size:13px;z-index:500;
 transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer-events:none;}
@@ -183,10 +156,8 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 .toast.t-err{border-color:rgba(231,76,60,0.5);color:var(–red);}
 .toast.t-info{border-color:rgba(93,173,226,0.5);color:var(–blue);}
 
-/* score pill */
 .score-pill{font-size:13px;font-weight:700;color:var(–accent);min-width:44px;text-align:center;}
 
-/* helpers */
 .hidden{display:none!important;}
 .flex{display:flex;}.gap8{gap:8px;}.gap12{gap:12px;}.ac{align-items:center;}.jb{justify-content:space-between;}.f1{flex:1;}
 .mb8{margin-bottom:8px;}.mb12{margin-bottom:12px;}.mb16{margin-bottom:16px;}.mb24{margin-bottom:24px;}
@@ -202,25 +173,35 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 </head>
 <body>
 
+<!-- NOT LOGGED IN SCREEN -->
+
+<div id="screen-auth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">PSL <span>5</span></div>
+      <div class="auth-sub">Predictions League</div>
+      <p style="font-size:13px;color:rgba(215,219,200,0.5);margin-bottom:1.5rem;line-height:1.6;">Sign in to your PSL account to make predictions and compete on the leaderboard.</p>
+      <button class="btn btn-primary btn-block" onclick="pslOpenAuth('login')">Sign In</button>
+      <div class="auth-switch mt12">No account? <a onclick="pslOpenAuth('register')">Register here</a></div>
+    </div>
+  </div>
+</div>
+
 <!-- MAIN APP -->
 
 <div id="screen-app" class="hidden">
   <nav class="top-nav">
     <div class="top-nav-inner">
       <div class="tn-brand">PSL5</div>
-      <!-- Desktop tabs -->
       <div class="tn-tabs">
         <button class="tn-tab active" onclick="showTab('predict')" data-tab="predict">Predict</button>
         <button class="tn-tab" onclick="showTab('leaderboard')" data-tab="leaderboard">Leaderboard</button>
         <button class="tn-tab" onclick="showTab('my-picks')" data-tab="my-picks">My Picks</button>
         <button class="tn-tab" onclick="showTab('admin')" data-tab="admin" id="btn-tab-admin" style="display:none;">⚙ Admin</button>
       </div>
-      <!-- Hamburger -->
-      <button class="tn-hamburger" onclick="toggleMobileMenu()" id="hamburger-btn">☰</button>
+      <button class="tn-hamburger" onclick="toggleMobileMenu()">☰</button>
     </div>
   </nav>
-
-  <!-- Mobile dropdown menu -->
 
   <div class="mobile-menu" id="mobile-menu" onclick="closeMobileMenu()">
     <div class="mobile-menu-inner" onclick="event.stopPropagation()">
@@ -236,49 +217,32 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
   </div>
 
   <div class="wrap">
+    <div id="tab-predict" class="tab-pane">
+      <div class="page-top">
+        <div><div class="page-title">Predictions</div><div class="page-sub">Pick scores and MVPs for open matchdays</div></div>
+      </div>
+      <div id="predict-content"><div class="loading"><div class="spinner"></div><br>Loading matchdays...</div></div>
+    </div>
 
 ```
-<!-- PREDICT TAB -->
-<div id="tab-predict" class="tab-pane">
-  <div class="page-top">
-    <div>
-      <div class="page-title">Predictions</div>
-      <div class="page-sub">Pick scores and MVPs for open matchdays</div>
-    </div>
-  </div>
-  <div id="predict-content"><div class="loading"><div class="spinner"></div><br>Loading matchdays...</div></div>
-</div>
-
-<!-- LEADERBOARD TAB -->
 <div id="tab-leaderboard" class="tab-pane hidden">
   <div class="page-top">
-    <div>
-      <div class="page-title">Leaderboard</div>
-      <div class="page-sub">Season standings · Exact score = 3pts · Correct result = 1pt · MVP = +1pt</div>
-    </div>
+    <div><div class="page-title">Leaderboard</div><div class="page-sub">Season standings · Exact score = 3pts · Correct result = 1pt · MVP = +1pt</div></div>
   </div>
   <div class="card mb16" id="lb-my-stats" style="display:none;"></div>
   <div class="card" id="lb-list"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
 </div>
 
-<!-- MY PICKS TAB -->
 <div id="tab-my-picks" class="tab-pane hidden">
   <div class="page-top">
-    <div>
-      <div class="page-title">My Picks</div>
-      <div class="page-sub">Your prediction history and points breakdown</div>
-    </div>
+    <div><div class="page-title">My Picks</div><div class="page-sub">Your prediction history and points breakdown</div></div>
   </div>
   <div id="my-picks-content"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
 </div>
 
-<!-- ADMIN TAB -->
 <div id="tab-admin" class="tab-pane hidden">
   <div class="page-top">
-    <div>
-      <div class="page-title">Admin Panel</div>
-      <div class="page-sub">Manage matchdays, open/close predictions, enter results</div>
-    </div>
+    <div><div class="page-title">Admin Panel</div><div class="page-sub">Manage matchdays, open/close predictions, enter results</div></div>
     <button class="btn btn-primary btn-sm" onclick="adminCreateMatchday()">+ New Matchday</button>
   </div>
   <div id="admin-content"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
@@ -288,18 +252,9 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
   </div>
 </div>
 
-<!-- TOAST -->
-
 <div id="toast" class="toast"></div>
 
-<script src="/auth.js"></script>
-
 <script>
-// ═══════════════════════════════════════════════════════════════
-// PSL5 PREDICTIONS — predictions.js
-// Backend: JSONBin.io
-// ═══════════════════════════════════════════════════════════════
-
 const PSL5_PLAYERS = [
   'Dimitris Gavalas','Thanos Chatziiordanou','Giannis Akridas','Giorgos Filippou',
   'Iordanis Aslanis','Spyros Koskinas','Michalis Lerogiannis','Nikolas Moschonas',
@@ -308,16 +263,38 @@ const PSL5_PLAYERS = [
   'Aris Tsertos','Sokratis Gkiolias','Panos Chardas'
 ];
 
-// ── Use auth.js DB helpers ────────────────────────────────────
-// pslDbGet / pslDbSet / pslDbInvalidate come from auth.js
-// pslCurrentUser comes from auth.js
+// ── Inline auth block ─────────────────────────────────────────
+const PSL_BIN_ID  = '';
+const PSL_API_KEY = ['',''].join('.');
+const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
+const PSL_ADMIN   = 'thanos';
+const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
+let _pslDbCache=null,_pslDbFetching=null;
+async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(`${PSL_BIN_URL}/latest`,{headers:{'X-Master-Key':PSL_API_KEY}}).then(r=>r.json()).then(j=>{_pslDbCache=j.record;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
+async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':PSL_API_KEY},body:JSON.stringify(data)});}
+function pslDbInvalidate(){_pslDbCache=null;}
+let pslCurrentUser=null;
+function pslLoadSession(){const s=localStorage.getItem('psl_session');return s?JSON.parse(s):null;}
+function pslSaveSession(u){localStorage.setItem('psl_session',JSON.stringify(u));}
+function pslClearSession(){localStorage.removeItem('psl_session');}
+async function pslHashPass(pass){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass+'psl5salt'));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function injectAuthStyles(){if(document.getElementById('psl-auth-styles'))return;const s=document.createElement('style');s.id='psl-auth-styles';s.textContent=`#psl-auth-widget{position:fixed;top:12px;right:14px;z-index:99999;font-family:system-ui,sans-serif;}.psl-aw-btn{display:flex;align-items:center;gap:7px;background:rgba(20,20,20,0.92);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;backdrop-filter:blur(8px);font-size:12px;color:#fff;font-weight:500;}.psl-aw-btn:hover{border-color:rgba(57,200,119,0.6);}.psl-aw-avatar{width:22px;height:22px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;}.psl-aw-avatar.guest{background:rgba(255,255,255,0.15);color:#fff;font-size:13px;}.psl-aw-drop{position:absolute;top:calc(100% + 8px);right:0;background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.5);display:none;}.psl-aw-drop.open{display:block;}.psl-aw-drop-header{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:10px;}.psl-aw-drop-header strong{display:block;font-size:14px;color:#fff;margin-bottom:1px;}.psl-aw-drop-item{display:block;width:100%;padding:11px 14px;font-size:13px;font-weight:500;color:#fff;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.1s;font-family:inherit;text-decoration:none;}.psl-aw-drop-item:hover{background:rgba(255,255,255,0.06);}.psl-aw-drop-item.danger{color:#e74c3c;}.psl-aw-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:2px 0;}.psl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}.psl-modal{background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:100%;max-width:380px;overflow:hidden;}.psl-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}.psl-modal-title{font-size:16px;font-weight:600;color:#fff;}.psl-modal-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:20px;line-height:1;padding:2px;font-family:inherit;}.psl-modal-bd{padding:1.5rem;}.psl-form-group{margin-bottom:14px;}.psl-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:5px;display:block;font-weight:500;}.psl-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;box-sizing:border-box;}.psl-input:focus{outline:none;border-color:#39c877;}.psl-input::placeholder{color:rgba(255,255,255,0.3);}.psl-btn-primary{width:100%;padding:10px;background:#39c877;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}.psl-btn-primary:hover{background:#2fb366;}.psl-btn-primary:disabled{opacity:0.4;cursor:not-allowed;}.psl-err{font-size:11px;color:#e74c3c;margin-top:6px;}.psl-ok{font-size:11px;color:#39c877;margin-top:6px;}.psl-tabs{display:flex;margin-bottom:1.5rem;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;gap:3px;}.psl-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;}.psl-tab.active{background:#39c877;color:#000;}.psl-avatar-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);display:block;margin:0 auto 12px;}`;document.head.appendChild(s);}
+function renderWidget(){if(!document.body){setTimeout(renderWidget,50);return;}const ex=document.getElementById('psl-auth-widget');if(ex)ex.remove();const w=document.createElement('div');w.id='psl-auth-widget';if(pslCurrentUser){const avatarBtn=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=psl-aw-avatar>${pslCurrentUser.username[0].toUpperCase()}</div>'">`:`<div class="psl-aw-avatar">${pslCurrentUser.username[0].toUpperCase()}</div>`;const avatarDrop=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">`:`<div class="psl-aw-avatar" style="width:36px;height:36px;font-size:15px;">${pslCurrentUser.username[0].toUpperCase()}</div>`;w.innerHTML=`<div class="psl-aw-btn" onclick="pslToggleDrop()">${avatarBtn}<span>${pslCurrentUser.username}</span><span style="color:rgba(255,255,255,0.3);font-size:10px;">▾</span></div><div class="psl-aw-drop" id="psl-aw-drop"><div class="psl-aw-drop-header">${avatarDrop}<div><strong>${pslCurrentUser.username}</strong>${pslCurrentUser.isAdmin?'<span style="color:#39c877;font-size:10px;">⚡ Admin</span>':''}</div></div><a href="/psl5/predindex.html" class="psl-aw-drop-item">🎯 Predictions</a><button class="psl-aw-drop-item" onclick="pslOpenProfile()">🖼️ Edit Profile Picture</button><hr class="psl-aw-divider"><button class="psl-aw-drop-item danger" onclick="pslLogout()">Sign out</button></div>`;}else{w.innerHTML=`<div class="psl-aw-btn" onclick="pslOpenAuth('login')"><div class="psl-aw-avatar guest">👤</div><span>Sign in</span></div>`;}document.body.appendChild(w);document.addEventListener('click',e=>{if(!w.contains(e.target)){const d=document.getElementById('psl-aw-drop');if(d)d.classList.remove('open');}},{capture:true});}
+function pslToggleDrop(){document.getElementById('psl-aw-drop')?.classList.toggle('open');}
+function pslOpenProfile(){document.getElementById('psl-aw-drop')?.classList.remove('open');if(_authModal)_authModal.remove();const o=document.createElement('div');o.className='psl-modal-overlay';o.id='psl-auth-modal';const current=pslCurrentUser.avatar||'';o.innerHTML=`<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">Profile Picture</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd">${current?`<img src="${current}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`:`<div style="width:72px;height:72px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#000;margin:0 auto 12px;" id="psl-avatar-preview">${pslCurrentUser.username[0].toUpperCase()}</div>`}<div class="psl-form-group"><label class="psl-label">Image URL</label><input class="psl-input" id="psl-avatar-url" placeholder="https://..." value="${current}" oninput="pslPreviewAvatar(this.value)"></div><p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:14px;line-height:1.5;">Paste a direct link to any image. Tip: upload to <a href="https://imgur.com" target="_blank" style="color:#39c877;">imgur.com</a> and use the direct link.</p><div class="psl-err" id="psl-avatar-err" style="display:none;"></div><div class="psl-ok" id="psl-avatar-ok" style="display:none;">Saved!</div><button class="psl-btn-primary" id="psl-avatar-btn" onclick="pslSaveAvatar()">Save</button>${current?`<button style="width:100%;padding:9px;background:none;border:1px solid rgba(231,76,60,0.3);color:#e74c3c;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;" onclick="pslRemoveAvatar()">Remove picture</button>`:''}</div></div>`;o.addEventListener('click',e=>{if(e.target===o)pslCloseAuth();});document.body.appendChild(o);_authModal=o;}
+function pslPreviewAvatar(url){const el=document.getElementById('psl-avatar-preview');if(!el)return;if(url){el.outerHTML=`<img src="${url}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`; }}
+async function pslSaveAvatar(){const url=document.getElementById('psl-avatar-url').value.trim();const err=document.getElementById('psl-avatar-err');const ok=document.getElementById('psl-avatar-ok');const btn=document.getElementById('psl-avatar-btn');err.style.display='none';ok.style.display='none';btn.disabled=true;btn.textContent='Saving...';try{const db=await pslDbGet();const users=db.users||{};const uKey=pslCurrentUser.username.toLowerCase();if(!users[uKey]){err.textContent='User not found.';err.style.display='block';return;}users[uKey].avatar=url||null;await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser.avatar=url||null;pslSaveSession(pslCurrentUser);ok.style.display='block';setTimeout(()=>{pslCloseAuth();renderWidget();},800);}catch(e){err.textContent='Connection error. Try again.';err.style.display='block';}finally{btn.disabled=false;btn.textContent='Save';}}
+async function pslRemoveAvatar(){document.getElementById('psl-avatar-url').value='';await pslSaveAvatar();}
+let _authModal=null;
+function pslOpenAuth(tab='login'){if(_authModal)_authModal.remove();const o=document.createElement('div');o.className='psl-modal-overlay';o.id='psl-auth-modal';o.innerHTML=`<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">PSL Account</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd"><div class="psl-tabs"><button class="psl-tab ${tab==='login'?'active':''}" onclick="pslSwitchTab('login')">Sign In</button><button class="psl-tab ${tab==='register'?'active':''}" onclick="pslSwitchTab('register')">Register</button></div><div id="psl-tab-login" ${tab!=='login'?'style="display:none"':''}><div class="psl-form-group"><label class="psl-label">Username or Email</label><input class="psl-input" id="psl-li-user" placeholder="Enter username or email"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-li-pass" type="password" placeholder="Enter password"></div><div class="psl-err" id="psl-li-err" style="display:none"></div><button class="psl-btn-primary" id="psl-li-btn" onclick="pslDoLogin()">Sign In</button></div><div id="psl-tab-register" ${tab!=='register'?'style="display:none"':''}><div class="psl-form-group"><label class="psl-label">Username</label><input class="psl-input" id="psl-rg-user" placeholder="Choose a username" maxlength="20"></div><div class="psl-form-group"><label class="psl-label">Email</label><input class="psl-input" id="psl-rg-email" type="email" placeholder="your@email.com"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-rg-pass" type="password" placeholder="Min. 6 characters"></div><div class="psl-err" id="psl-rg-err" style="display:none"></div><button class="psl-btn-primary" id="psl-rg-btn" onclick="pslDoRegister()">Create Account</button></div></div></div>`;o.addEventListener('click',e=>{if(e.target===o)pslCloseAuth();});document.body.appendChild(o);_authModal=o;}
+function pslCloseAuth(){_authModal?.remove();_authModal=null;}
+function pslSwitchTab(tab){document.getElementById('psl-tab-login').style.display=tab==='login'?'':'none';document.getElementById('psl-tab-register').style.display=tab==='register'?'':'none';document.querySelectorAll('.psl-tab').forEach((b,i)=>b.classList.toggle('active',i===(tab==='login'?0:1)));}
+async function pslDoLogin(){const raw=document.getElementById('psl-li-user').value.trim();const pass=document.getElementById('psl-li-pass').value;const e=document.getElementById('psl-li-err');e.style.display='none';if(!raw||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}const btn=document.getElementById('psl-li-btn');btn.disabled=true;btn.textContent='Signing in...';try{const db=await pslDbGet();const users=db.users||{};const user=Object.values(users).find(u=>u.username.toLowerCase()===raw.toLowerCase()||u.email.toLowerCase()===raw.toLowerCase());if(!user){e.textContent='Account not found.';e.style.display='block';return;}const hash=await pslHashPass(pass);if(hash!==user.passHash){e.textContent='Incorrect password.';e.style.display='block';return;}pslCurrentUser={username:user.username,email:user.email,avatar:user.avatar||null,isAdmin:user.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();onPslLogin(pslCurrentUser);}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Sign In';}}
+async function pslDoRegister(){const username=document.getElementById('psl-rg-user').value.trim();const email=document.getElementById('psl-rg-email').value.trim().toLowerCase();const pass=document.getElementById('psl-rg-pass').value;const e=document.getElementById('psl-rg-err');e.style.display='none';if(!username||!email||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}if(username.length<2){e.textContent='Username too short.';e.style.display='block';return;}if(pass.length<6){e.textContent='Password must be 6+ characters.';e.style.display='block';return;}const btn=document.getElementById('psl-rg-btn');btn.disabled=true;btn.textContent='Creating...';try{const db=await pslDbGet();const users=db.users||{};if(users[username.toLowerCase()]){e.textContent='Username taken.';e.style.display='block';return;}const passHash=await pslHashPass(pass);users[username.toLowerCase()]={username,email,passHash,avatar:null,joined:new Date().toISOString()};await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser={username,email,avatar:null,isAdmin:username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();onPslLogin(pslCurrentUser);}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Create Account';}}
+function pslLogout(){pslClearSession();pslCurrentUser=null;pslDbInvalidate();renderWidget();onPslLogout();}
+async function pslAuthInit(){injectAuthStyles();const session=pslLoadSession();if(session){try{const db=await pslDbGet();const uData=(db.users||{})[session.username.toLowerCase()];if(uData){pslCurrentUser={username:uData.username,email:uData.email,avatar:uData.avatar||null,isAdmin:uData.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);}else{pslClearSession();}}catch(err){pslCurrentUser=session;}}renderWidget();if(pslCurrentUser)onPslLogin(pslCurrentUser);}
 
-function dbGet() { return pslDbGet(); }
-function dbSet(data) { return pslDbSet(data); }
-function invalidate() { pslDbInvalidate(); }
-function currentUser() { return pslCurrentUser; }
-
-// ── TOAST ─────────────────────────────────────────────────────
+// ── Predictions app ───────────────────────────────────────────
 
 function toast(msg, type='info') {
   const el = document.getElementById('toast');
@@ -326,23 +303,9 @@ function toast(msg, type='info') {
   setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-// ── SCREEN / TAB ──────────────────────────────────────────────
-
-function showAuthTab(tab) {
-  const login = document.getElementById('auth-login');
-  const register = document.getElementById('auth-register');
-  if (login)    login.classList.toggle('hidden', tab !== 'login');
-  if (register) register.classList.toggle('hidden', tab !== 'register');
-  const liErr = document.getElementById('li-err');
-  const rgErr = document.getElementById('rg-err');
-  if (liErr) liErr.classList.add('hidden');
-  if (rgErr) rgErr.classList.add('hidden');
-}
-
 function showApp() {
   document.getElementById('screen-auth').classList.add('hidden');
   document.getElementById('screen-app').classList.remove('hidden');
-  document.getElementById('tn-user-label') && (document.getElementById('tn-user-label').innerHTML = `Signed in as <strong>${pslCurrentUser.username}</strong>`);
   document.getElementById('mobile-user-label').textContent = pslCurrentUser.username;
   if (pslCurrentUser.isAdmin) {
     document.getElementById('btn-tab-admin').style.display = '';
@@ -366,23 +329,12 @@ function showTab(id) {
   if (id === 'admin')       loadAdmin();
 }
 
-function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-}
-
-function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('open');
-}
-
-function mobileTab(id) {
-  closeMobileMenu();
-  showTab(id);
-}
-
-// ── LOGOUT (delegate to auth.js) ─────────────────────────────
+function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
+function closeMobileMenu()  { document.getElementById('mobile-menu').classList.remove('open'); }
+function mobileTab(id) { closeMobileMenu(); showTab(id); }
 
 function doLogout() {
-  pslLogout(); // auth.js handles session clear + widget update
+  pslLogout();
   document.getElementById('screen-auth').classList.remove('hidden');
   document.getElementById('screen-app').classList.add('hidden');
   document.getElementById('btn-tab-admin').style.display = 'none';
@@ -390,13 +342,7 @@ function doLogout() {
   closeMobileMenu();
 }
 
-// ── BOOT — wired to auth.js callbacks ────────────────────────
-// auth.js calls onPslLogin() when user signs in from anywhere
-
-function onPslLogin(user) {
-  showApp();
-}
-
+function onPslLogin(user) { showApp(); }
 function onPslLogout() {
   document.getElementById('screen-auth').classList.remove('hidden');
   document.getElementById('screen-app').classList.add('hidden');
@@ -405,126 +351,47 @@ function onPslLogout() {
   closeMobileMenu();
 }
 
-// On page load — check if already logged in via auth.js
-window.addEventListener('load', () => {
-  if (pslCurrentUser) {
-    showApp();
-  }
-  // else auth screen is already visible
-});
 // ── PREDICT TAB ───────────────────────────────────────────────
-
 async function loadPredictTab() {
   const el = document.getElementById('predict-content');
   el.innerHTML = loadingHtml();
   try {
-    const db = await dbGet();
+    const db = await pslDbGet();
     const matchdays = db.matchdays || [];
     const allPreds  = db.predictions || {};
     const myPreds   = allPreds[pslCurrentUser.username.toLowerCase()] || {};
     const open   = matchdays.filter(md => md.status === 'open');
     const scored = matchdays.filter(md => md.status === 'scored');
-
-    if (!open.length && !scored.length) {
-      el.innerHTML = emptyHtml('⏳', 'No open matchdays', "Predictions aren't open yet. Check back soon!");
-      return;
-    }
-
+    if (!open.length && !scored.length) { el.innerHTML = emptyHtml('⏳','No open matchdays',"Predictions aren't open yet. Check back soon!"); return; }
     let html = '';
-    if (open.length) {
-      html += `<div class="card-title mb8">🟢 Open for predictions</div>`;
-      open.forEach(md => { html += renderPredictMatchday(md, myPreds[md.id]||{}, false) + '<div class="mb16"></div>'; });
-    }
-    if (scored.length) {
-      html += `<div class="card-title mb8 mt8">✅ Results in</div>`;
-      scored.slice().reverse().forEach(md => { html += renderPredictMatchday(md, myPreds[md.id]||{}, true) + '<div class="mb16"></div>'; });
-    }
+    if (open.length) { html += `<div class="card-title mb8">🟢 Open for predictions</div>`; open.forEach(md => { html += renderPredictMatchday(md, myPreds[md.id]||{}, false) + '<div class="mb16"></div>'; }); }
+    if (scored.length) { html += `<div class="card-title mb8 mt8">✅ Results in</div>`; scored.slice().reverse().forEach(md => { html += renderPredictMatchday(md, myPreds[md.id]||{}, true) + '<div class="mb16"></div>'; }); }
     el.innerHTML = html;
-  } catch(e) {
-    el.innerHTML = errorHtml();
-  }
+  } catch(e) { el.innerHTML = errorHtml(); }
 }
 
 function renderPredictMatchday(md, myPreds, isScored) {
   const predicted = Object.keys(myPreds).length;
-  const statusBadge = isScored
-    ? `<span class="badge bg-green">Scored</span>`
-    : `<span class="badge bg-blue">Open · ${predicted}/${md.matches.length} submitted</span>`;
-
-  const matchesHtml = md.matches.map(m =>
-    isScored ? renderScoredMatch(m, myPreds[m.id]||{}) : renderPredictMatch(m, myPreds[m.id]||{}, md.id)
-  ).join('');
-
-  const submitBtn = !isScored
-    ? `<div style="padding:12px 16px;border-top:1px solid var(--border);">
-        <button class="btn btn-primary" onclick="submitPredictions('${md.id}')">💾 Save Predictions</button>
-        <span class="tm fs11" style="margin-left:10px;">Saves all picks for this matchday</span>
-       </div>` : '';
-
-  return `<div class="md-card">
-    <div class="md-header">
-      <div><div class="md-title">${md.title}</div><div class="tm fs11 mt8">${md.matches.length} matches</div></div>
-      ${statusBadge}
-    </div>
-    <div class="md-body">${matchesHtml}</div>
-    ${submitBtn}
-  </div>`;
+  const statusBadge = isScored ? `<span class="badge bg-green">Scored</span>` : `<span class="badge bg-blue">Open · ${predicted}/${md.matches.length} submitted</span>`;
+  const matchesHtml = md.matches.map(m => isScored ? renderScoredMatch(m, myPreds[m.id]||{}) : renderPredictMatch(m, myPreds[m.id]||{}, md.id)).join('');
+  const submitBtn = !isScored ? `<div style="padding:12px 16px;border-top:1px solid var(--border);"><button class="btn btn-primary" onclick="submitPredictions('${md.id}')">💾 Save Predictions</button><span class="tm fs11" style="margin-left:10px;">Saves all picks for this matchday</span></div>` : '';
+  return `<div class="md-card"><div class="md-header"><div><div class="md-title">${md.title}</div><div class="tm fs11 mt8">${md.matches.length} matches</div></div>${statusBadge}</div><div class="md-body">${matchesHtml}</div>${submitBtn}</div>`;
 }
 
 function renderPredictMatch(m, pred, mdId) {
   const mvpOpts = PSL5_PLAYERS.map(p => `<option value="${p}" ${pred.mvp===p?'selected':''}>${p}</option>`).join('');
-  return `<div class="pred-match">
-    <div class="pred-teams">
-      <span class="pred-team right">${m.home}</span>
-      <span class="pred-vs">vs</span>
-      <span class="pred-team">${m.away}</span>
-    </div>
-    <div class="pred-inputs">
-      <input type="number" class="score-input" min="0" max="20" placeholder="—"
-        id="pred-hs-${m.id}" value="${pred.hs !== undefined ? pred.hs : ''}">
-      <span class="pred-dash">–</span>
-      <input type="number" class="score-input" min="0" max="20" placeholder="—"
-        id="pred-as-${m.id}" value="${pred.as !== undefined ? pred.as : ''}">
-    </div>
-    <div class="pred-mvp">
-      <select id="pred-mvp-${m.id}">
-        <option value="">— Pick MVP —</option>
-        ${mvpOpts}
-      </select>
-    </div>
-  </div>`;
+  return `<div class="pred-match"><div class="pred-teams"><span class="pred-team right">${m.home}</span><span class="pred-vs">vs</span><span class="pred-team">${m.away}</span></div><div class="pred-inputs"><input type="number" class="score-input" min="0" max="20" placeholder="—" id="pred-hs-${m.id}" value="${pred.hs !== undefined ? pred.hs : ''}"><span class="pred-dash">–</span><input type="number" class="score-input" min="0" max="20" placeholder="—" id="pred-as-${m.id}" value="${pred.as !== undefined ? pred.as : ''}"></div><div class="pred-mvp"><select id="pred-mvp-${m.id}"><option value="">— Pick MVP —</option>${mvpOpts}</select></div></div>`;
 }
 
 function renderScoredMatch(m, pred) {
-  if (pred.hs === undefined) {
-    return `<div class="pred-match">
-      <div class="pred-teams">
-        <span class="pred-team right">${m.home}</span><span class="pred-vs">vs</span><span class="pred-team">${m.away}</span>
-      </div>
-      <div class="pred-result mt8">
-        <span class="badge bg-muted">No prediction</span>
-        <span class="actual-score">Result: ${m.hs}–${m.as}${m.mvp?` · MVP: ${m.mvp}`:''}</span>
-      </div>
-    </div>`;
-  }
+  if (pred.hs === undefined) return `<div class="pred-match"><div class="pred-teams"><span class="pred-team right">${m.home}</span><span class="pred-vs">vs</span><span class="pred-team">${m.away}</span></div><div class="pred-result mt8"><span class="badge bg-muted">No prediction</span><span class="actual-score">Result: ${m.hs}–${m.as}${m.mvp?` · MVP: ${m.mvp}`:''}</span></div></div>`;
   const pts = calcPoints(pred, m);
   const ptsCls = pts >= 3 ? 'pts-3' : pts >= 1 ? 'pts-1' : 'pts-0';
   const breakdown = [];
   if (pred.hs == m.hs && pred.as == m.as) breakdown.push('exact score ✓');
   else if (resultMatch(pred, m)) breakdown.push('correct result ✓');
   if (pred.mvp && m.mvp && pred.mvp === m.mvp) breakdown.push('MVP ✓');
-
-  return `<div class="pred-match">
-    <div class="pred-teams">
-      <span class="pred-team right">${m.home}</span><span class="pred-vs">vs</span><span class="pred-team">${m.away}</span>
-    </div>
-    <div class="pred-result mt8">
-      <span class="pts-earned ${ptsCls}">+${pts} pts</span>
-      <span class="actual-score">Your pick: ${pred.hs}–${pred.as}${pred.mvp?` · ${pred.mvp}`:''}</span>
-      <span class="actual-score">Result: ${m.hs}–${m.as}${m.mvp?` · MVP: ${m.mvp}`:''}</span>
-    </div>
-    ${breakdown.length ? `<div class="fs11 ta mt8">${breakdown.join(' · ')}</div>` : ''}
-  </div>`;
+  return `<div class="pred-match"><div class="pred-teams"><span class="pred-team right">${m.home}</span><span class="pred-vs">vs</span><span class="pred-team">${m.away}</span></div><div class="pred-result mt8"><span class="pts-earned ${ptsCls}">+${pts} pts</span><span class="actual-score">Your pick: ${pred.hs}–${pred.as}${pred.mvp?` · ${pred.mvp}`:''}</span><span class="actual-score">Result: ${m.hs}–${m.as}${m.mvp?` · MVP: ${m.mvp}`:''}</span></div>${breakdown.length?`<div class="fs11 ta mt8">${breakdown.join(' · ')}</div>`:''}</div>`;
 }
 
 function calcPoints(pred, match) {
@@ -542,81 +409,47 @@ function resultMatch(pred, match) {
 }
 
 async function submitPredictions(mdId) {
-  const db = await dbGet();
+  const db = await pslDbGet();
   const md = (db.matchdays||[]).find(m => m.id === mdId);
   if (!md) return;
-
   const uKey = pslCurrentUser.username.toLowerCase();
   const allPreds = db.predictions || {};
   if (!allPreds[uKey]) allPreds[uKey] = {};
   if (!allPreds[uKey][mdId]) allPreds[uKey][mdId] = {};
-
   md.matches.forEach(m => {
     const hs  = document.getElementById(`pred-hs-${m.id}`)?.value;
     const as  = document.getElementById(`pred-as-${m.id}`)?.value;
     const mvp = document.getElementById(`pred-mvp-${m.id}`)?.value;
-    allPreds[uKey][mdId][m.id] = {
-      hs:  hs  !== '' ? parseInt(hs)  : undefined,
-      as:  as  !== '' ? parseInt(as)  : undefined,
-      mvp: mvp || undefined,
-    };
+    allPreds[uKey][mdId][m.id] = { hs: hs!==''?parseInt(hs):undefined, as: as!==''?parseInt(as):undefined, mvp: mvp||undefined };
   });
-
-  await dbSet({ ...db, predictions: allPreds });
-  _cache = null;
+  await pslDbSet({ ...db, predictions: allPreds });
+  pslDbInvalidate();
   toast('Predictions saved! ✅', 'ok');
 }
 
 // ── LEADERBOARD ───────────────────────────────────────────────
-
 async function loadLeaderboard() {
   const lbEl = document.getElementById('lb-list');
   const myEl = document.getElementById('lb-my-stats');
   lbEl.innerHTML = loadingHtml();
-
   try {
-    const db = await dbGet();
+    const db = await pslDbGet();
     const scores = computeAllScores(db);
     const sorted = Object.values(scores).sort((a,b) => b.total - a.total);
-
-    if (!sorted.length) {
-      lbEl.innerHTML = `<div class="tc tm" style="padding:2rem;font-size:13px;">No scores yet — predictions are still open!</div>`;
-      myEl.style.display = 'none';
-      return;
-    }
-
+    if (!sorted.length) { lbEl.innerHTML = `<div class="tc tm" style="padding:2rem;font-size:13px;">No scores yet!</div>`; myEl.style.display='none'; return; }
     const myScore = scores[pslCurrentUser.username.toLowerCase()];
     if (myScore) {
       const myPos = sorted.findIndex(s => s.username.toLowerCase() === pslCurrentUser.username.toLowerCase()) + 1;
       myEl.style.display = '';
-      myEl.innerHTML = `<div class="card-title mb12">Your Stats</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-          ${[{v:`#${myPos}`,l:'Rank'},{v:myScore.total,l:'Points'},{v:myScore.exact,l:'Exact'},{v:myScore.mvp,l:'MVPs'}]
-            .map(x=>`<div style="text-align:center;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 6px;">
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--text);">${x.v}</div>
-              <div class="tm fs11">${x.l}</div>
-            </div>`).join('')}
-        </div>`;
-    } else { myEl.style.display = 'none'; }
-
+      myEl.innerHTML = `<div class="card-title mb12">Your Stats</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">${[{v:`#${myPos}`,l:'Rank'},{v:myScore.total,l:'Points'},{v:myScore.exact,l:'Exact'},{v:myScore.mvp,l:'MVPs'}].map(x=>`<div style="text-align:center;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 6px;"><div style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--text);">${x.v}</div><div class="tm fs11">${x.l}</div></div>`).join('')}</div>`;
+    } else { myEl.style.display='none'; }
     const rankIcon = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
     const rankCls  = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
-
-    lbEl.innerHTML = `<div class="card-title mb12">Season Standings</div>` +
-      sorted.map((s,i) => {
-        const isMe = s.username.toLowerCase() === pslCurrentUser.username.toLowerCase();
-        return `<div class="lb-row">
-          <div class="lb-rank ${rankCls(i)}">${rankIcon(i)||i+1}</div>
-          <div class="f1">
-            <div class="lb-name ${isMe?'me':''}">${s.username}${isMe?' ★':''}</div>
-            <div class="lb-breakdown">${s.exact} exact · ${s.result} results · ${s.mvp} MVPs</div>
-          </div>
-          <div class="lb-pts">${s.total}<span class="tm" style="font-size:11px;"> pts</span></div>
-        </div>`;
-      }).join('');
-  } catch(e) {
-    lbEl.innerHTML = errorHtml();
-  }
+    lbEl.innerHTML = `<div class="card-title mb12">Season Standings</div>` + sorted.map((s,i) => {
+      const isMe = s.username.toLowerCase() === pslCurrentUser.username.toLowerCase();
+      return `<div class="lb-row"><div class="lb-rank ${rankCls(i)}">${rankIcon(i)||i+1}</div><div class="f1"><div class="lb-name ${isMe?'me':''}">${s.username}${isMe?' ★':''}</div><div class="lb-breakdown">${s.exact} exact · ${s.result} results · ${s.mvp} MVPs</div></div><div class="lb-pts">${s.total}<span class="tm" style="font-size:11px;"> pts</span></div></div>`;
+    }).join('');
+  } catch(e) { lbEl.innerHTML = errorHtml(); }
 }
 
 function computeAllScores(db) {
@@ -625,7 +458,6 @@ function computeAllScores(db) {
   const users     = db.users || {};
   const scored    = matchdays.filter(md => md.status === 'scored');
   const scores    = {};
-
   for (const [uKey, userPreds] of Object.entries(allPreds)) {
     let total=0, exact=0, result=0, mvp=0;
     for (const md of scored) {
@@ -647,30 +479,20 @@ function computeAllScores(db) {
 }
 
 // ── MY PICKS ──────────────────────────────────────────────────
-
 async function loadMyPicks() {
   const el = document.getElementById('my-picks-content');
   el.innerHTML = loadingHtml();
   try {
-    const db = await dbGet();
+    const db = await pslDbGet();
     const matchdays = db.matchdays || [];
-    const allPreds  = db.predictions || {};
-    const myPreds   = allPreds[pslCurrentUser.username.toLowerCase()] || {};
-
-    if (!Object.keys(myPreds).length) {
-      el.innerHTML = emptyHtml('🎯', 'No predictions yet', 'Head to the Predict tab to make your picks!');
-      return;
-    }
-
-    let html = '';
-    let grandTotal = 0;
-
+    const myPreds   = (db.predictions||{})[pslCurrentUser.username.toLowerCase()] || {};
+    if (!Object.keys(myPreds).length) { el.innerHTML = emptyHtml('🎯','No predictions yet','Head to the Predict tab to make your picks!'); return; }
+    let html = '', grandTotal = 0;
     matchdays.slice().reverse().forEach(md => {
       const mdPreds = myPreds[md.id];
       if (!mdPreds) return;
       const isScored = md.status === 'scored';
       let mdPts = 0;
-
       const rows = md.matches.map(m => {
         const pred = mdPreds[m.id];
         if (!pred || pred.hs === undefined) return `<div class="stat-row-mini"><span class="tm fs12">${m.home} vs ${m.away}</span><span class="badge bg-muted">Skipped</span></div>`;
@@ -678,89 +500,39 @@ async function loadMyPicks() {
           const pts = calcPoints(pred, m);
           mdPts += pts; grandTotal += pts;
           const bc = pts >= 3 ? 'bg-green' : pts >= 1 ? 'bg-gold' : 'bg-muted';
-          return `<div class="stat-row-mini">
-            <div>
-              <div class="fs12 fw6">${m.home} vs ${m.away}</div>
-              <div class="tm" style="font-size:11px;">Pick: ${pred.hs}–${pred.as}${pred.mvp?` · ${pred.mvp}`:''} · Result: ${m.hs}–${m.as}</div>
-            </div>
-            <span class="badge ${bc}">${pts>0?'+':''}${pts} pts</span>
-          </div>`;
-        } else {
-          return `<div class="stat-row-mini">
-            <div class="fs12 fw6">${m.home} vs ${m.away}</div>
-            <span class="tm fs11">${pred.hs}–${pred.as}${pred.mvp?` · MVP: ${pred.mvp}`:''}</span>
-          </div>`;
+          return `<div class="stat-row-mini"><div><div class="fs12 fw6">${m.home} vs ${m.away}</div><div class="tm" style="font-size:11px;">Pick: ${pred.hs}–${pred.as}${pred.mvp?` · ${pred.mvp}`:''} · Result: ${m.hs}–${m.as}</div></div><span class="badge ${bc}">${pts>0?'+':''}${pts} pts</span></div>`;
         }
+        return `<div class="stat-row-mini"><div class="fs12 fw6">${m.home} vs ${m.away}</div><span class="tm fs11">${pred.hs}–${pred.as}${pred.mvp?` · MVP: ${pred.mvp}`:''}</span></div>`;
       }).join('');
-
       const badge = isScored ? `<span class="badge bg-green">+${mdPts} pts</span>` : `<span class="badge bg-blue">Pending</span>`;
-      html += `<div class="card mb12">
-        <div class="flex jb ac mb12">
-          <div class="card-title" style="margin:0;">${md.title}</div>${badge}
-        </div>${rows}
-      </div>`;
+      html += `<div class="card mb12"><div class="flex jb ac mb12"><div class="card-title" style="margin:0;">${md.title}</div>${badge}</div>${rows}</div>`;
     });
-
-    el.innerHTML = `<div class="card mb16 tc" style="padding:1.25rem;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--gold);">${grandTotal}</div>
-      <div class="tm fs12">Total Points Earned</div>
-    </div>${html}`;
+    el.innerHTML = `<div class="card mb16 tc" style="padding:1.25rem;"><div style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--gold);">${grandTotal}</div><div class="tm fs12">Total Points Earned</div></div>${html}`;
   } catch(e) { el.innerHTML = errorHtml(); }
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
-
 async function loadAdmin() {
   if (!pslCurrentUser.isAdmin) return;
   const el = document.getElementById('admin-content');
   el.innerHTML = loadingHtml();
   try {
-    const db = await dbGet();
+    const db = await pslDbGet();
     const matchdays = db.matchdays || [];
-
-    if (!matchdays.length) {
-      el.innerHTML = `<div class="card tc tm" style="padding:2rem;font-size:13px;">No matchdays yet. Click "+ New Matchday" to create one.</div>`;
-      return;
-    }
-
+    if (!matchdays.length) { el.innerHTML = `<div class="card tc tm" style="padding:2rem;font-size:13px;">No matchdays yet. Click "+ New Matchday" to create one.</div>`; return; }
     let html = '';
     matchdays.slice().reverse().forEach(md => {
       const sbCls = md.status==='open'?'bg-blue':md.status==='scored'?'bg-green':'bg-muted';
       const sbLbl = md.status==='open'?'Open':md.status==='scored'?'Scored':'Closed';
-
       const matchRows = md.matches.map(m => {
         const inputs = md.status !== 'scored'
-          ? `<div class="admin-score-inputs">
-              <input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;">
-              <span class="tm">–</span>
-              <input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;">
-              <select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;">
-                <option value="">— MVP —</option>
-                ${PSL5_PLAYERS.map(p=>`<option value="${p}" ${m.mvp===p?'selected':''}>${p}</option>`).join('')}
-              </select>
-            </div>`
+          ? `<div class="admin-score-inputs"><input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><span class="tm">–</span><input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"><option value="">— MVP —</option>${PSL5_PLAYERS.map(p=>`<option value="${p}" ${m.mvp===p?'selected':''}>${p}</option>`).join('')}</select></div>`
           : `<span class="score-pill">${m.hs}–${m.as}</span><span class="tm fs11" style="margin-left:8px;">${m.mvp||'No MVP'}</span>`;
         return `<div class="admin-match-row"><div class="admin-teams">${m.home} <span class="tm">vs</span> ${m.away}</div>${inputs}</div>`;
       }).join('');
-
-      const actions = md.status==='scored'
-        ? `<span class="tm fs12">Scoring complete ✅</span>`
-        : `${md.status==='closed'
-            ?`<button class="btn btn-primary btn-sm" onclick="adminSetStatus('${md.id}','open')">Open Predictions</button>`
-            :`<button class="btn btn-danger btn-sm" onclick="adminSetStatus('${md.id}','closed')">Close Predictions</button>`}
-           <button class="btn btn-outline btn-sm" onclick="adminEnterResults('${md.id}')">Enter Results & Score</button>`;
-
-      html += `<div class="card mb16">
-        <div class="flex jb ac mb12">
-          <div><div style="font-size:15px;font-weight:600;">${md.title}</div><div class="tm fs11 mt8">${md.matches.length} matches</div></div>
-          <div class="flex gap8 ac" style="flex-wrap:wrap;">
-            <span class="badge ${sbCls}">${sbLbl}</span>
-            <button class="btn btn-danger btn-sm" onclick="adminDeleteMatchday('${md.id}')">Delete</button>
-          </div>
-        </div>
-        <div style="margin-bottom:12px;">${matchRows}</div>
-        <div class="flex gap8" style="flex-wrap:wrap;">${actions}</div>
-      </div>`;
+      const actions = md.status==='scored' ? `<span class="tm fs12">Scoring complete ✅</span>`
+        : `${md.status==='closed'?`<button class="btn btn-primary btn-sm" onclick="adminSetStatus('${md.id}','open')">Open Predictions</button>`:`<button class="btn btn-danger btn-sm" onclick="adminSetStatus('${md.id}','closed')">Close Predictions</button>`}<button class="btn btn-outline btn-sm" onclick="adminEnterResults('${md.id}')">Enter Results & Score</button>`;
+      html += `<div class="card mb16"><div class="flex jb ac mb12"><div><div style="font-size:15px;font-weight:600;">${md.title}</div><div class="tm fs11 mt8">${md.matches.length} matches</div></div><div class="flex gap8 ac" style="flex-wrap:wrap;"><span class="badge ${sbCls}">${sbLbl}</span><button class="btn btn-danger btn-sm" onclick="adminDeleteMatchday('${md.id}')">Delete</button></div></div><div style="margin-bottom:12px;">${matchRows}</div><div class="flex gap8" style="flex-wrap:wrap;">${actions}</div></div>`;
     });
     el.innerHTML = html;
   } catch(e) { el.innerHTML = errorHtml(); }
@@ -771,7 +543,6 @@ async function adminCreateMatchday() {
   if (!title) return;
   const numMatches = parseInt(prompt('How many matches?', '5'));
   if (!numMatches || numMatches < 1) return;
-
   const matches = [];
   for (let i = 0; i < numMatches; i++) {
     const home = prompt(`Match ${i+1} — Home team:`);
@@ -780,32 +551,30 @@ async function adminCreateMatchday() {
     if (!away) return;
     matches.push({ id: `m${Date.now()}_${i}`, home: home.trim(), away: away.trim(), hs: null, as: null, mvp: null });
   }
-
-  const db = await dbGet();
+  const db = await pslDbGet();
   const matchdays = db.matchdays || [];
   matchdays.push({ id: `md_${Date.now()}`, title: title.trim(), status: 'closed', matches });
-  await dbSet({ ...db, matchdays });
-  _cache = null;
+  await pslDbSet({ ...db, matchdays });
+  pslDbInvalidate();
   toast('Matchday created!', 'ok');
   loadAdmin();
 }
 
 async function adminSetStatus(mdId, status) {
-  const db = await dbGet();
+  const db = await pslDbGet();
   const md = (db.matchdays||[]).find(m => m.id === mdId);
   if (!md) return;
   md.status = status;
-  await dbSet(db);
-  _cache = null;
+  await pslDbSet(db);
+  pslDbInvalidate();
   toast(`Matchday is now ${status}.`, 'ok');
   loadAdmin();
 }
 
 async function adminEnterResults(mdId) {
-  const db = await dbGet();
+  const db = await pslDbGet();
   const md = (db.matchdays||[]).find(m => m.id === mdId);
   if (!md) return;
-
   let allFilled = true;
   md.matches.forEach(m => {
     const hs  = document.getElementById(`res-hs-${m.id}`)?.value;
@@ -814,42 +583,31 @@ async function adminEnterResults(mdId) {
     if (hs === '' || as === '') { allFilled = false; return; }
     m.hs = parseInt(hs); m.as = parseInt(as); m.mvp = mvp || null;
   });
-
   if (!allFilled) { toast('Please fill in all scores first.', 'err'); return; }
   md.status = 'scored';
-  await dbSet(db);
-  _cache = null;
+  await pslDbSet(db);
+  pslDbInvalidate();
   toast('Results saved and matchday scored! ✅', 'ok');
   loadAdmin();
 }
 
 async function adminDeleteMatchday(mdId) {
   if (!confirm('Delete this matchday? This cannot be undone.')) return;
-  const db = await dbGet();
+  const db = await pslDbGet();
   db.matchdays = (db.matchdays||[]).filter(m => m.id !== mdId);
-  await dbSet(db);
-  _cache = null;
+  await pslDbSet(db);
+  pslDbInvalidate();
   toast('Matchday deleted.', 'info');
   loadAdmin();
 }
 
-// ── UI HELPERS ────────────────────────────────────────────────
+function loadingHtml() { return `<div class="loading"><div class="spinner"></div><br>Loading...</div>`; }
+function errorHtml()   { return `<div class="card tc tm" style="padding:2rem;">Connection error. Please refresh and try again.</div>`; }
+function emptyHtml(icon, title, sub) { return `<div class="card tc" style="padding:3rem;"><div style="font-size:2rem;margin-bottom:12px;">${icon}</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">${title}</div><div class="tm fs12">${sub}</div></div>`; }
 
-function loadingHtml() {
-  return `<div class="loading"><div class="spinner"></div><br>Loading...</div>`;
-}
-function errorHtml() {
-  return `<div class="card tc tm" style="padding:2rem;">Connection error. Please refresh and try again.</div>`;
-}
-function emptyHtml(icon, title, sub) {
-  return `<div class="card tc" style="padding:3rem;">
-    <div style="font-size:2rem;margin-bottom:12px;">${icon}</div>
-    <div style="font-size:15px;font-weight:600;margin-bottom:6px;">${title}</div>
-    <div class="tm fs12">${sub}</div>
-  </div>`;
-}
-
-
+// ── Boot ──────────────────────────────────────────────────────
+injectAuthStyles();
+document.addEventListener('DOMContentLoaded', pslAuthInit);
 </script>
 
 </body>
