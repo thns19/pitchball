@@ -271,7 +271,7 @@ const PSL5_PLAYERS = [
 const PSL_BIN_ID  = '69e2a95836566621a8c55b2a';
 const PSL_API_KEY = ['$2a$10$H0dlnXhL4nHxUrqvqIuX', 'uWVleB8A4engDopnjE.WngFBheJW.1gu'].join('.');
 const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
-const PSL_ADMIN   = 'thanos';
+const PSL_ADMIN   = ['thanos','Yman'];
 const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
 let _pslDbCache=null,_pslDbFetching=null;
 async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(`${PSL_BIN_URL}/latest`,{headers:{'X-Master-Key':PSL_API_KEY}}).then(r=>r.json()).then(j=>{_pslDbCache=j.record;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
