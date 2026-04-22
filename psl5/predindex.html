@@ -274,8 +274,6 @@ function getMatchPlayers(home, away) {
   return [...(PSL5_SQUADS[home]||[]), ...(PSL5_SQUADS[away]||[])];
 }
 
-];
-
 // ── Inline auth block ─────────────────────────────────────────
 const PSL_BIN_ID  = '69e2a95836566621a8c55b2a';
 const PSL_API_KEY = ['$2a$10$H0dlnXhL4nHxUrqvqIuX', 'uWVleB8A4engDopnjE.WngFBheJW.1gu'].join('.');
@@ -541,7 +539,8 @@ async function loadAdmin() {
       const sbLbl = md.status==='open'?'Open':md.status==='scored'?'Scored':'Closed';
       const matchRows = md.matches.map(m => {
         const inputs = md.status !== 'scored'
-          ? `<div class="admin-score-inputs"><input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><span class="tm">–</span><input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"><option value="">— MVP —</option>${getMatchPlayers(m.home, m.away).map(p => `<option value="${p}" ${pred.mvp===p?'selected':''}>${p}</option>`).join('');}>${p}</option>`).join('')}</select></div>`
+          ? `<div class="admin-score-inputs"><input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><span class="tm">–</span><input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"><option value="">— MVP —</option>${getMatchPlayers(m.home, m.away).map(p=>`<option value="${p}" ${m.mvp===p?'selected':''}>${p}</option>`).join('')}</select></div>
+
           : `<span class="score-pill">${m.hs}–${m.as}</span><span class="tm fs11" style="margin-left:8px;">${m.mvp||'No MVP'}</span>`;
         return `<div class="admin-match-row"><div class="admin-teams">${m.home} <span class="tm">vs</span> ${m.away}</div>${inputs}</div>`;
       }).join('');
