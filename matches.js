@@ -256,7 +256,21 @@ const matchData = [
       {type:"og",team:"Spasmena Mila",player:"Michalis Lerogiannis",hs:1,as:0},
     ]
   },
-  // {type:"",team:"",player:"",hs:0,as:0},
+  {
+    id:"MD6_Babiniotes_YY",
+    home:"Babiniotes",away:"Y&Y",hs:2,as:5,
+    date: "22/04/2026, ??:??AM", mvp:"Giorgos Filippou",
+    events: [
+      {type:"goal",team:"Y&Y",player:"Giannis Akridas",hs:2,as:5},
+      {type:"og",team:"Babiniotes",player:"Giannis Akridas",hs:2,as:4},
+      {type:"goal",team:"Y&Y",player:"Giorgos Filippou",hs:1,as:4},
+      {type:"og",team:"Babiniotes",player:"Giorgos Filippou",hs:1,as:3},
+      {type:"og",team:"Y&Y",player:"Stavros Stavropoulos",hs:0,as:3},
+      {type:"goal",team:"Y&Y",player:"Giorgos Filippou",hs:0,as:2},
+      {type:"og",team:"Y&Y",player:"Stavros Stavropoulos",hs:0,as:1}
+    ]
+  }
+
   // ── ADD MORE MATCHES BELOW ──
   // {
   //   id: "MD{n}_{HomeNoSpaces}_{AwayNoSpaces}",
@@ -277,9 +291,9 @@ const matchData = [
 
 const topScorers = [
   {name: "Dimitris Gavalas",   team: "BADiles",       goals: 24, logo: "logos/badiles.png"},
-  {name: "Jordan Aslanis",   team: "Basement Boys", goals: 22, logo: "logos/basement.png"},
-  {name: "Giannis Akridas",    team: "Y&Y",           goals: 20, logo: "logos/yy.png"},
-  {name: "Giorgos Filippou",   team: "Y&Y",           goals: 20, logo: "logos/yy.png"},
+  {name: "Iordanis Aslanis",   team: "Basement Boys", goals: 22, logo: "logos/basement.png"},
+  {name: "Giorgos Filippou",   team: "Y&Y",           goals: 22, logo: "logos/yy.png"},
+  {name: "Giannis Akridas",    team: "Y&Y",           goals: 21, logo: "logos/yy.png"},
   {name: "Thanos Chatziiordanou", team: "BADiles",    goals: 18, logo: "logos/badiles.png"},
   {name: "Michalis Lerogiannis",  team: "R1",         goals: 9,  logo: "logos/r1.png"},
   {name: "Nikolas Moschonas",     team: "R1",         goals: 9,  logo: "logos/r1.png"},
