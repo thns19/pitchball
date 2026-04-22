@@ -259,12 +259,21 @@ transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:300px;pointer
 <div id="toast" class="toast"></div>
 
 <script>
-const PSL5_PLAYERS = [
-  'Dimitris Gavalas','Thanos Chatziiordanou','Giannis Akridas','Giorgos Filippou',
-  'Iordanis Aslanis','Spyros Koskinas','Michalis Lerogiannis','Nikolas Moschonas',
-  'Iasonas Miliaras','Petros Papaspyropoulos','Vasilis Tziovanis','Giorgos Zacharopoulos',
-  'Stefanos Mavrogiannis','Tzannis Mermigas','Johan Pilichos','Stavros Stavropoulos',
-  'Aris Tsertos','Sokratis Gkiolias','Panos Chardas'
+const PSL5_SQUADS = {
+  'BADiles':        ['Dimitris Gavalas','Thanos Chatziiordanou'],
+  'Y&Y':            ['Giannis Akridas','Giorgos Filippou'],
+  'Basement Boys':  ['Iordanis Aslanis','Spyros Koskinas'],
+  'R1':             ['Michalis Lerogiannis','Nikolas Moschonas'],
+  'Spasmena Mila':  ['Iasonas Miliaras','Petros Papaspyropoulos','Aris Tsertos'],
+  'Volos Drummers': ['Vasilis Tziovanis','Giorgos Zacharopoulos'],
+  'Midi Kidz':      ['Stefanos Mavrogiannis','Tzannis Mermigas'],
+  'Babiniotes':     ['Johan Pilichos','Stavros Stavropoulos'],
+  'Warriors':       ['Sokratis Gkiolias','Panos Chardas'],
+};
+function getMatchPlayers(home, away) {
+  return [...(PSL5_SQUADS[home]||[]), ...(PSL5_SQUADS[away]||[])];
+}
+
 ];
 
 // ── Inline auth block ─────────────────────────────────────────
@@ -385,7 +394,7 @@ function renderPredictMatchday(md, myPreds, isScored) {
 }
 
 function renderPredictMatch(m, pred, mdId) {
-  const mvpOpts = PSL5_PLAYERS.map(p => `<option value="${p}" ${pred.mvp===p?'selected':''}>${p}</option>`).join('');
+  const mvpOpts = getMatchPlayers(m.home, m.away).map(p => `<option value="${p}" ${pred.mvp===p?'selected':''}>${p}</option>`).join('');
   return `<div class="pred-match"><div class="pred-teams"><span class="pred-team right">${m.home}</span><span class="pred-vs">vs</span><span class="pred-team">${m.away}</span></div><div class="pred-inputs"><input type="number" class="score-input" min="0" max="20" placeholder="—" id="pred-hs-${m.id}" value="${pred.hs !== undefined ? pred.hs : ''}"><span class="pred-dash">–</span><input type="number" class="score-input" min="0" max="20" placeholder="—" id="pred-as-${m.id}" value="${pred.as !== undefined ? pred.as : ''}"></div><div class="pred-mvp"><select id="pred-mvp-${m.id}"><option value="">— Pick MVP —</option>${mvpOpts}</select></div></div>`;
 }
 
@@ -532,7 +541,7 @@ async function loadAdmin() {
       const sbLbl = md.status==='open'?'Open':md.status==='scored'?'Scored':'Closed';
       const matchRows = md.matches.map(m => {
         const inputs = md.status !== 'scored'
-          ? `<div class="admin-score-inputs"><input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><span class="tm">–</span><input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"><option value="">— MVP —</option>${PSL5_PLAYERS.map(p=>`<option value="${p}" ${m.mvp===p?'selected':''}>${p}</option>`).join('')}</select></div>`
+          ? `<div class="admin-score-inputs"><input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><span class="tm">–</span><input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"><option value="">— MVP —</option>${getMatchPlayers(m.home, m.away).map(p => `<option value="${p}" ${pred.mvp===p?'selected':''}>${p}</option>`).join('');}>${p}</option>`).join('')}</select></div>`
           : `<span class="score-pill">${m.hs}–${m.as}</span><span class="tm fs11" style="margin-left:8px;">${m.mvp||'No MVP'}</span>`;
         return `<div class="admin-match-row"><div class="admin-teams">${m.home} <span class="tm">vs</span> ${m.away}</div>${inputs}</div>`;
       }).join('');
