@@ -383,23 +383,10 @@ async function loadPredictTab() {
 
 function renderPredictMatchday(md, myPreds, isScored) {
   const predicted = Object.keys(myPreds).length;
-  const statusBadge = isScored ? '<span class="badge bg-green">Scored</span>' : '<span class="badge bg-blue">Open · ' + predicted + '/' + md.matches.length + ' submitted</span>';
-  const matchesHtml = md.matches.map(m => {
-    const mStatus = m.status || (isScored ? 'scored' : 'open');
-    if (mStatus === 'scored') return renderScoredMatch(m, myPreds[m.id]||{});
-    if (mStatus === 'closed') return renderClosedMatch(m, myPreds[m.id]||{});
-    return renderPredictMatch(m, myPreds[m.id]||{}, md.id);
-  }).join('');
-  const hasOpenMatches = md.matches.some(m => (m.status || 'open') === 'open');
-  const submitBtn = hasOpenMatches ? '<div style="padding:12px 16px;border-top:1px solid var(--border);"><button class="btn btn-primary" onclick="submitPredictions('' + md.id + '')">💾 Save Predictions</button><span class="tm fs11" style="margin-left:10px;">Saves picks for open matches</span></div>' : '';
-  return '<div class="md-card"><div class="md-header"><div><div class="md-title">' + md.title + '</div><div class="tm fs11 mt8">' + md.matches.length + ' matches</div></div>' + statusBadge + '</div><div class="md-body">' + matchesHtml + '</div>' + submitBtn + '</div>';
-}
-
-function renderClosedMatch(m, pred) {
-  const hasPred = pred.hs !== undefined;
-  const predStr = hasPred ? (pred.hs + '–' + pred.as + (pred.mvp ? ' · MVP: ' + pred.mvp : '')) : 'No prediction';
-  return '<div class="pred-match"><div class="pred-teams"><span class="pred-team right">' + m.home + '</span><span class="pred-vs">vs</span><span class="pred-team">' + m.away + '</span></div>'
-    + '<div class="pred-result mt8"><span class="badge bg-muted">🔒 Closed</span><span class="actual-score" style="margin-left:8px;">Your pick: ' + predStr + '</span></div></div>';
+  const statusBadge = isScored ? `<span class="badge bg-green">Scored</span>` : `<span class="badge bg-blue">Open · ${predicted}/${md.matches.length} submitted</span>`;
+  const matchesHtml = md.matches.map(m => isScored ? renderScoredMatch(m, myPreds[m.id]||{}) : renderPredictMatch(m, myPreds[m.id]||{}, md.id)).join('');
+  const submitBtn = !isScored ? `<div style="padding:12px 16px;border-top:1px solid var(--border);"><button class="btn btn-primary" onclick="submitPredictions('${md.id}')">💾 Save Predictions</button><span class="tm fs11" style="margin-left:10px;">Saves all picks for this matchday</span></div>` : '';
+  return `<div class="md-card"><div class="md-header"><div><div class="md-title">${md.title}</div><div class="tm fs11 mt8">${md.matches.length} matches</div></div>${statusBadge}</div><div class="md-body">${matchesHtml}</div>${submitBtn}</div>`;
 }
 
 function renderPredictMatch(m, pred, mdId) {
@@ -441,8 +428,6 @@ async function submitPredictions(mdId) {
   if (!allPreds[uKey]) allPreds[uKey] = {};
   if (!allPreds[uKey][mdId]) allPreds[uKey][mdId] = {};
   md.matches.forEach(m => {
-    const mStatus = m.status || 'open';
-    if (mStatus !== 'open') return; // skip closed/scored matches
     const hs  = document.getElementById(`pred-hs-${m.id}`)?.value;
     const as  = document.getElementById(`pred-as-${m.id}`)?.value;
     const mvp = document.getElementById(`pred-mvp-${m.id}`)?.value;
@@ -545,115 +530,23 @@ async function loadAdmin() {
   try {
     const db = await pslDbGet();
     const matchdays = db.matchdays || [];
-    if (!matchdays.length) { el.innerHTML = '<div class="card tc tm" style="padding:2rem;font-size:13px;">No matchdays yet. Click "+ New Matchday" to create one.</div>'; return; }
+    if (!matchdays.length) { el.innerHTML = `<div class="card tc tm" style="padding:2rem;font-size:13px;">No matchdays yet. Click "+ New Matchday" to create one.</div>`; return; }
     let html = '';
     matchdays.slice().reverse().forEach(md => {
       const sbCls = md.status==='open'?'bg-blue':md.status==='scored'?'bg-green':'bg-muted';
       const sbLbl = md.status==='open'?'Open':md.status==='scored'?'Scored':'Closed';
       const matchRows = md.matches.map(m => {
-        const mStatus = m.status || (md.status === 'scored' ? 'scored' : 'open');
-        const mBadge = mStatus==='scored'
-          ? '<span class="badge bg-green" style="margin-left:6px;">Scored</span>'
-          : mStatus==='closed'
-            ? '<span class="badge bg-muted" style="margin-left:6px;">Closed</span>'
-            : '<span class="badge bg-blue" style="margin-left:6px;">Open</span>';
-        const hsVal = (m.hs !== null && m.hs !== undefined) ? m.hs : '';
-        const asVal = (m.as !== null && m.as !== undefined) ? m.as : '';
-        const mvpOpts = getMatchPlayers(m.home, m.away).map(p => '<option value="' + p + '"' + (m.mvp===p?' selected':'') + '>' + p + '</option>').join('');
-        const disabled = mStatus === 'open' ? ' disabled' : '';
-        let scoreArea = '';
-        if (mStatus === 'scored') {
-          scoreArea = '<span class="score-pill">' + m.hs + '\u2013' + m.as + '</span><span class="tm fs11" style="margin-left:8px;">' + (m.mvp||'No MVP') + '</span>';
-        } else {
-          scoreArea = '<div class="admin-score-inputs">'
-            + '<input type="number" min="0" max="30" placeholder="\u2014" id="res-hs-' + m.id + '" value="' + hsVal + '" style="width:48px!important;text-align:center;padding:6px 4px!important;"' + disabled + '>'
-            + '<span class="tm">\u2013</span>'
-            + '<input type="number" min="0" max="30" placeholder="\u2014" id="res-as-' + m.id + '" value="' + asVal + '" style="width:48px!important;text-align:center;padding:6px 4px!important;"' + disabled + '>'
-            + '<select id="res-mvp-' + m.id + '" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"' + disabled + '><option value="">— MVP —</option>' + mvpOpts + '</select>'
-            + '</div>';
-        }
-        let matchActions = '';
-        if (mStatus === 'open') {
-          matchActions = '<button class="btn btn-danger btn-sm" onclick="adminCloseMatch(\'' + md.id + '\',\'' + m.id + '\')">🔒 Close</button>';
-        } else if (mStatus === 'closed') {
-          matchActions = '<button class="btn btn-primary btn-sm" onclick="adminScoreMatch(\'' + md.id + '\',\'' + m.id + '\')">✅ Post Score</button>'
-            + '<button class="btn btn-outline btn-sm" onclick="adminReopenMatch(\'' + md.id + '\',\'' + m.id + '\')">Re-open</button>';
-        }
-        return '<div class="admin-match-row" style="gap:10px;flex-wrap:wrap;align-items:flex-start;padding:12px 0;">'
-          + '<div style="flex:1;min-width:120px;">'
-          + '<div class="admin-teams" style="margin-bottom:6px;">' + m.home + ' <span class="tm">vs</span> ' + m.away + mBadge + '</div>'
-          + scoreArea
-          + '</div>'
-          + '<div class="flex gap8" style="flex-shrink:0;align-items:center;margin-top:2px;">' + matchActions + '</div>'
-          + '</div>';
+        const inputs = md.status !== 'scored'
+          ? `<div class="admin-score-inputs"><input type="number" min="0" max="30" placeholder="—" id="res-hs-${m.id}" value="${m.hs!==null?m.hs:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><span class="tm">–</span><input type="number" min="0" max="30" placeholder="—" id="res-as-${m.id}" value="${m.as!==null?m.as:''}" style="width:48px!important;text-align:center;padding:6px 4px!important;"><select id="res-mvp-${m.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px;"><option value="">— MVP —</option>${getMatchPlayers(m.home, m.away).map(p=>`<option value="${p}" ${m.mvp===p?'selected':''}>${p}</option>`).join('')}</select></div>`
+          : `<span class="score-pill">${m.hs}–${m.as}</span><span class="tm fs11" style="margin-left:8px;">${m.mvp||'No MVP'}</span>`;
+        return `<div class="admin-match-row"><div class="admin-teams">${m.home} <span class="tm">vs</span> ${m.away}</div>${inputs}</div>`;
       }).join('');
-      const mdActions = md.status === 'scored'
-        ? '<span class="tm fs12">All matches scored \u2705</span>'
-        : (md.status === 'closed'
-          ? '<button class="btn btn-primary btn-sm" onclick="adminSetStatus(\'' + md.id + '\',\'open\')">Open All Predictions</button>'
-          : '<button class="btn btn-danger btn-sm" onclick="adminSetStatus(\'' + md.id + '\',\'closed\')">Close All Predictions</button>');
-      html += '<div class="card mb16">'
-        + '<div class="flex jb ac mb12">'
-        + '<div><div style="font-size:15px;font-weight:600;">' + md.title + '</div><div class="tm fs11 mt8">' + md.matches.length + ' matches</div></div>'
-        + '<div class="flex gap8 ac" style="flex-wrap:wrap;"><span class="badge ' + sbCls + '">' + sbLbl + '</span><button class="btn btn-danger btn-sm" onclick="adminDeleteMatchday(\'' + md.id + '\')">Delete</button></div>'
-        + '</div>'
-        + '<div style="margin-bottom:12px;">' + matchRows + '</div>'
-        + '<div class="flex gap8" style="flex-wrap:wrap;">' + mdActions + '</div>'
-        + '</div>';
+      const actions = md.status==='scored' ? `<span class="tm fs12">Scoring complete ✅</span>`
+        : `${md.status==='closed'?`<button class="btn btn-primary btn-sm" onclick="adminSetStatus('${md.id}','open')">Open Predictions</button>`:`<button class="btn btn-danger btn-sm" onclick="adminSetStatus('${md.id}','closed')">Close Predictions</button>`}<button class="btn btn-outline btn-sm" onclick="adminEnterResults('${md.id}')">Enter Results & Score</button>`;
+      html += `<div class="card mb16"><div class="flex jb ac mb12"><div><div style="font-size:15px;font-weight:600;">${md.title}</div><div class="tm fs11 mt8">${md.matches.length} matches</div></div><div class="flex gap8 ac" style="flex-wrap:wrap;"><span class="badge ${sbCls}">${sbLbl}</span><button class="btn btn-danger btn-sm" onclick="adminDeleteMatchday('${md.id}')">Delete</button></div></div><div style="margin-bottom:12px;">${matchRows}</div><div class="flex gap8" style="flex-wrap:wrap;">${actions}</div></div>`;
     });
     el.innerHTML = html;
   } catch(e) { el.innerHTML = errorHtml(); }
-}
-
-async function adminCloseMatch(mdId, matchId) {
-  const db = await pslDbGet();
-  const md = (db.matchdays||[]).find(m => m.id === mdId);
-  if (!md) return;
-  const m = md.matches.find(m => m.id === matchId);
-  if (!m) return;
-  m.status = 'closed';
-  // If all matches are now closed or scored, set matchday to closed
-  if (md.matches.every(m => m.status === 'closed' || m.status === 'scored')) md.status = 'closed';
-  await pslDbSet(db);
-  pslDbInvalidate();
-  toast('Match closed for predictions.', 'info');
-  loadAdmin();
-}
-
-async function adminReopenMatch(mdId, matchId) {
-  const db = await pslDbGet();
-  const md = (db.matchdays||[]).find(m => m.id === mdId);
-  if (!md) return;
-  const m = md.matches.find(m => m.id === matchId);
-  if (!m) return;
-  m.status = 'open';
-  m.hs = null; m.as = null; m.mvp = null;
-  // Reopen matchday if it was fully closed
-  if (md.status !== 'scored') md.status = 'open';
-  await pslDbSet(db);
-  pslDbInvalidate();
-  toast('Match re-opened for predictions.', 'ok');
-  loadAdmin();
-}
-
-async function adminScoreMatch(mdId, matchId) {
-  const db = await pslDbGet();
-  const md = (db.matchdays||[]).find(m => m.id === mdId);
-  if (!md) return;
-  const m = md.matches.find(m => m.id === matchId);
-  if (!m) return;
-  const hs  = document.getElementById('res-hs-' + matchId)?.value;
-  const as  = document.getElementById('res-as-' + matchId)?.value;
-  const mvp = document.getElementById('res-mvp-' + matchId)?.value;
-  if (hs === '' || hs === undefined || as === '' || as === undefined) { toast('Please enter both scores first.', 'err'); return; }
-  m.hs = parseInt(hs); m.as = parseInt(as); m.mvp = mvp || null;
-  m.status = 'scored';
-  // If all matches are scored, mark matchday as scored
-  if (md.matches.every(m => m.status === 'scored')) md.status = 'scored';
-  await pslDbSet(db);
-  pslDbInvalidate();
-  toast('Score posted! \u2705', 'ok');
-  loadAdmin();
 }
 
 async function adminCreateMatchday() {
@@ -667,7 +560,7 @@ async function adminCreateMatchday() {
     if (!home) return;
     const away = prompt(`Match ${i+1} — Away team:`);
     if (!away) return;
-    matches.push({ id: `m${Date.now()}_${i}`, home: home.trim(), away: away.trim(), hs: null, as: null, mvp: null, status: 'open' });
+    matches.push({ id: `m${Date.now()}_${i}`, home: home.trim(), away: away.trim(), hs: null, as: null, mvp: null });
   }
   const db = await pslDbGet();
   const matchdays = db.matchdays || [];
@@ -683,17 +576,31 @@ async function adminSetStatus(mdId, status) {
   const md = (db.matchdays||[]).find(m => m.id === mdId);
   if (!md) return;
   md.status = status;
-  // Also sync per-match statuses for unscored matches
-  md.matches.forEach(m => {
-    if (m.status !== 'scored') m.status = status === 'open' ? 'open' : 'closed';
-  });
   await pslDbSet(db);
   pslDbInvalidate();
   toast(`Matchday is now ${status}.`, 'ok');
   loadAdmin();
 }
 
-// adminEnterResults removed — replaced by per-match adminScoreMatch
+async function adminEnterResults(mdId) {
+  const db = await pslDbGet();
+  const md = (db.matchdays||[]).find(m => m.id === mdId);
+  if (!md) return;
+  let allFilled = true;
+  md.matches.forEach(m => {
+    const hs  = document.getElementById(`res-hs-${m.id}`)?.value;
+    const as  = document.getElementById(`res-as-${m.id}`)?.value;
+    const mvp = document.getElementById(`res-mvp-${m.id}`)?.value;
+    if (hs === '' || as === '') { allFilled = false; return; }
+    m.hs = parseInt(hs); m.as = parseInt(as); m.mvp = mvp || null;
+  });
+  if (!allFilled) { toast('Please fill in all scores first.', 'err'); return; }
+  md.status = 'scored';
+  await pslDbSet(db);
+  pslDbInvalidate();
+  toast('Results saved and matchday scored! ✅', 'ok');
+  loadAdmin();
+}
 
 async function adminDeleteMatchday(mdId) {
   if (!confirm('Delete this matchday? This cannot be undone.')) return;
