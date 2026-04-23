@@ -84,5 +84,52 @@ const poMatchData = [
   // },
 
   // ── ADD YOUR MATCHES BELOW ────────────────────────────────
-
+  {
+    id: "PO_FinalBestof5_AXR_Russia",
+    home: "AXR", away: "Russia",
+    hSets: 0, aSets: 3,
+    sets: [{hs:6,as:7},{hs:5,as:7},{hs:3,as:7}],
+    date: "12/06/2025, 12:11PM", mvp: "Kostas Kapetanios", round: "Final",
+    set1Events: [
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:6, as:7},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:6, as:6},
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:5, as:6},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:5, as:5},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:4, as:5},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:4, as:4},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:3, as:4},
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:2, as:4},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:2, as:3},
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:1, as:3},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:1, as:2},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:1, as:1},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:1, as:0},
+    ],
+    set2Events: [
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:5, as:7},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:5, as:6},
+      {type:"goal", team:"AXR", player:"Giorgos Filippou", hs:4, as:6},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:3, as:6},
+      {type:"og", team:"Russia", player:"Kostis Vasileiou", hs:3, as:5},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:3, as:4},
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:2, as:4},
+      {type:"og", team:"AXR", player:"Taxiarchis Kassotakis", hs:2, as:3},
+      {type:"og", team:"AXR", player:"Taxiarchis Kassotakis", hs:1, as:3},
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:0, as:3},
+      {type:"goal", team:"Russia", player:"Taxiarchis Kassotakis", hs:0, as:2},
+      {type:"og", team:"Russia", player:"Kostis Vasileiou", hs:0, as:1}
+    ],
+    set3Events: [
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:3, as:7},
+      {type:"og", team:"AXR", player:"Taxiarchis Kassotakis", hs:3, as:6},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:2, as:6},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:1, as:6},
+      {type:"header", team:"Russia", player:"Kostas Kapetanios", hs:1, as:5},
+      {type:"og", team:"Russia", player:"Kostis Vasileiou", hs:1, as:4},
+      {type:"og", team:"AXR", player:"Kostas Kapetanios", hs:1, as:3},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:0, as:3},
+      {type:"goal", team:"Russia", player:"Kostas Kapetanios", hs:0, as:2},      
+      {type:"og", team:"Russia", player:"Giorgos Filippou", hs:0, as:1}
+    ]
+  }
 ];
