@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>League Table — PSL5</title>
 <link rel="stylesheet" href="style.css">
-<style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }</style>
+<style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+</style>
 </head>
 <body>
 <div class="container" style="max-width:900px;">
@@ -26,6 +28,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:#e0e0d8"></div> Elimination zone</div>
     <div class="legend-item"><span class="confirmed">●</span> Confirmed result</div>
     <div class="legend-item"><span class="projected">●</span> Projected result</div>
+    <div class="legend-item"><span style="color:#e74c3c;animation:pulse 1s infinite;display:inline-block;">●</span> In Progress</div>
   </div>
 
   <div class="table-wrap">
@@ -140,7 +143,7 @@ const rawFixtures = [
   {md:4, h:"R1",  a:"BMB", hs:3, as:5, confirmed:true},
   {md:4, h:"SPM", a:"BAB", hs:7, as:5, confirmed:true},
   {md:5, h:"MDK", a:"PHX", hs:5, as:0, confirmed:true},
-  {md:5, h:"VDR", a:"WAR", hs:null, as:null, confirmed:false},
+  {md:5, h:"VDR", a:"WAR", hs:5, as:4, confirmed:false, inProgress: true},
   {md:5, h:"YY",  a:"R1",  hs:5, as:3, confirmed:true},
   {md:5, h:"BAD", a:"SPM", hs:5, as:0, confirmed:true},
   {md:5, h:"BMB", a:"BAB", hs:6, as:4, confirmed:true},
@@ -148,7 +151,7 @@ const rawFixtures = [
   {md:6, h:"R1",  a:"PHX", hs:5, as:0, confirmed:true},
   {md:6, h:"SPM", a:"VDR", hs:null, as:null, confirmed:false},
   {md:6, h:"BAB", a:"YY",  hs:2, as:5, confirmed:true},
-  {md:6, h:"BMB", a:"BAD", hs:null, as:null, confirmed:false},
+  {md:6, h:"BMB", a:"BAD", hs:3, as:2, confirmed:false, inProgress: true},
   {md:7, h:"MDK", a:"R1",  hs:null, as:null, confirmed:false},
   {md:7, h:"WAR", a:"SPM", hs:null, as:null, confirmed:false},
   {md:7, h:"PHX", a:"BAB", hs:0, as:5, confirmed:true},
@@ -231,7 +234,7 @@ function computeTable() {
   });
 
   fixtures.forEach(f => {
-    if(f.hs === null || f.as === null) return;
+    if(f.hs === null || f.as === null || f.inProgress) return;
     const h = standings[f.home], a = standings[f.away];
     h.p++; a.p++;
     h.gf += f.hs; h.ga += f.as;
@@ -291,16 +294,35 @@ function renderFixtures() {
     html += `<div class="card" style="padding: 0.75rem 1rem; margin-bottom: 0.5rem;">`;
     byMd[md].forEach(f => {
       const hasResult = f.hs !== null && f.as !== null;
-      const badge = f.confirmed ? `<span style="width:8px;height:8px;border-radius:50%;background:#39c877;flex-shrink:0;display:inline-block;"></span>`
+      const isLocked = f.inProgress && !f.unlocked;
+      const badge = isLocked
+                  ? `<span style="width:8px;height:8px;border-radius:50%;background:#e74c3c;flex-shrink:0;display:inline-block;animation:pulse 1s infinite;"></span>`
+                  : f.inProgress && f.unlocked
+                  ? `<span style="width:8px;height:8px;border-radius:50%;background:#e74c3c;flex-shrink:0;display:inline-block;opacity:0.4;"></span>`
+                  : f.confirmed ? `<span style="width:8px;height:8px;border-radius:50%;background:#39c877;flex-shrink:0;display:inline-block;"></span>`
                   : f.projected ? `<span style="width:8px;height:8px;border-radius:50%;background:#a4cde8;flex-shrink:0;display:inline-block;"></span>`
                   : `<span style="width:8px;height:8px;border-radius:50%;background:#535c2f;flex-shrink:0;display:inline-block;"></span>`;
 
-      const btns = f.confirmed ? '' : hasResult
-        ? `<button class="confirm-btn" onclick="confirmResult(${f.id})">Confirm</button>
+      const unlockBtn = isLocked
+        ? `<button class="sim-btn" style="font-size:11px;padding:2px 7px;" onclick="unlockInProgress(${f.id})">Unlock</button>`
+        : '';
+
+      const btns = f.confirmed ? '' : isLocked ? '' : hasResult
+        ? `<button class="sim-btn" onclick="simulateOne(${f.id})">Simulate</button>
            <button class="clear-btn" onclick="clearResult(${f.id})">✕</button>`
         : `<button class="sim-btn" onclick="simulateOne(${f.id})">Simulate</button>`;
 
-      const scoreDisplay = hasResult
+      const scoreDisplay = isLocked
+        ? (() => {
+            if(f.hs === null || f.as === null) return `<span style="font-weight:500;min-width:40px;text-align:center;color:#e74c3c;">–</span><span style="font-size:9px;color:#e74c3c;font-weight:700;letter-spacing:0.5px;margin-left:4px;">LIVE</span>`;
+            const liveTag = `<span style="font-size:9px;color:#e74c3c;font-weight:700;letter-spacing:0.5px;margin-left:4px;">LIVE</span>`;
+            return `<span style="font-weight:500;min-width:40px;text-align:center;color:#e74c3c;">${f.hs}–${f.as}</span>${liveTag}`;
+          })()
+        : (f.inProgress && f.unlocked)
+        ? `<input type="number" min="0" id="hs-${f.id}" placeholder="–" value="${f.hs ?? ''}" onchange="manualScore(${f.id})">
+           <span>–</span>
+           <input type="number" min="0" id="as-${f.id}" placeholder="–" value="${f.as ?? ''}" onchange="manualScore(${f.id})">`
+        : hasResult
         ? (() => {
             const matchId = `MD${f.md}_${f.home.replace(/[^a-zA-Z0-9]/g,'')}_${f.away.replace(/[^a-zA-Z0-9]/g,'')}`;
             const scoreEl = `<span style="font-weight:500;min-width:40px;text-align:center;" class="${f.confirmed?'confirmed':'projected'}">${f.hs}–${f.as}</span>`;
@@ -315,13 +337,23 @@ function renderFixtures() {
         <div class="fix-score" style="flex-shrink:0;">${scoreDisplay}</div>
         <span class="fix-team" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${tlogo(f.away)}${f.away}</span>
         ${badge}
-        <span style="flex-shrink:0;">${btns}</span>
+        <span style="flex-shrink:0;display:flex;gap:4px;align-items:center;">${unlockBtn}${btns}</span>
       </div>`;
     });
     html += `</div>`;
   });
   container.innerHTML = html;
 }
+
+function unlockInProgress(id) {
+  const f = fixtures.find(x => x.id === id);
+  if(!f || !f.inProgress) return;
+  f.unlocked = true;
+  f.projected = false;
+  renderTable();
+  renderFixtures();
+}
+
 
 function simulateOne(id) {
   const f = fixtures.find(x => x.id === id);
@@ -349,6 +381,7 @@ function clearResult(id) {
   f.hs = null;
   f.as = null;
   f.projected = false;
+  if(f.inProgress) f.unlocked = false;
   renderTable();
   renderFixtures();
 }
@@ -369,7 +402,12 @@ function manualScore(id) {
 
 function simulateAll() {
   fixtures.forEach(f => {
-    if(!f.confirmed && (f.hs === null || f.as === null)) {
+    if(f.confirmed) return;
+    // Auto-unlock in-progress matches and simulate them
+    if(f.inProgress && !f.unlocked) {
+      f.unlocked = true;
+    }
+    if(f.hs === null || f.as === null) {
       const result = simMatch(f.home, f.away);
       f.hs = result.hs;
       f.as = result.as;
@@ -384,6 +422,8 @@ function clearAllProjected() {
   fixtures.forEach(f => {
     if(f.projected) {
       f.hs = null; f.as = null; f.projected = false;
+      // Relock in-progress matches
+      if(f.inProgress) f.unlocked = false;
     }
   });
   renderTable();
@@ -759,14 +799,12 @@ renderTopScorers();
 </script>
 <style>body{position:relative;}</style>
 <script>
-const PSL_BIN_ID  = '69e2a95836566621a8c55b2a';
-const PSL_API_KEY = ['$2a$10$H0dlnXhL4nHxUrqvqIuX', 'uWVleB8A4engDopnjE.WngFBheJW.1gu'].join('.');
-const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
+const PSL_DB_URL = 'https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/.json';
 const PSL_ADMIN   = 'thanos';
 const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
 let _pslDbCache=null,_pslDbFetching=null;
-async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(`${PSL_BIN_URL}/latest`,{headers:{'X-Master-Key':PSL_API_KEY}}).then(r=>r.json()).then(j=>{_pslDbCache=j.record;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
-async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':PSL_API_KEY},body:JSON.stringify(data)});}
+async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(PSL_DB_URL).then(r=>r.json()).then(data=>{_pslDbCache=data;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
+async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_DB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
 function pslDbInvalidate(){_pslDbCache=null;}
 let pslCurrentUser=null;
 function pslLoadSession(){const s=localStorage.getItem('psl_session');return s?JSON.parse(s):null;}

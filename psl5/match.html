@@ -111,14 +111,12 @@ if(!match){
 </script>
 <style>body{position:relative;}</style>
 <script>
-const PSL_BIN_ID  = '69e2a95836566621a8c55b2a';
-const PSL_API_KEY = ['$2a$10$H0dlnXhL4nHxUrqvqIuX', 'uWVleB8A4engDopnjE.WngFBheJW.1gu'].join('.');
-const PSL_BIN_URL = `https://api.jsonbin.io/v3/b/${PSL_BIN_ID}`;
+const PSL_DB_URL = 'https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/.json';
 const PSL_ADMIN   = ['thanos','Yman'];
 const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
 let _pslDbCache=null,_pslDbFetching=null;
-async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(`${PSL_BIN_URL}/latest`,{headers:{'X-Master-Key':PSL_API_KEY}}).then(r=>r.json()).then(j=>{_pslDbCache=j.record;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
-async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':PSL_API_KEY},body:JSON.stringify(data)});}
+async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(PSL_DB_URL).then(r=>r.json()).then(data=>{_pslDbCache=data;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
+async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_DB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
 function pslDbInvalidate(){_pslDbCache=null;}
 let pslCurrentUser=null;
 function pslLoadSession(){const s=localStorage.getItem('psl_session');return s?JSON.parse(s):null;}
