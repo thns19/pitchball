@@ -269,6 +269,20 @@ const matchData = [
       {type:"goal",team:"Y&Y",player:"Giorgos Filippou",hs:0,as:2},
       {type:"og",team:"Y&Y",player:"Stavros Stavropoulos",hs:0,as:1}
     ]
+  },
+  {
+    id:"MD7_MidiKidz_R1",
+    home:"Midi Kidz",away:"R1",hs:2,as:5,
+    date:"28/04/2026, 10:40AM",mvp:"Michalis Lerogiannis",
+    events: [
+      {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:2,as:5},
+      {type:"og",team:"Midi Kidz",player:"Michalis Lerogiannis",hs:2,as:4},
+      {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:1,as:4},
+      {type:"goal",team:"Midi Kidz",player:"Tzannis Mermigas",hs:1,as:3},
+      {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:0,as:3},
+      {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:0,as:2},
+      {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:0,as:1}
+    ]
   }
 
   // ── ADD MORE MATCHES BELOW ──
@@ -295,9 +309,9 @@ const topScorers = [
   {name: "Giorgos Filippou",   team: "Y&Y",           goals: 22, logo: "logos/yy.png"},
   {name: "Giannis Akridas",    team: "Y&Y",           goals: 21, logo: "logos/yy.png"},
   {name: "Thanos Chatziiordanou", team: "BADiles",    goals: 18, logo: "logos/badiles.png"},
-  {name: "Michalis Lerogiannis",  team: "R1",         goals: 9,  logo: "logos/r1.png"},
+  {name: "Michalis Lerogiannis",  team: "R1",         goals: 14,  logo: "logos/r1.png"},
   {name: "Nikolas Moschonas",     team: "R1",         goals: 9,  logo: "logos/r1.png"},
   {name: "Iasonas Miliaras",     team: "Spasmena Mila",         goals: 8,  logo: "logos/spasmena.png"},
   {name: "Nikos Kalisperis",     team: "Phoenix",         goals: 7,  logo: "logos/phoenix.png"},
-  {name: "Tzannis Mermigas",     team: "Midi Kidz",         goals: 6,  logo: "logos/midi.png"},
+  {name: "Tzannis Mermigas",     team: "Midi Kidz",         goals: 7,  logo: "logos/midi.png"},
 ];
