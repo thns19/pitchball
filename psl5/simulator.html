@@ -3,79 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Match Simulator — PSL5</title>
+<title>Simulator — PSL5</title>
 <link rel="stylesheet" href="style.css">
-<style>body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }</style>
+<style>
+body { background-image: url("bg.png"); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; }
+
+/* Page tabs */
+.page-tabs { display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 4px; margin-bottom: 2rem; }
+.page-tab { flex: 1; padding: 9px 8px; border: none; background: none; border-radius: 7px; font-size: 13px; font-weight: 600; color: rgba(215,219,200,0.45); cursor: pointer; font-family: inherit; transition: all 0.15s; text-align: center; }
+.page-tab.active { background: #363C1F; color: #D7DBC8; border: 1px solid #535c2f; }
+.page-tab:hover:not(.active) { color: #D7DBC8; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Team stats */
+.teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.team-card { background: #363C1F; border: 1px solid #535c2f; border-radius: 12px; padding: 1.25rem; transition: border-color 0.15s, transform 0.15s; }
+.team-card:hover { border-color: #D7DBC8; transform: translateY(-2px); }
+.team-card-name { font-size: 15px; font-weight: 500; color: #D7DBC8; }
+.tier-badge { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; }
+.tier-elite { background: #1a3d2a; color: #39c877; }
+.tier-mid { background: #1a2a3d; color: #a4cde8; }
+.tier-low { background: #282d15; color: #888; }
+.rating-bars { display: flex; flex-direction: column; gap: 6px; }
+.rating-row { display: flex; align-items: center; gap: 8px; }
+.rating-label { font-size: 11px; color: #888; width: 28px; flex-shrink: 0; }
+.rating-track { flex: 1; height: 5px; background: #282d15; border-radius: 3px; overflow: hidden; }
+.rating-fill { height: 100%; border-radius: 3px; }
+.fill-att { background: #d86254; }
+.fill-def { background: #a4cde8; }
+.fill-stm { background: #f5c842; }
+.fill-con { background: #39c877; }
+.rating-val { font-size: 11px; color: #D7DBC8; width: 16px; text-align: right; flex-shrink: 0; }
+.overall-score { font-size: 28px; font-weight: 500; color: #D7DBC8; }
+.overall-label { font-size: 10px; color: #888; margin-top: 2px; }
+.sort-row { display: flex; gap: 8px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.sort-row label { font-size: 12px; color: #888; }
+.legend-bars { display: flex; gap: 16px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.legend-bar-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+.legend-bar-dot { width: 10px; height: 5px; border-radius: 3px; }
+</style>
 </head>
 <body>
 <div class="container">
   <div class="nav">
     <a href="index.html" class="back">← Home</a>
   </div>
-  <h1>Match Simulator</h1>
-  <p class="subtitle">Full rally-by-rally match simulation</p>
+  <h1>Simulator</h1>
+  <p class="subtitle">Match simulation, probability analysis &amp; team ratings</p>
 
-  <div class="card">
-    <div class="row">
-      <select id="team1"></select>
-      <span class="vs">vs</span>
-      <select id="team2"></select>
+  <div class="page-tabs">
+    <button class="page-tab active" onclick="switchTab('single')">⚡ Single Match</button>
+    <button class="page-tab" onclick="switchTab('monte')">📊 Monte Carlo</button>
+    <button class="page-tab" onclick="switchTab('teams')">🛡️ Team Stats</button>
+  </div>
+
+  <!-- ── SINGLE MATCH ─────────────────────────────────────────── -->
+  <div class="tab-panel active" id="tab-single">
+    <div class="card">
+      <div class="row">
+        <select id="sm-team1"></select>
+        <span class="vs">vs</span>
+        <select id="sm-team2"></select>
+      </div>
+      <div class="row">
+        <label>First to</label>
+        <select id="sm-target" style="flex:0;width:80px;">
+          <option value="5">5</option>
+          <option value="7">7</option>
+        </select>
+        <label>— win by 2</label>
+        <button onclick="simulate()">Simulate match</button>
+      </div>
     </div>
-    <div class="row">
-      <label>First to</label>
-      <select id="target" style="flex:0;width:80px;">
-        <option value="5">5</option>
-        <option value="7">7</option>
+
+    <div id="scoreboard" class="scoreboard hidden">
+      <div class="score-card" id="card1">
+        <div class="team-name" id="sname1"></div>
+        <div class="score-num" id="sscore1">0</div>
+        <div class="breakdown" id="breakdown1"></div>
+      </div>
+      <div class="score-card" id="card2">
+        <div class="team-name" id="sname2"></div>
+        <div class="score-num" id="sscore2">0</div>
+        <div class="breakdown" id="breakdown2"></div>
+      </div>
+    </div>
+
+    <div id="statsrow" class="stats-row hidden">
+      <div class="stat-card"><div class="stat-label">Rallies</div><div class="stat-val" id="st-rallies">0</div></div>
+      <div class="stat-card"><div class="stat-label">Avg rally (s)</div><div class="stat-val" id="st-avg">0</div></div>
+      <div class="stat-card"><div class="stat-label">T1 errors</div><div class="stat-val" id="st-err1">0</div></div>
+      <div class="stat-card"><div class="stat-label">T2 errors</div><div class="stat-val" id="st-err2">0</div></div>
+      <div class="stat-card"><div class="stat-label">Duration</div><div class="stat-val" id="st-dur">0m</div></div>
+    </div>
+
+    <div id="result-banner" class="result-banner hidden"></div>
+    <div class="match-log hidden" id="log"></div>
+  </div>
+
+  <!-- ── MONTE CARLO ──────────────────────────────────────────── -->
+  <div class="tab-panel" id="tab-monte">
+    <div class="card">
+      <div class="row">
+        <select id="mc-team1"></select>
+        <span class="vs">vs</span>
+        <select id="mc-team2"></select>
+      </div>
+      <div class="row">
+        <label>First to</label>
+        <select id="mc-target" style="flex:0;width:80px;">
+          <option value="5">5</option>
+          <option value="7">7</option>
+        </select>
+        <label>Simulations</label>
+        <select id="sims" style="flex:0;width:100px;">
+          <option value="1000">1,000</option>
+          <option value="5000">5,000</option>
+          <option value="10000" selected>10,000</option>
+          <option value="50000">50,000</option>
+        </select>
+        <button id="runbtn" onclick="runMonteCarlo()">Run simulations</button>
+      </div>
+    </div>
+
+    <div id="running" class="running hidden">Running simulations...</div>
+
+    <div id="results" class="results hidden">
+      <div class="win-bars">
+        <div class="win-side">
+          <div class="team-name" id="rname1"></div>
+          <div class="win-pct" id="rpct1"></div>
+          <div style="font-size:12px;color:#888;" id="rwins1"></div>
+          <div class="bar-track"><div class="bar-fill green" id="rbar1" style="width:0%"></div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="win-side">
+          <div class="team-name" id="rname2"></div>
+          <div class="win-pct" id="rpct2"></div>
+          <div style="font-size:12px;color:#888;" id="rwins2"></div>
+          <div class="bar-track"><div class="bar-fill" id="rbar2" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-row"><span class="stat-label">Avg score (T1)</span><span class="stat-val" id="avg-score1"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg score (T2)</span><span class="stat-val" id="avg-score2"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg errors (T1)</span><span class="stat-val" id="avg-err1"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg errors (T2)</span><span class="stat-val" id="avg-err2"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg clean pts (T1)</span><span class="stat-val" id="avg-cp1"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg clean pts (T2)</span><span class="stat-val" id="avg-cp2"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg duration</span><span class="stat-val" id="avg-dur"></span></div>
+        <div class="stat-row"><span class="stat-label">Simulations run</span><span class="stat-val" id="sim-count"></span></div>
+      </div>
+      <div class="score-dist">
+        <div class="score-dist-title">Most common scorelines</div>
+        <div id="score-dist-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TEAM STATS ───────────────────────────────────────────── -->
+  <div class="tab-panel" id="tab-teams">
+    <div class="legend-bars">
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-att"></div> Attack</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-def"></div> Defense</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-stm"></div> Stamina</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-con"></div> Consistency</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot" style="background:#c084fc;"></div> Att. Tendency</div>
+    </div>
+    <div class="sort-row">
+      <label>Sort by</label>
+      <select id="sort-select" onchange="renderTeams()" style="flex:0;min-width:0;width:160px;">
+        <option value="overall">Overall rating</option>
+        <option value="att">Attack</option>
+        <option value="def">Defense</option>
+        <option value="stm">Stamina</option>
+        <option value="con">Consistency</option>
+        <option value="ten">Att. Tendency</option>
+        <option value="name">Name</option>
       </select>
-      <label>— win by 2</label>
-      <button onclick="simulate()">Simulate match</button>
     </div>
+    <div id="teams-grid" class="teams-grid"></div>
   </div>
 
-  <div id="scoreboard" class="scoreboard hidden">
-    <div class="score-card" id="card1">
-      <div class="team-name" id="sname1"></div>
-      <div class="score-num" id="sscore1">0</div>
-      <div class="breakdown" id="breakdown1"></div>
-    </div>
-    <div class="score-card" id="card2">
-      <div class="team-name" id="sname2"></div>
-      <div class="score-num" id="sscore2">0</div>
-      <div class="breakdown" id="breakdown2"></div>
-    </div>
-  </div>
-
-  <div id="statsrow" class="stats-row hidden">
-    <div class="stat-card"><div class="stat-label">Rallies</div><div class="stat-val" id="st-rallies">0</div></div>
-    <div class="stat-card"><div class="stat-label">Avg rally (s)</div><div class="stat-val" id="st-avg">0</div></div>
-    <div class="stat-card"><div class="stat-label">T1 errors</div><div class="stat-val" id="st-err1">0</div></div>
-    <div class="stat-card"><div class="stat-label">T2 errors</div><div class="stat-val" id="st-err2">0</div></div>
-    <div class="stat-card"><div class="stat-label">Duration</div><div class="stat-val" id="st-dur">0m</div></div>
-  </div>
-
-  <div id="result-banner" class="result-banner hidden"></div>
-  <div class="match-log hidden" id="log"></div>
 </div>
 
 <script>
+// ── SHARED DATA ──────────────────────────────────────────────────
 const teams = {
-  "BADiles":         {att:8,def:8,stm:7,con:9,ten:7},
-  "Y&Y":             {att:9,def:8,stm:8,con:7,ten:9},
-  "R1":              {att:8,def:8,stm:8,con:6,ten:8},
-  "Basement Boys":   {att:8,def:8,stm:7,con:7,ten:7},
-  "Volos Drummers":  {att:5,def:7,stm:7,con:7,ten:4},
-  "Warriors":        {att:5,def:5,stm:6,con:7,ten:2},
-  "Midi Kidz":       {att:6,def:5,stm:6,con:6,ten:4},
-  "Babiniotes":      {att:6,def:6,stm:7,con:5,ten:6},
-  "Spasmena Mila":   {att:7,def:6,stm:6,con:6,ten:6},
-  "Phoenix":         {att:7,def:7,stm:7,con:3,ten:8},
-  "Snipers":         {att:5,def:5,stm:6,con:5,ten:6},
-  "Team Till Death": {att:3,def:3,stm:5,con:4,ten:3},
-  "A/C":             {att:3,def:3,stm:5,con:4,ten:4},
-  "Fintani":         {att:4,def:4,stm:5,con:6,ten:5},
-  "Axtarmades":      {att:5,def:3,stm:4,con:5,ten:4},
-  "Chewbacca":       {att:6,def:5,stm:6,con:4,ten:6},
-  "Hoopers":         {att:4,def:4,stm:6,con:4,ten:6}
+  "BADiles":         {att:8,def:8,stm:7,con:9,ten:7, tactic:"Zonal",      notes:"Dimitris Gavalas, Thanos Chatziiordanou"},
+  "Y&Y":             {att:9,def:8,stm:8,con:7,ten:9, tactic:"Zonal",      notes:"Giannis Akridas, Giorgos Filippou"},
+  "R1":              {att:8,def:8,stm:8,con:6,ten:8, tactic:"Front-Back", notes:"Michalis Lerogiannis, Nikolas Moschonas"},
+  "Basement Boys":   {att:8,def:8,stm:7,con:7,ten:7, tactic:"Front-Back", notes:"Iordanis Aslanis, Spyros Koskinas"},
+  "Volos Drummers":  {att:5,def:7,stm:7,con:7,ten:4, tactic:"Undefined",  notes:"Vasilis Tziovanis, Giorgos Zacharopoulos"},
+  "Warriors":        {att:5,def:5,stm:6,con:7,ten:2, tactic:"Front-Back", notes:"Panos Chardas, Sokratis Gkiolias"},
+  "Midi Kidz":       {att:6,def:5,stm:6,con:6,ten:4, tactic:"Front-Back", notes:"Tzannis Mermigkas, Stefanos Mavrogiannis"},
+  "Babiniotes":      {att:6,def:6,stm:7,con:5,ten:6, tactic:"Front-Back", notes:"Johan Pilichos, Stavros Stavropoulos"},
+  "Spasmena Mila":   {att:7,def:6,stm:6,con:6,ten:6, tactic:"Front-Back", notes:"Aris Tsertos, Iasonas Miliaras, Petros Papaspyropoulos"},
+  "Phoenix":         {att:7,def:7,stm:7,con:3,ten:8, tactic:"Front-Back", notes:"Filippos Efstathiou, Nikos Kalisperis"},
+  "Snipers":         {att:5,def:5,stm:6,con:5,ten:6, tactic:"Front-Back", notes:"Giannis Stefanis, Antonis Iliadis"},
+  "Team Till Death": {att:3,def:3,stm:5,con:4,ten:3, tactic:"Front-Back", notes:"Giorgos Karamolegkos, Miltos Kapnakis"},
+  "A/C":             {att:3,def:3,stm:5,con:4,ten:4, tactic:"Undefined",  notes:"Giannis Kordopatis, Orfeas Maragkos"},
+  "Fintani":         {att:4,def:4,stm:5,con:6,ten:5, tactic:"Front-Back", notes:"Daniel Chortikoglou, Iasonas Kepelyan"},
+  "Axtarmades":      {att:5,def:3,stm:4,con:5,ten:4, tactic:"Front-Back", notes:"Haris Rigas, Dimitris Antoninis"},
+  "Chewbacca":       {att:6,def:5,stm:6,con:4,ten:6, tactic:"Front-Back", notes:"Vasilis Mavraganis, Spyros Paliouras"},
+  "Hoopers":         {att:4,def:4,stm:6,con:4,ten:6, tactic:"Front-Back", notes:"Petros Mpogeas, Ilias Loverdos"}
 };
 
 const logos = {
@@ -90,18 +223,30 @@ const logos = {
 };
 
 const names = Object.keys(teams);
-const s1 = document.getElementById('team1');
-const s2 = document.getElementById('team2');
-names.forEach((n,i) => {
-  s1.innerHTML += `<option value="${n}">${n}</option>`;
-  s2.innerHTML += `<option value="${n}">${n}</option>`;
-});
-s2.selectedIndex = 1;
 
 function logoImg(name, size=20) {
   return logos[name] ? `<img src="${logos[name]}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:6px;" onerror="this.style.display='none'">` : '';
 }
 
+// ── TAB SWITCHING ────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.page-tab').forEach((b,i) => {
+    b.classList.toggle('active', ['single','monte','teams'][i] === tab);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab === 'teams') renderTeams();
+}
+
+// ── POPULATE SELECTS ─────────────────────────────────────────────
+['sm-team1','sm-team2','mc-team1','mc-team2'].forEach(id => {
+  const sel = document.getElementById(id);
+  names.forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
+});
+document.getElementById('sm-team2').selectedIndex = 1;
+document.getElementById('mc-team2').selectedIndex = 1;
+
+// ── SHARED SIM HELPERS ───────────────────────────────────────────
 function rand() { return Math.random(); }
 function rng(min,max) { return min + rand()*(max-min); }
 function pick(arr) { return arr[Math.floor(rand()*arr.length)]; }
@@ -130,6 +275,7 @@ function rallyDuration(t1, t2, f1, f2) {
   return Math.round(rng(10,70)*(0.5+avgStm/10)*(0.8+skill/10*0.6)*tenMult);
 }
 
+// ── SINGLE MATCH ─────────────────────────────────────────────────
 const serveWords = ["fires in the serve","launches the serve","pitches it in","sends the serve over","steps up and serves"];
 const bounceWords = ["drops it perfectly into the corner","places a precise double bounce","finds the back corner","lands it perfectly twice","forces the double bounce"];
 const outWords = ["sends it long","fires it wide","overpowers the shot out","hits it out of bounds","can't control the smash — wide"];
@@ -138,10 +284,11 @@ const netWords = ["clips the net","hits the tape","drives it into the net","can'
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
 
 function simulate() {
-  const n1=s1.value, n2=s2.value;
+  const n1=document.getElementById('sm-team1').value;
+  const n2=document.getElementById('sm-team2').value;
   if(n1===n2){ alert("Pick two different teams."); return; }
   const t1=teams[n1], t2=teams[n2];
-  const target=parseInt(document.getElementById('target').value);
+  const target=parseInt(document.getElementById('sm-target').value);
   let sc1=0,sc2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
   let totalTime=0,totalRallies=0,err1=0,err2=0,cp1=0,cp2=0;
   const log=[];
@@ -186,6 +333,134 @@ function simulate() {
   const logEl=document.getElementById('log');
   logEl.innerHTML=log.map(e=>`<div class="log-entry ${e.cls}">${e.text}</div>`).join('');
   logEl.scrollTop=logEl.scrollHeight;
+}
+
+// ── MONTE CARLO ──────────────────────────────────────────────────
+function simMatch(t1, t2, target) {
+  let s1=0,s2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
+  let rallies=0,time=0,err1=0,err2=0,cp1=0,cp2=0;
+  const avgTen=((t1.ten||5)+(t2.ten||5))/2;
+  const tenMult=1.3-(avgTen/10)*0.6;
+  while(true){
+    const avgStm=((t1.stm*(1-f1*0.5))+(t2.stm*(1-f2*0.5)))/2;
+    const skill=(overallRating(t1)+overallRating(t2))/2;
+    time+=Math.round((10+rand()*60)*(0.5+avgStm/10)*(0.8+skill/10*0.6)*tenMult);
+    rallies++;
+    const winner=rand()<winProbability(t1,t2,f1,f2,serving)?1:2;
+    const loser=winner===1?2:1;
+    f1=Math.min(0.7,f1+0.018); f2=Math.min(0.7,f2+0.018);
+    const isError=rand()<errorRate(t1,t2,f1,f2);
+    if(!isError){
+      if(winner===1){s1++;cp1++;}else{s2++;cp2++;}
+    } else {
+      if(loser===1){s2++;err1++;}else{s1++;err2++;}
+    }
+    serving=winner;
+    if(Math.max(s1,s2)>=target && Math.abs(s1-s2)>=2) break;
+    if(rallies>300) break;
+  }
+  return {w:s1>s2?1:2,s1,s2,err1,err2,cp1,cp2,time};
+}
+
+function runMonteCarlo() {
+  const n1=document.getElementById('mc-team1').value;
+  const n2=document.getElementById('mc-team2').value;
+  if(n1===n2){ alert("Pick two different teams."); return; }
+  const t1=teams[n1], t2=teams[n2];
+  const target=parseInt(document.getElementById('mc-target').value);
+  const numSims=parseInt(document.getElementById('sims').value);
+  document.getElementById('runbtn').disabled=true;
+  document.getElementById('running').classList.remove('hidden');
+  document.getElementById('results').classList.add('hidden');
+  setTimeout(()=>{
+    let wins1=0,wins2=0,totErr1=0,totErr2=0,totCp1=0,totCp2=0,totTime=0,totS1=0,totS2=0;
+    const scorelines={};
+    for(let i=0;i<numSims;i++){
+      const r=simMatch(t1,t2,target);
+      if(r.w===1) wins1++; else wins2++;
+      totErr1+=r.err1; totErr2+=r.err2;
+      totCp1+=r.cp1; totCp2+=r.cp2;
+      totTime+=r.time; totS1+=r.s1; totS2+=r.s2;
+      const key=`${r.s1}-${r.s2}`;
+      scorelines[key]=(scorelines[key]||0)+1;
+    }
+    const pct1=((wins1/numSims)*100).toFixed(1);
+    const pct2=((wins2/numSims)*100).toFixed(1);
+    document.getElementById('rname1').innerHTML=`${logoImg(n1,24)}${n1}`;
+    document.getElementById('rname2').innerHTML=`${logoImg(n2,24)}${n2}`;
+    document.getElementById('rpct1').textContent=pct1+'%';
+    document.getElementById('rpct2').textContent=pct2+'%';
+    document.getElementById('rpct1').className='win-pct'+(wins1>wins2?' high':' low');
+    document.getElementById('rpct2').className='win-pct'+(wins2>wins1?' high':' low');
+    document.getElementById('rwins1').textContent=`${wins1.toLocaleString()} wins`;
+    document.getElementById('rwins2').textContent=`${wins2.toLocaleString()} wins`;
+    document.getElementById('rbar1').style.width=pct1+'%';
+    document.getElementById('rbar2').style.width=pct2+'%';
+    document.getElementById('avg-score1').textContent=(totS1/numSims).toFixed(1);
+    document.getElementById('avg-score2').textContent=(totS2/numSims).toFixed(1);
+    document.getElementById('avg-err1').textContent=(totErr1/numSims).toFixed(1);
+    document.getElementById('avg-err2').textContent=(totErr2/numSims).toFixed(1);
+    document.getElementById('avg-cp1').textContent=(totCp1/numSims).toFixed(1);
+    document.getElementById('avg-cp2').textContent=(totCp2/numSims).toFixed(1);
+    const avgSecs=Math.round(totTime/numSims);
+    document.getElementById('avg-dur').textContent=`${Math.floor(avgSecs/60)}m ${avgSecs%60}s`;
+    document.getElementById('sim-count').textContent=numSims.toLocaleString();
+    const sorted=Object.entries(scorelines).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const maxCount=sorted[0][1];
+    document.getElementById('score-dist-list').innerHTML=sorted.map(([score,count])=>{
+      const pct=((count/numSims)*100).toFixed(1);
+      const barW=Math.round((count/maxCount)*100);
+      return `<div class="score-item"><span class="score-label">${score}</span><div class="score-bar-track"><div class="score-bar-fill" style="width:${barW}%"></div></div><span class="score-pct">${pct}%</span></div>`;
+    }).join('');
+    document.getElementById('running').classList.add('hidden');
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('runbtn').disabled=false;
+  },50);
+}
+
+// ── TEAM STATS ───────────────────────────────────────────────────
+function overall(t) { return +(t.att*0.35 + t.def*0.3 + t.stm*0.15 + t.con*0.2).toFixed(1); }
+function tier(o) {
+  if(o >= 7.5) return {label:'Elite', cls:'tier-elite'};
+  if(o >= 5.5) return {label:'Mid', cls:'tier-mid'};
+  return {label:'Lower', cls:'tier-low'};
+}
+
+function renderTeams() {
+  const sortBy = document.getElementById('sort-select').value;
+  let entries = Object.entries(teams).map(([name, t]) => ({name, ...t, overall: overall(t)}));
+  entries.sort((a,b) => {
+    if(sortBy === 'name') return a.name.localeCompare(b.name);
+    if(sortBy === 'overall') return b.overall - a.overall;
+    return b[sortBy] - a[sortBy];
+  });
+  document.getElementById('teams-grid').innerHTML = entries.map(t => {
+    const tr = tier(t.overall);
+    return `<div class="team-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="${logos[t.name]||''}" onerror="this.style.display='none'" style="width:36px;height:36px;object-fit:contain;border-radius:6px;background:#282d15;padding:2px;">
+          <div>
+            <div class="team-card-name">${t.name}</div>
+            <div style="font-size:11px;color:#888;margin-top:2px;">${t.tactic}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div class="overall-score">${t.overall}</div>
+          <div class="overall-label">overall</div>
+          <span class="tier-badge ${tr.cls}" style="margin-top:4px;display:inline-block;">${tr.label}</span>
+        </div>
+      </div>
+      <div class="rating-bars">
+        <div class="rating-row"><span class="rating-label">ATT</span><div class="rating-track"><div class="rating-fill fill-att" style="width:${t.att*10}%"></div></div><span class="rating-val">${t.att}</span></div>
+        <div class="rating-row"><span class="rating-label">DEF</span><div class="rating-track"><div class="rating-fill fill-def" style="width:${t.def*10}%"></div></div><span class="rating-val">${t.def}</span></div>
+        <div class="rating-row"><span class="rating-label">STM</span><div class="rating-track"><div class="rating-fill fill-stm" style="width:${t.stm*10}%"></div></div><span class="rating-val">${t.stm}</span></div>
+        <div class="rating-row"><span class="rating-label">CON</span><div class="rating-track"><div class="rating-fill fill-con" style="width:${t.con*10}%"></div></div><span class="rating-val">${t.con}</span></div>
+        <div class="rating-row"><span class="rating-label">TEN</span><div class="rating-track"><div class="rating-fill" style="width:${t.ten*10}%;background:#c084fc;"></div></div><span class="rating-val">${t.ten}</span></div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#888;line-height:1.5;">${t.notes}</div>
+    </div>`;
+  }).join('');
 }
 </script>
 <style>body{position:relative;}</style>
