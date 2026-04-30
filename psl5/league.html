@@ -983,6 +983,8 @@ function updateEvent(index, field, value) {
 }
 
 async function saveAdminMatch() {
+  if (!confirm("Are you sure you want to save this match? This action cannot be reversed!")) {
+    return; // Exit if the user clicks 'Cancel'
   const btn = document.getElementById('ae-btn');
   btn.disabled = true; btn.textContent = 'Saving...';
   
