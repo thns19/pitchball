@@ -283,6 +283,33 @@ const matchData = [
       {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:0,as:2},
       {type:"goal",team:"R1",player:"Michalis Lerogiannis",hs:0,as:1}
     ]
+  },
+  {
+    id:"MD6_Warriors_MidiKidz",
+    home:"Warriors",away:"Midi Kidz",hs:5,as:2,
+    date:"29/04/2026, 10:41AM",mvp:"Panos Chardas",
+    events: [
+      {type:"og",team:"Warriors",player:"Tzannis Mermigas",hs:5,as:2},
+      {type:"og",team:"Warriors",player:"Stefanos Mavrogiannis",hs:4,as:2},
+      {type:"goal",team:"Midi Kidz",player:"Tzannis Mermigas",hs:3,as:2},
+      {type:"og",team:"Warriors",player:"Tzannis Mermigas",hs:3,as:1},
+      {type:"goal",team:"Midi Kidz",player:"Stefanos Mavrogiannis",hs:2,as:1},
+      {type:"goal",team:"Warriors",player:"Panos Chardas",hs:2,as:0},
+      {type:"og",team:"Warriors",player:"Tzannis Mermigas",hs:1,as:0}
+    ]
+  },
+  {
+    id:"MD7_Warriors_SpasmenaMila",
+    home:"Warriors",away:"Spasmena Mila",hs:1,as:5,
+    date:"29/04/2026, 11:30AM",mvp:"Iasonas Miliaras",
+    events: [
+      {type:"goal",team:"Spasmena Mila",player:"Iasonas Miliaras",hs:1,as:5},
+      {type:"goal",team:"Spasmena Mila",player:"Iasonas Miliaras",hs:1,as:4},
+      {type:"og",team:"Warriors",player:"Iasonas Miliaras",hs:1,as:3},
+      {type:"goal",team:"Spasmena Mila",player:"Iasonas Miliaras",hs:0,as:3},
+      {type:"goal",team:"Spasmena Mila",player:"Aris Tsertos",hs:0,as:2},
+      {type:"goal",team:"Spasmena Mila",player:"Iasonas Miliaras",hs:0,as:1}                              
+    ]
   }
 
   // ── ADD MORE MATCHES BELOW ──
@@ -310,8 +337,8 @@ const topScorers = [
   {name: "Giannis Akridas",    team: "Y&Y",           goals: 21, logo: "logos/yy.png"},
   {name: "Thanos Chatziiordanou", team: "BADiles",    goals: 18, logo: "logos/badiles.png"},
   {name: "Michalis Lerogiannis",  team: "R1",         goals: 14,  logo: "logos/r1.png"},
+  {name: "Iasonas Miliaras",     team: "Spasmena Mila",         goals: 12,  logo: "logos/spasmena.png"},
   {name: "Nikolas Moschonas",     team: "R1",         goals: 9,  logo: "logos/r1.png"},
-  {name: "Iasonas Miliaras",     team: "Spasmena Mila",         goals: 8,  logo: "logos/spasmena.png"},
-  {name: "Nikos Kalisperis",     team: "Phoenix",         goals: 7,  logo: "logos/phoenix.png"},
-  {name: "Tzannis Mermigas",     team: "Midi Kidz",         goals: 7,  logo: "logos/midi.png"},
+  {name: "Tzannis Mermigas",     team: "Midi Kidz",         goals: 8,  logo: "logos/midi.png"},
+  {name: "Stefanos Mavrogiannis",     team: "Midi Kidz",         goals: 7,  logo: "logos/midi.png"}
 ];
