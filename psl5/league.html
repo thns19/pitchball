@@ -320,7 +320,7 @@ function renderFixtures() {
 
       const scoreDisplay = hasResult && !f.inProgress
         ? (() => {
-            const matchId = `MD${f.md}_${f.home.replace(/[^a-zA-Z0-9]/g,'')}_${f.away.replace(/[^a-zA-Z0-9]/g,'')}`;
+            const matchId = f.id;
             const scoreEl = `<span style="font-weight:500;min-width:40px;text-align:center;" class="${f.confirmed?'confirmed':'projected'}">${f.hs}–${f.as}</span>`;
             return f.confirmed ? `<a href="match.html?id=${matchId}" style="text-decoration:none;">${scoreEl}</a>` : scoreEl;
           })()
@@ -985,6 +985,7 @@ function updateEvent(index, field, value) {
 async function saveAdminMatch() {
   if (!confirm("Are you sure you want to save this match? This action cannot be reversed!")) {
     return; // Exit if the user clicks 'Cancel'
+  }
   const btn = document.getElementById('ae-btn');
   btn.disabled = true; btn.textContent = 'Saving...';
   
