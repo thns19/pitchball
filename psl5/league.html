@@ -811,8 +811,28 @@ document.addEventListener('DOMContentLoaded',pslAuthInit);
 <!-- Admin UI Container -->
 <div id="admin-edit-container"></div>
 
+<!-- Admin UI Container -->
+<div id="admin-edit-container"></div>
+
 <script>
-// 1. Initial Sync on Load
+const PSL5_SQUADS = {
+  'BADiles':        ['Dimitris Gavalas','Thanos Chatziiordanou'],
+  'Y&Y':            ['Giannis Akridas','Giorgos Filippou'],
+  'Basement Boys':  ['Iordanis Aslanis','Spyros Koskinas'],
+  'R1':             ['Michalis Lerogiannis','Nikolas Moschonas'],
+  'Spasmena Mila':  ['Iasonas Miliaras','Petros Papaspyropoulos','Aris Tsertos'],
+  'Volos Drummers': ['Vasilis Tziovanis','Giorgos Zacharopoulos'],
+  'Midi Kidz':      ['Stefanos Mavrogiannis','Tzannis Mermigas'],
+  'Babiniotes':     ['Johan Pilichos','Stavros Stavropoulos'],
+  'Warriors':       ['Sokratis Gkiolias','Panos Chardas'],
+  'Phoenix':        [] // Added to prevent errors if selected
+};
+
+let adminEvents = [];
+let adminCurrentHome = '';
+let adminCurrentAway = '';
+let adminEditModal = null;
+
 async function syncMatchesFromDB() {
   const db = await pslDbGet();
   if (db.matches) {
@@ -824,49 +844,34 @@ async function syncMatchesFromDB() {
         if (f.hs !== null && f.as !== null) f.confirmed = true;
         f.matchDate = overrides.date;
         f.mvp = overrides.mvp;
-        f.scorers = overrides.scorers;
+        f.events = overrides.events || [];
       }
     });
-    renderTable();
-    renderFixtures();
+    renderTable(); renderFixtures();
   }
 }
 syncMatchesFromDB();
 
-// 2. Admin UI Injection
 function renderAdminControls() {
   const container = document.getElementById('admin-edit-container');
-  if (!pslCurrentUser || !pslCurrentUser.isAdmin) {
-    container.innerHTML = '';
-    return;
-  }
-  container.innerHTML = `
-    <button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">
-      ✏️ Admin: Edit Match
-    </button>`;
+  if (!pslCurrentUser || !pslCurrentUser.isAdmin) return container.innerHTML = '';
+  container.innerHTML = `<button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">✏️ Admin: Edit Match</button>`;
 }
-
-window.onPslLogin = renderAdminControls;
-window.onPslLogout = renderAdminControls;
-
-// 3. Modal System
-let adminEditModal = null;
+window.onPslLogin = renderAdminControls; window.onPslLogout = renderAdminControls;
 
 function openAdminMatchEdit() {
   if (adminEditModal) adminEditModal.remove();
-  
   const o = document.createElement('div');
   o.className = 'psl-modal-overlay';
-  
   const matchOpts = fixtures.map(f => `<option value="${f.id}">MD${f.md}: ${f.home} vs ${f.away}</option>`).join('');
 
   o.innerHTML = `
-    <div class="psl-modal">
+    <div class="psl-modal" style="max-width:500px; max-height: 90vh; display:flex; flex-direction:column;">
       <div class="psl-modal-hd">
         <div class="psl-modal-title">Edit Match Data</div>
         <button class="psl-modal-close" onclick="adminEditModal.remove(); adminEditModal=null;">×</button>
       </div>
-      <div class="psl-modal-bd">
+      <div class="psl-modal-bd" style="overflow-y:auto;">
         <div class="psl-form-group">
           <label class="psl-label">Select Match</label>
           <select class="psl-input" id="ae-match-id" onchange="loadAdminMatchData()">${matchOpts}</select>
@@ -882,39 +887,99 @@ function openAdminMatchEdit() {
           </div>
         </div>
         <div class="psl-form-group">
-          <label class="psl-label">Match Date</label>
-          <input type="date" class="psl-input" id="ae-date">
+          <label class="psl-label">Match Date & Time</label>
+          <input type="datetime-local" class="psl-input" id="ae-date">
         </div>
         <div class="psl-form-group">
           <label class="psl-label">MVP</label>
-          <input type="text" class="psl-input" id="ae-mvp" placeholder="Player Name">
+          <select class="psl-input" id="ae-mvp"></select>
         </div>
-        <div class="psl-form-group">
-          <label class="psl-label">Scorers</label>
-          <textarea class="psl-input" id="ae-scorers" rows="3" placeholder="e.g. John (2), Mike (1)"></textarea>
-        </div>
+        
+        <div class="section-title" style="margin: 1.5rem 0 0.5rem; font-size:14px;">Events</div>
+        <div id="ae-events-container" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+        <button class="psl-btn-primary" style="background:#535c2f; color:#fff; margin-bottom:1.5rem;" onclick="addAdminEvent()">+ Add Event</button>
         
         <div class="psl-err" id="ae-err" style="display:none;"></div>
         <div class="psl-ok" id="ae-ok" style="display:none;">Saved to Firebase!</div>
         <button class="psl-btn-primary" id="ae-btn" onclick="saveAdminMatch()">Save Match</button>
       </div>
     </div>`;
-    
   document.body.appendChild(o);
   adminEditModal = o;
   loadAdminMatchData();
 }
 
+function getPlayerOpts(selectedPlayer) {
+  const allPlayers = [...(PSL5_SQUADS[adminCurrentHome]||[]), ...(PSL5_SQUADS[adminCurrentAway]||[])];
+  return `<option value="">-- Select Player --</option>` + allPlayers.map(p => `<option value="${p}" ${p===selectedPlayer?'selected':''}>${p}</option>`).join('');
+}
+
+function getTeamOpts(selectedTeam) {
+  return `<option value="">-- Select Team --</option>
+          <option value="${adminCurrentHome}" ${adminCurrentHome===selectedTeam?'selected':''}>${adminCurrentHome}</option>
+          <option value="${adminCurrentAway}" ${adminCurrentAway===selectedTeam?'selected':''}>${adminCurrentAway}</option>`;
+}
+
 async function loadAdminMatchData() {
   const matchId = document.getElementById('ae-match-id').value;
+  const f = fixtures.find(x => x.id == matchId);
+  adminCurrentHome = f.home;
+  adminCurrentAway = f.away;
+
   const db = await pslDbGet();
   const data = (db.matches || {})[matchId] || {};
   
-  document.getElementById('ae-hs').value = data.hs !== undefined ? data.hs : '';
-  document.getElementById('ae-as').value = data.as !== undefined ? data.as : '';
+  document.getElementById('ae-hs').value = data.hs !== undefined && data.hs !== null ? data.hs : '';
+  document.getElementById('ae-as').value = data.as !== undefined && data.as !== null ? data.as : '';
   document.getElementById('ae-date').value = data.date || '';
-  document.getElementById('ae-mvp').value = data.mvp || '';
-  document.getElementById('ae-scorers').value = data.scorers || '';
+  
+  document.getElementById('ae-mvp').innerHTML = getPlayerOpts(data.mvp);
+  adminEvents = data.events ? JSON.parse(JSON.stringify(data.events)) : [];
+  renderAdminEvents();
+}
+
+function renderAdminEvents() {
+  const c = document.getElementById('ae-events-container');
+  c.innerHTML = adminEvents.map((ev, i) => `
+    <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px; position:relative;">
+      <button onclick="removeAdminEvent(${i})" style="position:absolute;top:5px;right:5px;background:none;border:none;color:#e74c3c;cursor:pointer;">✕</button>
+      <select class="psl-input" style="margin-bottom:6px; width:calc(100% - 20px);" onchange="updateEvent(${i}, 'type', this.value)">
+        <option value="Goal" ${ev.type==='Goal'?'selected':''}>Goal</option>
+        <option value="OwnGoal" ${ev.type==='OwnGoal'?'selected':''}>Own Goal</option>
+        <option value="Sub" ${ev.type==='Sub'?'selected':''}>Substitution</option>
+      </select>
+      
+      <div style="display:flex; gap:6px;">
+        <select class="psl-input" onchange="updateEvent(${i}, 'team', this.value)">${getTeamOpts(ev.team)}</select>
+        
+        ${ev.type !== 'Sub' ? `
+          <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)">${getPlayerOpts(ev.player)}</select>
+          <input type="text" class="psl-input" style="width:70px;" placeholder="Score" value="${ev.scoreline||''}" oninput="updateEvent(${i}, 'scoreline', this.value)">
+        ` : `
+          <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)">
+            <option value="">-- IN --</option>${getPlayerOpts(ev.player)}
+          </select>
+          <select class="psl-input" onchange="updateEvent(${i}, 'playerOut', this.value)">
+            <option value="">-- OUT --</option>${getPlayerOpts(ev.playerOut)}
+          </select>
+        `}
+      </div>
+    </div>`).join('');
+}
+
+function addAdminEvent() {
+  adminEvents.push({ type: 'Goal', team: '', player: '', playerOut: '', scoreline: '' });
+  renderAdminEvents();
+}
+
+function removeAdminEvent(index) {
+  adminEvents.splice(index, 1);
+  renderAdminEvents();
+}
+
+function updateEvent(index, field, value) {
+  adminEvents[index][field] = value;
+  if (field === 'type') renderAdminEvents(); // Re-render to show correct fields
 }
 
 async function saveAdminMatch() {
@@ -934,7 +999,7 @@ async function saveAdminMatch() {
       as: isNaN(as) ? null : as,
       date: document.getElementById('ae-date').value,
       mvp: document.getElementById('ae-mvp').value,
-      scorers: document.getElementById('ae-scorers').value
+      events: adminEvents
     };
     
     await pslDbSet(db);
@@ -943,22 +1008,19 @@ async function saveAdminMatch() {
     document.getElementById('ae-ok').style.display = 'block';
     document.getElementById('ae-err').style.display = 'none';
 
-    // Update local table immediately
     const f = fixtures.find(x => x.id == matchId);
     if(f) {
        f.hs = db.matches[matchId].hs;
        f.as = db.matches[matchId].as;
        f.confirmed = f.hs !== null && f.as !== null;
        f.projected = false;
+       f.events = adminEvents;
     }
-    renderTable(); 
-    renderFixtures();
-
+    renderTable(); renderFixtures();
     setTimeout(() => { if(adminEditModal) { adminEditModal.remove(); adminEditModal = null; } }, 1000);
   } catch (e) {
     document.getElementById('ae-err').textContent = 'Error saving to database.';
     document.getElementById('ae-err').style.display = 'block';
-    document.getElementById('ae-ok').style.display = 'none';
   } finally {
     btn.disabled = false; btn.textContent = 'Save Match';
   }
