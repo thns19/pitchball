@@ -157,7 +157,7 @@ const rawFixtures = [
   {md:7, h:"PHX", a:"BAB", hs:0, as:5, confirmed:true},
   {md:7, h:"VDR", a:"BMB", hs:null, as:null, confirmed:false},
   {md:7, h:"YY",  a:"BAD", hs:null, as:null, confirmed:false},
-  {md:8, h:"SPM", a:"MDK", hs:null, as:null, confirmed:false},
+  {md:8, h:"SPM", a:"MDK", hs:6, as:4, confirmed:true},
   {md:8, h:"BAB", a:"R1",  hs:null, as:null, confirmed:false},
   {md:8, h:"BMB", a:"WAR", hs:null, as:null, confirmed:false},
   {md:8, h:"BAD", a:"PHX", hs:5, as:0, confirmed:true},
@@ -174,7 +174,11 @@ let fixtures = rawFixtures.map((f,i) => ({
   id: i,
   home: TEAMS[f.h],
   away: TEAMS[f.a],
-  projected: false
+  projected: false,
+  liveHs: f.inProgress ? f.hs : null,
+  liveAs: f.inProgress ? f.as : null,
+  hs: f.inProgress ? null : f.hs,
+  as: f.inProgress ? null : f.as,
 }));
 
 function rand() { return Math.random(); }
@@ -234,7 +238,10 @@ function computeTable() {
   });
 
   fixtures.forEach(f => {
-    if(f.hs === null || f.as === null || f.inProgress) return;
+    // Only skip if the score is truly missing. 
+    // We remove "f.inProgress" from the skip condition.
+    if(f.hs === null || f.as === null) return; 
+
     const h = standings[f.home], a = standings[f.away];
     h.p++; a.p++;
     h.gf += f.hs; h.ga += f.as;
@@ -294,66 +301,45 @@ function renderFixtures() {
     html += `<div class="card" style="padding: 0.75rem 1rem; margin-bottom: 0.5rem;">`;
     byMd[md].forEach(f => {
       const hasResult = f.hs !== null && f.as !== null;
-      const isLocked = f.inProgress && !f.unlocked;
-      const badge = isLocked
+      const badge = f.inProgress
                   ? `<span style="width:8px;height:8px;border-radius:50%;background:#e74c3c;flex-shrink:0;display:inline-block;animation:pulse 1s infinite;"></span>`
-                  : f.inProgress && f.unlocked
-                  ? `<span style="width:8px;height:8px;border-radius:50%;background:#e74c3c;flex-shrink:0;display:inline-block;opacity:0.4;"></span>`
                   : f.confirmed ? `<span style="width:8px;height:8px;border-radius:50%;background:#39c877;flex-shrink:0;display:inline-block;"></span>`
                   : f.projected ? `<span style="width:8px;height:8px;border-radius:50%;background:#a4cde8;flex-shrink:0;display:inline-block;"></span>`
                   : `<span style="width:8px;height:8px;border-radius:50%;background:#535c2f;flex-shrink:0;display:inline-block;"></span>`;
 
-      const unlockBtn = isLocked
-        ? `<button class="sim-btn" style="font-size:11px;padding:2px 7px;" onclick="unlockInProgress(${f.id})">Unlock</button>`
+      const hasProjected = f.inProgress && f.hs !== null && f.as !== null;
+
+      const liveLabel = f.inProgress
+        ? `<span style="font-size:11px;color:#e74c3c;font-weight:700;letter-spacing:0.3px;white-space:nowrap;">LIVE${f.liveHs !== null && f.liveAs !== null ? ` (${f.liveHs}–${f.liveAs})` : ''}</span>`
         : '';
 
-      const btns = f.confirmed ? '' : isLocked ? '' : hasResult
+      const btns = f.confirmed ? '' : (hasResult || hasProjected)
         ? `<button class="sim-btn" onclick="simulateOne(${f.id})">Simulate</button>
            <button class="clear-btn" onclick="clearResult(${f.id})">✕</button>`
         : `<button class="sim-btn" onclick="simulateOne(${f.id})">Simulate</button>`;
 
-      const scoreDisplay = isLocked
-        ? (() => {
-            if(f.hs === null || f.as === null) return `<span style="font-weight:500;min-width:40px;text-align:center;color:#e74c3c;">–</span><span style="font-size:9px;color:#e74c3c;font-weight:700;letter-spacing:0.5px;margin-left:4px;">LIVE</span>`;
-            const liveTag = `<span style="font-size:9px;color:#e74c3c;font-weight:700;letter-spacing:0.5px;margin-left:4px;">LIVE</span>`;
-            return `<span style="font-weight:500;min-width:40px;text-align:center;color:#e74c3c;">${f.hs}–${f.as}</span>${liveTag}`;
-          })()
-        : (f.inProgress && f.unlocked)
-        ? `<input type="number" min="0" id="hs-${f.id}" placeholder="–" value="${f.hs ?? ''}" onchange="manualScore(${f.id})">
-           <span>–</span>
-           <input type="number" min="0" id="as-${f.id}" placeholder="–" value="${f.as ?? ''}" onchange="manualScore(${f.id})">`
-        : hasResult
+      const scoreDisplay = hasResult && !f.inProgress
         ? (() => {
             const matchId = `MD${f.md}_${f.home.replace(/[^a-zA-Z0-9]/g,'')}_${f.away.replace(/[^a-zA-Z0-9]/g,'')}`;
             const scoreEl = `<span style="font-weight:500;min-width:40px;text-align:center;" class="${f.confirmed?'confirmed':'projected'}">${f.hs}–${f.as}</span>`;
             return f.confirmed ? `<a href="match.html?id=${matchId}" style="text-decoration:none;">${scoreEl}</a>` : scoreEl;
           })()
-        : `<input type="number" min="0" id="hs-${f.id}" placeholder="–" onchange="manualScore(${f.id})">
+        : `<input type="number" min="0" id="hs-${f.id}" placeholder="–" ${hasProjected ? `value="${f.hs}"` : ''} onchange="manualScore(${f.id})">
            <span>–</span>
-           <input type="number" min="0" id="as-${f.id}" placeholder="–" onchange="manualScore(${f.id})">`;
+           <input type="number" min="0" id="as-${f.id}" placeholder="–" ${hasProjected ? `value="${f.as}"` : ''} onchange="manualScore(${f.id})">`;
 
       html += `<div class="fixture" style="flex-wrap:nowrap;gap:6px;">
         <span class="fix-team right" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${f.home}${tlogo(f.home)}</span>
         <div class="fix-score" style="flex-shrink:0;">${scoreDisplay}</div>
         <span class="fix-team" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${tlogo(f.away)}${f.away}</span>
         ${badge}
-        <span style="flex-shrink:0;display:flex;gap:4px;align-items:center;">${unlockBtn}${btns}</span>
+        <span style="flex-shrink:0;display:flex;gap:4px;align-items:center;">${liveLabel}${btns}</span>
       </div>`;
     });
     html += `</div>`;
   });
   container.innerHTML = html;
 }
-
-function unlockInProgress(id) {
-  const f = fixtures.find(x => x.id === id);
-  if(!f || !f.inProgress) return;
-  f.unlocked = true;
-  f.projected = false;
-  renderTable();
-  renderFixtures();
-}
-
 
 function simulateOne(id) {
   const f = fixtures.find(x => x.id === id);
@@ -381,7 +367,6 @@ function clearResult(id) {
   f.hs = null;
   f.as = null;
   f.projected = false;
-  if(f.inProgress) f.unlocked = false;
   renderTable();
   renderFixtures();
 }
@@ -403,10 +388,6 @@ function manualScore(id) {
 function simulateAll() {
   fixtures.forEach(f => {
     if(f.confirmed) return;
-    // Auto-unlock in-progress matches and simulate them
-    if(f.inProgress && !f.unlocked) {
-      f.unlocked = true;
-    }
     if(f.hs === null || f.as === null) {
       const result = simMatch(f.home, f.away);
       f.hs = result.hs;
@@ -422,8 +403,6 @@ function clearAllProjected() {
   fixtures.forEach(f => {
     if(f.projected) {
       f.hs = null; f.as = null; f.projected = false;
-      // Relock in-progress matches
-      if(f.inProgress) f.unlocked = false;
     }
   });
   renderTable();
@@ -828,6 +807,162 @@ function pslLogout(){pslClearSession();pslCurrentUser=null;pslDbInvalidate();ren
 async function pslAuthInit(){injectAuthStyles();const session=pslLoadSession();if(session){try{const db=await pslDbGet();const uData=(db.users||{})[session.username.toLowerCase()];if(uData){pslCurrentUser={username:uData.username,email:uData.email,avatar:uData.avatar||null,isAdmin:uData.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);}else{pslClearSession();}}catch(err){pslCurrentUser=session;}}renderWidget();if(pslCurrentUser&&typeof onPslLogin==='function')onPslLogin(pslCurrentUser);}
 injectAuthStyles();
 document.addEventListener('DOMContentLoaded',pslAuthInit);
+</script>
+<!-- Admin UI Container -->
+<div id="admin-edit-container"></div>
+
+<script>
+// 1. Initial Sync on Load
+async function syncMatchesFromDB() {
+  const db = await pslDbGet();
+  if (db.matches) {
+    fixtures.forEach(f => {
+      const overrides = db.matches[f.id];
+      if (overrides) {
+        f.hs = overrides.hs !== null ? overrides.hs : f.hs;
+        f.as = overrides.as !== null ? overrides.as : f.as;
+        if (f.hs !== null && f.as !== null) f.confirmed = true;
+        f.matchDate = overrides.date;
+        f.mvp = overrides.mvp;
+        f.scorers = overrides.scorers;
+      }
+    });
+    renderTable();
+    renderFixtures();
+  }
+}
+syncMatchesFromDB();
+
+// 2. Admin UI Injection
+function renderAdminControls() {
+  const container = document.getElementById('admin-edit-container');
+  if (!pslCurrentUser || !pslCurrentUser.isAdmin) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = `
+    <button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">
+      ✏️ Admin: Edit Match
+    </button>`;
+}
+
+window.onPslLogin = renderAdminControls;
+window.onPslLogout = renderAdminControls;
+
+// 3. Modal System
+let adminEditModal = null;
+
+function openAdminMatchEdit() {
+  if (adminEditModal) adminEditModal.remove();
+  
+  const o = document.createElement('div');
+  o.className = 'psl-modal-overlay';
+  
+  const matchOpts = fixtures.map(f => `<option value="${f.id}">MD${f.md}: ${f.home} vs ${f.away}</option>`).join('');
+
+  o.innerHTML = `
+    <div class="psl-modal">
+      <div class="psl-modal-hd">
+        <div class="psl-modal-title">Edit Match Data</div>
+        <button class="psl-modal-close" onclick="adminEditModal.remove(); adminEditModal=null;">×</button>
+      </div>
+      <div class="psl-modal-bd">
+        <div class="psl-form-group">
+          <label class="psl-label">Select Match</label>
+          <select class="psl-input" id="ae-match-id" onchange="loadAdminMatchData()">${matchOpts}</select>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div class="psl-form-group" style="flex:1;">
+            <label class="psl-label">Home Score</label>
+            <input type="number" class="psl-input" id="ae-hs" min="0">
+          </div>
+          <div class="psl-form-group" style="flex:1;">
+            <label class="psl-label">Away Score</label>
+            <input type="number" class="psl-input" id="ae-as" min="0">
+          </div>
+        </div>
+        <div class="psl-form-group">
+          <label class="psl-label">Match Date</label>
+          <input type="date" class="psl-input" id="ae-date">
+        </div>
+        <div class="psl-form-group">
+          <label class="psl-label">MVP</label>
+          <input type="text" class="psl-input" id="ae-mvp" placeholder="Player Name">
+        </div>
+        <div class="psl-form-group">
+          <label class="psl-label">Scorers</label>
+          <textarea class="psl-input" id="ae-scorers" rows="3" placeholder="e.g. John (2), Mike (1)"></textarea>
+        </div>
+        
+        <div class="psl-err" id="ae-err" style="display:none;"></div>
+        <div class="psl-ok" id="ae-ok" style="display:none;">Saved to Firebase!</div>
+        <button class="psl-btn-primary" id="ae-btn" onclick="saveAdminMatch()">Save Match</button>
+      </div>
+    </div>`;
+    
+  document.body.appendChild(o);
+  adminEditModal = o;
+  loadAdminMatchData();
+}
+
+async function loadAdminMatchData() {
+  const matchId = document.getElementById('ae-match-id').value;
+  const db = await pslDbGet();
+  const data = (db.matches || {})[matchId] || {};
+  
+  document.getElementById('ae-hs').value = data.hs !== undefined ? data.hs : '';
+  document.getElementById('ae-as').value = data.as !== undefined ? data.as : '';
+  document.getElementById('ae-date').value = data.date || '';
+  document.getElementById('ae-mvp').value = data.mvp || '';
+  document.getElementById('ae-scorers').value = data.scorers || '';
+}
+
+async function saveAdminMatch() {
+  const btn = document.getElementById('ae-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  
+  const matchId = document.getElementById('ae-match-id').value;
+  const hs = parseInt(document.getElementById('ae-hs').value);
+  const as = parseInt(document.getElementById('ae-as').value);
+
+  try {
+    const db = await pslDbGet();
+    if (!db.matches) db.matches = {};
+    
+    db.matches[matchId] = {
+      hs: isNaN(hs) ? null : hs,
+      as: isNaN(as) ? null : as,
+      date: document.getElementById('ae-date').value,
+      mvp: document.getElementById('ae-mvp').value,
+      scorers: document.getElementById('ae-scorers').value
+    };
+    
+    await pslDbSet(db);
+    pslDbInvalidate();
+    
+    document.getElementById('ae-ok').style.display = 'block';
+    document.getElementById('ae-err').style.display = 'none';
+
+    // Update local table immediately
+    const f = fixtures.find(x => x.id == matchId);
+    if(f) {
+       f.hs = db.matches[matchId].hs;
+       f.as = db.matches[matchId].as;
+       f.confirmed = f.hs !== null && f.as !== null;
+       f.projected = false;
+    }
+    renderTable(); 
+    renderFixtures();
+
+    setTimeout(() => { if(adminEditModal) { adminEditModal.remove(); adminEditModal = null; } }, 1000);
+  } catch (e) {
+    document.getElementById('ae-err').textContent = 'Error saving to database.';
+    document.getElementById('ae-err').style.display = 'block';
+    document.getElementById('ae-ok').style.display = 'none';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Match';
+  }
+}
 </script>
 </body>
 </html>
