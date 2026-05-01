@@ -99,6 +99,8 @@ async function initMatchOverview() {
 
   document.title = `${match.home} vs ${match.away} — PSL5`;
 
+  const { hs = '-', as = '-', events = [], mvp = null, date: matchDate = null } = dbMatch;
+
   let hGoals=0, hOGs=0, aGoals=0, aOGs=0;
   events.forEach(e => {
     if (e.type === 'goal') {
