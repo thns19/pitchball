@@ -58,23 +58,44 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
 const LOGOS={"BADiles":"logos/badiles.png","Y&Y":"logos/yy.png","R1":"logos/r1.png","Basement Boys":"logos/basement.png","Volos Drummers":"logos/volos.png","Warriors":"logos/warriors.png","Midi Kidz":"logos/midi.png","Babiniotes":"logos/babiniotes.png","Spasmena Mila":"logos/spasmena.png","Phoenix":"logos/phoenix.png","Snipers":"logos/snipers.png","Team Till Death":"logos/ttd.png","A/C":"logos/ac.png","Fintani":"logos/fintani.png","Axtarmades":"logos/axtarmades.png","Chewbacca":"logos/chewbacca.png","Hoopers":"logos/hoopers.png"};
 function tlogo(name,size=16){return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:''}
 
-async function initMatchOverview() {
-  const id = new URLSearchParams(window.location.search).get('id'); //[cite: 2]
-  const db = await pslDbGet(); //[cite: 2]
-const match = matchData.find(m => m.id === id);
+const TEAMS = {
+  BAD:"BADiles",YY:"Y&Y",R1:"R1",BMB:"Basement Boys",
+  VDR:"Volos Drummers",WAR:"Warriors",MDK:"Midi Kidz",
+  BAB:"Babiniotes",SPM:"Spasmena Mila",PHX:"Phoenix"
+};
+const rawFixtures = [
+  {md:1,h:"MDK",a:"BMB"},{md:1,h:"BAB",a:"BAD"},{md:1,h:"SPM",a:"YY"},
+  {md:1,h:"R1", a:"VDR"},{md:1,h:"WAR",a:"PHX"},{md:2,h:"BAD",a:"MDK"},
+  {md:2,h:"YY", a:"BMB"},{md:2,h:"VDR",a:"BAB"},{md:2,h:"PHX",a:"SPM"},
+  {md:2,h:"WAR",a:"R1"}, {md:3,h:"MDK",a:"YY"}, {md:3,h:"BAD",a:"VDR"},
+  {md:3,h:"BMB",a:"PHX"},{md:3,h:"BAB",a:"WAR"},{md:3,h:"SPM",a:"R1"},
+  {md:4,h:"VDR",a:"MDK"},{md:4,h:"PHX",a:"YY"}, {md:4,h:"WAR",a:"BAD"},
+  {md:4,h:"R1", a:"BMB"},{md:4,h:"SPM",a:"BAB"},{md:5,h:"MDK",a:"PHX"},
+  {md:5,h:"VDR",a:"WAR"},{md:5,h:"YY", a:"R1"}, {md:5,h:"BAD",a:"SPM"},
+  {md:5,h:"BMB",a:"BAB"},{md:6,h:"WAR",a:"MDK"},{md:6,h:"R1", a:"PHX"},
+  {md:6,h:"SPM",a:"VDR"},{md:6,h:"BAB",a:"YY"}, {md:6,h:"BMB",a:"BAD"},
+  {md:7,h:"MDK",a:"R1"}, {md:7,h:"WAR",a:"SPM"},{md:7,h:"PHX",a:"BAB"},
+  {md:7,h:"VDR",a:"BMB"},{md:7,h:"YY", a:"BAD"},{md:8,h:"SPM",a:"MDK"},
+  {md:8,h:"BAB",a:"R1"}, {md:8,h:"BMB",a:"WAR"},{md:8,h:"BAD",a:"PHX"},
+  {md:8,h:"YY", a:"VDR"},{md:9,h:"MDK",a:"BAB"},{md:9,h:"SPM",a:"BMB"},
+  {md:9,h:"R1", a:"BAD"},{md:9,h:"WAR",a:"YY"}, {md:9,h:"PHX",a:"VDR"},
+];
 
-  if (!match) {
+async function initMatchOverview() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  const db = await pslDbGet();
+
+  const idx = parseInt(id);
+  const raw = rawFixtures[idx];
+  if (!raw) {
     document.getElementById('match-content').innerHTML = `<p class="no-data">Match not found. <a href="league.html" style="color:#39c877;">← Back</a></p>`;
     return;
   }
 
-  // Merge Database Data[cite: 1]
-  const dbMatch = (db.matches || {})[match.id] || {};
-  const hs = dbMatch.hs !== undefined && dbMatch.hs !== null ? dbMatch.hs : match.hs;
-  const as = dbMatch.as !== undefined && dbMatch.as !== null ? dbMatch.as : match.as;
-  const matchDate = dbMatch.date || match.date;
-  const mvp = dbMatch.mvp || match.mvp;
-  const events = dbMatch.events || match.events || [];
+  const home = TEAMS[raw.h];
+  const away = TEAMS[raw.a];
+  const dbMatch = (db.matches || {})[id] || {};
+  const match = { id, home, away, md: raw.md, ...dbMatch };
 
   document.title = `${match.home} vs ${match.away} — PSL5`;
 
