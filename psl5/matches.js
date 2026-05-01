@@ -329,16 +329,3 @@ const matchData = [
 // ═══════════════════════════════════════════════════════════════
 // TOP SCORERS
 // ═══════════════════════════════════════════════════════════════
-
-const topScorers = [
-  {name: "Dimitris Gavalas",   team: "BADiles",       goals: 24, logo: "logos/badiles.png"},
-  {name: "Iordanis Aslanis",   team: "Basement Boys", goals: 22, logo: "logos/basement.png"},
-  {name: "Giorgos Filippou",   team: "Y&Y",           goals: 22, logo: "logos/yy.png"},
-  {name: "Giannis Akridas",    team: "Y&Y",           goals: 21, logo: "logos/yy.png"},
-  {name: "Thanos Chatziiordanou", team: "BADiles",    goals: 18, logo: "logos/badiles.png"},
-  {name: "Michalis Lerogiannis",  team: "R1",         goals: 14,  logo: "logos/r1.png"},
-  {name: "Iasonas Miliaras",     team: "Spasmena Mila",         goals: 12,  logo: "logos/spasmena.png"},
-  {name: "Nikolas Moschonas",     team: "R1",         goals: 9,  logo: "logos/r1.png"},
-  {name: "Tzannis Mermigas",     team: "Midi Kidz",         goals: 8,  logo: "logos/midi.png"},
-  {name: "Stefanos Mavrogiannis",     team: "Midi Kidz",         goals: 7,  logo: "logos/midi.png"}
-];
