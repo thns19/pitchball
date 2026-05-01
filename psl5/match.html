@@ -61,7 +61,7 @@ function tlogo(name,size=16){return LOGOS[name]?`<img src="${LOGOS[name]}" onerr
 async function initMatchOverview() {
   const id = new URLSearchParams(window.location.search).get('id'); //[cite: 2]
   const db = await pslDbGet(); //[cite: 2]
-  const match = matchData.find(m => m.id === id); //[cite: 2]
+const match = fixtures.find(m => m.id == id);
 
   if (!match) {
     document.getElementById('match-content').innerHTML = `<p class="no-data">Match not found. <a href="league.html" style="color:#39c877;">← Back</a></p>`;
