@@ -948,15 +948,15 @@ function renderAdminEvents() {
     <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px; position:relative;">
       <button onclick="removeAdminEvent(${i})" style="position:absolute;top:5px;right:5px;background:none;border:none;color:#e74c3c;cursor:pointer;">✕</button>
       <select class="psl-input" style="margin-bottom:6px; width:calc(100% - 20px);" onchange="updateEvent(${i}, 'type', this.value)">
-        <option value="Goal" ${ev.type==='Goal'?'selected':''}>Goal</option>
-        <option value="OwnGoal" ${ev.type==='OwnGoal'?'selected':''}>Own Goal</option>
-        <option value="Sub" ${ev.type==='Sub'?'selected':''}>Substitution</option>
+        <option value="goal" ${ev.type==='goal'?'selected':''}>Goal</option>
+        <option value="og" ${ev.type==='og'?'selected':''}>Own Goal</option>
+        <option value="sub" ${ev.type==='sub'?'selected':''}>Substitution</option>
       </select>
       
       <div style="display:flex; gap:6px;">
         <select class="psl-input" onchange="updateEvent(${i}, 'team', this.value)">${getTeamOpts(ev.team)}</select>
         
-        ${ev.type !== 'Sub' ? `
+        ${ev.type !== 'sub' ? `
           <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)">${getPlayerOpts(ev.player)}</select>
           <input type="text" class="psl-input" style="width:70px;" placeholder="Score" value="${ev.scoreline||''}" oninput="updateEvent(${i}, 'scoreline', this.value)">
         ` : `
@@ -972,7 +972,7 @@ function renderAdminEvents() {
 }
 
 function addAdminEvent() {
-  adminEvents.push({ type: 'Goal', team: '', player: '', playerOut: '', scoreline: '' });
+  adminEvents.push({ type: 'goal', team: '', player: '', playerOut: '', scoreline: '' });
   renderAdminEvents();
 }
 
