@@ -61,7 +61,7 @@ function tlogo(name,size=16){return LOGOS[name]?`<img src="${LOGOS[name]}" onerr
 async function initMatchOverview() {
   const id = new URLSearchParams(window.location.search).get('id'); //[cite: 2]
   const db = await pslDbGet(); //[cite: 2]
-const match = fixtures.find(m => m.id == id);
+const match = matchData.find(m => m.id === id);
 
   if (!match) {
     document.getElementById('match-content').innerHTML = `<p class="no-data">Match not found. <a href="league.html" style="color:#39c877;">← Back</a></p>`;
@@ -80,10 +80,10 @@ const match = fixtures.find(m => m.id == id);
 
   let hGoals=0, hOGs=0, aGoals=0, aOGs=0;
   events.forEach(e => {
-    if (e.type === 'Goal') {
+    if (e.type === 'goal') {
       if (e.team === match.home) hGoals++; else aGoals++;
-    } else if (e.type === 'OwnGoal') {
-      if (e.team === match.home) hOGs++; else aOGs++; // Team that benefits[cite: 1]
+    } else if (e.type === 'og') {
+      if (e.team === match.home) hOGs++; else aOGs++; // Team that benefits
     }
   });
 
@@ -106,19 +106,19 @@ const match = fixtures.find(m => m.id == id);
   </div>`;
 
   let eventRows = events.length ? events.map(e => {
-    if (e.type === 'Goal') return `<div class="event-row">
+    if (e.type === 'goal') return `<div class="event-row">
       <div class="event-icon icon-goal">G</div>
       <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.player}</strong></div><div class="event-detail">Goal · ${e.team}</div></div>
-      <div class="event-score">${e.scoreline || '–'}</div></div>`;
+      <div class="event-score">${e.hs !== undefined ? `${e.hs}–${e.as}` : '–'}</div></div>`;
     
-    if (e.type === 'OwnGoal') return `<div class="event-row">
+    if (e.type === 'og') return `<div class="event-row">
       <div class="event-icon icon-og">OG</div>
       <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.player}</strong></div><div class="event-detail">Own Goal (Benefit: ${e.team})</div></div>
-      <div class="event-score">${e.scoreline || '–'}</div></div>`;
+      <div class="event-score">${e.hs !== undefined ? `${e.hs}–${e.as}` : '–'}</div></div>`;
 
-    if (e.type === 'Sub') return `<div class="event-row">
+    if (e.type === 'sub') return `<div class="event-row">
       <div class="event-icon icon-sub">↕</div>
-      <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.team}</strong></div><div class="event-detail"><span style="color:#39c877;">▲ ${e.player}</span><span style="color:#d86254;margin-left:8px;">▼ ${e.playerOut}</span></div></div>
+      <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.team}</strong></div><div class="event-detail"><span style="color:#39c877;">▲ ${e.in}</span><span style="color:#d86254;margin-left:8px;">▼ ${e.out}</span></div></div>
       <div class="event-score">–</div></div>`;
     return '';
   }).join('') : `<div class="no-data">No event data available yet.</div>`;
