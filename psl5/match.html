@@ -99,7 +99,15 @@ async function initMatchOverview() {
 
   document.title = `${match.home} vs ${match.away} — PSL5`;
 
-  const { hs = '-', as = '-', events = [], mvp = null, date: matchDate = null } = dbMatch;
+// Adds running score counters and local date formatting
+const { hs = '-', as = '-', events = [], mvp = null, date: matchDate = null } = dbMatch;
+let runningHome = 0;
+let runningAway = 0;
+
+const formattedDate = new Date(matchDate).toLocaleString('en-GB', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: true
+}).replace(',', '');
 
   let hGoals=0, hOGs=0, aGoals=0, aOGs=0;
   events.forEach(e => {
@@ -124,8 +132,8 @@ async function initMatchOverview() {
   const stats = `<div class="stats-row-match">
     <div class="stat-mini"><span class="stat-mini-label">${match.home} goals</span><span class="stat-mini-val">${hGoals}</span></div>
     <div class="stat-mini"><span class="stat-mini-label">${match.away} goals</span><span class="stat-mini-val">${aGoals}</span></div>
-    <div class="stat-mini"><span class="stat-mini-label">${match.home} OGs</span><span class="stat-mini-val">${hOGs}</span></div>
-    <div class="stat-mini"><span class="stat-mini-label">${match.away} OGs</span><span class="stat-mini-val">${aOGs}</span></div>
+    <div class="stat-mini"><span class="stat-mini-label">${match.home} OGs</span><span class="stat-mini-val">${aOGs}</span></div>
+    <div class="stat-mini"><span class="stat-mini-label">${match.away} OGs</span><span class="stat-mini-val">${hOGs}</span></div>
   </div>`;
 
   let eventRows = events.length ? events.map(e => {
@@ -134,11 +142,14 @@ async function initMatchOverview() {
       <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.player}</strong></div><div class="event-detail">Goal · ${e.team}</div></div>
       <div class="event-score">${e.hs !== undefined ? `${e.hs}–${e.as}` : '–'}</div></div>`;
     
-    if (e.type === 'og') return `<div class="event-row">
+    if (e.type === 'og'){ 
+       const errTeam=e.team===match.home?match.away:match.home;
+      return `<div class="event-row">
+      
       <div class="event-icon icon-og">OG</div>
-      <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.player}</strong></div><div class="event-detail">Own Goal (Benefit: ${e.team})</div></div>
+      <div class="event-body"><div class="event-main">${tlogo(errTeam)}<strong>${e.player}</strong></div><div class="event-detail">Own Goal · Point to ${e.team})</div></div>
       <div class="event-score">${e.hs !== undefined ? `${e.hs}–${e.as}` : '–'}</div></div>`;
-
+    }
     if (e.type === 'sub') return `<div class="event-row">
       <div class="event-icon icon-sub">↕</div>
       <div class="event-body"><div class="event-main">${tlogo(e.team)}<strong>${e.team}</strong></div><div class="event-detail"><span style="color:#39c877;">▲ ${e.in}</span><span style="color:#d86254;margin-left:8px;">▼ ${e.out}</span></div></div>
