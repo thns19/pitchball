@@ -41,6 +41,17 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
 /* Section card */
 .stat-card-full { background: #282d15; border: 1px solid #535c2f; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
 .stat-card-title { padding: 14px 16px; border-bottom: 1px solid #535c2f; font-size: 14px; font-weight: 600; color: #D7DBC8; display: flex; align-items: center; gap: 8px; }
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.arrow {
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.6;
+}
 </style>
 </head>
 <body>
@@ -63,17 +74,17 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
     <div class="stat-card-full">
       <div class="stat-card-title">📊 Team Statistics</div>
       <table class="stat-table">
-        <thead>
-          <tr>
-            <th class="rank">#</th>
-            <th>Team</th>
-            <th class="num">MP</th>
-            <th class="num">GF</th>
-            <th class="num">GA</th>
-            <th class="num">GF/G</th>
-            <th class="num">GA/G</th>
-          </tr>
-        </thead>
+<thead>
+  <tr>
+    <th class="rank">#</th>
+    <th>Team</th>
+    <th class="num sortable" onclick="sortTable(2)">MP <span id="arrow-2" class="arrow"></span></th>
+    <th class="num sortable" onclick="sortTable(3)">GF <span id="arrow-3" class="arrow"></span></th>
+    <th class="num sortable" onclick="sortTable(4)">GA <span id="arrow-4" class="arrow"></span></th>
+    <th class="num sortable" onclick="sortTable(5)">GF/G <span id="arrow-5" class="arrow"></span></th>
+    <th class="num sortable" onclick="sortTable(6)">GA/G <span id="arrow-6" class="arrow"></span></th>
+  </tr>
+</thead>
         <tbody id="team-tbody">
           <!-- FORMAT:
             <tr>
@@ -86,16 +97,23 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
               <td class="num">GA/G avg</td>
             </tr>
           -->
-          <tr><td class="rank gold">1</td><td><div class="team-cell"><img src="logos/badiles.png" onerror="this.style.display='none'">BADiles</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank silver">2</td><td><div class="team-cell"><img src="logos/yy.png" onerror="this.style.display='none'">Y&amp;Y</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank bronze">3</td><td><div class="team-cell"><img src="logos/r1.png" onerror="this.style.display='none'">R1</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">4</td><td><div class="team-cell"><img src="logos/basement.png" onerror="this.style.display='none'">Basement Boys</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">5</td><td><div class="team-cell"><img src="logos/warriors.png" onerror="this.style.display='none'">Warriors</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">6</td><td><div class="team-cell"><img src="logos/spasmena.png" onerror="this.style.display='none'">Spasmena Mila</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">7</td><td><div class="team-cell"><img src="logos/volos.png" onerror="this.style.display='none'">Volos Drummers</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">8</td><td><div class="team-cell"><img src="logos/babiniotes.png" onerror="this.style.display='none'">Babiniotes</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">9</td><td><div class="team-cell"><img src="logos/midi.png" onerror="this.style.display='none'">Midi Kidz</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
-          <tr><td class="rank">10</td><td><div class="team-cell"><img src="logos/phoenix.png" onerror="this.style.display='none'">Phoenix</div></td><td class="num highlight">0</td><td class="num highlight">0</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank gold">1</td><td><div class="team-cell"><img src="logos/badiles.png" onerror="this.style.display='none'">BADiles</div></td><td class="num highlight">15</td><td class="num highlight">76</td><td class="num">13</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank silver">2</td><td><div class="team-cell"><img src="logos/yy.png" onerror="this.style.display='none'">Y&amp;Y</div></td><td class="num highlight">15</td><td class="num highlight">79</td><td class="num">32</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank bronze">3</td><td><div class="team-cell"><img src="logos/r1.png" onerror="this.style.display='none'">R1</div></td><td class="num highlight">14</td><td class="num highlight">58</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">4</td><td><div class="team-cell"><img src="logos/basement.png" onerror="this.style.display='none'">Basement Boys</div></td><td class="num highlight">13</td><td class="num highlight">58</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">5</td><td><div class="team-cell"><img src="logos/warriors.png" onerror="this.style.display='none'">Warriors</div></td><td class="num highlight">12</td><td class="num highlight">39</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">6</td><td><div class="team-cell"><img src="logos/spasmena.png" onerror="this.style.display='none'">Spasmena Mila</div></td><td class="num highlight">15</td><td class="num highlight">58</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">7</td><td><div class="team-cell"><img src="logos/volos.png" onerror="this.style.display='none'">Volos Drummers</div></td><td class="num highlight">12</td><td class="num highlight">45</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">8</td><td><div class="team-cell"><img src="logos/babiniotes.png" onerror="this.style.display='none'">Babiniotes</div></td><td class="num highlight">14</td><td class="num highlight">50</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">9</td><td><div class="team-cell"><img src="logos/midi.png" onerror="this.style.display='none'">Midi Kidz</div></td><td class="num highlight">15</td><td class="num highlight">52</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">10</td><td><div class="team-cell"><img src="logos/phoenix.png" onerror="this.style.display='none'">Phoenix</div></td><td class="num highlight">5</td><td class="num highlight">21</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+          <tr><td class="rank">11</td><td><div class="team-cell"><img src="logos/snipers.png" onerror="this.style.display='none'">Snipers</div></td><td class="num highlight">6</td><td class="num highlight">21</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr><td class="rank">12</td><td><div class="team-cell"><img src="logos/ac.png" onerror="this.style.display='none'">Air Condition</div></td><td class="num highlight">6</td><td class="num highlight">11</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr><td class="rank">13</td><td><div class="team-cell"><img src="logos/hoopers.png" onerror="this.style.display='none'">Hoopers</div></td><td class="num highlight">6</td><td class="num highlight">15</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr><td class="rank">14</td><td><div class="team-cell"><img src="logos/ttd.png" onerror="this.style.display='none'">Team Till Death</div></td><td class="num highlight">7</td><td class="num highlight">16</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr><td class="rank">15</td><td><div class="team-cell"><img src="logos/chewbacca.png" onerror="this.style.display='none'">Chewbacca</div></td><td class="num highlight">6</td><td class="num highlight">24</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr><td class="rank">16</td><td><div class="team-cell"><img src="logos/fintani.png" onerror="this.style.display='none'">Fintani</div></td><td class="num highlight">6</td><td class="num highlight">22</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr><td class="rank">17</td><td><div class="team-cell"><img src="logos/axtarmades.png" onerror="this.style.display='none'">Axtarmades</div></td><td class="num highlight">6</td><td class="num highlight">20</td><td class="num">0</td><td class="num">0.0</td><td class="num">0.0</td></tr>
         </tbody>
       </table>
     </div>
@@ -201,7 +219,66 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
   </div>
 
 </div>
+<script>
+let sortDirection = 1;
+let lastSortedCol = -1;
 
+function updateAverages() {
+  const rows = document.querySelectorAll("#team-tbody tr");
+  rows.forEach(row => {
+    const mp = parseFloat(row.children[2].innerText) || 0;
+    const gf = parseFloat(row.children[3].innerText) || 0;
+    const ga = parseFloat(row.children[4].innerText) || 0;
+    row.children[5].innerText = mp ? (gf / mp).toFixed(2) : "0.00";
+    row.children[6].innerText = mp ? (ga / mp).toFixed(2) : "0.00";
+  });
+}
+
+function sortTable(colIndex) {
+  const tbody = document.getElementById("team-tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  
+  // Toggle direction or reset to descending on new column
+  if (lastSortedCol === colIndex) {
+    sortDirection *= -1;
+  } else {
+    sortDirection = 1; 
+    lastSortedCol = colIndex;
+  }
+
+  rows.sort((a, b) => {
+    const A = parseFloat(a.children[colIndex].innerText) || 0;
+    const B = parseFloat(b.children[colIndex].innerText) || 0;
+    return (B - A) * sortDirection;
+  });
+
+  // Update visual arrows
+  document.querySelectorAll('.arrow').forEach(span => span.innerText = '');
+  const currentArrow = document.getElementById(`arrow-${colIndex}`);
+  if (currentArrow) {
+    currentArrow.innerText = sortDirection === 1 ? ' ▼' : ' ▲';
+  }
+
+  // Re-render rows and update rank colors
+  rows.forEach((row, i) => {
+    const rankCell = row.children[0];
+    const rankNum = i + 1;
+    rankCell.innerText = rankNum;
+
+    rankCell.classList.remove('gold', 'silver', 'bronze');
+    if (rankNum === 1) rankCell.classList.add('gold');
+    else if (rankNum === 2) rankCell.classList.add('silver');
+    else if (rankNum === 3) rankCell.classList.add('bronze');
+
+    tbody.appendChild(row);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateAverages();
+  sortTable(3); // Default sort by Goals (GF)
+});
+</script>
 <script>
 function switchTab(tab) {
   document.querySelectorAll('.page-tab').forEach((b,i) => {
