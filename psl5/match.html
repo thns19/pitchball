@@ -147,7 +147,7 @@ const formattedDate = new Date(matchDate).toLocaleString('en-GB', {
       return `<div class="event-row">
       
       <div class="event-icon icon-og">OG</div>
-      <div class="event-body"><div class="event-main">${tlogo(errTeam)}<strong>${e.player}</strong></div><div class="event-detail">Own Goal · Point to ${e.team})</div></div>
+      <div class="event-body"><div class="event-main">${tlogo(errTeam)}<strong>${e.player}</strong></div><div class="event-detail">Own Goal · Point to ${e.team}</div></div>
       <div class="event-score">${e.hs !== undefined ? `${e.hs}–${e.as}` : '–'}</div></div>`;
     }
     if (e.type === 'sub') return `<div class="event-row">
