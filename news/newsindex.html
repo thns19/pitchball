@@ -3,27 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>News Home</title>
-<meta name="description" content="Welcome to the new home of Pitchball, the new and rising sport born in Athens, Greece.">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+<title>News — Pitchball Super League</title>
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #0e1009;
-  --bg2:      #151a0d;
-  --green:    #39c877;
-  --green-dim:#1a3d2a;
-  --olive:    #535c2f;
-  --text:     #D7DBC8;
-  --muted:    #6b7355;
-  --gold:     #f5c842;
-  --red:      #e74c3c;
-  --border:   rgba(83,92,47,0.4);
+  --bg:      #0e1009;
+  --bg2:     #151a0d;
+  --bg3:     #1a2010;
+  --green:   #39c877;
+  --olive:   #535c2f;
+  --text:    #D7DBC8;
+  --muted:   #6b7355;
+  --border:  rgba(83,92,47,0.35);
+  --gold:    #f5c842;
+  --red:     #e74c3c;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -31,412 +28,702 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* ── NOISE OVERLAY ── */
+/* Noise */
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
 }
 
-/* ── TICKER ── */
-.ticker-wrap {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 32px;
-  background: var(--green);
-  overflow: hidden;
-  z-index: 100;
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+/* ── MASTHEAD ── */
+.masthead {
+  border-bottom: 2px solid var(--border);
+  padding: 2rem 0 1.25rem;
+}
+.masthead-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
-.ticker-track {
-  display: flex;
-  gap: 0;
-  white-space: nowrap;
-  animation: ticker 28s linear infinite;
-}
-.ticker-item {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: #000;
-  padding: 0 32px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.ticker-item::after {
-  content: '◆';
-  font-size: 8px;
-  opacity: 0.4;
-}
-@keyframes ticker {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ── HERO ── */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  padding-top: 32px;
-  z-index: 1;
-}
-
-/* Background diagonal grid */
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(83,92,47,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(83,92,47,0.06) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
-}
-
-.hero-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 1.5rem 2rem;
-  position: relative;
-  z-index: 2;
-}
-
-/* Glowing orb behind logo */
-.hero-glow {
-  position: absolute;
-  width: 600px;
-  height: 400px;
-  background: radial-gradient(ellipse, rgba(57,200,119,0.08) 0%, transparent 70%);
-  pointer-events: none;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -60%);
-}
-
-.eyebrow {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
+.masthead-left { display: flex; flex-direction: column; gap: 4px; }
+.masthead-eyebrow {
+  font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 1.25rem;
-  opacity: 0;
-  animation: fadeUp 0.6s 0.2s forwards;
+  color: var(--muted);
 }
-
-.logo-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  opacity: 0;
-  animation: fadeUp 0.7s 0.35s forwards;
-}
-
-.logo-main {
+.masthead-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(72px, 14vw, 140px);
-  letter-spacing: -1px;
-  line-height: 0.9;
+  font-size: clamp(42px, 8vw, 72px);
+  letter-spacing: 1px;
+  line-height: 1;
   color: var(--text);
 }
-
-.logo-accent {
-  color: var(--green);
-}
-
-.logo-super {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(20px, 4vw, 38px);
-  letter-spacing: 6px;
+.masthead-title span { color: var(--green); }
+.masthead-date {
+  font-size: 11px;
   color: var(--muted);
-  margin-left: 12px;
-  align-self: flex-end;
-  padding-bottom: 12px;
-}
-
-.tagline {
-  font-size: 13px;
   font-weight: 300;
   font-style: italic;
-  color: var(--muted);
-  margin-top: 1rem;
-  letter-spacing: 0.5px;
-  opacity: 0;
-  animation: fadeUp 0.7s 0.5s forwards;
 }
-
-/* Live badge */
-.live-badge {
-  display: inline-flex;
+.back-link {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--green-dim);
-  border: 1px solid var(--green);
-  border-radius: 20px;
-  padding: 5px 12px;
+  transition: color 0.15s;
+  padding-bottom: 6px;
+}
+.back-link:hover { color: var(--green); }
+
+/* ── TAG FILTER ── */
+.tag-filter {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.tag-btn {
   font-size: 11px;
   font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.tag-btn:hover, .tag-btn.active {
+  border-color: var(--green);
   color: var(--green);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 1.5rem;
-  opacity: 0;
-  animation: fadeUp 0.7s 0.65s forwards;
-}
-.live-dot {
-  width: 6px; height: 6px;
-  background: var(--green);
-  border-radius: 50%;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
-
-/* ── SEASON GRID ── */
-.seasons-section {
-  padding: 0 1.5rem 5rem;
-  max-width: 900px;
-  margin: 0 auto;
-  width: 100%;
-  position: relative;
-  z-index: 2;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.8s forwards;
+  background: rgba(57,200,119,0.06);
 }
 
-.section-label {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 12px;
-  letter-spacing: 3px;
-  color: var(--olive);
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.section-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
+/* ── ARTICLE GRID ── */
+.articles-grid {
+  padding: 2rem 0;
+  display: grid;
+  gap: 1px;
 }
 
-.seasons-grid {
+/* Featured article */
+.article-card {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-/* Featured (PSL5) spans full width */
-.season-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg2);
+  gap: 0;
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 1.25rem 1.5rem;
+  overflow: hidden;
+  background: var(--bg2);
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.2s, transform 0.2s, background 0.2s;
-  position: relative;
+  margin-bottom: 12px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.article-card:hover { border-color: var(--olive); transform: translateY(-2px); }
+.article-card.featured { grid-template-columns: 1fr; }
+.article-card.no-image { grid-template-columns: 1fr; }
+
+.article-image {
+  aspect-ratio: 16/9;
   overflow: hidden;
+  background: var(--bg3);
 }
-.season-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 60%, rgba(57,200,119,0.04));
-  pointer-events: none;
+.article-card.featured .article-image { aspect-ratio: 21/9; }
+.article-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
 }
-.season-card:hover {
-  border-color: var(--green);
-  transform: translateY(-2px);
-  background: #1a1f0f;
-}
-.season-card.featured {
-  grid-column: 1 / -1;
-  border-color: var(--green);
-  background: #111a0f;
-  padding: 1.75rem 2rem;
-}
-.season-card.featured::before {
-  background: linear-gradient(135deg, rgba(57,200,119,0.06) 0%, transparent 60%);
-}
-.season-card.special {
-  border-color: rgba(245,200,66,0.3);
-}
-.season-card.news {
-  border-color: rgba(0, 255, 200, 0.3);
-}
-.season-card.special:hover { border-color: var(--gold); }
+.article-card:hover .article-image img { transform: scale(1.03); }
 
-
-.card-left { display: flex; flex-direction: column; gap: 4px; }
-
-.card-season {
+.article-image-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  letter-spacing: 1px;
-  color: var(--text);
-  line-height: 1;
+  font-size: 48px;
+  color: var(--border);
+  letter-spacing: 2px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--bg3),
+    var(--bg3) 10px,
+    rgba(83,92,47,0.05) 10px,
+    rgba(83,92,47,0.05) 20px
+  );
 }
-.season-card.featured .card-season { font-size: 40px; color: var(--green); }
-.season-card.special .card-season { color: var(--gold); }
 
-.card-desc {
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--muted);
-  max-width: 320px;
-  line-height: 1.5;
+.article-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
 }
-.season-card.featured .card-desc { font-size: 13px; }
+.article-card.featured .article-body { padding: 1.75rem 2rem; }
 
-.card-pill {
+.article-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.article-tag {
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 20px;
-  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(57,200,119,0.1);
+  color: var(--green);
+  border: 1px solid rgba(57,200,119,0.2);
 }
-.pill-live    { background: var(--green-dim); color: var(--green); border: 1px solid rgba(57,200,119,0.3); }
-.pill-done    { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-.pill-special { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+.article-tag.psl5 { background: rgba(57,200,119,0.1); color: var(--green); border-color: rgba(57,200,119,0.2); }
+.article-tag.transfer { background: rgba(245,200,66,0.1); color: var(--gold); border-color: rgba(245,200,66,0.2); }
+.article-tag.news { background: rgba(83,92,47,0.2); color: var(--text); border-color: var(--border); }
 
-.arrow {
-  font-size: 20px;
-  color: var(--olive);
-  transition: transform 0.2s, color 0.2s;
-  flex-shrink: 0;
-  margin-left: 1rem;
+.article-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
 }
-.season-card:hover .arrow { transform: translateX(4px); color: var(--green); }
-.season-card.special:hover .arrow { color: var(--gold); }
+.article-card.featured .article-title { font-size: clamp(20px, 3vw, 30px); }
+.article-card:hover .article-title { color: #fff; }
 
-/* ── FOOTER BAR ── */
-.footer-bar {
-  position: relative;
-  z-index: 2;
-  border-top: 1px solid var(--border);
-  padding: 1.5rem;
+.article-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-meta {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+.article-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+
+/* Small card grid */
+.small-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.article-card-small {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg2);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.article-card-small:hover { border-color: var(--olive); transform: translateY(-2px); }
+.article-card-small .article-image { aspect-ratio: 16/9; }
+.article-card-small .article-body { padding: 1rem; gap: 6px; }
+.article-card-small .article-title { font-size: 15px; }
+.article-card-small .article-desc { -webkit-line-clamp: 2; font-size: 12px; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: var(--muted);
+}
+.empty-state-icon { font-size: 48px; margin-bottom: 1rem; opacity: 0.3; }
+.empty-state p { font-size: 14px; font-weight: 300; }
+
+/* Loading */
+.loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 13px; }
+
+/* ── ADMIN PANEL ── */
+.admin-bar {
+  display: none;
+  background: var(--bg3);
+  border: 1px solid rgba(57,200,119,0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.admin-bar.visible { display: flex; }
+.admin-bar-label {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-btn {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.admin-btn-primary { background: var(--green); color: #000; }
+.admin-btn-primary:hover { background: #2fb366; }
+.admin-btn-danger { background: transparent; color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+.admin-btn-danger:hover { background: rgba(231,76,60,0.1); }
+.admin-btn-secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.admin-btn-secondary:hover { color: var(--text); border-color: var(--olive); }
+
+/* ── ARTICLE EDITOR MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.hidden { display: none; }
+.editor-modal {
+  background: #1a2010;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 680px;
+  overflow: hidden;
+  margin: auto;
+}
+.modal-hd {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  max-width: 900px;
-  margin: 0 auto;
-  width: 100%;
-  opacity: 0;
-  animation: fadeUp 0.8s 1s forwards;
 }
-
-.socials {
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.modal-close {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 22px; line-height: 1;
+  font-family: inherit; transition: color 0.15s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-bd { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--muted);
+}
+.form-input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.form-input:focus { outline: none; border-color: var(--olive); }
+.form-input::placeholder { color: var(--muted); }
+textarea.form-input { resize: vertical; min-height: 80px; }
+textarea.form-input.body-input { min-height: 200px; font-size: 13px; line-height: 1.6; }
+.form-hint { font-size: 11px; color: var(--muted); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.modal-ft {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
 }
-.social-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 6px 14px;
-  text-decoration: none;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-  transition: all 0.15s;
-}
-.social-btn:hover { border-color: var(--green); color: var(--text); }
-
-.footer-copy {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 300;
-}
-
-/* ── COOKIE BANNER ── */
-#cookie-banner {
-  position: fixed;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1e2410;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 12px;
-  color: var(--muted);
-  z-index: 9999;
-  white-space: nowrap;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-#cookie-banner button {
-  padding: 5px 14px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  border: none;
-  transition: all 0.15s;
-}
-.btn-accept { background: var(--green); color: #000; }
-.btn-accept:hover { background: #2fb366; }
-.btn-reject { background: transparent; color: var(--muted); border: 1px solid var(--border) !important; }
-.btn-reject:hover { color: var(--text); }
+.form-err { font-size: 12px; color: var(--red); }
+.form-ok  { font-size: 12px; color: var(--green); }
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-/* ── DECORATIVE NUMBERS ── */
-.deco-num {
-  position: absolute;
-  font-family: 'Bebas Neue', sans-serif;
-  color: rgba(83,92,47,0.07);
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
+.article-card, .article-card-small {
+  opacity: 0;
+  animation: fadeUp 0.5s forwards;
 }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  .seasons-grid { grid-template-columns: 1fr; }
-  .season-card.featured { grid-column: 1; }
-  .footer-bar { justify-content: center; text-align: center; }
-  .logo-super { display: none; }
-  .ticker-item { padding: 0 20px; }
-  #cookie-banner { flex-direction: column; white-space: normal; text-align: center; bottom: 0; border-radius: 12px 12px 0 0; width: 100%; left: 0; transform: none; }
+@media (max-width: 640px) {
+  .article-card { grid-template-columns: 1fr; }
+  .small-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
-    <h1>This page is still under construction. Check back later.</h1>
-      <div class="nav">
-    <a href="../index.html" class="back">← All Seasons</a>
+
+<div class="wrap">
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-left">
+        <div class="masthead-eyebrow">Pitchball Super League</div>
+        <div class="masthead-title">Pitchball <span>News</span></div>
+        <div class="masthead-date" id="today-date"></div>
+      </div>
+      <a href="../index.html" class="back-link">← Back to Home</a>
+    </div>
   </div>
+
+  <!-- Admin bar -->
+  <div class="admin-bar" id="admin-bar">
+    <div class="admin-bar-label">⚡ Admin</div>
+    <button class="admin-btn admin-btn-primary" onclick="openEditor()">+ New Article</button>
+  </div>
+
+  <!-- Tag filter -->
+  <div class="tag-filter" id="tag-filter">
+    <button class="tag-btn active" data-tag="all" onclick="filterTag(this,'all')">All</button>
+    <button class="tag-btn" data-tag="PSL5" onclick="filterTag(this,'PSL5')">PSL5</button>
+    <button class="tag-btn" data-tag="Transfer" onclick="filterTag(this,'Transfer')">Transfers</button>
+    <button class="tag-btn" data-tag="Cup" onclick="filterTag(this,'Cup')">Cup</button>
+    <button class="tag-btn" data-tag="News" onclick="filterTag(this,'News')">News</button>
+    <button class="tag-btn" data-tag="Announcement" onclick="filterTag(this,'Announcement')">Announcements</button>
+  </div>
+
+  <!-- Articles -->
+  <div id="articles-container">
+    <div class="loading">Loading articles...</div>
+  </div>
+</div>
+
+<!-- Article Editor Modal -->
+<div class="modal-overlay hidden" id="editor-overlay">
+  <div class="editor-modal">
+    <div class="modal-hd">
+      <div class="modal-title" id="editor-title">New Article</div>
+      <button class="modal-close" onclick="closeEditor()">×</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="edit-article-id">
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input class="form-input" id="art-title" placeholder="Article headline...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" id="art-desc" placeholder="Short summary shown in the feed..." rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Body</label>
+        <textarea class="form-input body-input" id="art-body" placeholder="Full article content. Use double line breaks for paragraphs."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cover Image URL</label>
+          <input class="form-input" id="art-image" placeholder="https://...">
+          <span class="form-hint">Optional. Direct image link.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" id="art-date" type="date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags</label>
+        <input class="form-input" id="art-tags" placeholder="PSL5, Transfer, News ...">
+        <span class="form-hint">Comma-separated.</span>
+      </div>
+      <div class="form-err" id="art-err" style="display:none;"></div>
+      <div class="form-ok"  id="art-ok"  style="display:none;"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="admin-btn admin-btn-danger" id="delete-btn" style="display:none;margin-right:auto;" onclick="deleteArticle()">Delete</button>
+      <button class="admin-btn admin-btn-secondary" onclick="closeEditor()">Cancel</button>
+      <button class="admin-btn admin-btn-primary" id="save-btn" onclick="saveArticle()">Publish</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PSL_DB_URL = 'https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/.json';
+const PSL_ADMIN  = 'pitchball';
+let _pslDbCache=null,_pslDbFetching=null;
+async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(PSL_DB_URL).then(r=>r.json()).then(data=>{_pslDbCache=data;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
+async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_DB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
+function pslDbInvalidate(){_pslDbCache=null;}
+
+let pslCurrentUser = null;
+function pslLoadSession(){const s=localStorage.getItem('psl_session');return s?JSON.parse(s):null;}
+function pslSaveSession(u){localStorage.setItem('psl_session',JSON.stringify(u));}
+function pslClearSession(){localStorage.removeItem('psl_session');}
+
+// ── STATE ──────────────────────────────────────────────────────
+let allArticles = [];
+let activeTag   = 'all';
+
+// ── INIT ───────────────────────────────────────────────────────
+document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const session = pslLoadSession();
+  if (session) {
+    try {
+      const db = await pslDbGet();
+      const uData = (db.users||{})[session.username.toLowerCase()];
+      if (uData) {
+        pslCurrentUser = { username: uData.username, isAdmin: uData.username.toLowerCase() === PSL_ADMIN };
+      }
+    } catch(e) { pslCurrentUser = session; }
+  }
+  if (pslCurrentUser?.isAdmin) {
+    document.getElementById('admin-bar').classList.add('visible');
+  }
+  await loadArticles();
+});
+
+// ── LOAD ARTICLES ──────────────────────────────────────────────
+async function loadArticles() {
+  const db = await pslDbGet();
+  const raw = db.news || {};
+  allArticles = Object.entries(raw)
+    .map(([id, a]) => ({ id, ...a }))
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  renderArticles();
+}
+
+// ── RENDER ─────────────────────────────────────────────────────
+function renderArticles() {
+  const filtered = activeTag === 'all'
+    ? allArticles
+    : allArticles.filter(a => (a.tags||[]).map(t=>t.toLowerCase()).includes(activeTag.toLowerCase()));
+
+  const container = document.getElementById('articles-container');
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📰</div><p>No articles yet${activeTag !== 'all' ? ' for this tag' : ''}.</p></div>`;
+    return;
+  }
+
+  let html = '<div class="articles-grid">';
+
+  filtered.forEach((article, i) => {
+    const tags  = (article.tags || []).map(t => `<span class="article-tag ${t.toLowerCase()}">${t}</span>`).join('');
+    const date  = article.date ? new Date(article.date).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '';
+    const img   = article.image
+      ? `<div class="article-image"><img src="${article.image}" alt="${article.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=article-image-placeholder>PSL</div>'"></div>`
+      : `<div class="article-image"><div class="article-image-placeholder">PSL</div></div>`;
+    const adminBtns = pslCurrentUser?.isAdmin
+      ? `<button onclick="event.preventDefault();event.stopPropagation();openEditor('${article.id}')" style="font-size:10px;padding:3px 8px;background:rgba(83,92,47,0.3);border:1px solid var(--border);border-radius:5px;color:var(--muted);cursor:pointer;font-family:inherit;">Edit</button>`
+      : '';
+    const delay = `animation-delay:${i * 0.06}s`;
+
+    if (i === 0) {
+      // Featured card
+      html += `<a href="article.html?id=${article.id}" class="article-card featured" style="${delay}">
+        ${img}
+        <div class="article-body">
+          <div class="article-tags">${tags}</div>
+          <div class="article-title">${article.title}</div>
+          <div class="article-desc">${article.description || ''}</div>
+          <div class="article-meta">
+            <span>${date}</span>
+            ${adminBtns}
+          </div>
+        </div>
+      </a>`;
+    } else if (i === 1 || i === 2) {
+      // Small grid — open on first one
+      if (i === 1) html += '<div class="small-grid">';
+      html += `<a href="article.html?id=${article.id}" class="article-card-small" style="${delay}">
+        ${img}
+        <div class="article-body">
+          <div class="article-tags">${tags}</div>
+          <div class="article-title">${article.title}</div>
+          <div class="article-desc">${article.description || ''}</div>
+          <div class="article-meta">
+            <span>${date}</span>
+            ${adminBtns}
+          </div>
+        </div>
+      </a>`;
+      if (i === 2) html += '</div>';
+      // Handle case where there's only one small card
+      if (i === 1 && filtered.length === 2) html += '</div>';
+    } else {
+      // Regular list cards
+      html += `<a href="article.html?id=${article.id}" class="article-card no-image" style="${delay};grid-template-columns:1fr;border-radius:10px;margin-bottom:8px;">
+        <div class="article-body" style="flex-direction:row;align-items:center;gap:1rem;flex-wrap:wrap;">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+            <div class="article-tags">${tags}</div>
+            <div class="article-title" style="font-size:16px;">${article.title}</div>
+            <div class="article-desc" style="-webkit-line-clamp:2;">${article.description || ''}</div>
+          </div>
+          <div class="article-meta" style="flex-shrink:0;flex-direction:column;align-items:flex-end;gap:4px;margin-top:0;padding-top:0;">
+            <span>${date}</span>
+            ${adminBtns}
+          </div>
+        </div>
+      </a>`;
+    }
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ── TAG FILTER ─────────────────────────────────────────────────
+function filterTag(btn, tag) {
+  activeTag = tag;
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderArticles();
+}
+
+// ── EDITOR ─────────────────────────────────────────────────────
+function openEditor(id = null) {
+  const overlay = document.getElementById('editor-overlay');
+  document.getElementById('editor-title').textContent = id ? 'Edit Article' : 'New Article';
+  document.getElementById('delete-btn').style.display = id ? 'block' : 'none';
+  document.getElementById('save-btn').textContent = id ? 'Save Changes' : 'Publish';
+  document.getElementById('art-err').style.display = 'none';
+  document.getElementById('art-ok').style.display  = 'none';
+  document.getElementById('edit-article-id').value = id || '';
+
+  if (id) {
+    const article = allArticles.find(a => a.id === id);
+    if (article) {
+      document.getElementById('art-title').value = article.title || '';
+      document.getElementById('art-desc').value  = article.description || '';
+      document.getElementById('art-body').value  = article.body || '';
+      document.getElementById('art-image').value = article.image || '';
+      document.getElementById('art-date').value  = article.date || '';
+      document.getElementById('art-tags').value  = (article.tags||[]).join(', ');
+    }
+  } else {
+    document.getElementById('art-title').value = '';
+    document.getElementById('art-desc').value  = '';
+    document.getElementById('art-body').value  = '';
+    document.getElementById('art-image').value = '';
+    document.getElementById('art-date').value  = new Date().toISOString().split('T')[0];
+    document.getElementById('art-tags').value  = '';
+  }
+
+  overlay.classList.remove('hidden');
+}
+
+function closeEditor() {
+  document.getElementById('editor-overlay').classList.add('hidden');
+}
+
+async function saveArticle() {
+  const title = document.getElementById('art-title').value.trim();
+  const desc  = document.getElementById('art-desc').value.trim();
+  const body  = document.getElementById('art-body').value.trim();
+  const image = document.getElementById('art-image').value.trim();
+  const date  = document.getElementById('art-date').value;
+  const tagsRaw = document.getElementById('art-tags').value;
+  const tags  = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  const editId = document.getElementById('edit-article-id').value;
+
+  const err = document.getElementById('art-err');
+  const ok  = document.getElementById('art-ok');
+  err.style.display = 'none'; ok.style.display = 'none';
+
+  if (!title) { err.textContent = 'Title is required.'; err.style.display = 'block'; return; }
+  if (!body)  { err.textContent = 'Body is required.';  err.style.display = 'block'; return; }
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  try {
+    const db = await pslDbGet();
+    if (!db.news) db.news = {};
+    const id = editId || `art_${Date.now()}`;
+    db.news[id] = { title, description: desc, body, image: image || null, date, tags, author: pslCurrentUser.username, updatedAt: new Date().toISOString() };
+    await pslDbSet(db);
+    pslDbInvalidate();
+    ok.textContent = editId ? 'Saved!' : 'Published!';
+    ok.style.display = 'block';
+    await loadArticles();
+    setTimeout(closeEditor, 800);
+  } catch(e) {
+    err.textContent = 'Error saving. Try again.';
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = editId ? 'Save Changes' : 'Publish';
+  }
+}
+
+async function deleteArticle() {
+  const editId = document.getElementById('edit-article-id').value;
+  if (!editId || !confirm('Delete this article? This cannot be undone.')) return;
+  try {
+    const db = await pslDbGet();
+    if (db.news) delete db.news[editId];
+    await pslDbSet(db);
+    pslDbInvalidate();
+    closeEditor();
+    await loadArticles();
+  } catch(e) { alert('Error deleting article.'); }
+}
+</script>
+
+<style>body{position:relative;}</style>
+<script>
+const REACTIONS = ['❤️','🥎','🔥','😂','💥','😭','👏'];
+async function pslHashPass(pass){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass+'psl5salt'));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function injectAuthStyles(){if(document.getElementById('psl-auth-styles'))return;const s=document.createElement('style');s.id='psl-auth-styles';s.textContent=`#psl-auth-widget{position:fixed;top:12px;right:14px;z-index:99999;font-family:system-ui,sans-serif;}.psl-aw-btn{display:flex;align-items:center;gap:7px;background:rgba(20,20,20,0.92);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;backdrop-filter:blur(8px);font-size:12px;color:#fff;font-weight:500;}.psl-aw-btn:hover{border-color:rgba(57,200,119,0.6);}.psl-aw-avatar{width:22px;height:22px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;}.psl-aw-avatar.guest{background:rgba(255,255,255,0.15);color:#fff;font-size:13px;}.psl-aw-drop{position:absolute;top:calc(100% + 8px);right:0;background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.5);display:none;}.psl-aw-drop.open{display:block;}.psl-aw-drop-header{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:10px;}.psl-aw-drop-header strong{display:block;font-size:14px;color:#fff;margin-bottom:1px;}.psl-aw-drop-item{display:block;width:100%;padding:11px 14px;font-size:13px;font-weight:500;color:#fff;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.1s;font-family:inherit;text-decoration:none;}.psl-aw-drop-item:hover{background:rgba(255,255,255,0.06);}.psl-aw-drop-item.danger{color:#e74c3c;}.psl-aw-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:2px 0;}.psl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}.psl-modal{background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:100%;max-width:380px;overflow:hidden;}.psl-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}.psl-modal-title{font-size:16px;font-weight:600;color:#fff;}.psl-modal-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:20px;line-height:1;padding:2px;font-family:inherit;}.psl-modal-bd{padding:1.5rem;}.psl-form-group{margin-bottom:14px;}.psl-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:5px;display:block;font-weight:500;}.psl-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;box-sizing:border-box;}.psl-input:focus{outline:none;border-color:#39c877;}.psl-input::placeholder{color:rgba(255,255,255,0.3);}.psl-btn-primary{width:100%;padding:10px;background:#39c877;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}.psl-btn-primary:hover{background:#2fb366;}.psl-btn-primary:disabled{opacity:0.4;cursor:not-allowed;}.psl-err{font-size:11px;color:#e74c3c;margin-top:6px;}.psl-ok{font-size:11px;color:#39c877;margin-top:6px;}.psl-tabs{display:flex;margin-bottom:1.5rem;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;gap:3px;}.psl-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;}.psl-tab.active{background:#39c877;color:#000;}.psl-avatar-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);display:block;margin:0 auto 12px;}`;document.head.appendChild(s);}
+function renderWidget(){if(!document.body){setTimeout(renderWidget,50);return;}const ex=document.getElementById('psl-auth-widget');if(ex)ex.remove();const w=document.createElement('div');w.id='psl-auth-widget';if(pslCurrentUser){const avatarBtn=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=psl-aw-avatar>${pslCurrentUser.username[0].toUpperCase()}</div>'">`:`<div class="psl-aw-avatar">${pslCurrentUser.username[0].toUpperCase()}</div>`;const avatarDrop=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">`:`<div class="psl-aw-avatar" style="width:36px;height:36px;font-size:15px;">${pslCurrentUser.username[0].toUpperCase()}</div>`;w.innerHTML=`<div class="psl-aw-btn" onclick="pslToggleDrop()">${avatarBtn}<span>${pslCurrentUser.username}</span><span style="color:rgba(255,255,255,0.3);font-size:10px;">▾</span></div><div class="psl-aw-drop" id="psl-aw-drop"><div class="psl-aw-drop-header">${avatarDrop}<div><strong>${pslCurrentUser.username}</strong>${pslCurrentUser.isAdmin?'<span style="color:#39c877;font-size:10px;">⚡ Admin</span>':''}</div></div><a href="/psl5/predindex.html" class="psl-aw-drop-item">🎯 Predictions</a><button class="psl-aw-drop-item" onclick="pslOpenProfile()">🖼️ Edit Profile Picture</button><hr class="psl-aw-divider"><button class="psl-aw-drop-item danger" onclick="pslLogout()">Sign out</button></div>`;}else{w.innerHTML=`<div class="psl-aw-btn" onclick="pslOpenAuth('login')"><div class="psl-aw-avatar guest">👤</div><span>Sign in</span></div>`;}document.body.appendChild(w);document.addEventListener('click',e=>{if(!w.contains(e.target)){const d=document.getElementById('psl-aw-drop');if(d)d.classList.remove('open');}},{capture:true});}
+function pslToggleDrop(){document.getElementById('psl-aw-drop')?.classList.toggle('open');}
+function pslOpenProfile(){document.getElementById('psl-aw-drop')?.classList.remove('open');if(_authModal)_authModal.remove();const o=document.createElement('div');o.className='psl-modal-overlay';o.id='psl-auth-modal';const current=pslCurrentUser.avatar||'';o.innerHTML=`<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">Profile Picture</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd">${current?`<img src="${current}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`:`<div style="width:72px;height:72px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#000;margin:0 auto 12px;" id="psl-avatar-preview">${pslCurrentUser.username[0].toUpperCase()}</div>`}<div class="psl-form-group"><label class="psl-label">Image URL</label><input class="psl-input" id="psl-avatar-url" placeholder="https://..." value="${current}" oninput="pslPreviewAvatar(this.value)"></div><p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:14px;line-height:1.5;">Paste a direct link to any image. Tip: upload to <a href="https://imgur.com" target="_blank" style="color:#39c877;">imgur.com</a> and use the direct link.</p><div class="psl-err" id="psl-avatar-err" style="display:none;"></div><div class="psl-ok" id="psl-avatar-ok" style="display:none;">Saved!</div><button class="psl-btn-primary" id="psl-avatar-btn" onclick="pslSaveAvatar()">Save</button>${current?`<button style="width:100%;padding:9px;background:none;border:1px solid rgba(231,76,60,0.3);color:#e74c3c;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;" onclick="pslRemoveAvatar()">Remove picture</button>`:''}</div></div>`;o.addEventListener('click',e=>{if(e.target===o)pslCloseAuth();});document.body.appendChild(o);_authModal=o;}
+function pslPreviewAvatar(url){const el=document.getElementById('psl-avatar-preview');if(!el)return;if(url){el.outerHTML=`<img src="${url}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`; }}
+async function pslSaveAvatar(){const url=document.getElementById('psl-avatar-url').value.trim();const err=document.getElementById('psl-avatar-err');const ok=document.getElementById('psl-avatar-ok');const btn=document.getElementById('psl-avatar-btn');err.style.display='none';ok.style.display='none';btn.disabled=true;btn.textContent='Saving...';try{const db=await pslDbGet();const users=db.users||{};const uKey=pslCurrentUser.username.toLowerCase();if(!users[uKey]){err.textContent='User not found.';err.style.display='block';return;}users[uKey].avatar=url||null;await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser.avatar=url||null;pslSaveSession(pslCurrentUser);ok.style.display='block';setTimeout(()=>{pslCloseAuth();renderWidget();},800);}catch(e){err.textContent='Connection error. Try again.';err.style.display='block';}finally{btn.disabled=false;btn.textContent='Save';}}
+async function pslRemoveAvatar(){document.getElementById('psl-avatar-url').value='';await pslSaveAvatar();}
+let _authModal=null;
+function pslOpenAuth(tab='login'){if(_authModal)_authModal.remove();const o=document.createElement('div');o.className='psl-modal-overlay';o.id='psl-auth-modal';o.innerHTML=`<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">PSL Account</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd"><div class="psl-tabs"><button class="psl-tab ${tab==='login'?'active':''}" onclick="pslSwitchTab('login')">Sign In</button><button class="psl-tab ${tab==='register'?'active':''}" onclick="pslSwitchTab('register')">Register</button></div><div id="psl-tab-login" ${tab!=='login'?'style="display:none"':''}><div class="psl-form-group"><label class="psl-label">Username or Email</label><input class="psl-input" id="psl-li-user" placeholder="Enter username or email"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-li-pass" type="password" placeholder="Enter password"></div><div class="psl-err" id="psl-li-err" style="display:none"></div><button class="psl-btn-primary" id="psl-li-btn" onclick="pslDoLogin()">Sign In</button></div><div id="psl-tab-register" ${tab!=='register'?'style="display:none"':''}><div class="psl-form-group"><label class="psl-label">Username</label><input class="psl-input" id="psl-rg-user" placeholder="Choose a username" maxlength="20"></div><div class="psl-form-group"><label class="psl-label">Email</label><input class="psl-input" id="psl-rg-email" type="email" placeholder="your@email.com"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-rg-pass" type="password" placeholder="Min. 6 characters"></div><div class="psl-err" id="psl-rg-err" style="display:none"></div><button class="psl-btn-primary" id="psl-rg-btn" onclick="pslDoRegister()">Create Account</button></div></div></div>`;o.addEventListener('click',e=>{if(e.target===o)pslCloseAuth();});document.body.appendChild(o);_authModal=o;}
+function pslCloseAuth(){_authModal?.remove();_authModal=null;}
+function pslSwitchTab(tab){document.getElementById('psl-tab-login').style.display=tab==='login'?'':'none';document.getElementById('psl-tab-register').style.display=tab==='register'?'':'none';document.querySelectorAll('.psl-tab').forEach((b,i)=>b.classList.toggle('active',i===(tab==='login'?0:1)));}
+async function pslDoLogin(){const raw=document.getElementById('psl-li-user').value.trim();const pass=document.getElementById('psl-li-pass').value;const e=document.getElementById('psl-li-err');e.style.display='none';if(!raw||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}const btn=document.getElementById('psl-li-btn');btn.disabled=true;btn.textContent='Signing in...';try{const db=await pslDbGet();const users=db.users||{};const user=Object.values(users).find(u=>u.username.toLowerCase()===raw.toLowerCase()||u.email.toLowerCase()===raw.toLowerCase());if(!user){e.textContent='Account not found.';e.style.display='block';return;}const hash=await pslHashPass(pass);if(hash!==user.passHash){e.textContent='Incorrect password.';e.style.display='block';return;}pslCurrentUser={username:user.username,email:user.email,avatar:user.avatar||null,isAdmin:user.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();location.reload();}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Sign In';}}
+async function pslDoRegister(){const username=document.getElementById('psl-rg-user').value.trim();const email=document.getElementById('psl-rg-email').value.trim().toLowerCase();const pass=document.getElementById('psl-rg-pass').value;const e=document.getElementById('psl-rg-err');e.style.display='none';if(!username||!email||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}if(username.length<2){e.textContent='Username too short.';e.style.display='block';return;}if(pass.length<6){e.textContent='Password must be 6+ characters.';e.style.display='block';return;}const btn=document.getElementById('psl-rg-btn');btn.disabled=true;btn.textContent='Creating...';try{const db=await pslDbGet();const users=db.users||{};if(users[username.toLowerCase()]){e.textContent='Username taken.';e.style.display='block';return;}const passHash=await pslHashPass(pass);users[username.toLowerCase()]={username,email,passHash,avatar:null,joined:new Date().toISOString()};await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser={username,email,avatar:null,isAdmin:username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();location.reload();}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Create Account';}}
+function pslLogout(){pslClearSession();pslCurrentUser=null;pslDbInvalidate();renderWidget();location.reload();}
+injectAuthStyles();
+</script>
 </body>
+</html>
