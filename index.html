@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +6,10 @@
 <title>Pitchball Super League</title>
 <meta name="description" content="Welcome to the new home of Pitchball, the new and rising sport born in Athens, Greece.">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
 <script>
@@ -14,149 +17,609 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-XNNGKMS578');
-
-function loadAnalytics() {
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-window.gtag = gtag;
-gtag('js', new Date());
-gtag('config','G-XNNGKMS578');
-}
+  function loadAnalytics() {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config','G-XNNGKMS578');
+  }
 </script>
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0e1009;
+  --bg2:      #151a0d;
+  --green:    #39c877;
+  --green-dim:#1a3d2a;
+  --olive:    #535c2f;
+  --text:     #D7DBC8;
+  --muted:    #6b7355;
+  --gold:     #f5c842;
+  --red:      #e74c3c;
+  --border:   rgba(83,92,47,0.4);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  font-family: system-ui, sans-serif;
-  background: #111;
-  color: #f0f0f0;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 32px;
+  background: var(--green);
+  overflow: hidden;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+.ticker-track {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: ticker 28s linear infinite;
+}
+.ticker-item {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #000;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ticker-item::after {
+  content: '◆';
+  font-size: 8px;
+  opacity: 0.4;
+}
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding-top: 32px;
+  z-index: 1;
+}
+
+/* Background diagonal grid */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(83,92,47,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(83,92,47,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.hero-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 4rem 1.5rem 2rem;
   position: relative;
+  z-index: 2;
 }
-.logo { font-size: 48px; font-weight: 500; letter-spacing: -2px; margin-bottom: 4px; }
-.logo span { color: #4caf7d; }
-.tagline { font-size: 13px; color: #555; margin-bottom: 3rem; text-align: center; }
-.seasons { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 420px; }
-.season-row {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px;
-  padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.1s;
-}
-.season-row:hover { border-color: #4caf7d; transform: translateX(4px); }
-.season-row.current { border-color: #4caf7d; }
-.season-row.current .season-num { color: #4caf7d; }
-.season-num { font-size: 18px; font-weight: 500; }
-.season-meta { font-size: 12px; color: #555; margin-top: 2px; }
-.season-badge-pill { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
-.pill-live { background: #1a3d2a; color: #4caf7d; }
-.pill-done { background: #1a1a1a; color: #555; border: 1px solid #2a2a2a; }
-.footer { margin-top: 3rem; font-size: 12px; color: #333; }
-.nav { margin-top: 1rem; }
-.back { font-size: 13px; color: #555; text-decoration: none; }
-.back:hover { color: #aaa; }
 
-/* Cookie banner */
+/* Glowing orb behind logo */
+.hero-glow {
+  position: absolute;
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(57,200,119,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+
+.eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.2s forwards;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.35s forwards;
+}
+
+.logo-main {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 14vw, 140px);
+  letter-spacing: -1px;
+  line-height: 0.9;
+  color: var(--text);
+}
+
+.logo-accent {
+  color: var(--green);
+}
+
+.logo-super {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20px, 4vw, 38px);
+  letter-spacing: 6px;
+  color: var(--muted);
+  margin-left: 12px;
+  align-self: flex-end;
+  padding-bottom: 12px;
+}
+
+.tagline {
+  font-size: 13px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.5s forwards;
+}
+
+/* Live badge */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-dim);
+  border: 1px solid var(--green);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--green);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.65s forwards;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+/* ── SEASON GRID ── */
+.seasons-section {
+  padding: 0 1.5rem 5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+
+.section-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--olive);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.seasons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Featured (PSL5) spans full width */
+.season-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.season-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(57,200,119,0.04));
+  pointer-events: none;
+}
+.season-card:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+  background: #1a1f0f;
+}
+.season-card.featured {
+  grid-column: 1 / -1;
+  border-color: var(--green);
+  background: #111a0f;
+  padding: 1.75rem 2rem;
+}
+.season-card.featured::before {
+  background: linear-gradient(135deg, rgba(57,200,119,0.06) 0%, transparent 60%);
+}
+.season-card.special {
+  border-color: rgba(245,200,66,0.3);
+}
+.season-card.news {
+  border-color: rgba(0, 255, 200, 0.3);
+}
+.season-card.special:hover { border-color: var(--gold); }
+
+
+.card-left { display: flex; flex-direction: column; gap: 4px; }
+
+.card-season {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--text);
+  line-height: 1;
+}
+.season-card.featured .card-season { font-size: 40px; color: var(--green); }
+.season-card.special .card-season { color: var(--gold); }
+
+.card-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  max-width: 320px;
+  line-height: 1.5;
+}
+.season-card.featured .card-desc { font-size: 13px; }
+
+.card-pill {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.pill-live    { background: var(--green-dim); color: var(--green); border: 1px solid rgba(57,200,119,0.3); }
+.pill-done    { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.pill-special { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+
+.arrow {
+  font-size: 20px;
+  color: var(--olive);
+  transition: transform 0.2s, color 0.2s;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+.season-card:hover .arrow { transform: translateX(4px); color: var(--green); }
+.season-card.special:hover .arrow { color: var(--gold); }
+
+/* ── FOOTER BAR ── */
+.footer-bar {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  opacity: 0;
+  animation: fadeUp 0.8s 1s forwards;
+}
+
+.socials {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  transition: all 0.15s;
+}
+.social-btn:hover { border-color: var(--green); color: var(--text); }
+
+.footer-copy {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* ── COOKIE BANNER ── */
 #cookie-banner {
-  position: fixed; bottom: 0; width: 100%;
-  background: #222; color: white; padding: 15px;
-  text-align: center; font-family: Arial; z-index: 1000;
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e2410;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 #cookie-banner button {
-  margin-left: 8px; padding: 4px 12px; cursor: pointer;
-  background: #333; color: #fff; border: 1px solid #555; border-radius: 4px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  transition: all 0.15s;
 }
-.socials { display: flex; gap: 10px; margin-top: 2rem; flex-wrap: wrap; justify-content: center; }
-.social-btn {
-  display: flex; align-items: center; gap: 8px;
-  background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 20px;
-  padding: 8px 14px; text-decoration: none; color: #888; font-size: 12px;
-  font-weight: 500; transition: all 0.15s;
-}
-.social-btn:hover { border-color: #4caf7d; color: #fff; transform: translateY(-1px); }
-</style>
+.btn-accept { background: var(--green); color: #000; }
+.btn-accept:hover { background: #2fb366; }
+.btn-reject { background: transparent; color: var(--muted); border: 1px solid var(--border) !important; }
+.btn-reject:hover { color: var(--text); }
 
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── DECORATIVE NUMBERS ── */
+.deco-num {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  color: rgba(83,92,47,0.07);
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .seasons-grid { grid-template-columns: 1fr; }
+  .season-card.featured { grid-column: 1; }
+  .footer-bar { justify-content: center; text-align: center; }
+  .logo-super { display: none; }
+  .ticker-item { padding: 0 20px; }
+  #cookie-banner { flex-direction: column; white-space: normal; text-align: center; bottom: 0; border-radius: 12px 12px 0 0; width: 100%; left: 0; transform: none; }
+}
+</style>
 </head>
 <body>
 
+<!-- Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker-track">
+    <div class="ticker-item">WELCOME TO THE HOME OF PITCHBALL</div>
+    <div class="ticker-item">PSL5 NOW LIVE</div>
+    <div class="ticker-item">LEAGUE PHASE IN PROGRESS</div>
+    <div class="ticker-item">PREDICT MATCH SCORES</div>
+    <div class="ticker-item">PITCHBALL SUPER LEAGUE</div>
+    <div class="ticker-item">WELCOME TO THE HOME OF PITCHBALL</div>
+    <div class="ticker-item">PSL5 NOW LIVE</div>
+    <div class="ticker-item">LEAGUE PHASE IN PROGRESS</div>
+    <div class="ticker-item">PREDICT MATCH SCORES</div>
+    <div class="ticker-item">PITCHBALL SUPER LEAGUE</div>
+  </div>
+</div>
+
 <!-- Cookie Banner -->
-
 <div id="cookie-banner" style="display:none;">
-  This site uses cookies for analytics.
-  <button onclick="acceptCookies()">Accept</button>
-  <button onclick="rejectCookies()">Reject</button>
+  <span>This site uses cookies for analytics.</span>
+  <div style="display:flex;gap:8px;">
+    <button class="btn-accept" onclick="acceptCookies()">Accept</button>
+    <button class="btn-reject" onclick="rejectCookies()">Reject</button>
+  </div>
 </div>
 
-<div class="logo">Pitch<span>ball</span></div>
-<p class="tagline">Super League — All Seasons</p>
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-glow"></div>
 
-<div class="seasons">
-  <a href="players/index.html" class="season-row" style="border-color:#f5c842;">
-    <div><div class="season-num" style="color:#f5c842;">Players</div><div class="season-meta">Every player in Pitchball history</div></div>
-    <span class="season-badge-pill" style="background:#3d3010;color:#f5c842;">Encyclopedia</span>
-  </a>
-  <a href="psl5/index.html" class="season-row current">
-    <div><div class="season-num">PSL5</div><div class="season-meta">The fifth and ongoing season of PSL, consisting of 18 teams.</div></div>
-    <span class="season-badge-pill pill-live">LIVE</span>
-  </a>
-  <a href="psl4/hub.html" class="season-row">
-    <div><div class="season-num">PSL4</div><div class="season-meta">The fourth PSL Season, consisting of 18 teams.</div></div>
-    <span class="season-badge-pill pill-done">Completed</span>
-  </a>
-  <a href="psl3/hub.html" class="season-row">
-    <div><div class="season-num">PSL3</div><div class="season-meta">The third PSL Season, consisting of 14 teams. Also the first instance of the PSL Cup.</div></div>
-    <span class="season-badge-pill pill-done">Completed</span>
-  </a>
-  <a href="psl2/hub.html" class="season-row">
-    <div><div class="season-num">PSL2</div><div class="season-meta">The second PSL Season, consisting of 16 teams.</div></div>
-    <span class="season-badge-pill pill-done">Completed</span>
-  </a>
-  <a href="psl1/hub.html" class="season-row">
-    <div><div class="season-num">PSL1</div><div class="season-meta">The first PSL Season, consisting of 8 teams.</div></div>
-    <span class="season-badge-pill pill-done">Completed</span>
-  </a>
+    <!-- Decorative large numbers -->
+
+    <div class="eyebrow">Pitchball · Est. 2023</div>
+
+    <div class="logo-wrap">
+      <div class="logo-main">Pitch<span class="logo-accent">ball</span></div>
+      <div class="logo-super">.GR</div>
+    </div>
+
+    <p class="tagline">The new and rising sport, born in the streets of Athens.</p>
+
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      PSL5 In Progress
+    </div>
+  </div>
+
+  <!-- Seasons -->
+  <div class="seasons-section">
+    <div class="section-label">PAGES</div>
+    <div class="seasons-grid">
+
+      <a href="psl5/index.html" class="season-card featured">
+        <div class="card-left">
+          <div class="card-season">PSL5</div>
+          <div class="card-desc">The fifth and ongoing season — 18 teams, group stage, cup, league stage and play-offs coming soon.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="card-pill pill-live">Live</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <a href="players/index.html" class="season-card special">
+        <div class="card-left">
+          <div class="card-season">Players</div>
+          <div class="card-desc">Every player in PSL history.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="card-pill pill-special">Encyclopedia</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+            <a href="news/newsindex.html" class="season-card special">
+        <div class="card-left">
+          <div class="card-season">News</div>
+          <div class="card-desc">Articles about PSL.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="card-pill pill-special">Updates</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <a href="psl4/hub.html" class="season-card">
+        <div class="card-left">
+          <div class="card-season">PSL4</div>
+          <div class="card-desc">Fourth season.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="card-pill pill-done">Completed</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <a href="psl3/hub.html" class="season-card">
+        <div class="card-left">
+          <div class="card-season">PSL3</div>
+          <div class="card-desc">The greatest season of all time.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="card-pill pill-done">Completed</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <a href="psl2/hub.html" class="season-card">
+        <div class="card-left">
+          <div class="card-season">PSL2</div>
+          <div class="card-desc">Second season.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="card-pill pill-done">Completed</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <a href="psl1/hub.html" class="season-card">
+        <div class="card-left">
+          <div class="card-season">PSL1</div>
+          <div class="card-desc">Where it all began.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="card-pill pill-done">Completed</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
 </div>
 
-<div class="nav">
+<!-- Footer -->
+<div class="footer-bar">
   <div class="socials">
-  <a href="https://instagram.com/pitchball_official" target="_blank" class="social-btn">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-    @pitchball_official
-  </a>
-  <a href="https://youtube.com/@officialpitchball" target="_blank" class="social-btn">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-    @officialpitchball
-  </a>
-  <a href="https://tiktok.com/@p1tchball" target="_blank" class="social-btn">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
-    @p1tchball
-  </a>
+    <a href="https://instagram.com/pitchball_official" target="_blank" class="social-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Instagram
+    </a>
+    <a href="https://youtube.com/@officialpitchball" target="_blank" class="social-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      YouTube
+    </a>
+    <a href="https://tiktok.com/@p1tchball" target="_blank" class="social-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+      TikTok
+    </a>
+    <a href="changelog.html" class="social-btn">Changelog</a>
+  </div>
+  <div class="footer-copy">Created by Thanos · Pitchball © 2026</div>
 </div>
-  <a href="changelog.html" class="social-btn">Changelog</a>
-</div>
-<p class="footer">Created by Thanos · Pitchball © 2026</p>
 
 <script>
-  function acceptCookies() {
-    localStorage.setItem("cookieConsent", "accepted");
-    document.getElementById("cookie-banner").style.display = "none";
-    loadAnalytics();
-  }
-  function rejectCookies() {
-    localStorage.setItem("cookieConsent", "rejected");
-    document.getElementById("cookie-banner").style.display = "none";
-  }
-  const consent = localStorage.getItem("cookieConsent");
-  if (!consent) {
-    document.getElementById("cookie-banner").style.display = "block";
-  } else if (consent === "accepted") {
-    loadAnalytics();
-  }
+function acceptCookies() {
+  localStorage.setItem("cookieConsent", "accepted");
+  document.getElementById("cookie-banner").style.display = "none";
+  loadAnalytics();
+}
+function rejectCookies() {
+  localStorage.setItem("cookieConsent", "rejected");
+  document.getElementById("cookie-banner").style.display = "none";
+}
+const consent = localStorage.getItem("cookieConsent");
+if (!consent) document.getElementById("cookie-banner").style.display = "flex";
+else if (consent === "accepted") loadAnalytics();
 </script>
+
 <style>body{position:relative;}</style>
 <script>
 const PSL_DB_URL = 'https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/.json';
@@ -189,6 +652,5 @@ async function pslAuthInit(){injectAuthStyles();const session=pslLoadSession();i
 injectAuthStyles();
 document.addEventListener('DOMContentLoaded',pslAuthInit);
 </script>
-
 </body>
 </html>
