@@ -10,16 +10,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #0e1009;
-  --bg2:     #151a0d;
-  --bg3:     #1a2010;
-  --green:   #39c877;
-  --olive:   #535c2f;
-  --text:    #D7DBC8;
-  --muted:   #6b7355;
-  --border:  rgba(83,92,47,0.35);
-  --gold:    #f5c842;
+  --bg:      #1a0a00;
+  --bg2:     rgba(20,8,0,0.82);
+  --bg3:     rgba(30,12,0,0.75);
+  --orange:  #ff8c00;
+  --amber:   #ffb300;
   --red:     #e74c3c;
+  --honey:   #ffd54f;
+  --text:    #fff8ee;
+  --muted:   rgba(255,220,150,0.55);
+  --border:  rgba(255,140,0,0.25);
+  --accentbg: rgba(255,140,0,0.12);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -28,13 +29,18 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  background-image: url("bg.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
-/* Noise */
+/* Dark overlay so text stays readable over the bright bg */
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background: rgba(18, 5, 0, 0.72);
   pointer-events: none; z-index: 0;
 }
 
@@ -65,8 +71,9 @@ body::before {
   letter-spacing: 1px;
   line-height: 1;
   color: var(--text);
+  text-shadow: 0 2px 24px rgba(255,140,0,0.3);
 }
-.masthead-title span { color: var(--green); }
+.masthead-title span { color: var(--amber); }
 .masthead-date {
   font-size: 11px;
   color: var(--muted);
@@ -83,7 +90,7 @@ body::before {
   transition: color 0.15s;
   padding-bottom: 6px;
 }
-.back-link:hover { color: var(--green); }
+.back-link:hover { color: var(--amber); }
 
 /* ── TAG FILTER ── */
 .tag-filter {
@@ -107,9 +114,9 @@ body::before {
   transition: all 0.15s;
 }
 .tag-btn:hover, .tag-btn.active {
-  border-color: var(--green);
-  color: var(--green);
-  background: rgba(57,200,119,0.06);
+  border-color: var(--amber);
+  color: var(--amber);
+  background: rgba(255,179,0,0.1);
 }
 
 /* ── ARTICLE GRID ── */
@@ -128,12 +135,14 @@ body::before {
   border-radius: 14px;
   overflow: hidden;
   background: var(--bg2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   text-decoration: none;
   color: inherit;
   margin-bottom: 12px;
   transition: border-color 0.2s, transform 0.2s;
 }
-.article-card:hover { border-color: var(--olive); transform: translateY(-2px); }
+.article-card:hover { border-color: var(--orange); transform: translateY(-2px); }
 .article-card.featured { grid-template-columns: 1fr; }
 .article-card.no-image { grid-template-columns: 1fr; }
 
@@ -158,14 +167,14 @@ body::before {
   justify-content: center;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 48px;
-  color: var(--border);
+  color: rgba(255,140,0,0.2);
   letter-spacing: 2px;
   background: repeating-linear-gradient(
     45deg,
-    var(--bg3),
-    var(--bg3) 10px,
-    rgba(83,92,47,0.05) 10px,
-    rgba(83,92,47,0.05) 20px
+    rgba(30,10,0,0.6),
+    rgba(30,10,0,0.6) 10px,
+    rgba(255,140,0,0.04) 10px,
+    rgba(255,140,0,0.04) 20px
   );
 }
 
@@ -186,13 +195,13 @@ body::before {
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 4px;
-  background: rgba(57,200,119,0.1);
-  color: var(--green);
-  border: 1px solid rgba(57,200,119,0.2);
+  background: rgba(255,179,0,0.15);
+  color: var(--amber);
+  border: 1px solid rgba(255,179,0,0.3);
 }
-.article-tag.psl5 { background: rgba(57,200,119,0.1); color: var(--green); border-color: rgba(57,200,119,0.2); }
-.article-tag.transfer { background: rgba(245,200,66,0.1); color: var(--gold); border-color: rgba(245,200,66,0.2); }
-.article-tag.news { background: rgba(83,92,47,0.2); color: var(--text); border-color: var(--border); }
+.article-tag.psl5   { background: rgba(255,140,0,0.15); color: var(--orange); border-color: rgba(255,140,0,0.3); }
+.article-tag.transfer { background: rgba(255,213,79,0.15); color: var(--honey); border-color: rgba(255,213,79,0.3); }
+.article-tag.news   { background: rgba(255,255,255,0.07); color: var(--text); border-color: rgba(255,255,255,0.15); }
 
 .article-title {
   font-family: 'Lora', serif;
@@ -202,7 +211,7 @@ body::before {
   color: var(--text);
 }
 .article-card.featured .article-title { font-size: clamp(20px, 3vw, 30px); }
-.article-card:hover .article-title { color: #fff; }
+.article-card:hover .article-title { color: var(--honey); }
 
 .article-desc {
   font-size: 13px;
@@ -240,11 +249,13 @@ body::before {
   border-radius: 12px;
   overflow: hidden;
   background: var(--bg2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   text-decoration: none;
   color: inherit;
   transition: border-color 0.2s, transform 0.2s;
 }
-.article-card-small:hover { border-color: var(--olive); transform: translateY(-2px); }
+.article-card-small:hover { border-color: var(--orange); transform: translateY(-2px); }
 .article-card-small .article-image { aspect-ratio: 16/9; }
 .article-card-small .article-body { padding: 1rem; gap: 6px; }
 .article-card-small .article-title { font-size: 15px; }
@@ -265,8 +276,8 @@ body::before {
 /* ── ADMIN PANEL ── */
 .admin-bar {
   display: none;
-  background: var(--bg3);
-  border: 1px solid rgba(57,200,119,0.2);
+  background: rgba(255,140,0,0.08);
+  border: 1px solid rgba(255,140,0,0.25);
   border-radius: 12px;
   padding: 1rem 1.25rem;
   margin: 1.5rem 0 0;
@@ -274,11 +285,12 @@ body::before {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+  backdrop-filter: blur(8px);
 }
 .admin-bar.visible { display: flex; }
 .admin-bar-label {
   font-size: 11px;
-  color: var(--green);
+  color: var(--amber);
   font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -296,17 +308,17 @@ body::before {
   font-family: inherit;
   transition: all 0.15s;
 }
-.admin-btn-primary { background: var(--green); color: #000; }
-.admin-btn-primary:hover { background: #2fb366; }
+.admin-btn-primary { background: var(--orange); color: #000; font-weight: 600; }
+.admin-btn-primary:hover { background: var(--amber); }
 .admin-btn-danger { background: transparent; color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
 .admin-btn-danger:hover { background: rgba(231,76,60,0.1); }
 .admin-btn-secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-.admin-btn-secondary:hover { color: var(--text); border-color: var(--olive); }
+.admin-btn-secondary:hover { color: var(--text); border-color: var(--orange); }
 
 /* ── ARTICLE EDITOR MODAL ── */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.85);
   z-index: 10000;
   display: flex;
   align-items: flex-start;
@@ -317,7 +329,7 @@ body::before {
 }
 .modal-overlay.hidden { display: none; }
 .editor-modal {
-  background: #1a2010;
+  background: rgba(25,8,0,0.97);
   border: 1px solid var(--border);
   border-radius: 16px;
   width: 100%;
@@ -402,7 +414,7 @@ textarea.form-input.body-input { min-height: 200px; font-size: 13px; line-height
   <div class="masthead">
     <div class="masthead-inner">
       <div class="masthead-left">
-        <div class="masthead-eyebrow">Pitchball Super League</div>
+        <div class="masthead-eyebrow">POWERED BY PTCHBL REPORT</div>
         <div class="masthead-title">Pitchball <span>News</span></div>
         <div class="masthead-date" id="today-date"></div>
       </div>
