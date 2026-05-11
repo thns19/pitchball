@@ -474,7 +474,7 @@ textarea.form-input.body-input { min-height: 200px; font-size: 13px; line-height
         </div>
         <div class="form-group">
           <label class="form-label">Date</label>
-          <input class="form-input" id="art-date" type="date">
+          <input class="form-input" id="art-date" type="datetime-local">
         </div>
       </div>
       <div class="form-group">
@@ -638,14 +638,19 @@ function openEditor(id = null) {
   document.getElementById('art-ok').style.display  = 'none';
   document.getElementById('edit-article-id').value = id || '';
 
-  if (id) {
+if (id) {
     const article = allArticles.find(a => a.id === id);
     if (article) {
       document.getElementById('art-title').value = article.title || '';
       document.getElementById('art-desc').value  = article.description || '';
       document.getElementById('art-body').value  = article.body || '';
       document.getElementById('art-image').value = article.image || '';
-      document.getElementById('art-date').value  = article.date || '';
+      
+      // Formats the stored date for the datetime-local input (YYYY-MM-DDTHH:mm)
+      let d = article.date || '';
+      if (d.length === 10) d += 'T00:00'; 
+      document.getElementById('art-date').value  = d.slice(0, 16);
+      
       document.getElementById('art-tags').value  = (article.tags||[]).join(', ');
     }
   } else {
@@ -653,7 +658,12 @@ function openEditor(id = null) {
     document.getElementById('art-desc').value  = '';
     document.getElementById('art-body').value  = '';
     document.getElementById('art-image').value = '';
-    document.getElementById('art-date').value  = new Date().toISOString().split('T')[0];
+    
+    // Sets default to current local date and time
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('art-date').value = now.toISOString().slice(0, 16);
+    
     document.getElementById('art-tags').value  = '';
   }
 
