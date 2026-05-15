@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playoffs — PSL5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #f0c040; --gold2: #d4a017; --silver: #c0c8d8; --bronze: #cd7f32;
+      --accent: #4fc3f7; --green: #4caf83; --red: #e05555;
+      --bg: rgba(10, 12, 20, 0.82); --card: rgba(20, 24, 38, 0.88);
+      --border: rgba(240, 192, 64, 0.18); --text: #e8ecf4;
+      --muted: #7a8299; --radius: 10px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Barlow', sans-serif; color: var(--text); min-height: 100vh;
+      background: url('pobg.png') center center / cover fixed; position: relative;
+    }
+    body::before { content: ''; position: fixed; inset: 0; background: rgba(6, 8, 18, 0.72); z-index: 0; }
+    .page { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 20px 80px; }
+    .back { display: inline-flex; align-items: center; gap: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin-bottom: 28px; transition: color .2s; }
+    .back:hover { color: var(--gold); }
+    header { text-align: center; margin-bottom: 48px; }
+    header .label { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    header h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(40px, 7vw, 72px); font-weight: 800; letter-spacing: -.01em; line-height: 1; text-transform: uppercase; background: linear-gradient(135deg, #fff 30%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    header p { margin-top: 10px; font-size: 14px; color: var(--muted); letter-spacing: .04em; }
+    .round-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .20em; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 14px; }
+    .matchup { width: 100%; max-width: 200px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 4px 32px rgba(0,0,0,.45); transition: transform .2s, box-shadow .2s; }
+    .matchup:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(240,192,64,.12); }
+    .matchup-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; text-align: center; padding: 5px 8px; background: rgba(240,192,64,.08); border-bottom: 1px solid var(--border); color: var(--gold2); }
+    .slot { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,.05); min-height: 46px; }
+    .slot:last-child { border-bottom: none; }
+    .slot.winner { background: rgba(240,192,64,.07); }
+    .slot.winner .team-name { color: var(--gold); font-weight: 700; }
+    .team-logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; border-radius: 4px; }
+    .logo-placeholder { width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,.06); border: 1px dashed rgba(255,255,255,.15); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .team-name { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: .02em; color: var(--text); line-height: 1.2; }
+    .team-seed { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--muted); font-weight: 600; flex-shrink: 0; }
+    .score { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); flex-shrink: 0; }
+    .playin-section { margin-bottom: 52px; }
+    .playin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; max-width: 760px; margin: 0 auto; }
+    .main-bracket { margin-bottom: 52px; }
+    .endgame-row { display: flex; align-items: flex-start; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .endgame-block { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .champion-card { background: linear-gradient(135deg, rgba(240,192,64,.18), rgba(212,160,23,.08)); border: 1px solid rgba(240,192,64,.45); border-radius: var(--radius); padding: 18px 24px; text-align: center; min-width: 200px; backdrop-filter: blur(10px); box-shadow: 0 0 40px rgba(240,192,64,.15); }
+    .champion-card .champ-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--gold2); margin-bottom: 10px; }
+    .champion-card .champ-logo { width: 52px; height: 52px; object-fit: contain; border-radius: 6px; margin: 0 auto 8px; display: block; }
+    .champion-card .champ-name { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: .03em; color: var(--gold); text-transform: uppercase; }
+    .legend { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    footer { text-align: center; margin-top: 60px; font-size: 12px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: .06em; }
+    @media (max-width: 900px) { .playin-grid { grid-template-columns: 1fr; gap: 16px; } }
+  </style>
+</head>
+<body>
+<div class="page">
+  <a href="index.html" class="back">← Home</a>
+  <header>
+    <div class="label">PSL5 · Season 5</div>
+    <h1>Playoffs</h1>
+    <p>Play-ins · Semifinals · Third Place · Final</p>
+  </header>
+
+  <section class="playin-section">
+    <div class="round-title">▸ Play-In Tournament</div>
+    <div class="playin-grid" id="playin-grid"></div>
+  </section>
+
+  <section class="main-bracket">
+    <div class="round-title">▸ Knockout Stage</div>
+    <div id="main-bracket"></div>
+  </section>
+
+  <section>
+    <div id="endgame"></div>
+  </section>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Winner</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>Confirmed</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--muted)"></span>TBD</div>
+  </div>
+  <footer>Created by Thanos, with help from Gemini AI · Pitchball © 2026</footer>
+</div>
+
+<script>
+  /**
+   * 1. DATA CONFIGURATION
+   * Only edit the values in TEAMS (seed1-6), SCORES, and WINNERS.
+   */
+  const TEAMS = {
+    seed1: { name: "BADiles", logo: "/logos/badiles.png", seed: 1 },
+    seed2: { name: "TBD", logo: null, seed: 2 },
+    seed3: { name: "TBD", logo: null, seed: 3 },
+    seed4: { name: "TBD", logo: null, seed: 4 },
+    seed5: { name: "TBD", logo: null, seed: 5 },
+    seed6: { name: "TBD", logo: null, seed: 6 },
+    // Holders (Do not edit these names/logos manually)
+    lastChanceA: { name: "TBD", logo: null, seed: null },
+    lastChanceB: { name: "TBD", logo: null, seed: null },
+    semi1_t1: { name: "TBD", logo: "/logos/badiles.png", seed: 1 },
+    semi1_t2: { name: "TBD", logo: null, seed: null },
+    semi2_t1: { name: "TBD", logo: null, seed: 2 },
+    semi2_t2: { name: "TBD", logo: null, seed: null },
+    final_t1: { name: "TBD", logo: null, seed: null },
+    final_t2: { name: "TBD", logo: null, seed: null },
+    third_t1: { name: "TBD", logo: null, seed: null },
+    third_t2: { name: "TBD", logo: null, seed: null },
+    champion: { name: "TBD", logo: null, seed: null },
+    third:    { name: "TBD", logo: null, seed: null }
+  };
+
+  const SCORES = {
+    playin34:   { t1: null, t2: null },
+    playin56:   { t1: null, t2: null },
+    lastChance: { t1: null, t2: null },
+    semi1:      { t1: null, t2: null },
+    semi2:      { t1: null, t2: null },
+    thirdPlace: { t1: null, t2: null },
+    final:      { t1: null, t2: null }
+  };
+
+  const WINNERS = {
+    playin34:   null, // Use: 'seed3' or 'seed4'
+    playin56:   null, // Use: 'seed5' or 'seed6'
+    lastChance: null, // Use: 'lastChanceA' or 'lastChanceB'
+    semi1:      null, // Use: 'semi1_t1' or 'semi1_t2'
+    semi2:      null, // Use: 'semi2_t1' or 'semi2_t2'
+    thirdPlace: null, // Use: 'third_t1' or 'third_t2'
+    final:      null  // Use: 'final_t1' or 'final_t2'
+  };
+
+  /**
+   * 2. LOGIC ENGINE
+   */
+  function runProgressionLogic() {
+    // Initial Setup
+    TEAMS.semi1_t1 = { ...TEAMS.seed1 };
+    TEAMS.semi2_t1 = { ...TEAMS.seed2 };
+
+    // 3v4 Logic
+    if (WINNERS.playin34 === 'seed3') {
+      TEAMS.semi2_t2 = { ...TEAMS.seed3 };
+      TEAMS.lastChanceA = { ...TEAMS.seed4 };
+    } else if (WINNERS.playin34 === 'seed4') {
+      TEAMS.semi2_t2 = { ...TEAMS.seed4 };
+      TEAMS.lastChanceA = { ...TEAMS.seed3 };
+    }
+
+    // 5v6 Logic
+    if (WINNERS.playin56 === 'seed5') {
+      TEAMS.lastChanceB = { ...TEAMS.seed5 };
+    } else if (WINNERS.playin56 === 'seed6') {
+      TEAMS.lastChanceB = { ...TEAMS.seed6 };
+    }
+
+    // Last Chance Logic
+    if (WINNERS.lastChance === 'lastChanceA') {
+      TEAMS.semi1_t2 = { ...TEAMS.lastChanceA };
+    } else if (WINNERS.lastChance === 'lastChanceB') {
+      TEAMS.semi1_t2 = { ...TEAMS.lastChanceB };
+    }
+
+    // Semi 1 Logic
+    if (WINNERS.semi1 === 'semi1_t1') {
+      TEAMS.final_t1 = { ...TEAMS.semi1_t1 };
+      TEAMS.third_t1 = { ...TEAMS.semi1_t2 };
+    } else if (WINNERS.semi1 === 'semi1_t2') {
+      TEAMS.final_t1 = { ...TEAMS.semi1_t2 };
+      TEAMS.third_t1 = { ...TEAMS.semi1_t1 };
+    }
+
+    // Semi 2 Logic
+    if (WINNERS.semi2 === 'semi2_t1') {
+      TEAMS.final_t2 = { ...TEAMS.semi2_t1 };
+      TEAMS.third_t2 = { ...TEAMS.semi2_t2 };
+    } else if (WINNERS.semi2 === 'semi2_t2') {
+      TEAMS.final_t2 = { ...TEAMS.semi2_t2 };
+      TEAMS.third_t2 = { ...TEAMS.semi2_t1 };
+    }
+
+    // Final & Third
+    if (WINNERS.final === 'final_t1') TEAMS.champion = { ...TEAMS.final_t1 };
+    else if (WINNERS.final === 'final_t2') TEAMS.champion = { ...TEAMS.final_t2 };
+
+    if (WINNERS.thirdPlace === 'third_t1') TEAMS.third = { ...TEAMS.third_t1 };
+    else if (WINNERS.thirdPlace === 'third_t2') TEAMS.third = { ...TEAMS.third_t2 };
+  }
+
+  /**
+   * 3. RENDER ENGINE
+   */
+  const h = {
+    logo: (t) => t?.logo ? `<img class="team-logo" src="${t.logo}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="logo-placeholder" style="display:none">🏐</span>` : `<span class="logo-placeholder">🏐</span>`,
+    seed: (s) => s !== null && s !== undefined ? `<span class="team-seed">#${s}</span>` : '',
+    score: (s) => s !== null ? `<span class="score">${s}</span>` : '',
+    slot: (team, score, isWin) => `<div class="slot ${isWin ? 'winner' : ''}">${h.logo(team)}<span class="team-name">${team?.name || 'TBD'}</span>${h.seed(team?.seed)}${h.score(score)}</div>`,
+    match: (label, t1, t2, sc, win, k1, k2) => `<div class="matchup"><div class="matchup-label">${label}</div>${h.slot(t1, sc.t1, win === k1)}${h.slot(t2, sc.t2, win === k2)}</div>`
+  };
+
+  function renderAll() {
+    document.getElementById('playin-grid').innerHTML = `
+      <div><div class="round-title" style="font-size:10px">3rd vs 4th</div>${h.match('Play-In · M1', TEAMS.seed3, TEAMS.seed4, SCORES.playin34, WINNERS.playin34, 'seed3', 'seed4')}</div>
+      <div><div class="round-title" style="font-size:10px">Last Chance</div>${h.match('Play-In · LC', TEAMS.lastChanceA, TEAMS.lastChanceB, SCORES.lastChance, WINNERS.lastChance, 'lastChanceA', 'lastChanceB')}</div>
+      <div><div class="round-title" style="font-size:10px">5th vs 6th</div>${h.match('Play-In · M2', TEAMS.seed5, TEAMS.seed6, SCORES.playin56, WINNERS.playin56, 'seed5', 'seed6')}</div>`;
+
+    document.getElementById('main-bracket').innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;align-items:center;"><div class="round-title" style="font-size:10px">Semifinal 1</div>${h.match('Semifinal 1', TEAMS.semi1_t1, TEAMS.semi1_t2, SCORES.semi1, WINNERS.semi1, 'semi1_t1', 'semi1_t2')}</div>
+        <div style="padding:0 8px;margin-top:24px;"><svg viewBox="0 0 56 80" style="width:56px;height:80px;opacity:.45"><path d="M0 20 H28 V60 H56" stroke="rgba(240,192,64,0.6)" stroke-width="1.5" fill="none"/></svg></div>
+        <div style="display:flex;flex-direction:column;align-items:center;"><div class="round-title" style="font-size:10px">Final</div><div style="font-size:26px;margin-bottom:6px">🏆</div>${h.match('⚽ Final', TEAMS.final_t1, TEAMS.final_t2, SCORES.final, WINNERS.final, 'final_t1', 'final_t2')}</div>
+        <div style="padding:0 8px;margin-top:24px;transform:scaleX(-1)"><svg viewBox="0 0 56 80" style="width:56px;height:80px;opacity:.45"><path d="M0 20 H28 V60 H56" stroke="rgba(240,192,64,0.6)" stroke-width="1.5" fill="none"/></svg></div>
+        <div style="display:flex;flex-direction:column;align-items:center;"><div class="round-title" style="font-size:10px">Semifinal 2</div>${h.match('Semifinal 2', TEAMS.semi2_t1, TEAMS.semi2_t2, SCORES.semi2, WINNERS.semi2, 'semi2_t1', 'semi2_t2')}</div>
+      </div>`;
+
+    document.getElementById('endgame').innerHTML = `
+      <div class="endgame-row">
+        <div class="endgame-block"><div class="round-title">Third Place</div>${h.match('🥉 Third Place', TEAMS.third_t1, TEAMS.third_t2, SCORES.thirdPlace, WINNERS.thirdPlace, 'third_t1', 'third_t2')}</div>
+        <div class="endgame-block"><div class="round-title">🏆 Champion</div><div class="champion-card"><div class="champ-title">PSL5 Champion</div>${TEAMS.champion.logo ? h.logo(TEAMS.champion) : '<div style="font-size:36px">🏐</div>'}<div class="champ-name">${TEAMS.champion.name}</div></div></div>
+      </div>`;
+  }
+
+  // Final Action
+  runProgressionLogic();
+  renderAll();
+  console.log("PSL5 Bracket Loaded. BADiles check:", TEAMS.seed1.name);
+</script>
+</body>
+</html>
