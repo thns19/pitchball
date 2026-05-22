@@ -1,234 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Playoffs — PSL5</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --gold: #f0c040; --gold2: #d4a017; --silver: #c0c8d8; --bronze: #cd7f32;
-      --accent: #4fc3f7; --green: #4caf83; --red: #e05555;
-      --bg: rgba(10, 12, 20, 0.82); --card: rgba(20, 24, 38, 0.88);
-      --border: rgba(240, 192, 64, 0.18); --text: #e8ecf4;
-      --muted: #7a8299; --radius: 10px;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Barlow', sans-serif; color: var(--text); min-height: 100vh;
-      background: url('pobg.png') center center / cover fixed; position: relative;
-    }
-    body::before { content: ''; position: fixed; inset: 0; background: rgba(6, 8, 18, 0.72); z-index: 0; }
-    .page { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 20px 80px; }
-    .back { display: inline-flex; align-items: center; gap: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin-bottom: 28px; transition: color .2s; }
-    .back:hover { color: var(--gold); }
-    header { text-align: center; margin-bottom: 48px; }
-    header .label { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
-    header h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(40px, 7vw, 72px); font-weight: 800; letter-spacing: -.01em; line-height: 1; text-transform: uppercase; background: linear-gradient(135deg, #fff 30%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    header p { margin-top: 10px; font-size: 14px; color: var(--muted); letter-spacing: .04em; }
-    .round-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .20em; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 14px; }
-    .matchup { width: 100%; max-width: 200px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 4px 32px rgba(0,0,0,.45); transition: transform .2s, box-shadow .2s; }
-    .matchup:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(240,192,64,.12); }
-    .matchup-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; text-align: center; padding: 5px 8px; background: rgba(240,192,64,.08); border-bottom: 1px solid var(--border); color: var(--gold2); }
-    .slot { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,.05); min-height: 46px; }
-    .slot:last-child { border-bottom: none; }
-    .slot.winner { background: rgba(240,192,64,.07); }
-    .slot.winner .team-name { color: var(--gold); font-weight: 700; }
-    .team-logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; border-radius: 4px; }
-    .logo-placeholder { width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,.06); border: 1px dashed rgba(255,255,255,.15); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
-    .team-name { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: .02em; color: var(--text); line-height: 1.2; }
-    .team-seed { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--muted); font-weight: 600; flex-shrink: 0; }
-    .score { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); flex-shrink: 0; }
-    .playin-section { margin-bottom: 52px; }
-    .playin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; max-width: 760px; margin: 0 auto; }
-    .main-bracket { margin-bottom: 52px; }
-    .endgame-row { display: flex; align-items: flex-start; justify-content: center; gap: 48px; flex-wrap: wrap; }
-    .endgame-block { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    .champion-card { background: linear-gradient(135deg, rgba(240,192,64,.18), rgba(212,160,23,.08)); border: 1px solid rgba(240,192,64,.45); border-radius: var(--radius); padding: 18px 24px; text-align: center; min-width: 200px; backdrop-filter: blur(10px); box-shadow: 0 0 40px rgba(240,192,64,.15); }
-    .champion-card .champ-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--gold2); margin-bottom: 10px; }
-    .champion-card .champ-logo { width: 52px; height: 52px; object-fit: contain; border-radius: 6px; margin: 0 auto 8px; display: block; }
-    .champion-card .champ-name { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: .03em; color: var(--gold); text-transform: uppercase; }
-    .legend { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
-    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    footer { text-align: center; margin-top: 60px; font-size: 12px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: .06em; }
-    @media (max-width: 900px) { .playin-grid { grid-template-columns: 1fr; gap: 16px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playoffs — PSL5</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b0e07;
+  --card:     rgba(18,22,10,0.88);
+  --border:   rgba(83,92,47,0.4);
+  --green:    #39c877;
+  --olive:    #535c2f;
+  --text:     #D7DBC8;
+  --muted:    #6b7355;
+  --gold:     #f5c842;
+  --connector:#535c2f;
+  --tbd:      #2a2f18;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image: url("pobg.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: rgba(8,11,4,0.78);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 2rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.header-left {}
+.header-eyebrow {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 7vw, 68px);
+  letter-spacing: 1px;
+  line-height: 1;
+  color: var(--text);
+}
+.header-title span { color: var(--gold); }
+.back-link {
+  font-size: 12px; color: var(--muted);
+  text-decoration: none; display: flex;
+  align-items: center; gap: 6px;
+  transition: color 0.15s; padding-bottom: 4px;
+}
+.back-link:hover { color: var(--green); }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding: 1rem 0 2rem;
+  font-size: 11px; color: var(--muted);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── BRACKET LAYOUT ── */
+/* Horizontal scrollable bracket */
+.bracket-scroll { overflow-x: auto; padding-bottom: 1rem; }
+.bracket {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: 900px;
+  padding: 2rem 0;
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 170px;
+}
+
+.round-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-align: center;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.round-matches {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1.5rem 0.75rem;
+  gap: 12px;
+  position: relative;
+}
+
+/* Connector lines between rounds */
+.round:not(:last-child) .round-matches::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 1px;
+  height: 60%;
+  transform: translateY(-50%);
+  background: var(--border);
+}
+
+/* ── MATCH CARD ── */
+.match {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s;
+  position: relative;
+}
+.match:hover { border-color: var(--olive); }
+.match.final-match {
+  border-color: rgba(245,200,66,0.4);
+  background: rgba(20,16,4,0.92);
+}
+.match.final-match:hover { border-color: var(--gold); }
+.match.third-place {
+  border-color: rgba(180,140,80,0.3);
+}
+
+.match-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 5px 10px 0;
+}
+.match.final-match .match-label { color: rgba(245,200,66,0.6); }
+
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(83,92,47,0.15);
+  transition: background 0.15s;
+}
+.team-row:last-of-type { border-bottom: none; }
+.team-row.winner { background: rgba(57,200,119,0.07); }
+.team-row.winner .team-name { color: var(--green); font-weight: 500; }
+.match.final-match .team-row.winner { background: rgba(245,200,66,0.07); }
+.match.final-match .team-row.winner .team-name { color: var(--gold); }
+
+.team-logo {
+  width: 20px; height: 20px;
+  object-fit: contain;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.team-logo-placeholder {
+  width: 20px; height: 20px;
+  border-radius: 3px;
+  background: var(--tbd);
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.team-name {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.team-name.tbd { color: var(--muted); font-style: italic; }
+.team-score {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.team-score.empty { color: var(--muted); font-size: 10px; }
+
+/* Trophy for champion */
+.champion-banner {
+  display: none;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  background: rgba(245,200,66,0.06);
+  border: 1px solid rgba(245,200,66,0.25);
+  border-radius: 12px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.champion-banner.visible { display: flex; }
+.champion-banner img { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; }
+
+/* ── THIRD PLACE / FINAL ROW ── */
+.finals-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.finals-col { display: flex; flex-direction: column; gap: 8px; }
+.finals-col-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 640px) {
+  .finals-row { grid-template-columns: 1fr; }
+}
+
+/* Connector horizontal lines */
+.connector-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+.connector-line {
+  width: 100%;
+  height: 1px;
+  background: var(--connector);
+}
+
+/* Fade in */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.match { opacity: 0; animation: fadeUp 0.4s forwards; }
+</style>
 </head>
 <body>
 <div class="page">
-  <a href="index.html" class="back">← Home</a>
-  <header>
-    <div class="label">PSL5 · Season 5</div>
-    <h1>Playoffs</h1>
-    <p>Play-ins · Semifinals · Third Place · Final</p>
-  </header>
 
-  <section class="playin-section">
-    <div class="round-title">▸ Play-In Tournament</div>
-    <div class="playin-grid" id="playin-grid"></div>
-  </section>
-
-  <section class="main-bracket">
-    <div class="round-title">▸ Knockout Stage</div>
-    <div id="main-bracket"></div>
-  </section>
-
-  <section>
-    <div id="endgame"></div>
-  </section>
-
-  <div class="legend">
-    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Winner</div>
-    <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>Confirmed</div>
-    <div class="legend-item"><span class="legend-dot" style="background:var(--muted)"></span>TBD</div>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">PSL5 · Post-Season</div>
+      <div class="header-title">Play<span>offs</span></div>
+    </div>
+    <a href="index.html" class="back-link">← Home</a>
   </div>
-  <footer>Created by Thanos, with help from Gemini AI · Pitchball © 2026</footer>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot" style="background:#39c877;"></div> Winner / Advances</div>
+    <div class="legend-item"><div class="leg-dot" style="background:#535c2f;"></div> Eliminated</div>
+    <div class="legend-item"><div class="leg-dot" style="background:#f5c842;"></div> Champion</div>
+  </div>
+
+  <!-- Champion banner (shown when final has a winner) -->
+  <div class="champion-banner" id="champion-banner">
+    🏆 <span id="champion-name"></span> are PSL5 Champions!
+  </div>
+
+  <!-- Main bracket -->
+  <div class="bracket-scroll">
+    <div class="bracket" id="bracket"></div>
+  </div>
+
+  <!-- Third place + Final -->
+  <div class="finals-row">
+    <div class="finals-col">
+      <div class="finals-col-title">Third Place</div>
+      <div id="third-place-slot"></div>
+    </div>
+    <div class="finals-col">
+      <div class="finals-col-title">🏆 Final</div>
+      <div id="final-slot"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  /**
-   * 1. DATA CONFIGURATION
-   * Only edit the values in TEAMS (seed1-6), SCORES, and WINNERS.
-   */
-  const TEAMS = {
-    seed1: { name: "BADiles", logo: "/logos/badiles.png", seed: 1 },
-    seed2: { name: "TBD", logo: null, seed: 2 },
-    seed3: { name: "TBD", logo: null, seed: 3 },
-    seed4: { name: "TBD", logo: null, seed: 4 },
-    seed5: { name: "TBD", logo: null, seed: 5 },
-    seed6: { name: "TBD", logo: null, seed: 6 },
-    // Holders (Do not edit these names/logos manually)
-    lastChanceA: { name: "TBD", logo: null, seed: null },
-    lastChanceB: { name: "TBD", logo: null, seed: null },
-    semi1_t1: { name: "TBD", logo: "/logos/badiles.png", seed: 1 },
-    semi1_t2: { name: "TBD", logo: null, seed: null },
-    semi2_t1: { name: "TBD", logo: null, seed: 2 },
-    semi2_t2: { name: "TBD", logo: null, seed: null },
-    final_t1: { name: "TBD", logo: null, seed: null },
-    final_t2: { name: "TBD", logo: null, seed: null },
-    third_t1: { name: "TBD", logo: null, seed: null },
-    third_t2: { name: "TBD", logo: null, seed: null },
-    champion: { name: "TBD", logo: null, seed: null },
-    third:    { name: "TBD", logo: null, seed: null }
-  };
+// ══════════════════════════════════════════════════════════════
+// BRACKET DATA — edit this to fill in teams and scores
+// ══════════════════════════════════════════════════════════════
 
-  const SCORES = {
-    playin34:   { t1: null, t2: null },
-    playin56:   { t1: null, t2: null },
-    lastChance: { t1: null, t2: null },
-    semi1:      { t1: null, t2: null },
-    semi2:      { t1: null, t2: null },
-    thirdPlace: { t1: null, t2: null },
-    final:      { t1: null, t2: null }
-  };
+const LOGOS = {
+  "BADiles":        "logos/badiles.png",
+  "Y&Y":            "logos/yy.png",
+  "R1":             "logos/r1.png",
+  "Basement Boys":  "logos/basement.png",
+  "Volos Drummers": "logos/volos.png",
+  "Warriors":       "logos/warriors.png",
+  "Midi Kidz":      "logos/midi.png",
+  "Babiniotes":     "logos/babiniotes.png",
+  "Spasmena Mila":  "logos/spasmena.png",
+  "Phoenix":        "logos/phoenix.png",
+};
 
-  const WINNERS = {
-    playin34:   null, // Use: 'seed3' or 'seed4'
-    playin56:   null, // Use: 'seed5' or 'seed6'
-    lastChance: null, // Use: 'lastChanceA' or 'lastChanceB'
-    semi1:      null, // Use: 'semi1_t1' or 'semi1_t2'
-    semi2:      null, // Use: 'semi2_t1' or 'semi2_t2'
-    thirdPlace: null, // Use: 'third_t1' or 'third_t2'
-    final:      null  // Use: 'final_t1' or 'final_t2'
-  };
+// ── PLAY-IN MATCHES ───────────────────────────────────────────
+// Replace null with a team name string to fill a slot.
+// Replace score nulls with numbers once played.
+// Set winner to the winning team name once confirmed.
 
-  /**
-   * 2. LOGIC ENGINE
-   */
-  function runProgressionLogic() {
-    // Initial Setup
-    TEAMS.semi1_t1 = { ...TEAMS.seed1 };
-    TEAMS.semi2_t1 = { ...TEAMS.seed2 };
+const PLAYIN_1 = {
+  label: "Play-in · 3rd vs 4th",
+  teamA: { name: null, score: null },  // e.g. name: "BADiles"
+  teamB: { name: null, score: null },
+  winner: null,
+};
 
-    // 3v4 Logic
-    if (WINNERS.playin34 === 'seed3') {
-      TEAMS.semi2_t2 = { ...TEAMS.seed3 };
-      TEAMS.lastChanceA = { ...TEAMS.seed4 };
-    } else if (WINNERS.playin34 === 'seed4') {
-      TEAMS.semi2_t2 = { ...TEAMS.seed4 };
-      TEAMS.lastChanceA = { ...TEAMS.seed3 };
-    }
+const PLAYIN_2 = {
+  label: "Play-in · 5th vs 6th",
+  teamA: { name: null, score: null },
+  teamB: { name: null, score: null },
+  winner: null,
+};
 
-    // 5v6 Logic
-    if (WINNERS.playin56 === 'seed5') {
-      TEAMS.lastChanceB = { ...TEAMS.seed5 };
-    } else if (WINNERS.playin56 === 'seed6') {
-      TEAMS.lastChanceB = { ...TEAMS.seed6 };
-    }
+// ── LAST CHANCE ───────────────────────────────────────────────
+// Auto-filled from play-in losers/winners, but you can override
+const LAST_CHANCE = {
+  label: "Last Chance",
+  teamA: { name: null, score: null },  // loser of PLAYIN_1
+  teamB: { name: null, score: null },  // winner of PLAYIN_2
+  winner: null,
+};
 
-    // Last Chance Logic
-    if (WINNERS.lastChance === 'lastChanceA') {
-      TEAMS.semi1_t2 = { ...TEAMS.lastChanceA };
-    } else if (WINNERS.lastChance === 'lastChanceB') {
-      TEAMS.semi1_t2 = { ...TEAMS.lastChanceB };
-    }
+// ── SEMI-FINALS ───────────────────────────────────────────────
+const SEMI_1 = {
+  label: "Semi-Final 1",
+  teamA: { name: "BADiles", score: null },  // 1st seed
+  teamB: { name: null, score: null },  // winner of Last Chance
+  winner: null,
+};
 
-    // Semi 1 Logic
-    if (WINNERS.semi1 === 'semi1_t1') {
-      TEAMS.final_t1 = { ...TEAMS.semi1_t1 };
-      TEAMS.third_t1 = { ...TEAMS.semi1_t2 };
-    } else if (WINNERS.semi1 === 'semi1_t2') {
-      TEAMS.final_t1 = { ...TEAMS.semi1_t2 };
-      TEAMS.third_t1 = { ...TEAMS.semi1_t1 };
-    }
+const SEMI_2 = {
+  label: "Semi-Final 2",
+  teamA: { name: null, score: null },  // 2nd seed
+  teamB: { name: null, score: null },  // winner of PLAYIN_1
+  winner: null,
+};
 
-    // Semi 2 Logic
-    if (WINNERS.semi2 === 'semi2_t1') {
-      TEAMS.final_t2 = { ...TEAMS.semi2_t1 };
-      TEAMS.third_t2 = { ...TEAMS.semi2_t2 };
-    } else if (WINNERS.semi2 === 'semi2_t2') {
-      TEAMS.final_t2 = { ...TEAMS.semi2_t2 };
-      TEAMS.third_t2 = { ...TEAMS.semi2_t1 };
-    }
+// ── THIRD PLACE ───────────────────────────────────────────────
+const THIRD_PLACE = {
+  label: "Third Place",
+  teamA: { name: null, score: null },  // loser of SEMI_1
+  teamB: { name: null, score: null },  // loser of SEMI_2
+  winner: null,
+};
 
-    // Final & Third
-    if (WINNERS.final === 'final_t1') TEAMS.champion = { ...TEAMS.final_t1 };
-    else if (WINNERS.final === 'final_t2') TEAMS.champion = { ...TEAMS.final_t2 };
+// ── FINAL ─────────────────────────────────────────────────────
+const FINAL = {
+  label: "PSL5 Final",
+  teamA: { name: null, score: null },  // winner of SEMI_1
+  teamB: { name: null, score: null },  // winner of SEMI_2
+  winner: null,
+};
 
-    if (WINNERS.thirdPlace === 'third_t1') TEAMS.third = { ...TEAMS.third_t1 };
-    else if (WINNERS.thirdPlace === 'third_t2') TEAMS.third = { ...TEAMS.third_t2 };
+// ══════════════════════════════════════════════════════════════
+// RENDERING — no need to edit below
+// ══════════════════════════════════════════════════════════════
+
+function logoHTML(name) {
+  if (!name) return `<div class="team-logo-placeholder"></div>`;
+  const src = LOGOS[name];
+  if (!src) return `<div class="team-logo-placeholder"></div>`;
+  return `<img class="team-logo" src="${src}" onerror="this.outerHTML='<div class=team-logo-placeholder></div>'" alt="${name}">`;
+}
+
+function matchCard(match, isFinal = false, isThird = false, delay = 0) {
+  const cls = isFinal ? 'final-match' : isThird ? 'third-place' : '';
+  const teamA = match.teamA;
+  const teamB = match.teamB;
+  const winnerA = match.winner && match.winner === teamA.name;
+  const winnerB = match.winner && match.winner === teamB.name;
+
+  function teamRow(team, isWinner) {
+    const name = team.name || 'TBD';
+    const isTbd = !team.name;
+    const scoreStr = team.score !== null && team.score !== undefined ? team.score : '';
+    return `<div class="team-row${isWinner ? ' winner' : ''}">
+      ${logoHTML(team.name)}
+      <span class="team-name${isTbd ? ' tbd' : ''}">${name}</span>
+      <span class="team-score${scoreStr === '' ? ' empty' : ''}">${scoreStr !== '' ? scoreStr : '–'}</span>
+    </div>`;
   }
 
-  /**
-   * 3. RENDER ENGINE
-   */
-  const h = {
-    logo: (t) => t?.logo ? `<img class="team-logo" src="${t.logo}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="logo-placeholder" style="display:none">🏐</span>` : `<span class="logo-placeholder">🏐</span>`,
-    seed: (s) => s !== null && s !== undefined ? `<span class="team-seed">#${s}</span>` : '',
-    score: (s) => s !== null ? `<span class="score">${s}</span>` : '',
-    slot: (team, score, isWin) => `<div class="slot ${isWin ? 'winner' : ''}">${h.logo(team)}<span class="team-name">${team?.name || 'TBD'}</span>${h.seed(team?.seed)}${h.score(score)}</div>`,
-    match: (label, t1, t2, sc, win, k1, k2) => `<div class="matchup"><div class="matchup-label">${label}</div>${h.slot(t1, sc.t1, win === k1)}${h.slot(t2, sc.t2, win === k2)}</div>`
-  };
+  return `<div class="match ${cls}" style="animation-delay:${delay}s">
+    <div class="match-label">${match.label}</div>
+    ${teamRow(teamA, winnerA)}
+    ${teamRow(teamB, winnerB)}
+  </div>`;
+}
 
-  function renderAll() {
-    document.getElementById('playin-grid').innerHTML = `
-      <div><div class="round-title" style="font-size:10px">3rd vs 4th</div>${h.match('Play-In · M1', TEAMS.seed3, TEAMS.seed4, SCORES.playin34, WINNERS.playin34, 'seed3', 'seed4')}</div>
-      <div><div class="round-title" style="font-size:10px">Last Chance</div>${h.match('Play-In · LC', TEAMS.lastChanceA, TEAMS.lastChanceB, SCORES.lastChance, WINNERS.lastChance, 'lastChanceA', 'lastChanceB')}</div>
-      <div><div class="round-title" style="font-size:10px">5th vs 6th</div>${h.match('Play-In · M2', TEAMS.seed5, TEAMS.seed6, SCORES.playin56, WINNERS.playin56, 'seed5', 'seed6')}</div>`;
-
-    document.getElementById('main-bracket').innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;"><div class="round-title" style="font-size:10px">Semifinal 1</div>${h.match('Semifinal 1', TEAMS.semi1_t1, TEAMS.semi1_t2, SCORES.semi1, WINNERS.semi1, 'semi1_t1', 'semi1_t2')}</div>
-        <div style="padding:0 8px;margin-top:24px;"><svg viewBox="0 0 56 80" style="width:56px;height:80px;opacity:.45"><path d="M0 20 H28 V60 H56" stroke="rgba(240,192,64,0.6)" stroke-width="1.5" fill="none"/></svg></div>
-        <div style="display:flex;flex-direction:column;align-items:center;"><div class="round-title" style="font-size:10px">Final</div><div style="font-size:26px;margin-bottom:6px">🏆</div>${h.match('⚽ Final', TEAMS.final_t1, TEAMS.final_t2, SCORES.final, WINNERS.final, 'final_t1', 'final_t2')}</div>
-        <div style="padding:0 8px;margin-top:24px;transform:scaleX(-1)"><svg viewBox="0 0 56 80" style="width:56px;height:80px;opacity:.45"><path d="M0 20 H28 V60 H56" stroke="rgba(240,192,64,0.6)" stroke-width="1.5" fill="none"/></svg></div>
-        <div style="display:flex;flex-direction:column;align-items:center;"><div class="round-title" style="font-size:10px">Semifinal 2</div>${h.match('Semifinal 2', TEAMS.semi2_t1, TEAMS.semi2_t2, SCORES.semi2, WINNERS.semi2, 'semi2_t1', 'semi2_t2')}</div>
-      </div>`;
-
-    document.getElementById('endgame').innerHTML = `
-      <div class="endgame-row">
-        <div class="endgame-block"><div class="round-title">Third Place</div>${h.match('🥉 Third Place', TEAMS.third_t1, TEAMS.third_t2, SCORES.thirdPlace, WINNERS.thirdPlace, 'third_t1', 'third_t2')}</div>
-        <div class="endgame-block"><div class="round-title">🏆 Champion</div><div class="champion-card"><div class="champ-title">PSL5 Champion</div>${TEAMS.champion.logo ? h.logo(TEAMS.champion) : '<div style="font-size:36px">🏐</div>'}<div class="champ-name">${TEAMS.champion.name}</div></div></div>
-      </div>`;
+function buildBracket() {
+  // Check for champion
+  if (FINAL.winner) {
+    document.getElementById('champion-banner').classList.add('visible');
+    const winnerLogo = LOGOS[FINAL.winner]
+      ? `<img src="${LOGOS[FINAL.winner]}" style="width:28px;height:28px;object-fit:contain;border-radius:4px;" onerror="this.style.display='none'">`
+      : '';
+    document.getElementById('champion-name').innerHTML = `${winnerLogo} ${FINAL.winner}`;
   }
 
-  // Final Action
-  runProgressionLogic();
-  renderAll();
-  console.log("PSL5 Bracket Loaded. BADiles check:", TEAMS.seed1.name);
+  const rounds = [
+    {
+      title: 'Play-in',
+      matches: [PLAYIN_1, PLAYIN_2],
+      delays: [0, 0.06],
+    },
+    {
+      title: 'Last Chance',
+      matches: [LAST_CHANCE],
+      delays: [0.12],
+    },
+    {
+      title: 'Semi-Finals',
+      matches: [SEMI_1, SEMI_2],
+      delays: [0.18, 0.24],
+    },
+  ];
+
+  let html = '';
+  rounds.forEach(round => {
+    html += `<div class="round">
+      <div class="round-title">${round.title}</div>
+      <div class="round-matches">
+        ${round.matches.map((m, i) => matchCard(m, false, false, round.delays[i])).join('')}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('bracket').innerHTML = html;
+  document.getElementById('third-place-slot').innerHTML = matchCard(THIRD_PLACE, false, true, 0.3);
+  document.getElementById('final-slot').innerHTML = matchCard(FINAL, true, false, 0.36);
+}
+
+buildBracket();
+</script>
+
+<style>body{position:relative;}</style>
+<script>
+const PSL_DB_URL = 'https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/.json';
+const PSL_ADMIN   = 'thanos';
+const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
+let _pslDbCache=null,_pslDbFetching=null;
+async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(PSL_DB_URL).then(r=>r.json()).then(data=>{_pslDbCache=data;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
+async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_DB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
+function pslDbInvalidate(){_pslDbCache=null;}
+let pslCurrentUser=null;
+function pslLoadSession(){const s=localStorage.getItem('psl_session');return s?JSON.parse(s):null;}
+function pslSaveSession(u){localStorage.setItem('psl_session',JSON.stringify(u));}
+function pslClearSession(){localStorage.removeItem('psl_session');}
+async function pslHashPass(pass){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass+'psl5salt'));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function injectAuthStyles(){if(document.getElementById('psl-auth-styles'))return;const s=document.createElement('style');s.id='psl-auth-styles';s.textContent=`#psl-auth-widget{position:fixed;top:12px;right:14px;z-index:99999;font-family:system-ui,sans-serif;}.psl-aw-btn{display:flex;align-items:center;gap:7px;background:rgba(20,20,20,0.92);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;backdrop-filter:blur(8px);font-size:12px;color:#fff;font-weight:500;}.psl-aw-btn:hover{border-color:rgba(57,200,119,0.6);}.psl-aw-avatar{width:22px;height:22px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;}.psl-aw-avatar.guest{background:rgba(255,255,255,0.15);color:#fff;font-size:13px;}.psl-aw-drop{position:absolute;top:calc(100% + 8px);right:0;background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.5);display:none;}.psl-aw-drop.open{display:block;}.psl-aw-drop-header{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:10px;}.psl-aw-drop-header strong{display:block;font-size:14px;color:#fff;margin-bottom:1px;}.psl-aw-drop-item{display:block;width:100%;padding:11px 14px;font-size:13px;font-weight:500;color:#fff;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.1s;font-family:inherit;text-decoration:none;}.psl-aw-drop-item:hover{background:rgba(255,255,255,0.06);}.psl-aw-drop-item.danger{color:#e74c3c;}.psl-aw-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:2px 0;}.psl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}.psl-modal{background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:100%;max-width:380px;overflow:hidden;}.psl-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}.psl-modal-title{font-size:16px;font-weight:600;color:#fff;}.psl-modal-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:20px;line-height:1;padding:2px;font-family:inherit;}.psl-modal-bd{padding:1.5rem;}.psl-form-group{margin-bottom:14px;}.psl-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:5px;display:block;font-weight:500;}.psl-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;box-sizing:border-box;}.psl-input:focus{outline:none;border-color:#39c877;}.psl-input::placeholder{color:rgba(255,255,255,0.3);}.psl-btn-primary{width:100%;padding:10px;background:#39c877;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}.psl-btn-primary:hover{background:#2fb366;}.psl-btn-primary:disabled{opacity:0.4;cursor:not-allowed;}.psl-err{font-size:11px;color:#e74c3c;margin-top:6px;}.psl-ok{font-size:11px;color:#39c877;margin-top:6px;}.psl-tabs{display:flex;margin-bottom:1.5rem;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;gap:3px;}.psl-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;}.psl-tab.active{background:#39c877;color:#000;}.psl-avatar-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);display:block;margin:0 auto 12px;}`;document.head.appendChild(s);}
+function renderWidget(){if(!document.body){setTimeout(renderWidget,50);return;}const ex=document.getElementById('psl-auth-widget');if(ex)ex.remove();const w=document.createElement('div');w.id='psl-auth-widget';if(pslCurrentUser){const avatarBtn=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=psl-aw-avatar>${pslCurrentUser.username[0].toUpperCase()}</div>'">`:`<div class="psl-aw-avatar">${pslCurrentUser.username[0].toUpperCase()}</div>`;const avatarDrop=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">`:`<div class="psl-aw-avatar" style="width:36px;height:36px;font-size:15px;">${pslCurrentUser.username[0].toUpperCase()}</div>`;w.innerHTML=`<div class="psl-aw-btn" onclick="pslToggleDrop()">${avatarBtn}<span>${pslCurrentUser.username}</span><span style="color:rgba(255,255,255,0.3);font-size:10px;">▾</span></div><div class="psl-aw-drop" id="psl-aw-drop"><div class="psl-aw-drop-header">${avatarDrop}<div><strong>${pslCurrentUser.username}</strong>${pslCurrentUser.isAdmin?'<span style="color:#39c877;font-size:10px;">⚡ Admin</span>':''}</div></div><a href="/psl5/predindex.html" class="psl-aw-drop-item">🎯 Predictions</a><button class="psl-aw-drop-item" onclick="pslOpenProfile()">🖼️ Edit Profile Picture</button><hr class="psl-aw-divider"><button class="psl-aw-drop-item danger" onclick="pslLogout()">Sign out</button></div>`;}else{w.innerHTML=`<div class="psl-aw-btn" onclick="pslOpenAuth('login')"><div class="psl-aw-avatar guest">👤</div><span>Sign in</span></div>`;}document.body.appendChild(w);document.addEventListener('click',e=>{if(!w.contains(e.target)){const d=document.getElementById('psl-aw-drop');if(d)d.classList.remove('open');}},{capture:true});}
+function pslToggleDrop(){document.getElementById('psl-aw-drop')?.classList.toggle('open');}
+function pslOpenProfile(){document.getElementById('psl-aw-drop')?.classList.remove('open');if(_authModal)_authModal.remove();const o=document.createElement('div');o.className='psl-modal-overlay';o.id='psl-auth-modal';const current=pslCurrentUser.avatar||'';o.innerHTML=`<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">Profile Picture</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd">${current?`<img src="${current}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`:`<div style="width:72px;height:72px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#000;margin:0 auto 12px;" id="psl-avatar-preview">${pslCurrentUser.username[0].toUpperCase()}</div>`}<div class="psl-form-group"><label class="psl-label">Image URL</label><input class="psl-input" id="psl-avatar-url" placeholder="https://..." value="${current}" oninput="pslPreviewAvatar(this.value)"></div><p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:14px;line-height:1.5;">Paste a direct link to any image. Tip: upload to <a href="https://imgur.com" target="_blank" style="color:#39c877;">imgur.com</a> and use the direct link.</p><div class="psl-err" id="psl-avatar-err" style="display:none;"></div><div class="psl-ok" id="psl-avatar-ok" style="display:none;">Saved!</div><button class="psl-btn-primary" id="psl-avatar-btn" onclick="pslSaveAvatar()">Save</button>${current?`<button style="width:100%;padding:9px;background:none;border:1px solid rgba(231,76,60,0.3);color:#e74c3c;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;" onclick="pslRemoveAvatar()">Remove picture</button>`:''}</div></div>`;o.addEventListener('click',e=>{if(e.target===o)pslCloseAuth();});document.body.appendChild(o);_authModal=o;}
+function pslPreviewAvatar(url){const el=document.getElementById('psl-avatar-preview');if(!el)return;if(url){el.outerHTML=`<img src="${url}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`; }}
+async function pslSaveAvatar(){const url=document.getElementById('psl-avatar-url').value.trim();const err=document.getElementById('psl-avatar-err');const ok=document.getElementById('psl-avatar-ok');const btn=document.getElementById('psl-avatar-btn');err.style.display='none';ok.style.display='none';btn.disabled=true;btn.textContent='Saving...';try{const db=await pslDbGet();const users=db.users||{};const uKey=pslCurrentUser.username.toLowerCase();if(!users[uKey]){err.textContent='User not found.';err.style.display='block';return;}users[uKey].avatar=url||null;await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser.avatar=url||null;pslSaveSession(pslCurrentUser);ok.style.display='block';setTimeout(()=>{pslCloseAuth();renderWidget();},800);}catch(e){err.textContent='Connection error. Try again.';err.style.display='block';}finally{btn.disabled=false;btn.textContent='Save';}}
+async function pslRemoveAvatar(){document.getElementById('psl-avatar-url').value='';await pslSaveAvatar();}
+let _authModal=null;
+function pslOpenAuth(tab='login'){if(_authModal)_authModal.remove();const o=document.createElement('div');o.className='psl-modal-overlay';o.id='psl-auth-modal';o.innerHTML=`<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">PSL Account</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd"><div class="psl-tabs"><button class="psl-tab ${tab==='login'?'active':''}" onclick="pslSwitchTab('login')">Sign In</button><button class="psl-tab ${tab==='register'?'active':''}" onclick="pslSwitchTab('register')">Register</button></div><div id="psl-tab-login" ${tab!=='login'?'style="display:none"':''}><div class="psl-form-group"><label class="psl-label">Username or Email</label><input class="psl-input" id="psl-li-user" placeholder="Enter username or email"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-li-pass" type="password" placeholder="Enter password"></div><div class="psl-err" id="psl-li-err" style="display:none"></div><button class="psl-btn-primary" id="psl-li-btn" onclick="pslDoLogin()">Sign In</button></div><div id="psl-tab-register" ${tab!=='register'?'style="display:none"':''}><div class="psl-form-group"><label class="psl-label">Username</label><input class="psl-input" id="psl-rg-user" placeholder="Choose a username" maxlength="20"></div><div class="psl-form-group"><label class="psl-label">Email</label><input class="psl-input" id="psl-rg-email" type="email" placeholder="your@email.com"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-rg-pass" type="password" placeholder="Min. 6 characters"></div><div class="psl-err" id="psl-rg-err" style="display:none"></div><button class="psl-btn-primary" id="psl-rg-btn" onclick="pslDoRegister()">Create Account</button></div></div></div>`;o.addEventListener('click',e=>{if(e.target===o)pslCloseAuth();});document.body.appendChild(o);_authModal=o;}
+function pslCloseAuth(){_authModal?.remove();_authModal=null;}
+function pslSwitchTab(tab){document.getElementById('psl-tab-login').style.display=tab==='login'?'':'none';document.getElementById('psl-tab-register').style.display=tab==='register'?'':'none';document.querySelectorAll('.psl-tab').forEach((b,i)=>b.classList.toggle('active',i===(tab==='login'?0:1)));}
+async function pslDoLogin(){const raw=document.getElementById('psl-li-user').value.trim();const pass=document.getElementById('psl-li-pass').value;const e=document.getElementById('psl-li-err');e.style.display='none';if(!raw||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}const btn=document.getElementById('psl-li-btn');btn.disabled=true;btn.textContent='Signing in...';try{const db=await pslDbGet();const users=db.users||{};const user=Object.values(users).find(u=>u.username.toLowerCase()===raw.toLowerCase()||u.email.toLowerCase()===raw.toLowerCase());if(!user){e.textContent='Account not found.';e.style.display='block';return;}const hash=await pslHashPass(pass);if(hash!==user.passHash){e.textContent='Incorrect password.';e.style.display='block';return;}pslCurrentUser={username:user.username,email:user.email,avatar:user.avatar||null,isAdmin:user.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();if(typeof onPslLogin==='function')onPslLogin(pslCurrentUser);}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Sign In';}}
+async function pslDoRegister(){const username=document.getElementById('psl-rg-user').value.trim();const email=document.getElementById('psl-rg-email').value.trim().toLowerCase();const pass=document.getElementById('psl-rg-pass').value;const e=document.getElementById('psl-rg-err');e.style.display='none';if(!username||!email||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}if(username.length<2){e.textContent='Username too short.';e.style.display='block';return;}if(pass.length<6){e.textContent='Password must be 6+ characters.';e.style.display='block';return;}const btn=document.getElementById('psl-rg-btn');btn.disabled=true;btn.textContent='Creating...';try{const db=await pslDbGet();const users=db.users||{};if(users[username.toLowerCase()]){e.textContent='Username taken.';e.style.display='block';return;}const passHash=await pslHashPass(pass);users[username.toLowerCase()]={username,email,passHash,avatar:null,joined:new Date().toISOString()};await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser={username,email,avatar:null,isAdmin:username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();if(typeof onPslLogin==='function')onPslLogin(pslCurrentUser);}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Create Account';}}
+function pslLogout(){pslClearSession();pslCurrentUser=null;pslDbInvalidate();renderWidget();if(typeof onPslLogout==='function')onPslLogout();}
+async function pslAuthInit(){injectAuthStyles();const session=pslLoadSession();if(session){try{const db=await pslDbGet();const uData=(db.users||{})[session.username.toLowerCase()];if(uData){pslCurrentUser={username:uData.username,email:uData.email,avatar:uData.avatar||null,isAdmin:uData.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);}else{pslClearSession();}}catch(err){pslCurrentUser=session;}}renderWidget();if(pslCurrentUser&&typeof onPslLogin==='function')onPslLogin(pslCurrentUser);}
+injectAuthStyles();
+document.addEventListener('DOMContentLoaded',pslAuthInit);
 </script>
 </body>
 </html>

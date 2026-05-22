@@ -288,6 +288,13 @@ body::before {
   background: #111a0f;
   padding: 1.75rem 2rem;
 }
+.season-card.playoffs {
+  grid-column: 1 / -1;
+  border-color: var(--gold);
+  background: #111a0f;
+  padding: 1.75rem 2rem;
+  border-color: rgba(245,200,66,0.3);
+}
 .season-card.featured::before {
   background: linear-gradient(135deg, rgba(57,200,119,0.06) 0%, transparent 60%);
 }
@@ -298,6 +305,7 @@ body::before {
   border-color: rgba(0, 255, 200, 0.3);
 }
 .season-card.special:hover { border-color: var(--gold); }
+.season-card.playoffs:hover { border-color: var(--gold); }
 
 
 .card-left { display: flex; flex-direction: column; gap: 4px; }
@@ -311,6 +319,7 @@ body::before {
 }
 .season-card.featured .card-season { font-size: 40px; color: var(--green); }
 .season-card.special .card-season { color: var(--gold); }
+.season-card.playoffs .card-season { color: var(--gold); }
 
 .card-desc {
   font-size: 12px;
@@ -333,6 +342,7 @@ body::before {
 .pill-live    { background: var(--green-dim); color: var(--green); border: 1px solid rgba(57,200,119,0.3); }
 .pill-done    { background: transparent; color: var(--muted); border: 1px solid var(--border); }
 .pill-special { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+.pill-playoffs { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
 
 .arrow {
   font-size: 20px;
@@ -343,6 +353,7 @@ body::before {
 }
 .season-card:hover .arrow { transform: translateX(4px); color: var(--green); }
 .season-card.special:hover .arrow { color: var(--gold); }
+.season-card.playoffs:hover .arrow { color: var(--gold); }
 
 /* ── FOOTER BAR ── */
 .footer-bar {
@@ -511,6 +522,17 @@ body::before {
         </div>
         <div style="display:flex;align-items:center;gap:12px;">
           <span class="card-pill pill-live">Live</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+            <a href="psl5/playoffs.html" class="season-card playoffs">
+        <div class="card-left">
+          <div class="card-season">Play-offs</div>
+          <div class="card-desc">Everything related to the biggest event of the year taking place on June 7th.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="card-pill pill-playoffs">June 7th</span>
           <span class="arrow">→</span>
         </div>
       </a>
