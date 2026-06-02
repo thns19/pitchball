@@ -326,13 +326,13 @@ const matchData = [
 
 ];
 const topScorers = [
+  {name: "Giorgos Filippou",   team: "Y&Y",           goals: 27, logo: "logos/yy.png"},
   {name: "Dimitris Gavalas",   team: "BADiles",       goals: 26, logo: "logos/badiles.png"},
-  {name: "Jordan Aslanis",   team: "Basement Boys", goals: 22, logo: "logos/basement.png"},
+  {name: "Jordan Aslanis",   team: "Basement Boys", goals: 24, logo: "logos/basement.png"},
   {name: "Giannis Akridas",    team: "Y&Y",           goals: 22, logo: "logos/yy.png"},
-  {name: "Giorgos Filippou",   team: "Y&Y",           goals: 22, logo: "logos/yy.png"},
   {name: "Thanos Chatziiordanou", team: "BADiles",    goals: 19, logo: "logos/badiles.png"},
   {name: "Michalis Lerogiannis",  team: "R1",         goals: 16,  logo: "logos/r1.png"},
-  {name: "Iasonas Miliaras",     team: "Spasmena Mila",         goals: 14,  logo: "logos/spasmena.png"},
+  {name: "Iasonas Miliaras",     team: "Spasmena Mila",         goals: 15,  logo: "logos/spasmena.png"},
   {name: "Tzannis Mermigas",     team: "Midi Kidz",         goals: 10,  logo: "logos/midi.png"},
   {name: "Nikolas Moschonas",     team: "R1",         goals: 9,  logo: "logos/r1.png"},
   {name: "Stefanos Mavrogiannis",     team: "Midi Kidz",         goals: 7,  logo: "logos/midi.png"},
