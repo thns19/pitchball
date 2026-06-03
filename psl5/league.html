@@ -114,12 +114,13 @@ const RATINGS = {
   "Phoenix":        {att:7,def:7,stm:7,con:3,ten:8}
 };
 
-const PENALTY_PTS = { "Spasmena Mila": -3, "Phoenix": -28, "Warriors": -3 };
+const PENALTY_PTS = { "Spasmena Mila": -3, "Phoenix": -28, "Warriors": -3, "Basement Boys": -3 };
 const PENALTY_GD  = {};
 const PENALTY_INFO = {
   "Spasmena Mila": "Deducted 3 points due to forfeiting the match against R1",
   "Phoenix": "Deducted 1 point for forfeiting their RO16 Cup match\nDeducted 27 points for forfeiting all their League Phase matches",
-  "Warriors": "Deducted 3 points due to forfeiting the match against Basement Boys"
+  "Warriors": "Deducted 3 points due to forfeiting the match against Basement Boys",
+  "Basement Boys": "Deducted 3 points due to forfeiting the match against Spasmena Mila"
 };
 
 const rawFixtures = [
@@ -150,7 +151,7 @@ const rawFixtures = [
   {md:5, h:"BMB", a:"BAB", hs:6, as:4, confirmed:true},
   {md:6, h:"WAR", a:"MDK", hs:5, as:2, confirmed:true},
   {md:6, h:"R1",  a:"PHX", hs:5, as:0, confirmed:true},
-  {md:6, h:"SPM", a:"VDR", hs:null, as:null, confirmed:false},
+  {md:6, h:"SPM", a:"VDR", hs:4, as:6, confirmed:true},
   {md:6, h:"BAB", a:"YY",  hs:2, as:5, confirmed:true},
   {md:6, h:"BMB", a:"BAD", hs:3, as:5, confirmed:true},
   {md:7, h:"MDK", a:"R1",  hs:2, as:5, confirmed:true},
@@ -160,13 +161,13 @@ const rawFixtures = [
   {md:7, h:"YY",  a:"BAD", hs:4, as:6, confirmed:true},
   {md:8, h:"SPM", a:"MDK", hs:6, as:4, confirmed:true},
   {md:8, h:"BAB", a:"R1",  hs:4, as:6, confirmed:true},
-  {md:8, h:"BMB", a:"WAR", hs:null, as:null, confirmed:false},
+  {md:8, h:"BMB", a:"WAR", hs:5, as:0, confirmed:true},
   {md:8, h:"BAD", a:"PHX", hs:5, as:0, confirmed:true},
-  {md:8, h:"YY",  a:"VDR", hs:null, as:null, confirmed:false},
+  {md:8, h:"YY",  a:"VDR", hs:5, as:0, confirmed:true},
   {md:9, h:"MDK", a:"BAB", hs:2, as:5, confirmed:true},
-  {md:9, h:"SPM", a:"BMB", hs:null, as:null, confirmed:false},
+  {md:9, h:"SPM", a:"BMB", hs:5, as:0, confirmed:true},
   {md:9, h:"R1",  a:"BAD", hs:3, as:5, confirmed:true},
-  {md:9, h:"WAR", a:"YY",  hs:null, as:null, confirmed:false},
+  {md:9, h:"WAR", a:"YY",  hs:0, as:5, confirmed:true},
   {md:9, h:"PHX", a:"VDR", hs:0, as:5, confirmed:true},
 ];
 

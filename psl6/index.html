@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSL6 — Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space-dark: #05010f;
+    --neon-purple: #b366ff;
+    --neon-cyan: #00f0ff;
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--space-dark);
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Deep space tint overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5, 1, 15, 0.85);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Animated Stars */
+  .stars {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .stars::before, .stars::after {
+    content: ''; position: absolute; width: 2px; height: 2px;
+    background: transparent;
+    box-shadow: 
+      10vw 20vh #fff, 40vw 80vh #fff, 80vw 10vh #fff, 20vw 90vh #fff, 
+      60vw 50vh #fff, 90vw 70vh #fff, 30vw 40vh #fff, 70vw 20vh #fff,
+      50vw 10vh #fff, 15vw 60vh #fff, 85vw 90vh #fff, 95vw 30vh #fff;
+    animation: twinkle 4s infinite alternate;
+  }
+  .stars::after {
+    width: 3px; height: 3px;
+    box-shadow: 
+      25vw 15vh var(--neon-cyan), 75vw 85vh var(--neon-purple), 5vw 50vh var(--neon-cyan), 
+      55vw 95vh var(--neon-purple), 45vw 35vh var(--neon-cyan), 85vw 55vh var(--neon-purple);
+    animation: twinkle 3s infinite alternate-reverse;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Locked Viewport Container */
+  .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 800px;
+    height: 100vh;
+    padding: 3vh 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* Header scaling based on viewport height */
+  header {
+    margin-bottom: 2vh;
+  }
+  .eyebrow {
+    font-size: clamp(0.7rem, 1.5vh, 0.85rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.2vh;
+  }
+  .title {
+    font-size: clamp(3rem, 8vh, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .title span {
+    color: var(--neon-cyan);
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  }
+  .subtitle {
+    font-size: clamp(0.9rem, 2vh, 1.05rem);
+    color: var(--text-muted);
+    font-style: italic;
+    font-weight: 300;
+    margin-top: 0.5vh;
+  }
+
+  /* Menu List — fills remaining space dynamically */
+  .menu-list {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    max-height: 12vh;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--text-main);
+    transition: all 0.25s ease;
+  }
+
+  .menu-item:hover {
+    background: rgba(255, 255, 255, 0.01);
+    padding-left: 1rem;
+    border-bottom-color: var(--neon-purple);
+  }
+
+  .num {
+    font-size: clamp(1.5rem, 3.5vh, 2.2rem);
+    font-weight: 300;
+    color: var(--text-muted);
+    min-width: 50px;
+    transition: color 0.25s;
+  }
+  .menu-item:hover .num {
+    color: var(--neon-purple);
+  }
+
+  .icon {
+    font-size: clamp(1.5rem, 3.5vh, 2.2rem);
+    min-width: 50px;
+    text-align: center;
+    filter: grayscale(0.5);
+    transition: filter 0.25s, transform 0.25s;
+  }
+  .menu-item:hover .icon {
+    filter: grayscale(0);
+    transform: scale(1.08);
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .text h2 {
+    font-size: clamp(1.2rem, 2.8vh, 1.8rem);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.25s;
+  }
+  
+  .text h2::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--neon-cyan);
+    opacity: 0;
+    transition: opacity 0.25s, box-shadow 0.25s;
+  }
+  .menu-item:hover .text h2 {
+    color: var(--neon-cyan);
+  }
+  .menu-item:hover .text h2::after {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--neon-cyan);
+  }
+
+  .text p {
+    font-size: clamp(0.85rem, 1.8vh, 0.95rem);
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-top: 2px;
+  }
+
+  /* Bottom Link */
+  .back-link {
+    align-self: flex-start;
+    margin-top: 2vh;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: clamp(0.8rem, 1.8vh, 0.9rem);
+    transition: color 0.25s;
+  }
+  .back-link:hover {
+    color: var(--text-main);
+  }
+
+  @media (max-width: 600px) {
+    .num, .icon { min-width: 35px; }
+    .text p { display: none; } /* Hide descriptions on tiny mobile screens to maintain zero-scroll constraint */
+  }
+</style>
+</head>
+<body>
+
+  <div class="stars"></div>
+
+  <div class="container">
+    <header>
+      <div class="eyebrow">Pitchball Super League</div>
+      <h1 class="title">PSL<span>6</span></h1>
+      <p class="subtitle">The home of Pitchball's current running season.</p>
+    </header>
+
+    <nav class="menu-list">
+      <a href="table.html" class="menu-item">
+        <span class="num">01</span>
+        <span class="icon">📋</span>
+        <div class="text">
+          <h2>League Table</h2>
+          <p>Live standings, fixture management & playoff bracket simulator.</p>
+        </div>
+      </a>
+
+            <a href="cup.html" class="menu-item">
+        <span class="num">02</span>
+        <span class="icon">🏆</span>
+        <div class="text">
+          <h2>PSL Cup</h2>
+          <p>Group stage standings, results & the full PSL Cup bracket.</p>
+        </div>
+      </a>
+
+            <a href="stats.html" class="menu-item">
+        <span class="num">03</span>
+        <span class="icon">📈</span>
+        <div class="text">
+          <h2>Statistics</h2>
+          <p>In-depth player and team statistics for the current season.</p>
+        </div>
+      </a>
+
+      <a href="sim.html" class="menu-item">
+        <span class="num">04</span>
+        <span class="icon">🚀</span>
+        <div class="text">
+          <h2>Simulator</h2>
+          <p>Team stats, in-depth simulation and monte carlo simulation all in one place.</p>
+        </div>
+      </a>
+
+      <a href="predindex.html" class="menu-item">
+        <span class="num">05</span>
+        <span class="icon">🎯</span>
+        <div class="text">
+          <h2>Predictions</h2>
+          <p>Pick scores & MVPs · Compete on the leaderboard.</p>
+        </div>
+      </a>
+    </nav>
+
+    <a href="../index.html" class="back-link">← All Seasons</a>
+  </div>
+
+</body>
+</html>
