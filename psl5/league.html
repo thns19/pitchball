@@ -50,16 +50,6 @@
     </table>
   </div>
 
-  <div class="section-title" style="margin-top:2rem;">League Phase Simulator</div>
-  <p style="font-size:13px;color:#888;margin-bottom:1rem;">Runs 10,000 simulations of all remaining fixtures and shows the probability of each team finishing in each position.</p>
-  <div class="top-bar">
-    <button onclick="runLeagueMC()" style="background:#1a2a3d;color:#a4cde8;border:1px solid #a4cde8;">Run 10,000 simulations</button>
-    <button onclick="document.getElementById('league-mc-section').style.display='none'" style="background:transparent;color:#888;border:1px solid #535c2f;">Clear</button>
-  </div>
-  <div id="league-mc-section" style="display:none;margin-bottom:2rem;">
-    <div id="league-mc-results"></div>
-  </div>
-
   <div class="section-title" style="margin-top:2rem;">Playoff Bracket Simulator</div>
   <p style="font-size:13px;color:#888;margin-bottom:1rem;">Seeds auto-fill from the current table. Adjust manually if needed, then simulate.</p>
 
@@ -82,11 +72,11 @@
   </div>
 
   <div id="bracket-mc" style="display:none;">
-    <div class="section-title" style="font-size:14px;margin-bottom:0.75rem;">Championship Odds (1,000 simulations)</div>
+    <div class="section-title" style="font-size:14px;margin-bottom:0.75rem;">Championship Odds (10,000 simulations)</div>
     <div id="bracket-mc-results"></div>
   </div>
 
-  <div class="section-title" style="margin-top:2rem;">Top Scorers [incl. PSL Cup and Group Stages]</div>
+  <div class="section-title" style="margin-top:2rem;">Top Scorers [incl. PSL Cup, Group Stages, Play-offs]</div>
   <div id="top-scorers" style="margin-bottom:2rem;"></div>
 
   <div class="section-title" style="margin-top:2rem;">Fixtures</div>
