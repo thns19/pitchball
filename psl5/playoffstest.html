@@ -345,12 +345,16 @@ const LOGOS = {
 };
 
 const PSL5_SQUADS = {
-  "BADiles":        ["Thanos Chatziiordanou","Dimitris Gavalas"],
-  "Y&Y":            ["Giannis Akridas","Giorgos Filippou"],
-  "R1":             ["Michalis Lerogiannis","Nikolas Moschonas"],
-  "Basement Boys":  ["Spyros Koskinas","Jordan Aslanis"],
-  "Volos Drummers": ["Vasilis Tziovanis","Giorgos Zacharopoulos"],
+  "BADiles":        ["Thanos Chatziiordanou","Dimitris Gavalas","Stefanos Mavrogiannis","Tzannis Mermigkas"],
+  "Y&Y":            ["Giannis Akridas","Giorgos Filippou","Aris Tsertos"],
+  "R1":             ["Michalis Lerogiannis","Nikolas Moschonas","Giorgos Zacharopoulos","Vasilis Tziovanis"],
+  "Basement Boys":  ["Iordanis Aslanis","Spyros Koskinas","Jordan Aslanis"],
+  "Volos Drummers": ["Vasilis Tziovanis","Giorgos Zacharopoulos","Johan Pilichos"],
+  "Warriors":       ["Panos Chardas","Sokratis Gkiolias","Stavros Stavropoulos"],
+  "Midi Kidz":      ["Tzannis Mermigkas","Stefanos Mavrogiannis"],
+  "Babiniotes":     ["Johan Pilichos","Stavros Stavropoulos"],
   "Spasmena Mila":  ["Aris Tsertos","Iasonas Miliaras","Petros Papaspyropoulos"],
+  "Phoenix":        ["Filippos Efstathiou","Nikos Kalisperis"],
 };
 
 // Each match has a stable Firebase ID (psl5po-N) and static team names.
@@ -462,11 +466,13 @@ function buildBracket() {
 // ══════════════════════════════════════════════════════════════
 
 async function syncFromDB() {
-  const db = await pslDbGet();
-  const saved = db.matches || {};
-  Object.keys(MATCHES).forEach(id => {
-    if (saved[id]) matchState[id] = saved[id];
-  });
+  try {
+    const res = await fetch('https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/matches.json');
+    const saved = await res.json() || {};
+    Object.keys(MATCHES).forEach(id => {
+      if (saved[id]) matchState[id] = saved[id];
+    });
+  } catch(e) { console.warn('Could not load playoff data:', e); }
   buildBracket();
 }
 
@@ -604,9 +610,7 @@ async function saveMatchEdit() {
   const date   = document.getElementById('ae-date').value;
   const mvp    = document.getElementById('ae-mvp').value;
   try {
-    const db = await pslDbGet();
-    if (!db.matches) db.matches = {};
-    db.matches[adminMatchId] = {
+    const payload = {
       hs:     isNaN(hs) ? null : hs,
       as:     isNaN(as) ? null : as,
       winner: winner || null,
@@ -614,15 +618,21 @@ async function saveMatchEdit() {
       mvp:    mvp    || null,
       events: adminEvents,
     };
-    await pslDbSet(db);
+    // PATCH only this match — avoids overwriting entire DB
+    const res = await fetch(`https://ptchbl-default-rtdb.europe-west1.firebasedatabase.app/matches/${adminMatchId}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Firebase error: ' + res.status);
     pslDbInvalidate();
-    matchState[adminMatchId] = db.matches[adminMatchId];
+    matchState[adminMatchId] = payload;
     document.getElementById('ae-ok').style.display  = 'block';
     document.getElementById('ae-err').style.display = 'none';
     buildBracket();
     setTimeout(() => { if (adminEditModal) { adminEditModal.remove(); adminEditModal = null; } }, 900);
   } catch(e) {
-    document.getElementById('ae-err').textContent = 'Error saving to Firebase.';
+    document.getElementById('ae-err').textContent = 'Error saving to Firebase: ' + e.message;
     document.getElementById('ae-err').style.display = 'block';
   } finally {
     btn.disabled = false; btn.textContent = 'Save Match';
