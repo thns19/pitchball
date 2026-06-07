@@ -349,14 +349,14 @@ const LOGOS = {
 // Set winner to the winning team name once confirmed.
 
 const PLAYIN_1 = {
-  label: "Play-in · 3rd vs 4th · June 4th",
+  label: "Play-in · 3rd vs 4th",
   teamA: { name: "R1", score: 7 },  // e.g. name: "BADiles"
   teamB: { name: "Volos Drummers", score: 5 },
   winner: "R1",
 };
 
 const PLAYIN_2 = {
-  label: "Play-in · 5th vs 6th · June 4th",
+  label: "Play-in · 5th vs 6th",
   teamA: { name: "Spasmena Mila", score: 5 },
   teamB: { name: "Basement Boys", score: 7 },
   winner: "Basement Boys",
@@ -365,41 +365,41 @@ const PLAYIN_2 = {
 // ── LAST CHANCE ───────────────────────────────────────────────
 // Auto-filled from play-in losers/winners, but you can override
 const LAST_CHANCE = {
-  label: "Last Chance · June 7th, 10:45 AM",
-  teamA: { name: "Volos Drummers", score: null },  // loser of PLAYIN_1
-  teamB: { name: "Basement Boys", score: null },  // winner of PLAYIN_2
-  winner: null,
+  label: "Last Chance",
+  teamA: { name: "Volos Drummers", score: 6 },  // loser of PLAYIN_1
+  teamB: { name: "Basement Boys", score: 7 },  // winner of PLAYIN_2
+  winner: "Basement Boys",
 };
 
 // ── SEMI-FINALS ───────────────────────────────────────────────
 const SEMI_1 = {
-  label: "Semi-Final 1 · June 7th, 11:30 AM",
-  teamA: { name: "BADiles", score: null },  // 1st seed
-  teamB: { name: null, score: null },  // winner of Last Chance
-  winner: null,
+  label: "Semi-Final 1",
+  teamA: { name: "BADiles", score: 7 },  // 1st seed
+  teamB: { name: "Basement Boys", score: 3 },  // winner of Last Chance
+  winner: "BADiles",
 };
 
 const SEMI_2 = {
   label: "Semi-Final 2 · June 7th, 12:00 PM",
-  teamA: { name: "Y&Y", score: null },  // 2nd seed
-  teamB: { name: "R1", score: null },  // winner of PLAYIN_1
-  winner: null,
+  teamA: { name: "Y&Y", score: 7 },  // 2nd seed
+  teamB: { name: "R1", score: 5 },  // winner of PLAYIN_1
+  winner: "R1",
 };
 
 // ── THIRD PLACE ───────────────────────────────────────────────
 const THIRD_PLACE = {
-  label: "Third Place · June 7th, 12:30 PM",
-  teamA: { name: null, score: null },  // loser of SEMI_1
-  teamB: { name: null, score: null },  // loser of SEMI_2
+  label: "Third Place",
+  teamA: { name: "Basement Boys", score: null },  // loser of SEMI_1
+  teamB: { name: "Y&Y", score: null },  // loser of SEMI_2
   winner: null,
 };
 
 // ── FINAL ─────────────────────────────────────────────────────
 const FINAL = {
-  label: "PSL5 Final · June 7th, 1:00 PM",
-  teamA: { name: null, score: null },  // winner of SEMI_1
-  teamB: { name: null, score: null },  // winner of SEMI_2
-  winner: null,
+  label: "PSL5 Final",
+  teamA: { name: "BADiles", score: 10 },  // winner of SEMI_1
+  teamB: { name: "R1", score: 2 },  // winner of SEMI_2
+  winner: "BADiles",
 };
 
 // ══════════════════════════════════════════════════════════════
