@@ -494,7 +494,7 @@ textarea.form-input.body-input { min-height: 200px; font-size: 13px; line-height
 </div>
 
 <script>
-const PSL_DB_URL = 'https://ptchbl2-default-rtdb.europe-west1.firebasedatabase.app/.json';
+const PSL_DB_URL = 'https://ptchbl3-dde78-default-rtdb.europe-west1.firebasedatabase.app/.json';
 const PSL_ADMIN  = 'pitchball';
 let _pslDbCache=null,_pslDbFetching=null;
 async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)return _pslDbFetching;_pslDbFetching=fetch(PSL_DB_URL).then(r=>r.json()).then(data=>{_pslDbCache=data;_pslDbFetching=null;return _pslDbCache;});return _pslDbFetching;}
