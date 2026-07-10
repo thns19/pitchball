@@ -73,6 +73,7 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .player-status { font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 500; margin-bottom: 6px; }
 .status-active { background: #1a3d2a; color: #39c877; }
 .status-retired { background: #282d15; color: #888; }
+.status-unknown { background: #ADD8E6; color: #003f5c; }
 .player-titles { font-size: 11px; color: #888; }
 .title-icon { color: #f5c842; }
 
@@ -98,6 +99,7 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
 .badge-active { background: #1a3d2a; color: #39c877; }
 .badge-retired { background: #282d15; color: #888; border: 1px solid #535c2f; }
+.badge-unknown { background: #ADD8E6; color: #003f5c; }
 .badge-title { background: #3d3010; color: #f5c842; }
 .player-desc { font-size: 13px; color: #888; line-height: 1.7; }
 

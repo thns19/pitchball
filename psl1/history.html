@@ -47,37 +47,37 @@
 </div>
 
 <script>
-const TEAMS = ["BADiles","R1","AXR","Clippers","Nikolado","Temachio","Mpesala","Taximi"];
+const TEAMS = ["BADiles","R1","AXR","Clippers","Nikolado","Temachio","Oi Thryloi","Taximi"];
 const PENALTY = {"Taximi": -18};
 const PENALTY_INFO = {"Taximi": "Taximi forfeited all their league matches\n(-18 points deducted)"};
 
 const fixtures = [
-  {md:1, h:"BADiles",  a:"Mpesala",   hs:5, as:3},
+  {md:1, h:"BADiles",  a:"Oi Thryloi",   hs:5, as:3},
   {md:1, h:"AXR",      a:"Nikolado",  hs:5, as:2},
   {md:1, h:"Taximi",   a:"Clippers",  hs:4, as:6},
   {md:1, h:"Temachio", a:"R1",        hs:7, as:9},
   {md:2, h:"R1",       a:"BADiles",   hs:0, as:5},
   {md:2, h:"Clippers", a:"AXR",       hs:5, as:0},
-  {md:2, h:"Mpesala",  a:"Taximi",    hs:5, as:0},
+  {md:2, h:"Oi Thryloi",  a:"Taximi",    hs:5, as:0},
   {md:2, h:"Nikolado", a:"Temachio",  hs:2, as:5},
   {md:3, h:"BADiles",  a:"Nikolado",  hs:5, as:3},
-  {md:3, h:"AXR",      a:"Mpesala",   hs:5, as:1},
+  {md:3, h:"AXR",      a:"Oi Thryloi",   hs:5, as:1},
   {md:3, h:"Taximi",   a:"R1",        hs:2, as:5},
   {md:3, h:"Temachio", a:"Clippers",  hs:6, as:4},
   {md:4, h:"BADiles",  a:"Clippers",  hs:6, as:6},
   {md:4, h:"R1",       a:"AXR",       hs:7, as:5},
   {md:4, h:"Nikolado", a:"Taximi",    hs:5, as:0},
-  {md:4, h:"Mpesala",  a:"Temachio",  hs:4, as:6},
+  {md:4, h:"Oi Thryloi",  a:"Temachio",  hs:4, as:6},
   {md:5, h:"BADiles",  a:"Taximi",    hs:5, as:0},
   {md:5, h:"Clippers", a:"Nikolado",  hs:5, as:1},
   {md:5, h:"AXR",      a:"Temachio",  hs:5, as:3},
-  {md:5, h:"R1",       a:"Mpesala",   hs:2, as:5},
+  {md:5, h:"R1",       a:"Oi Thryloi",   hs:2, as:5},
   {md:6, h:"Taximi",   a:"AXR",       hs:0, as:5},
-  {md:6, h:"Clippers", a:"Mpesala",   hs:1, as:5},
+  {md:6, h:"Clippers", a:"Oi Thryloi",   hs:1, as:5},
   {md:6, h:"Temachio", a:"BADiles",   hs:3, as:5},
   {md:6, h:"R1",       a:"Nikolado",  hs:5, as:3},
   {md:7, h:"Taximi",   a:"Temachio",  hs:0, as:5},
-  {md:7, h:"Nikolado", a:"Mpesala",   hs:0, as:5},
+  {md:7, h:"Nikolado", a:"Oi Thryloi",   hs:0, as:5},
   {md:7, h:"BADiles",  a:"AXR",       hs:6, as:4},
   {md:7, h:"R1",       a:"Clippers",  hs:5, as:3},
 ];
@@ -113,7 +113,7 @@ const bracket = [
 const LOGOS = {
   "BADiles":"logos/badiles.png","R1":"logos/r1.png","AXR":"logos/axr.png",
   "Clippers":"logos/clippers.png","Nikolado":"logos/nikolado.png",
-  "Temachio":"logos/temachio.png","Mpesala":"logos/mpesala.png","Taximi":"logos/taximi.png"
+  "Temachio":"logos/temachio.png","Oi Thryloi":"logos/thryloi.png","Taximi":"logos/taximi.png"
 };
 function tlogo(name,size=16){
   return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:'';

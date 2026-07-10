@@ -67,14 +67,14 @@ const teams = {
   "Clippers": {att:7,def:5,stm:5,con:4,ten:6, players:"Kostas & Marios"},
   "Nikolado": {att:4,def:5,stm:5,con:4,ten:3, players:"Nikos & Ladas"},
   "Temachio": {att:7,def:7,stm:7,con:6,ten:5, players:"Teo & Marios G."},
-  "Mpesala":  {att:6,def:8,stm:6,con:7,ten:4, players:"Vasilis & Alex"},
+  "Oi Thryloi":  {att:6,def:8,stm:6,con:7,ten:4, players:"Vasilis & Alex"},
   "Taximi":   {att:5,def:4,stm:5,con:4,ten:5, players:"Mpekos & Tax"}
 };
 
 const LOGOS = {
   "BADiles":"logos/badiles.png","R1":"logos/r1.png","AXR":"logos/axr.png",
   "Clippers":"logos/clippers.png","Nikolado":"logos/nikolado.png",
-  "Temachio":"logos/temachio.png","Mpesala":"logos/mpesala.png","Taximi":"logos/taximi.png"
+  "Temachio":"logos/temachio.png","Oi Thryloi":"logos/thryloi.png","Taximi":"logos/taximi.png"
 };
 function tlogo(name,size=20){
   return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:6px;">`:'';
