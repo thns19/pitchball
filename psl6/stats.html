@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics — PSL6</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space-dark: #05010f;
+    --neon-purple: #b366ff;
+    --neon-cyan: #00f0ff;
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+  }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--space-dark);
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5, 1, 15, 0.85);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stars {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .stars::before, .stars::after {
+    content: ''; position: absolute; width: 2px; height: 2px;
+    background: transparent;
+    box-shadow:
+      10vw 20vh #fff, 40vw 80vh #fff, 80vw 10vh #fff, 20vw 90vh #fff,
+      60vw 50vh #fff, 90vw 70vh #fff, 30vw 40vh #fff, 70vw 20vh #fff,
+      50vw 10vh #fff, 15vw 60vh #fff, 85vw 90vh #fff, 95vw 30vh #fff;
+    animation: twinkle 4s infinite alternate;
+  }
+  .stars::after {
+    width: 3px; height: 3px;
+    box-shadow:
+      25vw 15vh var(--neon-cyan), 75vw 85vh var(--neon-purple), 5vw 50vh var(--neon-cyan),
+      55vw 95vh var(--neon-purple), 45vw 35vh var(--neon-cyan), 85vw 55vh var(--neon-purple);
+    animation: twinkle 3s infinite alternate-reverse;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 720px;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: clamp(0.7rem, 1.5vh, 0.85rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .icon-badge {
+    font-size: clamp(2.5rem, 6vh, 3.5rem);
+    margin-bottom: 1rem;
+    filter: grayscale(0.15);
+  }
+
+  .title {
+    font-size: clamp(2.2rem, 6vh, 3.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+  }
+  .status-pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .desc {
+    font-size: clamp(0.95rem, 2vh, 1.05rem);
+    color: var(--text-muted);
+    font-weight: 300;
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  .back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: clamp(0.8rem, 1.8vh, 0.9rem);
+    border: 1px solid var(--border-color);
+    padding: 10px 22px;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+  }
+  .back-link:hover {
+    color: var(--text-main);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 16px rgba(179, 102, 255, 0.25);
+  }
+</style>
+</head>
+<body>
+
+  <div class="stars"></div>
+
+  <div class="container">
+    <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
+    <div class="icon-badge">📈</div>
+    <h1 class="title">Statistics</h1>
+    <div class="status-pill"><span class="dot"></span>Coming Soon</div>
+    <p class="desc">In-depth player and team statistics for PSL6 will be tracked here as soon as matches begin.</p>
+    <a href="index.html" class="back-link">&larr; Back to PSL6</a>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulator — PSL6</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space-dark: #05010f;
+    --panel: rgba(255, 255, 255, 0.03);
+    --panel-2: rgba(255, 255, 255, 0.05);
+    --neon-purple: #b366ff;
+    --neon-cyan: #00f0ff;
+    --accent-gold: #ffd166;
+    --accent-green: #39ff88;
+    --accent-pink: #ff5fa2;
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --text-dim: rgba(255, 255, 255, 0.3);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-color-2: rgba(255, 255, 255, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--space-dark);
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5, 1, 15, 0.87);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stars {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .stars::before, .stars::after {
+    content: ''; position: absolute; width: 2px; height: 2px;
+    background: transparent;
+    box-shadow:
+      10vw 20vh #fff, 40vw 80vh #fff, 80vw 10vh #fff, 20vw 90vh #fff,
+      60vw 50vh #fff, 90vw 70vh #fff, 30vw 40vh #fff, 70vw 20vh #fff,
+      50vw 10vh #fff, 15vw 60vh #fff, 85vw 90vh #fff, 95vw 30vh #fff;
+    animation: twinkle 4s infinite alternate;
+  }
+  .stars::after {
+    width: 3px; height: 3px;
+    box-shadow:
+      25vw 15vh var(--neon-cyan), 75vw 85vh var(--neon-purple), 5vw 50vh var(--neon-cyan),
+      55vw 95vh var(--neon-purple), 45vw 35vh var(--neon-cyan), 85vw 55vh var(--neon-purple);
+    animation: twinkle 3s infinite alternate-reverse;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.25s;
+  }
+  .back-link:hover { color: var(--neon-cyan); }
+
+  .eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .title {
+    font-size: clamp(2.2rem, 5vh, 3rem);
+    font-weight: 300;
+    letter-spacing: -1px;
+    margin-bottom: 0.4rem;
+  }
+  .title span { color: var(--neon-cyan); font-weight: 700; text-shadow: 0 0 20px rgba(0,240,255,0.4); }
+  .subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  /* Tabs */
+  .page-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 2rem;
+  }
+  .page-tab {
+    flex: 1;
+    padding: 11px 10px;
+    border: none;
+    background: none;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .page-tab.active {
+    background: rgba(179, 102, 255, 0.12);
+    color: var(--text-main);
+    border: 1px solid rgba(179, 102, 255, 0.4);
+    box-shadow: 0 0 16px rgba(179, 102, 255, 0.15);
+  }
+  .page-tab:hover:not(.active) { color: var(--text-main); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .row:last-child { margin-bottom: 0; }
+  .row label { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+  .vs { font-size: 12px; color: var(--text-dim); font-weight: 600; flex-shrink: 0; }
+
+  select, button {
+    font-family: inherit;
+    font-size: 13px;
+  }
+  select {
+    flex: 1;
+    min-width: 120px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border-color-2);
+    color: var(--text-main);
+    border-radius: 8px;
+    padding: 9px 12px;
+  }
+  select:focus { outline: none; border-color: var(--neon-cyan); }
+
+  button {
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--neon-cyan);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  button:hover { background: rgba(0, 240, 255, 0.2); box-shadow: 0 0 16px rgba(0, 240, 255, 0.2); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .hidden { display: none !important; }
+
+  /* Single match scoreboard */
+  .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem; }
+  .score-card {
+    background: var(--panel);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .score-card.winner { border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0,240,255,0.15); }
+  .team-name { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+  .score-num { font-size: 2.8rem; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+  .breakdown { font-size: 11px; color: var(--text-muted); }
+
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 8px; text-align: center; }
+  .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .stat-val { font-size: 1.3rem; font-weight: 600; }
+
+  .result-banner {
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(179, 102, 255, 0.1);
+    border: 1px solid rgba(179, 102, 255, 0.35);
+    color: var(--neon-cyan);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 1.25rem;
+  }
+
+  .match-log {
+    max-height: 260px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .log-entry { color: var(--text-muted); }
+  .log-point { color: var(--accent-green); }
+  .log-error { color: var(--accent-pink); }
+  .log-serve { color: var(--text-dim); }
+
+  /* Monte Carlo */
+  .running { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 13px; }
+  .win-bars { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; margin-bottom: 1.5rem; }
+  .win-side { text-align: center; }
+  .win-pct { font-size: 2rem; font-weight: 700; margin: 6px 0; }
+  .win-pct.high { color: var(--accent-green); }
+  .win-pct.low { color: var(--text-muted); }
+  .divider { width: 1px; height: 60px; background: var(--border-color); }
+  .bar-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+  .bar-fill { height: 100%; background: var(--text-muted); border-radius: 4px; }
+  .bar-fill.green { background: var(--accent-green); }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.5rem; }
+  .stat-row { display: flex; justify-content: space-between; padding: 8px 12px; background: var(--panel); border-radius: 8px; font-size: 12px; }
+  .stat-row .stat-label { color: var(--text-muted); text-transform: none; letter-spacing: 0; margin: 0; }
+  .stat-row .stat-val { font-size: 13px; font-weight: 600; }
+
+  .score-dist-title { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .score-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .score-label { font-size: 12px; width: 50px; flex-shrink: 0; }
+  .score-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .score-bar-fill { height: 100%; background: var(--neon-purple); border-radius: 4px; }
+  .score-pct { font-size: 11px; color: var(--text-muted); width: 40px; text-align: right; flex-shrink: 0; }
+
+  /* Team stats */
+  .legend-bars { display: flex; gap: 16px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .legend-bar-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+  .legend-bar-dot { width: 10px; height: 5px; border-radius: 3px; }
+
+  .sort-row { display: flex; gap: 8px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .sort-row label { font-size: 12px; color: var(--text-muted); }
+  .sort-row select { flex: 0; width: 170px; }
+
+  .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+  .team-card {
+    background: var(--panel);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .team-card:hover { border-color: var(--border-color-2); transform: translateY(-2px); }
+  .team-card-name { font-size: 15px; font-weight: 500; }
+  .team-card-tactic { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .tier-badge { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 600; letter-spacing: 0.3px; }
+  .tier-elite { background: rgba(57, 255, 136, 0.15); color: var(--accent-green); border: 1px solid rgba(57, 255, 136, 0.3); }
+  .tier-worldclass { background: rgba(238, 205, 14, 0.15); color: var(--accent-yellow); border: 1px solid rgba(245, 210, 8, 0.3); }
+  .tier-mid { background: rgba(0, 240, 255, 0.12); color: var(--neon-cyan); border: 1px solid rgba(0, 240, 255, 0.3); }
+  .tier-low { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--border-color); }
+
+  .overall-score { font-size: 1.7rem; font-weight: 700; }
+  .overall-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .rating-bars { display: flex; flex-direction: column; gap: 7px; margin-top: 1rem; }
+  .rating-row { display: flex; align-items: center; gap: 8px; }
+  .rating-label { font-size: 10px; color: var(--text-muted); width: 28px; flex-shrink: 0; }
+  .rating-track { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .rating-fill { height: 100%; border-radius: 3px; }
+  .fill-att { background: var(--neon-cyan); }
+  .fill-def { background: var(--neon-purple); }
+  .fill-stm { background: var(--accent-gold); }
+  .fill-con { background: var(--accent-green); }
+  .fill-ten { background: var(--accent-pink); }
+  .rating-val { font-size: 11px; width: 24px; text-align: right; flex-shrink: 0; color: var(--text-main); }
+
+  .team-card-notes { margin-top: 10px; font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+  .logo-img { width: 36px; height: 36px; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.04); padding: 2px; flex-shrink: 0; }
+  .logo-inline { width: 22px; height: 22px; object-fit: contain; border-radius: 4px; vertical-align: middle; margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to PSL6</a>
+  <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
+  <h1 class="title">Simu<span>lator</span></h1>
+  <p class="subtitle">Team ratings, match simulation &amp; probability analysis</p>
+
+  <div class="page-tabs">
+    <button class="page-tab" onclick="switchTab('single')">&#9889; Single Match</button>
+    <button class="page-tab" onclick="switchTab('monte')">&#128202; Monte Carlo</button>
+    <button class="page-tab active" onclick="switchTab('teams')">&#128737; Team Stats</button>
+  </div>
+
+  <!-- ── SINGLE MATCH ─────────────────────────────────────────── -->
+  <div class="tab-panel" id="tab-single">
+    <div class="card">
+      <div class="row">
+        <select id="sm-team1"></select>
+        <span class="vs">vs</span>
+        <select id="sm-team2"></select>
+      </div>
+      <div class="row">
+        <label>First to</label>
+        <select id="sm-target" style="flex:0;width:80px;">
+          <option value="5">5</option>
+          <option value="7">7</option>
+        </select>
+        <label>— win by 2</label>
+        <button onclick="simulate()">Simulate match</button>
+      </div>
+    </div>
+
+    <div id="scoreboard" class="scoreboard hidden">
+      <div class="score-card" id="card1">
+        <div class="team-name" id="sname1"></div>
+        <div class="score-num" id="sscore1">0</div>
+        <div class="breakdown" id="breakdown1"></div>
+      </div>
+      <div class="score-card" id="card2">
+        <div class="team-name" id="sname2"></div>
+        <div class="score-num" id="sscore2">0</div>
+        <div class="breakdown" id="breakdown2"></div>
+      </div>
+    </div>
+
+    <div id="statsrow" class="stats-row hidden">
+      <div class="stat-card"><div class="stat-label">Rallies</div><div class="stat-val" id="st-rallies">0</div></div>
+      <div class="stat-card"><div class="stat-label">Avg rally (s)</div><div class="stat-val" id="st-avg">0</div></div>
+      <div class="stat-card"><div class="stat-label">T1 errors</div><div class="stat-val" id="st-err1">0</div></div>
+      <div class="stat-card"><div class="stat-label">T2 errors</div><div class="stat-val" id="st-err2">0</div></div>
+      <div class="stat-card"><div class="stat-label">Duration</div><div class="stat-val" id="st-dur">0m</div></div>
+    </div>
+
+    <div id="result-banner" class="result-banner hidden"></div>
+    <div class="match-log hidden" id="log"></div>
+  </div>
+
+  <!-- ── MONTE CARLO ──────────────────────────────────────────── -->
+  <div class="tab-panel" id="tab-monte">
+    <div class="card">
+      <div class="row">
+        <select id="mc-team1"></select>
+        <span class="vs">vs</span>
+        <select id="mc-team2"></select>
+      </div>
+      <div class="row">
+        <label>First to</label>
+        <select id="mc-target" style="flex:0;width:80px;">
+          <option value="5">5</option>
+          <option value="7">7</option>
+        </select>
+        <label>Simulations</label>
+        <select id="sims" style="flex:0;width:110px;">
+          <option value="1000">1,000</option>
+          <option value="5000">5,000</option>
+          <option value="10000" selected>10,000</option>
+          <option value="50000">50,000</option>
+        </select>
+        <button id="runbtn" onclick="runMonteCarlo()">Run simulations</button>
+      </div>
+    </div>
+
+    <div id="running" class="running hidden">Running simulations...</div>
+
+    <div id="results" class="results hidden">
+      <div class="win-bars">
+        <div class="win-side">
+          <div class="team-name" id="rname1"></div>
+          <div class="win-pct" id="rpct1"></div>
+          <div style="font-size:12px;color:var(--text-muted);" id="rwins1"></div>
+          <div class="bar-track"><div class="bar-fill green" id="rbar1" style="width:0%"></div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="win-side">
+          <div class="team-name" id="rname2"></div>
+          <div class="win-pct" id="rpct2"></div>
+          <div style="font-size:12px;color:var(--text-muted);" id="rwins2"></div>
+          <div class="bar-track"><div class="bar-fill" id="rbar2" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-row"><span class="stat-label">Avg score (T1)</span><span class="stat-val" id="avg-score1"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg score (T2)</span><span class="stat-val" id="avg-score2"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg errors (T1)</span><span class="stat-val" id="avg-err1"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg errors (T2)</span><span class="stat-val" id="avg-err2"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg clean pts (T1)</span><span class="stat-val" id="avg-cp1"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg clean pts (T2)</span><span class="stat-val" id="avg-cp2"></span></div>
+        <div class="stat-row"><span class="stat-label">Avg duration</span><span class="stat-val" id="avg-dur"></span></div>
+        <div class="stat-row"><span class="stat-label">Simulations run</span><span class="stat-val" id="sim-count"></span></div>
+      </div>
+      <div class="card">
+        <div class="score-dist-title">Most common scorelines</div>
+        <div id="score-dist-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TEAM STATS ───────────────────────────────────────────── -->
+  <div class="tab-panel active" id="tab-teams">
+    <div class="legend-bars">
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-att"></div> Attack</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-def"></div> Defense</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-stm"></div> Stamina</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-con"></div> Consistency</div>
+      <div class="legend-bar-item"><div class="legend-bar-dot fill-ten"></div> Att. Tendency</div>
+    </div>
+    <div class="sort-row">
+      <label>Sort by</label>
+      <select id="sort-select" onchange="renderTeams()">
+        <option value="overall">Overall rating</option>
+        <option value="att">Attack</option>
+        <option value="def">Defense</option>
+        <option value="stm">Stamina</option>
+        <option value="con">Consistency</option>
+        <option value="ten">Att. Tendency</option>
+        <option value="name">Name</option>
+      </select>
+    </div>
+    <div id="teams-grid" class="teams-grid"></div>
+  </div>
+
+</div>
+
+<script>
+// ── SHARED DATA ──────────────────────────────────────────────────
+// Ratings on a 1–100 scale (att/def/stm/con/ten)
+const teams = {
+  "BADiles":         {att:86, def:93, stm:74, con:95, ten:81, tactic:"Zonal",   notes:"Thanos Chatziiordanou, Dimitris Gavalas"},
+  "R1":              {att:88, def:82, stm:89, con:78, ten:72, tactic:"Zonal",   notes:"Nikolas Moschonas, Michalis Lerogiannis"},
+  "Volos Drummers":  {att:67, def:80, stm:78, con:81, ten:59, tactic:"Zonal",   notes:"Vasilis Tzovanis, Giorgos Zacharopoulos, Giannis Stefanis"},
+  "Oi Thryloi":      {att:79, def:82, stm:78, con:84, ten:70, tactic:"Unknown", notes:"Vasilis Efstathiou, Alexandros Kalofolias"}
+};
+
+const logos = {
+  "BADiles":        "logos/badiles.png",
+  "R1":             "logos/r1.png",
+  "Volos Drummers": "logos/volos.png",
+  "Oi Thryloi":     "logos/thryloi.png"
+};
+
+const names = Object.keys(teams);
+
+function logoImg(name, size=20) {
+  return logos[name] ? `<img src="${logos[name]}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:5px;vertical-align:middle;margin-right:6px;" onerror="this.style.display='none'">` : '';
+}
+
+// ── TAB SWITCHING ────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.page-tab').forEach((b,i) => {
+    b.classList.toggle('active', ['single','monte','teams'][i] === tab);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab === 'teams') renderTeams();
+}
+
+// ── POPULATE SELECTS ─────────────────────────────────────────────
+['sm-team1','sm-team2','mc-team1','mc-team2'].forEach(id => {
+  const sel = document.getElementById(id);
+  names.forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
+});
+document.getElementById('sm-team2').selectedIndex = 1;
+document.getElementById('mc-team2').selectedIndex = 1;
+
+// ── SHARED SIM HELPERS (ratings are 1–100) ────────────────────────
+function rand() { return Math.random(); }
+function rng(min,max) { return min + rand()*(max-min); }
+function pick(arr) { return arr[Math.floor(rand()*arr.length)]; }
+function overallRating(t) { return t.att*0.35 + t.def*0.3 + t.stm*0.15 + t.con*0.2; }
+
+function winProbability(t1, t2, f1, f2, serving) {
+  const r1 = overallRating(t1)*(1-f1*0.25);
+  const r2 = overallRating(t2)*(1-f2*0.25);
+  const e1 = r1*(0.85+rand()*0.3)*(serving===1?1.04:0.96);
+  const e2 = r2*(0.85+rand()*0.3)*(serving===2?1.04:0.96);
+  return Math.max(0.04, Math.min(0.96, 0.5+(e1-e2)*0.007));
+}
+
+function errorRate(t1, t2, f1, f2) {
+  const skill=(overallRating(t1)+overallRating(t2))/2;
+  const avgTen=((t1.ten||50)+(t2.ten||50))/2;
+  const tenBoost = (avgTen-50)*0.0015;
+  return Math.min(0.94, 0.72-(skill/100)*0.3+(f1+f2)/2*0.2+tenBoost);
+}
+
+function rallyDuration(t1, t2, f1, f2) {
+  const avgStm=((t1.stm*(1-f1*0.5))+(t2.stm*(1-f2*0.5)))/2;
+  const skill=(overallRating(t1)+overallRating(t2))/2;
+  const avgTen=((t1.ten||50)+(t2.ten||50))/2;
+  const tenMult = 1.3 - (avgTen/100)*0.6;
+  return Math.round(rng(10,70)*(0.5+avgStm/100)*(0.8+skill/100*0.6)*tenMult);
+}
+
+// ── SINGLE MATCH ─────────────────────────────────────────────────
+const serveWords = ["fires in the serve","launches the serve","pitches it in","sends the serve over","steps up and serves"];
+const bounceWords = ["drops it perfectly into the corner","places a precise double bounce","finds the back corner","lands it perfectly twice","forces the double bounce"];
+const outWords = ["sends it long","fires it wide","overpowers the shot out","hits it out of bounds","can't control the smash — wide"];
+const netWords = ["clips the net","hits the tape","drives it into the net","can't clear the net","smashes it into the tape"];
+
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+
+function simulate() {
+  const n1=document.getElementById('sm-team1').value;
+  const n2=document.getElementById('sm-team2').value;
+  if(n1===n2){ alert("Pick two different teams."); return; }
+  const t1=teams[n1], t2=teams[n2];
+  const target=parseInt(document.getElementById('sm-target').value);
+  let sc1=0,sc2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
+  let totalTime=0,totalRallies=0,err1=0,err2=0,cp1=0,cp2=0;
+  const log=[];
+  log.push({cls:'log-serve',text:`${serving===1?n1:n2} wins the coin toss and serves first.`});
+  while(true){
+    totalTime+=rallyDuration(t1,t2,f1,f2); totalRallies++;
+    log.push({cls:'log-serve',text:`Rally ${totalRallies}: ${serving===1?n1:n2} ${pick(serveWords)}.`});
+    const p1w=winProbability(t1,t2,f1,f2,serving);
+    const winner=rand()<p1w?1:2, loser=winner===1?2:1;
+    f1=Math.min(0.7,f1+0.018); f2=Math.min(0.7,f2+0.018);
+    const reason=rand()<errorRate(t1,t2,f1,f2)?(rand()<0.55?'out':'net'):'double bounce';
+    const wname=winner===1?n1:n2, lname=winner===1?n2:n1, scorer=loser===1?n2:n1;
+    if(reason==='double bounce'){
+      if(winner===1){sc1++;cp1++;}else{sc2++;cp2++;}
+      log.push({cls:'log-point',text:`${wname} ${pick(bounceWords)}! Point. (${sc1}-${sc2})`});
+    } else {
+      if(loser===1){sc2++;err1++;}else{sc1++;err2++;}
+      log.push({cls:'log-error',text:`${lname} ${reason==='out'?pick(outWords):pick(netWords)} — point to ${scorer}. (${sc1}-${sc2})`});
+    }
+    serving=winner;
+    if(Math.max(sc1,sc2)>=target && Math.abs(sc1-sc2)>=2) break;
+    if(totalRallies>300) break;
+  }
+  const winner=sc1>sc2?n1:n2;
+  log.push({cls:'log-point',text:`Match over! ${winner} wins ${sc1}-${sc2}.`});
+  show('scoreboard');show('statsrow');show('result-banner');show('log');
+  document.getElementById('sname1').innerHTML=`${logoImg(n1,24)}${n1}`;
+  document.getElementById('sname2').innerHTML=`${logoImg(n2,24)}${n2}`;
+  document.getElementById('sscore1').textContent=sc1;
+  document.getElementById('sscore2').textContent=sc2;
+  document.getElementById('breakdown1').textContent=`${cp1} clean / ${err2} from errors`;
+  document.getElementById('breakdown2').textContent=`${cp2} clean / ${err1} from errors`;
+  document.getElementById('card1').className='score-card'+(sc1>sc2?' winner':'');
+  document.getElementById('card2').className='score-card'+(sc2>sc1?' winner':'');
+  document.getElementById('st-rallies').textContent=totalRallies;
+  document.getElementById('st-avg').textContent=Math.round(totalTime/totalRallies);
+  document.getElementById('st-err1').textContent=err1;
+  document.getElementById('st-err2').textContent=err2;
+  const mins=Math.floor(totalTime/60),secs=totalTime%60;
+  document.getElementById('st-dur').textContent=`${mins}m ${secs}s`;
+  document.getElementById('result-banner').innerHTML=`${logoImg(winner,20)}${winner} wins ${sc1}-${sc2}`;
+  const logEl=document.getElementById('log');
+  logEl.innerHTML=log.map(e=>`<div class="log-entry ${e.cls}">${e.text}</div>`).join('');
+  logEl.scrollTop=logEl.scrollHeight;
+}
+
+// ── MONTE CARLO ──────────────────────────────────────────────────
+function simMatch(t1, t2, target) {
+  let s1=0,s2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
+  let rallies=0,time=0,err1=0,err2=0,cp1=0,cp2=0;
+  const avgTen=((t1.ten||50)+(t2.ten||50))/2;
+  const tenMult=1.3-(avgTen/100)*0.6;
+  while(true){
+    const avgStm=((t1.stm*(1-f1*0.5))+(t2.stm*(1-f2*0.5)))/2;
+    const skill=(overallRating(t1)+overallRating(t2))/2;
+    time+=Math.round((10+rand()*60)*(0.5+avgStm/100)*(0.8+skill/100*0.6)*tenMult);
+    rallies++;
+    const winner=rand()<winProbability(t1,t2,f1,f2,serving)?1:2;
+    const loser=winner===1?2:1;
+    f1=Math.min(0.7,f1+0.018); f2=Math.min(0.7,f2+0.018);
+    const isError=rand()<errorRate(t1,t2,f1,f2);
+    if(!isError){
+      if(winner===1){s1++;cp1++;}else{s2++;cp2++;}
+    } else {
+      if(loser===1){s2++;err1++;}else{s1++;err2++;}
+    }
+    serving=winner;
+    if(Math.max(s1,s2)>=target && Math.abs(s1-s2)>=2) break;
+    if(rallies>300) break;
+  }
+  return {w:s1>s2?1:2,s1,s2,err1,err2,cp1,cp2,time};
+}
+
+function runMonteCarlo() {
+  const n1=document.getElementById('mc-team1').value;
+  const n2=document.getElementById('mc-team2').value;
+  if(n1===n2){ alert("Pick two different teams."); return; }
+  const t1=teams[n1], t2=teams[n2];
+  const target=parseInt(document.getElementById('mc-target').value);
+  const numSims=parseInt(document.getElementById('sims').value);
+  document.getElementById('runbtn').disabled=true;
+  document.getElementById('running').classList.remove('hidden');
+  document.getElementById('results').classList.add('hidden');
+  setTimeout(()=>{
+    let wins1=0,wins2=0,totErr1=0,totErr2=0,totCp1=0,totCp2=0,totTime=0,totS1=0,totS2=0;
+    const scorelines={};
+    for(let i=0;i<numSims;i++){
+      const r=simMatch(t1,t2,target);
+      if(r.w===1) wins1++; else wins2++;
+      totErr1+=r.err1; totErr2+=r.err2;
+      totCp1+=r.cp1; totCp2+=r.cp2;
+      totTime+=r.time; totS1+=r.s1; totS2+=r.s2;
+      const key=`${r.s1}-${r.s2}`;
+      scorelines[key]=(scorelines[key]||0)+1;
+    }
+    const pct1=((wins1/numSims)*100).toFixed(1);
+    const pct2=((wins2/numSims)*100).toFixed(1);
+    document.getElementById('rname1').innerHTML=`${logoImg(n1,24)}${n1}`;
+    document.getElementById('rname2').innerHTML=`${logoImg(n2,24)}${n2}`;
+    document.getElementById('rpct1').textContent=pct1+'%';
+    document.getElementById('rpct2').textContent=pct2+'%';
+    document.getElementById('rpct1').className='win-pct'+(wins1>wins2?' high':' low');
+    document.getElementById('rpct2').className='win-pct'+(wins2>wins1?' high':' low');
+    document.getElementById('rwins1').textContent=`${wins1.toLocaleString()} wins`;
+    document.getElementById('rwins2').textContent=`${wins2.toLocaleString()} wins`;
+    document.getElementById('rbar1').style.width=pct1+'%';
+    document.getElementById('rbar2').style.width=pct2+'%';
+    document.getElementById('avg-score1').textContent=(totS1/numSims).toFixed(1);
+    document.getElementById('avg-score2').textContent=(totS2/numSims).toFixed(1);
+    document.getElementById('avg-err1').textContent=(totErr1/numSims).toFixed(1);
+    document.getElementById('avg-err2').textContent=(totErr2/numSims).toFixed(1);
+    document.getElementById('avg-cp1').textContent=(totCp1/numSims).toFixed(1);
+    document.getElementById('avg-cp2').textContent=(totCp2/numSims).toFixed(1);
+    const avgSecs=Math.round(totTime/numSims);
+    document.getElementById('avg-dur').textContent=`${Math.floor(avgSecs/60)}m ${avgSecs%60}s`;
+    document.getElementById('sim-count').textContent=numSims.toLocaleString();
+    const sorted=Object.entries(scorelines).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const maxCount=sorted[0][1];
+    document.getElementById('score-dist-list').innerHTML=sorted.map(([score,count])=>{
+      const pct=((count/numSims)*100).toFixed(1);
+      const barW=Math.round((count/maxCount)*100);
+      return `<div class="score-item"><span class="score-label">${score}</span><div class="score-bar-track"><div class="score-bar-fill" style="width:${barW}%"></div></div><span class="score-pct">${pct}%</span></div>`;
+    }).join('');
+    document.getElementById('running').classList.add('hidden');
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('runbtn').disabled=false;
+  },50);
+}
+
+// ── TEAM STATS (ratings 1–100) ────────────────────────────────────
+function overall(t) { return +(t.att*0.35 + t.def*0.3 + t.stm*0.15 + t.con*0.2).toFixed(1); }
+function tier(o) {
+  if(o >= 80) return {label:'World Class', cls:'tier-worldclass'};
+  if(o >= 70) return {label:'Decent', cls:'tier-elite'};
+  if(o >= 55) return {label:'Mid', cls:'tier-mid'};
+  return {label:'Lower', cls:'tier-low'};
+}
+
+function renderTeams() {
+  const sortBy = document.getElementById('sort-select').value;
+  let entries = Object.entries(teams).map(([name, t]) => ({name, ...t, overall: overall(t)}));
+  entries.sort((a,b) => {
+    if(sortBy === 'name') return a.name.localeCompare(b.name);
+    if(sortBy === 'overall') return b.overall - a.overall;
+    return b[sortBy] - a[sortBy];
+  });
+  document.getElementById('teams-grid').innerHTML = entries.map(t => {
+    const tr = tier(t.overall);
+    return `<div class="team-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img class="logo-img" src="${logos[t.name]||''}" onerror="this.style.display='none'">
+          <div>
+            <div class="team-card-name">${t.name}</div>
+            <div class="team-card-tactic">${t.tactic}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div class="overall-score">${t.overall}</div>
+          <div class="overall-label">overall</div>
+          <span class="tier-badge ${tr.cls}" style="margin-top:4px;display:inline-block;">${tr.label}</span>
+        </div>
+      </div>
+      <div class="rating-bars">
+        <div class="rating-row"><span class="rating-label">ATT</span><div class="rating-track"><div class="rating-fill fill-att" style="width:${Math.min(100,t.att)}%"></div></div><span class="rating-val">${t.att}</span></div>
+        <div class="rating-row"><span class="rating-label">DEF</span><div class="rating-track"><div class="rating-fill fill-def" style="width:${Math.min(100,t.def)}%"></div></div><span class="rating-val">${t.def}</span></div>
+        <div class="rating-row"><span class="rating-label">STM</span><div class="rating-track"><div class="rating-fill fill-stm" style="width:${Math.min(100,t.stm)}%"></div></div><span class="rating-val">${t.stm}</span></div>
+        <div class="rating-row"><span class="rating-label">CON</span><div class="rating-track"><div class="rating-fill fill-con" style="width:${Math.min(100,t.con)}%"></div></div><span class="rating-val">${t.con}</span></div>
+        <div class="rating-row"><span class="rating-label">TEN</span><div class="rating-track"><div class="rating-fill fill-ten" style="width:${Math.min(100,t.ten)}%"></div></div><span class="rating-val">${t.ten}</span></div>
+      </div>
+      <div class="team-card-notes">${t.notes}</div>
+    </div>`;
+  }).join('');
+}
+
+// Team Stats is the default active tab
+renderTeams();
+</script>
+</body>
+</html>
