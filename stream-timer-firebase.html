@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stream Timer</title>
+<style>
+  :root{
+    --bg: #0b0d10;
+    --panel: #14171c;
+    --panel-edge: #23272e;
+    --amber: #ffb703;
+    --amber-dim: #7a5c10;
+    --red: #ff3b30;
+    --green: #2ecc71;
+    --text: #e8e6e1;
+    --text-dim: #6b7076;
+    --mono: "DM Mono", "SF Mono", "Consolas", monospace;
+    --display-font: "Barlow Condensed", "Arial Narrow", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display-font);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  body.transparent, body.transparent .stage { background: transparent !important; }
+
+  /* ---------- VIEW (always visible) ---------- */
+  .stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  .clock {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: clamp(40px, 13vw, 160px);
+    letter-spacing: 3px;
+    color: var(--amber);
+    text-shadow: 0 0 40px rgba(255,183,3,0.3);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    white-space: nowrap;
+    transition: color .2s;
+  }
+
+  .clock.over {
+    color: var(--red);
+    letter-spacing: 6px;
+    font-size: clamp(32px, 10vw, 110px);
+    text-shadow: 0 0 40px rgba(255,59,48,0.35);
+  }
+
+  .clock.loading { color: var(--text-dim); font-size: clamp(20px, 4vw, 32px); letter-spacing: 2px; }
+
+  /* ---------- ADMIN OVERLAY ---------- */
+  .admin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6,7,9,0.94);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    z-index: 10;
+    padding: 40px 16px;
+  }
+
+  .admin-overlay.open { display: flex; }
+
+  .panel {
+    width: min(520px, 100%);
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+    position: relative;
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:3px;
+    border-radius: 14px 14px 0 0;
+    background: linear-gradient(90deg, transparent, var(--amber-dim) 20%, var(--amber) 50%, var(--amber-dim) 80%, transparent);
+    opacity:0.6;
+  }
+
+  .panel-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 14px;
+  }
+
+  .panel-header .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .lock-btn {
+    background: none;
+    border: 1px solid var(--panel-edge);
+    color: var(--text-dim);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+  .lock-btn:hover { color: var(--text); border-color: #3a4048; }
+
+  .mini-clock {
+    font-family: var(--mono);
+    font-size: clamp(30px, 8vw, 44px);
+    text-align: center;
+    color: var(--amber);
+    letter-spacing: 1px;
+    padding: 6px 0 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mini-clock.over { color: var(--red); }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    margin: 0 0 8px;
+  }
+
+  .row {
+    display:flex;
+    justify-content:center;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .row input {
+    width: 54px;
+    background: #0b0d10;
+    border: 1px solid var(--panel-edge);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    text-align: center;
+    padding: 7px 0;
+  }
+  .row input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
+
+  .row span.colon {
+    align-self:center;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+
+  .divider { height: 1px; background: var(--panel-edge); margin: 4px 0 16px; }
+
+  .custom-box {
+    background: #0e1013;
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    padding: 14px 14px 16px;
+    margin-bottom: 18px;
+  }
+  .custom-box .row { margin-bottom: 10px; }
+
+  .actions { display:flex; justify-content:center; gap: 8px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: var(--display-font);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    border: 1px solid var(--panel-edge);
+    background: #1b1f26;
+    color: var(--text);
+    cursor: pointer;
+    transition: transform .06s ease, background .15s, border-color .15s;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn:hover { border-color: #3a4048; }
+  .btn.small { padding: 8px 12px; font-size: 13px; }
+  .btn.add { color: var(--green); }
+  .btn.sub { color: var(--red); }
+
+  .main-controls { display:flex; gap: 10px; justify-content:center; margin-top: 4px; }
+
+  .btn.primary {
+    flex: 1; max-width: 220px; padding: 14px 0; font-size: 16px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    background: var(--amber); color: #1a1300; border: none;
+  }
+  .btn.primary.stop { background: var(--red); color: #260000; }
+
+  .btn.reset {
+    padding: 14px 20px; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-dim);
+  }
+  .btn.reset:hover { color: var(--text); }
+
+  .status-note {
+    text-align:center; margin-top: 14px; font-family: var(--mono);
+    font-size: 10.5px; letter-spacing: 1px; color: #3d4148;
+  }
+
+  .share-note {
+    text-align:center; margin-top: 10px; font-family: var(--mono);
+    font-size: 9.5px; letter-spacing: 0.5px; color: #4a4f57; line-height: 1.5;
+  }
+
+  .config-warning {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    color: var(--text-dim);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    z-index: 20;
+  }
+  .config-warning code {
+    background: #1b1f26;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--amber);
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="clock loading" id="clock">···</div>
+</div>
+
+<div class="config-warning" id="configWarning">
+  ⚠ Firebase isn't configured yet.<br><br>
+  Open this file and fill in <code>firebaseConfig</code><br>
+  near the bottom of the script with your own project's values.
+</div>
+
+<div class="admin-overlay" id="adminOverlay">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="tag">ADMIN</div>
+      <button class="lock-btn" id="lockBtn">LOCK ✕</button>
+    </div>
+
+    <div class="mini-clock" id="miniClock">···</div>
+
+    <p class="section-label">Set time</p>
+    <div class="row">
+      <input type="number" id="setD" min="0" placeholder="DD">
+      <span class="colon">:</span>
+      <input type="number" id="setH" min="0" max="23" placeholder="HH">
+      <span class="colon">:</span>
+      <input type="number" id="setM" min="0" max="59" placeholder="MM">
+      <span class="colon">:</span>
+      <input type="number" id="setS" min="0" max="59" placeholder="SS">
+      <button class="btn small" id="setBtn">SET</button>
+    </div>
+
+    <div class="row">
+      <button class="btn small add" data-add="60">+1m</button>
+      <button class="btn small add" data-add="300">+5m</button>
+      <button class="btn small add" data-add="600">+10m</button>
+      <button class="btn small sub" data-add="-60">-1m</button>
+      <button class="btn small sub" data-add="-300">-5m</button>
+      <button class="btn small sub" data-add="-600">-10m</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="section-label">Custom amount</p>
+    <div class="custom-box">
+      <div class="row">
+        <input type="number" id="custD" min="0" placeholder="DD">
+        <span class="colon">:</span>
+        <input type="number" id="custH" min="0" max="23" placeholder="HH">
+        <span class="colon">:</span>
+        <input type="number" id="custM" min="0" max="59" placeholder="MM">
+        <span class="colon">:</span>
+        <input type="number" id="custS" min="0" max="59" placeholder="SS">
+      </div>
+      <div class="actions">
+        <button class="btn small add" id="customAddBtn">+ Add</button>
+        <button class="btn small sub" id="customSubBtn">− Remove</button>
+      </div>
+    </div>
+
+    <div class="main-controls">
+      <button class="btn primary" id="startStopBtn">Start</button>
+      <button class="btn reset" id="resetBtn">Reset</button>
+    </div>
+
+    <div class="status-note" id="statusNote">CONNECTING…</div>
+    <div class="share-note">This timer is shared — anyone with this link sees it live.<br>Only people who know the passcode can control it.</div>
+  </div>
+</div>
+
+<!-- Firebase (compat SDK, no build step needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+
+<script>
+  // =========================================================
+  // 1) CHANGE THIS to your own admin passcode
+  const ADMIN_CODE = "thanosadmintimer";
+
+  // 2) PASTE YOUR FIREBASE CONFIG HERE
+  //    Firebase console -> Project settings -> General -> Your apps -> SDK setup and config
+  const firebaseConfig = {
+    apiKey: "AIzaSyArMFs4rxq0RIFqRX4elcTGqh5OGeiZqz4",
+    authDomain: "thanosstreamtimer.firebaseapp.com",
+    databaseURL: "https://thanosstreamtimer-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "thanosstreamtimer",
+    storageBucket: "thanosstreamtimer.firebasestorage.app",
+    messagingSenderId: "59478838970",
+    appId: "1:59478838970:web:ec80daa409352982e53c83",
+    measurementId: "G-KZ9T5EYYDQ"
+  };
+  // =========================================================
+
+  const configWarning = document.getElementById('configWarning');
+  if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+    configWarning.style.display = 'flex';
+  }
+
+  firebase.initializeApp(firebaseConfig);
+  const stateRef = firebase.database().ref('streamTimerState');
+
+  const clockEl = document.getElementById('clock');
+  const miniClockEl = document.getElementById('miniClock');
+  const adminOverlay = document.getElementById('adminOverlay');
+  const lockBtn = document.getElementById('lockBtn');
+  const startStopBtn = document.getElementById('startStopBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const setBtn = document.getElementById('setBtn');
+  const statusNote = document.getElementById('statusNote');
+
+  const setD = document.getElementById('setD');
+  const setH = document.getElementById('setH');
+  const setM = document.getElementById('setM');
+  const setS = document.getElementById('setS');
+  const custD = document.getElementById('custD');
+  const custH = document.getElementById('custH');
+  const custM = document.getElementById('custM');
+  const custS = document.getElementById('custS');
+  const customAddBtn = document.getElementById('customAddBtn');
+  const customSubBtn = document.getElementById('customSubBtn');
+
+  // Optional: ?transparent=1 strips the background for OBS compositing
+  if (new URLSearchParams(location.search).get('transparent') === '1') {
+    document.body.classList.add('transparent');
+  }
+
+  let state = null; // { remaining, anchor, running }
+  let loaded = false;
+
+  function defaultState() {
+    return { remaining: 0, anchor: Date.now(), running: false };
+  }
+
+  function getSeconds(s) {
+    if (!s) return 0;
+    let secs = s.remaining;
+    if (s.running) secs -= (Date.now() - s.anchor) / 1000;
+    return secs;
+  }
+
+  function formatTime(secs) {
+    const abs = Math.max(0, Math.floor(secs));
+    const d = Math.floor(abs / 86400);
+    const h = Math.floor((abs % 86400) / 3600);
+    const m = Math.floor((abs % 3600) / 60);
+    const s = Math.floor(abs % 60);
+    const pad = n => String(n).padStart(2, '0');
+    const clock = `${pad(h)}:${pad(m)}:${pad(s)}`;
+    return d > 0 ? `${d}d ${clock}` : clock;
+  }
+
+  function renderClock() {
+    if (!loaded) {
+      clockEl.textContent = '···';
+      clockEl.className = 'clock loading';
+      miniClockEl.textContent = '···';
+      return;
+    }
+    const secs = getSeconds(state);
+    const isOver = state.running && secs <= 0;
+
+    if (isOver) {
+      clockEl.textContent = 'STREAM OVER';
+      clockEl.className = 'clock over';
+      miniClockEl.textContent = 'STREAM OVER';
+      miniClockEl.className = 'mini-clock over';
+    } else {
+      const text = formatTime(secs);
+      clockEl.textContent = text;
+      clockEl.className = 'clock';
+      miniClockEl.textContent = text;
+      miniClockEl.className = 'mini-clock';
+    }
+
+    startStopBtn.textContent = state.running ? 'Stop' : 'Start';
+    startStopBtn.classList.toggle('stop', state.running);
+    statusNote.textContent = state.running
+      ? (isOver ? 'RUNNING · OUT OF TIME' : 'RUNNING')
+      : 'STOPPED';
+  }
+
+  // Real-time listener: fires instantly whenever the DB value changes,
+  // for every open tab (view or admin), no polling needed.
+  stateRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    state = val || defaultState();
+    if (!val) stateRef.set(state); // seed the DB the first time
+    loaded = true;
+    renderClock();
+  }, (err) => {
+    console.error('Firebase read error:', err);
+    statusNote.textContent = 'CONNECTION ERROR';
+  });
+
+  function applyAndSave(mutator) {
+    const s = state ? { ...state } : defaultState();
+    mutator(s);
+    state = s;
+    renderClock();
+    stateRef.set(s).catch(err => console.error('Firebase write error:', err));
+  }
+
+  function readBoxSeconds(dEl, hEl, mEl, sEl) {
+    const d = parseInt(dEl.value, 10) || 0;
+    const h = parseInt(hEl.value, 10) || 0;
+    const m = parseInt(mEl.value, 10) || 0;
+    const s = parseInt(sEl.value, 10) || 0;
+    return d * 86400 + h * 3600 + m * 60 + s;
+  }
+
+  function clearBox(dEl, hEl, mEl, sEl) {
+    dEl.value = ''; hEl.value = ''; mEl.value = ''; sEl.value = '';
+  }
+
+  // ---- Admin actions ----
+  startStopBtn.addEventListener('click', () => {
+    applyAndSave(s => {
+      if (s.running) {
+        s.remaining = Math.max(0, getSeconds(s));
+        s.running = false;
+      } else {
+        s.anchor = Date.now();
+        s.running = true;
+      }
+    });
+  });
+
+  resetBtn.addEventListener('click', () => {
+    applyAndSave(s => {
+      s.remaining = 0;
+      s.anchor = Date.now();
+      s.running = false;
+    });
+  });
+
+  setBtn.addEventListener('click', () => {
+    const total = readBoxSeconds(setD, setH, setM, setS);
+    applyAndSave(s => {
+      s.remaining = total;
+      s.anchor = Date.now();
+    });
+    clearBox(setD, setH, setM, setS);
+  });
+
+  document.querySelectorAll('.row .btn[data-add]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const delta = parseInt(btn.dataset.add, 10);
+      applyAndSave(s => {
+        s.remaining = Math.max(0, getSeconds(s) + delta);
+        s.anchor = Date.now();
+      });
+    });
+  });
+
+  customAddBtn.addEventListener('click', () => {
+    const amount = readBoxSeconds(custD, custH, custM, custS);
+    if (amount === 0) return;
+    applyAndSave(s => {
+      s.remaining = getSeconds(s) + amount;
+      s.anchor = Date.now();
+    });
+    clearBox(custD, custH, custM, custS);
+  });
+
+  customSubBtn.addEventListener('click', () => {
+    const amount = readBoxSeconds(custD, custH, custM, custS);
+    if (amount === 0) return;
+    applyAndSave(s => {
+      s.remaining = Math.max(0, getSeconds(s) - amount);
+      s.anchor = Date.now();
+    });
+    clearBox(custD, custH, custM, custS);
+  });
+
+  [setD, setH, setM, setS].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') setBtn.click(); }));
+  [custD, custH, custM, custS].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') customAddBtn.click(); }));
+
+  // ---- Passcode unlock ----
+  let buffer = '';
+  function openAdmin() {
+    adminOverlay.classList.add('open');
+  }
+  function closeAdmin() {
+    adminOverlay.classList.remove('open');
+    buffer = '';
+  }
+
+  lockBtn.addEventListener('click', closeAdmin);
+
+  document.addEventListener('keydown', (e) => {
+    if (adminOverlay.classList.contains('open')) {
+      if (e.key === 'Escape') closeAdmin();
+      return; // don't capture typing while admin is open / typing in fields
+    }
+    if (e.key.length === 1) {
+      buffer = (buffer + e.key).slice(-ADMIN_CODE.length);
+      if (buffer.toLowerCase() === ADMIN_CODE.toLowerCase()) {
+        buffer = '';
+        openAdmin();
+      }
+    }
+  });
+
+  renderClock();
+</script>
+
+</body>
+</html>
