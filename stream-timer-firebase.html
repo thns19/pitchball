@@ -333,7 +333,7 @@
 <script>
   // =========================================================
   // 1) CHANGE THIS to your own admin passcode
-  const ADMIN_CODE = "thanosadmintimer";
+  const ADMIN_CODE = "admin2024";
 
   // 2) PASTE YOUR FIREBASE CONFIG HERE
   //    Firebase console -> Project settings -> General -> Your apps -> SDK setup and config
@@ -560,6 +560,7 @@
   });
 
   renderClock();
+  setInterval(renderClock, 250); // redraw locally every 250ms so it ticks smoothly between Firebase updates
 </script>
 
 </body>
