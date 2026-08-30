@@ -487,7 +487,7 @@
   // =========================================================
 
   const configWarning = document.getElementById('configWarning');
-  if (firebaseConfig.apiKey === "AIzaSyArMFs4rxq0RIFqRX4elcTGqh5OGeiZqz4") configWarning.style.display = 'flex';
+  if (firebaseConfig.apiKey === "YOUR_API_KEY") configWarning.style.display = 'flex';
 
   firebase.initializeApp(firebaseConfig);
   const stateRef = firebase.database().ref('footballMatchState');
