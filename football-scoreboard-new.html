@@ -649,8 +649,8 @@
     miniStatus.textContent = statusLabel(clock.status);
     toggleClockBtn.textContent = clock.running ? 'Pause' : (clock.status === 'pre' ? 'Kick Off' : 'Resume');
     toggleClockBtn.classList.toggle('stop', clock.running);
-    stoppage1.value = clock.stoppage1 || 0;
-    stoppage2.value = clock.stoppage2 || 0;
+    if (document.activeElement !== stoppage1) stoppage1.value = clock.stoppage1 || 0;
+    if (document.activeElement !== stoppage2) stoppage2.value = clock.stoppage2 || 0;
 
     if (document.activeElement !== homeNameInput) homeNameInput.value = teams.home.name || '';
     if (document.activeElement !== homeLogoInput) homeLogoInput.value = teams.home.logo || '';
