@@ -37,6 +37,7 @@
     position: fixed;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: var(--bg);
@@ -227,6 +228,25 @@
     font-size: 10.5px; letter-spacing: 1px; color: #3d4148;
   }
 
+  .end-time {
+    text-align: center;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: clamp(12px, 2.4vw, 16px);
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+
+  .mini-end-time {
+    text-align: center;
+    margin-top: -8px;
+    margin-bottom: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+  }
+
   .share-note {
     text-align:center; margin-top: 10px; font-family: var(--mono);
     font-size: 9.5px; letter-spacing: 0.5px; color: #4a4f57; line-height: 1.5;
@@ -259,6 +279,7 @@
 
 <div class="stage">
   <div class="clock loading" id="clock">···</div>
+  <div class="end-time" id="endTime"></div>
 </div>
 
 <div class="config-warning" id="configWarning">
@@ -275,6 +296,7 @@
     </div>
 
     <div class="mini-clock" id="miniClock">···</div>
+    <div class="mini-end-time" id="miniEndTime"></div>
 
     <p class="section-label">Set time</p>
     <div class="row">
@@ -359,6 +381,8 @@
 
   const clockEl = document.getElementById('clock');
   const miniClockEl = document.getElementById('miniClock');
+  const endTimeEl = document.getElementById('endTime');
+  const miniEndTimeEl = document.getElementById('miniEndTime');
   const adminOverlay = document.getElementById('adminOverlay');
   const lockBtn = document.getElementById('lockBtn');
   const startStopBtn = document.getElementById('startStopBtn');
@@ -407,11 +431,27 @@
     return d > 0 ? `${d}d ${clock}` : clock;
   }
 
+  function getOrdinal(n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function formatClockTime(date) {
+    const weekday = date.toLocaleDateString([], { weekday: 'long' });
+    const month = date.toLocaleDateString([], { month: 'long' });
+    const day = getOrdinal(date.getDate());
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${weekday}, ${month} ${day} at ${time}`;
+  }
+
   function renderClock() {
     if (!loaded) {
       clockEl.textContent = '···';
       clockEl.className = 'clock loading';
       miniClockEl.textContent = '···';
+      endTimeEl.textContent = '';
+      miniEndTimeEl.textContent = '';
       return;
     }
     const secs = getSeconds(state);
@@ -428,6 +468,17 @@
       clockEl.className = 'clock';
       miniClockEl.textContent = text;
       miniClockEl.className = 'mini-clock';
+    }
+
+    if (!isOver && secs > 0) {
+      const eta = new Date(Date.now() + secs * 1000);
+      const label = state.running ? 'Ends at' : 'Would end at';
+      const etaText = `${label} ${formatClockTime(eta)}`;
+      endTimeEl.textContent = etaText;
+      miniEndTimeEl.textContent = etaText;
+    } else {
+      endTimeEl.textContent = '';
+      miniEndTimeEl.textContent = '';
     }
 
     startStopBtn.textContent = state.running ? 'Stop' : 'Start';
