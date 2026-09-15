@@ -1,0 +1,1004 @@
+﻿const players = [
+  {
+    id: "dimitris-gavalas",
+    name: "Dimitris Gavalas",
+    status: "active",
+    titles: ["PSL3 Champion", "PSL1 League MVP", "PSL5 Champion", "PSL5 Top Scorer", "PSL5 MVP"],
+    seasons: [
+      {season:"PSL1", team:"BADiles", logo:"badiles.png", detail:"Finalist. League MVP"},
+      {season:"PSL2", team:"R1", logo:"r1.png", detail:"Quarter-Finalist"},
+      {season:"PSL3", team:"BADiles", logo:"badiles.png", detail:"PSL Champion. Cup Quarter-Finalist"},
+      {season:"PSL4", team:"BADiles", logo:"badiles.png", detail:"PSL 3rd Place. Cup Quarter-Finalist"},
+      {season:"PSL5", team:"BADiles", logo:"badiles.png", detail:"Cup Finalist"},
+      {season:"PSL6", team:"BADiles", logo:"badiles.png", detail:""},
+    ],
+    upcoming: null,
+    description: "With the majority of his career at the green and black, Dimitris Gavalas is a household name for any Pitchball enthusiast. His consistency and composure helped him conquer the PSL3 League Title, paired with Vasilis Efstathiou. He has claimed the title of the player with the most wins in PSL History. After winning the title in PSL5, he will retire at the end of PSL6, and this final season is all or nothing for Gavalas."
+  },
+  {
+    id: "thanos-chatziiordanou",
+    name: "Thanos Chatziiordanou",
+    status: "active",
+    titles: ["PSL2 Champion", "PSL5 Champion"],
+    seasons: [
+      {season:"PSL1", team:"BADiles", logo:"badiles.png", detail:"Finalist"},
+      {season:"PSL2", team:"Brazil", logo:"brazil.png", detail:"Champion"},
+      {season:"PSL3", team:"Brazil", logo:"brazil.png", detail:"Cup Semi-Finalist"},
+      {season:"PSL4", team:"BADiles", logo:"badiles.png", detail:"PSL 3rd Place. Cup Quarter-Finalist"},
+      {season:"PSL5", team:"BADiles", logo:"badiles.png", detail:"Cup Finalist"},
+      {season:"PSL6", team:"BADiles", logo:"badiles.png", detail:""},
+    ],
+    upcoming: null,
+    description: "From playmaker excellence to zonal master, Thanos has evolved his game throughout his 2.5 year long career. His championship-winning PSL2 with Kapetanios is one to remember. He also won PSL5. With his career coming to a close in PSL6, it would be a perfect scenario for him to win one this season with his best friend, Dimitris Gavalas."
+  },
+  {
+    id: "kostas-kapetanios",
+    name: "Kostas Kapetanios",
+    status: "retired",
+    titles: ["PSL2 Champion", "PSL2 MVP", "PSL4 Champion", "PSL4 MVP", "PSL4 Top Scorer"],
+    seasons: [
+      {season:"PSL1", team:"Clippers", logo:"clippers.png", detail:""},
+      {season:"PSL2", team:"Brazil", logo:"brazil.png", detail:"Champion. MVP"},
+      {season:"PSL3", team:"Clippers", logo:"clippers.png", detail:"PSL3 Cup Finalist. PSL3 Finalist"},
+      {season:"PSL4", team:"Russia", logo:"russia.png", detail:"PSL4 Cup Semi-Finalist. PSL4 Champion, MVP & Top Scorer"},
+    ],
+    upcoming: null,
+    description: "Kapetanios is the most decorated player in Pitchball history, and that should probably speak for itself. The now retired PSL Legend was crucial to the evolution of the attacking techniques of Pitchball, with his smashes being feared by all defenses. His iconic header-point in the PSL4 Final is regarded as the best point in sport history. His retirement, while expected, sent shockwaves to the Pitchball world, and the game has surely not been the same since his departure."
+  },
+  {
+    id: "giorgos-melidis",
+    name: "Giorgos Melidis",
+    status: "retired",
+    titles: ["PSL3 Cup Champion", "PSL3 MVP"],
+    seasons: [
+      {season:"PSL2", team:"Melpon", logo:"melpon.png", detail:"Debut season"},
+      {season:"PSL3", team:"Russia", logo:"russia.png", detail:"Cup Champion Â· MVP"},
+      {season:"PSL4", team:"Kleftes", logo:"kleftes.png", detail:"Unbeaten league stage Â· Retired"},
+    ],
+    upcoming: null,
+    description: "Widely considered the Best Of All Time (BOAT) â€” the most individually dominant player the sport has seen. In PSL4 he carried a weaker partner through an unbeaten league stage and a cup final, yet retired without winning the title. His PSL4 may be the greatest individual season in Pitchball history."
+  },
+  {
+    id: "mike-lerogiannis",
+    name: "Michalis Lerogiannis",
+    status: "active",
+    titles: ["PSL1 Champion", "PSL1 Final Four MVP"],
+    seasons: [
+      {season:"PSL1", team:"R1", logo:"r1.png", detail:"Champion. Final Four MVP."},
+      {season:"PSL2", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL3", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL4", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL5", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL6", team:"R1", logo:"r1.png", detail:""},
+    ],
+    upcoming: null,
+    description: "The Original. Lerogiannis won the first ever PSL title with R1 in Season 1 and has captained the team ever since. R1 hadn't reached a top-4 finish until PSL5, where they placed 2nd. Lerogiannis, despite not finding as much success as in the early days, remains one of the most recognizable names in the sport."
+  },
+    {
+    id: "yman",
+    name: "Nikolas Moschonas",
+    status: "active",
+    titles: [],
+    seasons: [,
+      {season:"PSL2", team:"Kalyma", logo:"kalyma.png", detail:""},
+      {season:"PSL3", team:"Skiouroi PC", logo:"skiouroi.png", detail:""},
+      {season:"PSL4", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL5", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL6", team:"R1", logo:"r1.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Slowly but surely, Yman has risen through the ranks of Pitchball players and is now at a level that can be considered elite. Signing for R1 was a big boost for him, as with the assistance of Mike he has evolved his game throughout the past 2 years at the Originals. He placed second with the Blues in PSL5."
+  },
+    {
+    id: "filippoujr",
+    name: "Giorgos Filippou",
+    status: "unknown",
+    titles: ["PSL4 Rookie of the Season", "PSL5 Cup Champion"],
+    seasons: [
+      {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:""},
+      {season:"PSL4", team:"AXR", logo:"axr.png", detail:"Mid-Season Transfer"},
+      {season:"PSL5", team:"Y&Y", logo:"yy.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Commonly referred to as the Future of Pitchball. Giorgos Filippou's height, athleticism and consistency have assisted him to climb to the very top in a short amount of time. This player surely has a lot to offer, and this is 100% just the beginning."
+  },
+    {
+    id: "akridas",
+    name: "Giannis Akridas",
+    status: "retired",
+    titles: ["PSL5 Cup Champion"],
+    seasons: [
+      {season:"PSL3", team:"Aetoi", logo:"aetoi.png", detail:""},
+      {season:"PSL4", team:"Y&Y", logo:"yy.png", detail:""},
+      {season:"PSL5", team:"Y&Y", logo:"yy.png", detail:""},
+    ],
+    upcoming: null,
+    description: "With his recent performances, Giannis Akridas is considered one of the best attackers the game has ever seen. Winning the PSL5 Cup with Y&Y has definitely made him a figure that won't be forgotten in the future."
+  },
+    {
+    id: "tax",
+    name: "Taxiarchis Kassotakis",
+    status: "retired",
+    titles: ["PSL4 Champion"],
+    seasons: [
+      {season:"PSL1", team:"Taximi", logo:"taximi.png", detail:""},
+      {season:"PSL2", team:"Taximi", logo:"taximi.png", detail:""},
+      {season:"PSL4", team:"Russia", logo:"russia.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Kassotakis rarely played a Pitchball match with 100% focus, but despite that he was one of the top players in his prime."
+  },
+    {
+    id: "aribaba",
+    name: "Aris Tsertos",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Oi Kapoioi", logo:"ok.png", detail:""},
+      {season:"PSL3", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+      {season:"PSL4", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+      {season:"PSL5", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+      {season:"PSL6", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+    ],
+    upcoming: null,
+    description: "While he isn't one of the greats of the sport, Aribabas is an icon. The owner of Spasmena Mila is one of the players with the most matches played ever in PSL history."
+  },
+    {
+    id: "applej",
+    name: "Iasonas Miliaras",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"S Tiers", logo:"stier.png", detail:""},
+      {season:"PSL3", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+      {season:"PSL4", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+      {season:"PSL5", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Iasonas Miliaras is one of the most underrated players in Pitchball history. He was a key player for Spasmena Mila during their glory days, and his retirement was a big loss for the team."
+  },
+    {
+    id: "nb74",
+    name: "Petros Papaspyropoulos",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"NFFC", logo:"nffc.png", detail:""},
+      {season:"PSL4", team:"NFFC", logo:"nffc.png", detail:""},
+      {season:"PSL5", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Petros Papaspyropoulos is a player that has been around for a while, but has never really made a big impact in the sport."
+  },
+    {
+    id: "aslanis",
+    name: "Jordan Aslanis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Basement Boys", logo:"basement.png", detail:""},
+      {season:"PSL5", team:"Basement Boys", logo:"basement.png", detail:""},
+      {season:"PSL6", team:"Basement Boys", logo:"basement.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Jordan Aslanis is a rising star in the Pitchball world, known for his dynamic play and leadership on the field. He is one of the best attackers the game has ever seen, and his performances have been crucial for Basement Boys in the past seasons."
+  },
+    {
+    id: "koskinas",
+    name: "Spyros Koskinas",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Basement Boys", logo:"basement.png", detail:""},
+      {season:"PSL5", team:"Basement Boys", logo:"basement.png", detail:""},
+      {season:"PSL6", team:"Basement Boys", logo:"basement.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Spyros Koskinas is a reliable and consistent player who has been a valuable asset to Basement Boys throughout his career."
+  },
+    {
+    id: "zacharo",
+    name: "Giorgos Zacharopoulos",
+    status: "active",
+    titles: ["PSL5 Rookie of the Season"],
+    seasons: [
+      {season:"PSL5", team:"Volos Drummers", logo:"volos.png", detail:""},
+      {season:"PSL6", team:"Volos Drummers", logo:"volos.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Giorgos Zacharopoulos is a talented player who has shown great promise in the Pitchball world. His dedication and skill have made him a valuable member of the Volos Drummers. He won the PSL5 Rookie of the Season award after his excellent debut season."
+  },
+    {
+    id: "tziovanis",
+    name: "Vasilis Tziovanis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Volos Drummers", logo:"volos.png", detail:""},
+      {season:"PSL6", team:"Volos Drummers", logo:"volos.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "mermigas",
+    name: "Tzannis Mermigas",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
+      {season:"PSL5", team:"Midi Kidz", logo:"midi.png", detail:""},
+      {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "mavrogiannis",
+    name: "Stefanos Mavrogiannis",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
+      {season:"PSL5", team:"Midi Kidz", logo:"midi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "chardas",
+    name: "Panos Chardas",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Panannaikos", logo:"panann.png", detail:""},
+      {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
+      {season:"PSL5", team:"Warriors", logo:"warriors.png", detail:""},
+      {season:"PSL6", team:"Warriors", logo:"warriors.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "gkiolias",
+    name: "Sokratis Gkiolias",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
+      {season:"PSL5", team:"Warriors", logo:"warriors.png", detail:""},
+      {season:"PSL6", team:"Warriors", logo:"warriors.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+      {
+    id: "stavropoulos",
+    name: "Stavros Stavropoulos",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL5", team:"Babiniotes", logo:"babiniotes.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "johanito",
+    name: "Johan Pilichos",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Babiniotes", logo:"babiniotes.png", detail:""},
+      {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kalisperis",
+    name: "Nikos Kalisperis",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Kalyma", logo:"kalyma.png", detail:""},
+      {season:"PSL3", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL4", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL5", team:"Phoenix", logo:"phoenix.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "efstajr",
+    name: "Filippos Efstathiou",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"MAKFI", logo:"makfi.png", detail:""},
+      {season:"PSL4", team:"MAKFI", logo:"makfi.png", detail:""},
+      {season:"PSL5", team:"Phoenix", logo:"phoenix.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "stefanis",
+    name: "Giannis Stefanis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Snipers", logo:"snipers.png", detail:""},
+      {season:"PSL6", team:"Volos Drummers", logo:"volos.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "iliadis",
+    name: "Antonis Iliadis",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Snipers", logo:"snipers.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "maragkos",
+    name: "Orfeas Maragkos",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kordopat",
+    name: "Giannis Kordopatis",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "zois",
+    name: "Grigoris Zois",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Grivnikikos", logo:"grivnik.png", detail:""},
+      {season:"PSL3", team:"Trixes", logo:"trixes.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "arkado",
+    name: "Marios Arkadopoulos",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"Trixes", logo:"trixes.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "mpog",
+    name: "Petros Mpogeas",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
+      {season:"PSL5", team:"Hoopers", logo:"hoopers.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "loverdos",
+    name: "Ilias Loverdos",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Hoopers", logo:"hoopers.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "karamolegkos",
+    name: "Giorgos Karamolegkos",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:"Mid-season signing"},
+      {season:"PSL5", team:"Team Till Death", logo:"ttd.png", detail:""},
+      {season:"PSL6", team:"Team Till Death", logo:"ttd.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kapnakis",
+    name: "Miltos Kapnakis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Team Till Death", logo:"ttd.png", detail:""},
+      {season:"PSL6", team:"Team Till Death", logo:"ttd.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "mavraganis",
+    name: "Vasilis Mavraganis",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Chewbacca", logo:"chewbacca.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "paliouras",
+    name: "Spyros Paliouras",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Chewbacca", logo:"chewbacca.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kepe",
+    name: "Iasonas Kepelyan",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
+      {season:"PSL5", team:"Fintani", logo:"fintani.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "chorti",
+    name: "Daniel Chortikoglou",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:""},
+      {season:"PSL5", team:"Fintani", logo:"fintani.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "harrisrigas",
+    name: "Harris Rigas",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL4", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL5", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "antoninis",
+    name: "Dimitris Antoninis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL5", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL6", team:"Polo", logo:"polo.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+      {
+    id: "laskaris",
+    name: "Laskaris",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Polo", logo:"polo.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "glezos",
+    name: "Nikos Glezos",
+    status: "unknown",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:"Mid-season signing"},
+      {season:"PSL5", team:"Hoopers", logo:"hoopers.png", detail:"Mid-season signing"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "bekos",
+    name: "Manos Mpekos",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"Taximi", logo:"taximi.png", detail:""},
+      {season:"PSL2", team:"Taximi", logo:"taximi.png", detail:""},
+      {season:"PSL3", team:"Brazil", logo:"brazil.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "makis",
+    name: "Makis Makris",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"MAKFI", logo:"makfi.png", detail:""},
+      {season:"PSL4", team:"MAKFI", logo:"makfi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "joestav",
+    name: "Tzo Stavridis",
+    status: "retired",
+    titles: ["PSL1 Champion"],
+    seasons: [
+      {season:"PSL1", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL2", team:"Mpesala", logo:"besala.png", detail:""},
+      {season:"PSL3", team:"R1", logo:"r1.png", detail:""},
+      {season:"PSL4", team:"Mpesala", logo:"besala.png", detail:""},
+    ],
+    upcoming: null,
+    description: "One of the reasons Pitchball exists with his immense contribution in the early moments of the sport. The Original champion of PSL retired last year and will remain a legend of Pitchball forever."
+  },
+    {
+    id: "xkapet",
+    name: "Christos Kapetanios",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"AXR", logo:"axr.png", detail:""},
+      {season:"PSL2", team:"AXR", logo:"axr.png", detail:""},
+      {season:"PSL3", team:"AXR", logo:"axr.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "filios",
+    name: "Achilleas Filios",
+    status: "retired",
+    titles: ["PSL4 Cup Champion"],
+    seasons: [
+      {season:"PSL1", team:"AXR", logo:"axr.png", detail:""},
+      {season:"PSL2", team:"AXR", logo:"axr.png", detail:""},
+      {season:"PSL3", team:"AXR", logo:"axr.png", detail:""},
+      {season:"PSL4", team:"AXR", logo:"axr.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "georgakas",
+    name: "Marios Georgakas",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"Temachio", logo:"temachio.png", detail:""},
+      {season:"PSL2", team:"Temachio", logo:"temachio.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "teogan",
+    name: "Teo Gkaniatsos",
+    status: "retired",
+    titles: ["PSL3 Cup Champion"],
+    seasons: [
+      {season:"PSL1", team:"Temachio", logo:"temachio.png", detail:""},
+      {season:"PSL2", team:"Temachio", logo:"temachio.png", detail:""},
+      {season:"PSL3", team:"Russia", logo:"russia.png", detail:""},
+      {season:"PSL4", team:"Russia", logo:"russia.png", detail:"Retired mid-season"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "poniros",
+    name: "Vaggelis Poniros",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Melpon", logo:"melpon.png", detail:""},
+      {season:"PSL3", team:"Didymoi Pyrgoi", logo:"ddm.png", detail:""},
+      {season:"PSL4", team:"Didymoi Pyrgoi", logo:"ddm.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "filp",
+    name: "Dimitris Filippou",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"Didymoi Pyrgoi", logo:"ddm.png", detail:""},
+      {season:"PSL4", team:"Didymoi Pyrgoi", logo:"ddm.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "efsta",
+    name: "Vasilis Efstathiou",
+    status: "active",
+    titles: ["PSL3 Champion"],
+    seasons: [
+      {season:"PSL1", team:"Oi Thryloi", logo:"thryloi.png", detail:""},
+      {season:"PSL2", team:"Mpesala", logo:"besala.png", detail:""}, 
+      {season:"PSL3", team:"BADiles", logo:"badiles.png", detail:""},
+      {season:"PSL4", team:"Mpesala", logo:"mpesala.png", detail:""},
+      {season:"PSL6", team:"Oi Thryloi", logo:"thryloi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "Vasilis Efstathiou is one of the most underrated players the Pitchball courts have witnessed. Although retired as of now, he could possibly have one last dance in PSL6. He is also one of the main reasons Pitchball exists, being a very important figure in the early days together with Tzo Stavridis."
+  },
+    {
+    id: "kalofo",
+    name: "Alexandros Kalofolias",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"Oi Thryloi", logo:"thryloi.png", detail:""},
+      {season:"PSL2", team:"Maralers", logo:"maralers.png", detail:""}, 
+      {season:"PSL4", team:"NFFC", logo:"nffc.png", detail:""},
+      {season:"PSL6", team:"Oi Thryloi", logo:"thryloi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kapsopoulos",
+    name: "Marios Kapsopoulos",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"Clippers", logo:"clippers.png", detail:""},
+      {season:"PSL2", team:"Maralers", logo:"maralers.png", detail:""}, 
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "niknik",
+    name: "Nikos Nikolaou",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"Nikolado", logo:"nikolado.png", detail:""},
+      {season:"PSL2", team:"Nikolado", logo:"nikolado.png", detail:""},
+      {season:"PSL3", team:"Clippers", logo:"clippers.png", detail:""}, 
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "ladas",
+    name: "Giorgos Ladas",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL1", team:"Nikolado", logo:"nikolado.png", detail:""},
+      {season:"PSL2", team:"Nikolado", logo:"nikolado.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "vnikos",
+    name: "Christos Nikolopoulos",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Grivnikikos", logo:"grivnik.png", detail:""},
+      {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "mantikou",
+    name: "Anna Mantikou",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Panannaikos", logo:"panann.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "ronto",
+    name: "Giorgos Rontogiannis",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Oi Kapoioi", logo:"ok.png", detail:""},
+      {season:"PSL4", team:"Shadow Wizard Money Gang", logo:"swmg.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "karababas",
+    name: "Giannis Karampampas",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Karronios", logo:"karron.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kvas",
+    name: "Kostis Vasileiou",
+    status: "retired",
+    titles: ["PSL4 Cup Champion"],
+    seasons: [
+      {season:"PSL2", team:"Karronios", logo:"karron.png", detail:""},
+      {season:"PSL3", team:"Skiouroi PC", logo:"skiouroi.png", detail:""},
+      {season:"PSL4", team:"AXR", logo:"axr.png", detail:""},
+      {season:"PSL5", team:"Y&Y", logo:"yy.png", detail:"Mid-season signing"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "teotell",
+    name: "Thodoris Telloglou",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"S Tiers", logo:"stier.png", detail:""},
+      {season:"PSL3", team:"NFFC", logo:"nffc.png", detail:""},
+      {season:"PSL4", team:"Y&Y", logo:"yy.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "kalf",
+    name: "Konstantinos Kalfiotis",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Koseveikos", logo:"koseve.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "evelyn",
+    name: "Evelyn Alexandropoulou",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL2", team:"Koseveikos", logo:"koseve.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "ody",
+    name: "Odysseas Georgakopoulos",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"Aetoi", logo:"aetoi.png", detail:""},
+      {season:"PSL4", team:"Kleftes", logo:"aetoi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "vozidis",
+    name: "Thomas Vozidis",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:"Mid-season signing"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "paterakis",
+    name: "Grigoris Paterakis",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:"Retired mid-season"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "xifaras",
+    name: "Pavlos Ksifaras",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:"Retired mid-season"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "passas",
+    name: "Lambros Passas",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:"Retired mid-season"},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "argyrakis",
+    name: "Odysseas Argyrakis",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"Pagkavliakos", logo:"pagkav.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "pavloskap",
+    name: "Pavlos Kapetanios",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"Pagkavliakos", logo:"pagkav.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "mpoutaras",
+    name: "Nikos Mpoutaras",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"eee", logo:"eee.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "parnassas",
+    name: "Nikos Parnassas",
+    status: "retired",
+    titles: [],
+    seasons: [
+      {season:"PSL3", team:"eee", logo:"eee.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+      {
+    id: "cali",
+    name: "Kalliopi Tsertou",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+      {
+    id: "gkioliajr",
+    name: "Sokratis Gkiolias Jr",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"EX7T", logo:"ex7t.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+        {
+    id: "avaris",
+    name: "Avaris Ntzamilis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"EX7T", logo:"ex7t.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    {
+    id: "katapodis",
+    name: "Christos Katapodis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Hornets", logo:"hornets.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+      {
+    id: "ennio",
+    name: "Ennio",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Hornets", logo:"hornets.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+      {
+    id: "dousis",
+    name: "Foivos Dousis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Ksades", logo:"ksades.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+        {
+    id: "sfinas",
+    name: "Konstantinos Sfinas",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Ksades", logo:"ksades.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+    // â”€â”€ ADD MORE PLAYERS BELOW â”€â”€
+  // {
+  //   id: "player-id",
+  //   name: "Full Name",
+  //   status: "active", // or "retired"
+  //   titles: [],
+  //   seasons: [
+  //     {season:"PSL1", team:"Team Name", logo:"teamlogo.png", detail:""},
+  //   ],
+  //   upcoming: null, // or {opponent:"X", date:"DD/MM", competition:"PSL5 League Phase"}
+  //   description: "Bio text here."
+  // },
+];
+
