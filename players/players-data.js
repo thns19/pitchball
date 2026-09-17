@@ -105,12 +105,13 @@
     {
     id: "akridas",
     name: "Giannis Akridas",
-    status: "retired",
+    status: "active",
     titles: ["PSL5 Cup Champion"],
     seasons: [
       {season:"PSL3", team:"Aetoi", logo:"aetoi.png", detail:""},
       {season:"PSL4", team:"Y&Y", logo:"yy.png", detail:""},
       {season:"PSL5", team:"Y&Y", logo:"yy.png", detail:""},
+      {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
     ],
     upcoming: null,
     description: "With his recent performances, Giannis Akridas is considered one of the best attackers the game has ever seen. Winning the PSL5 Cup with Y&Y has definitely made him a figure that won't be forgotten in the future."
@@ -118,12 +119,13 @@
     {
     id: "tax",
     name: "Taxiarchis Kassotakis",
-    status: "retired",
+    status: "active",
     titles: ["PSL4 Champion"],
     seasons: [
       {season:"PSL1", team:"Taximi", logo:"taximi.png", detail:""},
       {season:"PSL2", team:"Taximi", logo:"taximi.png", detail:""},
       {season:"PSL4", team:"Russia", logo:"russia.png", detail:""},
+      {season:"PSL6", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
     ],
     upcoming: null,
     description: "Kassotakis rarely played a Pitchball match with 100% focus, but despite that he was one of the top players in his prime."
@@ -349,10 +351,11 @@
     {
     id: "maragkos",
     name: "Orfeas Maragkos",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
+      {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -512,7 +515,7 @@
   },
       {
     id: "laskaris",
-    name: "Laskaris",
+    name: "Filippos Laskaris",
     status: "active",
     titles: [],
     seasons: [
@@ -945,8 +948,8 @@
     description: "TBA"
   },
     {
-    id: "katapodis",
-    name: "Christos Katapodis",
+    id: "katopodis",
+    name: "Christos Katopodis",
     status: "active",
     titles: [],
     seasons: [
@@ -957,7 +960,7 @@
   },
       {
     id: "ennio",
-    name: "Ennio",
+    name: "Ennio Georgopoulos",
     status: "active",
     titles: [],
     seasons: [
@@ -984,6 +987,50 @@
     titles: [],
     seasons: [
       {season:"PSL6", team:"Ksades", logo:"ksades.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+        {
+    id: "katsavou",
+    name: "Giannis Katsavounis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Golden Bullet", logo:"gb.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+        {
+    id: "kanelidis",
+    name: "Markos Kanellidis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Golden Bullet", logo:"gb.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+        {
+    id: "chalikias",
+    name: "Dionysis Chalikias",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+        {
+    id: "perdikis",
+    name: "Panagiotis Perdikis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
