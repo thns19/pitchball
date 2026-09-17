@@ -92,12 +92,13 @@
     {
     id: "filippoujr",
     name: "Giorgos Filippou",
-    status: "unknown",
+    status: "active",
     titles: ["PSL4 Rookie of the Season", "PSL5 Cup Champion"],
     seasons: [
       {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:""},
       {season:"PSL4", team:"AXR", logo:"axr.png", detail:"Mid-Season Transfer"},
       {season:"PSL5", team:"Y&Y", logo:"yy.png", detail:""},
+      {season:"PSL6", team:"Axtarmades", logo:"axtarmades.png", detail:""},
     ],
     upcoming: null,
     description: "Commonly referred to as the Future of Pitchball. Giorgos Filippou's height, athleticism and consistency have assisted him to climb to the very top in a short amount of time. This player surely has a lot to offer, and this is 100% just the beginning."
@@ -277,11 +278,12 @@
       {
     id: "stavropoulos",
     name: "Stavros Stavropoulos",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Axtarmades", logo:"axtarmades.png", detail:""},
       {season:"PSL5", team:"Babiniotes", logo:"babiniotes.png", detail:""},
+      {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -315,12 +317,13 @@
     {
     id: "efstajr",
     name: "Filippos Efstathiou",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL3", team:"MAKFI", logo:"makfi.png", detail:""},
       {season:"PSL4", team:"MAKFI", logo:"makfi.png", detail:""},
       {season:"PSL5", team:"Phoenix", logo:"phoenix.png", detail:""},
+      {season:"PSL5", team:"Axtarmades", logo:"axtarmades.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -491,12 +494,13 @@
     {
     id: "harrisrigas",
     name: "Harris Rigas",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Axtarmades", logo:"axtarmades.png", detail:""},
       {season:"PSL4", team:"Axtarmades", logo:"axtarmades.png", detail:""},
       {season:"PSL5", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL6", team:"Axtarmades", logo:"axtarmades.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
