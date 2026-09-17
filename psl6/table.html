@@ -157,6 +157,47 @@
     border-color: var(--neon-purple);
     box-shadow: 0 0 16px rgba(179, 102, 255, 0.25);
   }
+
+  .container {
+    max-width: 1100px;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .page-header { text-align: center; }
+  .page-header .icon-badge { text-align: center; }
+  .page-header .title { text-align: center; }
+  .page-header .status-pill { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+  .page-header .desc { margin-left: auto; margin-right: auto; text-align: center; }
+
+  .section-heading { margin: 2rem 0 1rem; }
+  .section-heading h2 { font-size: 1.35rem; font-weight: 400; color: var(--text-main); }
+  .section-heading p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; line-height: 1.5; }
+
+  .pots-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .pot-card, .groups-placeholder {
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.035);
+    border-radius: 10px;
+  }
+  .pot-card { padding: 1rem; }
+  .pot-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.85rem; }
+  .pot-heading h3 { color: var(--neon-cyan); font-size: 1rem; font-weight: 600; }
+  .pot-heading span { color: var(--text-muted); font-size: 0.75rem; }
+  .team-row { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 0.45rem; align-items: center; margin-top: 0.55rem; }
+  .logo-preview { width: 32px; height: 32px; object-fit: contain; border: 1px solid var(--border-color); border-radius: 6px; background: rgba(0, 0, 0, 0.25); }
+  .team-name { min-width: 0; color: var(--text-main); font-size: 0.85rem; }
+  .team-logo-missing { opacity: 0.35; }
+  .save-note { color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem; }
+  .groups-placeholder { padding: 2rem; text-align: center; border-style: dashed; }
+  .groups-placeholder strong { display: block; color: var(--text-main); font-weight: 400; margin-bottom: 0.45rem; }
+  .groups-placeholder span { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
+
+  @media (max-width: 700px) {
+    .container { padding: 2rem 1rem; }
+    .pots-grid { grid-template-columns: 1fr; }
+    .team-row { grid-template-columns: 34px minmax(0, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -164,13 +205,60 @@
   <div class="stars"></div>
 
   <div class="container">
-    <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
-    <div class="icon-badge">📋</div>
-    <h1 class="title">League Table</h1>
-    <div class="status-pill"><span class="dot"></span>Coming Soon</div>
-    <p class="desc">Live standings, fixture management and the playoff bracket simulator will appear here once PSL6 kicks off.</p>
+    <div class="page-header">
+      <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
+      <div class="icon-badge">📋</div>
+      <h1 class="title">League & Groups</h1>
+      <div class="status-pill"><span class="dot"></span>Group Stages</div>
+      <p class="desc">The teams below are arranged into three pots ready for the group draw.</p>
+    </div>
+
+    <section aria-labelledby="pots-title">
+      <div class="pots-grid" id="pots-grid"></div>
+      <p class="save-note">Read-only view. Team data is controlled from the code.</p>
+    </section>
+
+    <section aria-labelledby="groups-title">
+      <div class="section-heading">
+        <h2 id="groups-title">Group Stage</h2>
+        <p>The group tables, fixtures and draw results will appear here after the pots are finalized.</p>
+      </div>
+      <div class="groups-placeholder">
+        <strong>Groups have not been drawn yet</strong>
+        <span>This is the reserved space for the PSL6 group-stage tables.</span>
+      </div>
+    </section>
+
     <a href="index.html" class="back-link">&larr; Back to PSL6</a>
   </div>
+
+  <script>
+    const pots = [
+      { name: 'Pot 1', teams: [['BADiles', 'logos/badiles.png'], ['R1', 'logos/r1.png'], ['Basement Boys', 'logos/basement.png'], ['Axtarmades', 'logos/axtar.png'], ['Oi Thryloi', 'logos/thryloi.png'], ['Volos Drummers', 'logos/volos.png']] },
+      { name: 'Pot 2', teams: [['Lampater PC', 'logos/lpc.png'], ['Spasmena Mila', 'logos/spasmena.png'], ['Polo', 'logos/polo.png'], ['Warriors', 'logos/warriors.png'], ['Team Till Death', 'logos/ttd.png'], ['Hornets', 'logos/hornets.png']] },
+      { name: 'Pot 3', teams: [['Niki Alimou', 'logos/alimou.png'], ['EX7T', 'logos/ex7t.png'], ['Golden Bullet', 'logos/gb.png'], ['Ksades', 'logos/ksades.png'], ['Team 17', ''], ['Team 18', '']] }
+    // 
+    
+    
+    ];
+
+    function renderPots() {
+      document.getElementById('pots-grid').innerHTML = pots.map((pot, potIndex) => `
+        <article class="pot-card">
+          <div class="pot-heading"><h3>${escapeHtml(pot.name)}</h3><span>${pot.teams.length} teams</span></div>
+          ${pot.teams.map(team => `
+            <div class="team-row">
+              <img class="logo-preview${team[1] ? '' : ' team-logo-missing'}" src="${escapeAttribute(team[1])}" alt="" onerror="this.removeAttribute('src')">
+              <span class="team-name">${escapeHtml(team[0])}</span>
+            </div>`).join('')}
+        </article>`).join('');
+    }
+
+    function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character])); }
+    function escapeAttribute(value) { return escapeHtml(value); }
+
+    renderPots();
+  </script>
 
 </body>
 </html>
