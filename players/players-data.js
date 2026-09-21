@@ -239,11 +239,12 @@
     {
     id: "mavrogiannis",
     name: "Stefanos Mavrogiannis",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
       {season:"PSL5", team:"Midi Kidz", logo:"midi.png", detail:""},
+      {season:"PSL6", team:"Midi Kidz", logo:"midi.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -1047,6 +1048,17 @@
     titles: [],
     seasons: [
       {season:"PSL6", team:"Air Condition", logo:"ac.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+         {
+    id: "indomi",
+    name: "Stavros Moutaftsidis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Midi Kidz", logo:"midi.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
