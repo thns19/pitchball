@@ -366,10 +366,11 @@
     {
     id: "kordopat",
     name: "Giannis Kordopatis",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
+      {season:"PSL6", team:"Air Condition", logo:"ac.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -985,8 +986,8 @@
     description: "TBA"
   },
         {
-    id: "sfinas",
-    name: "Konstantinos Sfinas",
+    id: "sfikas",
+    name: "Konstantinos Sfikas",
     status: "active",
     titles: [],
     seasons: [
@@ -1039,6 +1040,18 @@
     upcoming: null,
     description: "TBA"
   },
+        {
+    id: "tsonis",
+    name: "Pavlos Tsonis",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Air Condition", logo:"ac.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+
     // â”€â”€ ADD MORE PLAYERS BELOW â”€â”€
   // {
   //   id: "player-id",
