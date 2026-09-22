@@ -887,6 +887,7 @@
           }
         });
       }
+      if (typeof renderGroups === 'function') renderGroups();
     }
 
     function renderAdminControls() {
@@ -1049,7 +1050,7 @@
           f.events = adminEvents;
         }
 
-        renderGroups();
+        if (typeof renderGroups === 'function') renderGroups();
         setTimeout(() => {
           if (adminEditModal) {
             adminEditModal.remove();
