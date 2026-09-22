@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match - PSL6</title>
+<style>
+  :root {
+    --space-dark: #05010f;
+    --panel: rgba(31, 24, 42, 0.88);
+    --panel-soft: rgba(255, 255, 255, 0.04);
+    --cyan: #00f0ff;
+    --purple: #b366ff;
+    --green: #39c877;
+    --gold: #f5c842;
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.52);
+    --border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    color: var(--text);
+    font-family: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+    background: var(--space-dark) url('bg.png') center / cover fixed no-repeat;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: rgba(5, 1, 15, 0.88);
+  }
+  .container { width: min(680px, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0 4rem; }
+  .nav { margin-bottom: 1.25rem; }
+  .back {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+  .back:hover { color: var(--cyan); }
+  .match-header, .content-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
+  }
+  .match-header { padding: 1.35rem 1rem 1.1rem; margin-bottom: 1rem; text-align: center; }
+  .match-kicker { color: var(--cyan); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 1rem; }
+  .match-teams { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .match-team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .match-team-logo { width: 56px; height: 56px; object-fit: contain; border-radius: 10px; padding: 4px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border); }
+  .match-team-name { color: var(--text); font-size: 14px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+  .match-score { color: var(--text); font-size: 42px; font-weight: 700; line-height: 1; min-width: 90px; }
+  .match-meta { color: var(--muted); font-size: 11px; line-height: 1.6; margin-top: 1rem; }
+  .match-meta span { display: inline-block; margin: 0 5px; }
+  .content-card { overflow: hidden; margin-bottom: 1rem; }
+  .card-title { color: var(--cyan); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 11px 14px; text-transform: uppercase; }
+  .mvp-card { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1rem; border-color: rgba(245, 200, 66, 0.55); }
+  .mvp-icon { font-size: 22px; }
+  .mvp-label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mvp-name { color: var(--gold); font-size: 14px; font-weight: 600; margin-top: 3px; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 1rem; }
+  .stat { display: flex; justify-content: space-between; gap: 8px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel-soft); }
+  .stat-label { color: var(--muted); font-size: 11px; line-height: 1.3; }
+  .stat-value { color: var(--text); font-size: 14px; font-weight: 700; }
+  .event-row { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  .event-row:last-child { border-bottom: 0; }
+  .event-icon { width: 27px; height: 27px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; font-size: 9px; font-weight: 700; }
+  .icon-goal { color: var(--green); background: rgba(57, 200, 119, 0.16); }
+  .icon-og { color: #e7796d; background: rgba(231, 121, 109, 0.16); }
+  .icon-sub { color: #a4cde8; background: rgba(164, 205, 232, 0.16); }
+  .event-body { flex: 1; min-width: 0; }
+  .event-main { color: var(--text); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .event-detail { color: var(--muted); font-size: 11px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .event-score { color: var(--text); font-size: 12px; font-weight: 700; min-width: 42px; text-align: right; }
+  .no-data { color: var(--muted); font-size: 13px; padding: 1rem; }
+  .comments { margin-top: 2rem; padding-bottom: 2rem; }
+  .comments-title { color: var(--cyan); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding-bottom: 9px; text-transform: uppercase; }
+  .comments-count { background: rgba(0, 240, 255, 0.12); border-radius: 10px; color: var(--cyan); font-size: 10px; padding: 1px 8px; }
+  .comment-compose { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin: 1rem 0; padding: 12px; }
+  .comment-compose textarea { background: transparent; border: 0; color: var(--text); font: inherit; font-size: 13px; min-height: 42px; outline: 0; resize: vertical; width: 100%; }
+  .comment-compose textarea::placeholder { color: var(--muted); }
+  .comment-compose-footer { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .comment-submit, .comment-action { background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.35); border-radius: 7px; color: var(--cyan); cursor: pointer; font: inherit; font-size: 12px; padding: 6px 12px; }
+  .comment-submit:hover, .comment-action:hover { background: rgba(0, 240, 255, 0.18); }
+  .comment-login { color: var(--muted); font-size: 13px; }
+  .comment-login a { color: var(--cyan); }
+  .comment { border-bottom: 1px solid var(--border); display: flex; gap: 10px; padding: 12px 0; }
+  .comment:last-child { border-bottom: 0; }
+  .comment-avatar { align-items: center; background: var(--purple); border-radius: 50%; color: #fff; display: flex; flex-shrink: 0; font-size: 12px; font-weight: 700; height: 28px; justify-content: center; width: 28px; }
+  .comment-body { flex: 1; min-width: 0; }
+  .comment-header { align-items: center; display: flex; gap: 8px; margin-bottom: 4px; }
+  .comment-user { font-size: 13px; font-weight: 700; }
+  .comment-time { color: var(--muted); font-size: 11px; }
+  .comment-text { color: rgba(255, 255, 255, 0.86); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+  .comment-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .comment-action { background: transparent; border-color: transparent; color: var(--muted); padding: 3px 6px; }
+  .comment-action.reacted { color: var(--cyan); }
+  .comment-replies { border-left: 2px solid var(--border); margin: 10px 0 0 8px; padding-left: 12px; }
+  .reply-box { display: none; gap: 8px; margin-top: 9px; }
+  .reply-box.open { display: flex; }
+  .reply-box textarea { background: var(--panel-soft); border: 1px solid var(--border); border-radius: 7px; color: var(--text); flex: 1; font: inherit; font-size: 12px; padding: 7px 9px; resize: vertical; }
+  @media (max-width: 420px) {
+    .container { width: min(100% - 1rem, 680px); padding-top: 1rem; }
+    .match-team-logo { width: 44px; height: 44px; }
+    .match-team-name { font-size: 12px; }
+    .match-score { font-size: 34px; min-width: 64px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .comment-replies { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+  <main class="container">
+    <div class="nav"><a class="back" href="table.html">&larr; League table</a></div>
+    <div id="match-content"></div>
+    <div id="comments-mount"></div>
+  </main>
+
+<script>
+const PSL_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
+const TEAM_LOGOS = {
+  'BADiles': 'logos/badiles.png', 'Volos Drummers': 'logos/volos.png', 'Midi Kidz': 'logos/midi.png',
+  'Team Till Death': 'logos/ttd.png', 'Hornets': 'logos/hornets.png', 'EX7T': 'logos/ex7t.png',
+  'R1': 'logos/r1.png', 'Basement Boys': 'logos/basement.png', 'Lampater': 'logos/lpc.png',
+  'Polo': 'logos/polo.png', 'Ksades': 'logos/ksades.png', 'Air Condition': 'logos/ac.png',
+  'Axtarmades': 'logos/axtar.png', 'Thryloi': 'logos/thryloi.png', 'Spasmena Mila': 'logos/spasmena.png',
+  'Warriors': 'logos/warriors.png', 'Niki Alimou': 'logos/alimou.png', 'Golden B.': 'logos/gb.png'
+};
+let dbCache = null;
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+}
+function dbMatchCandidates(id) {
+  const raw = String(id ?? '');
+  return [...new Set([raw, `fixture-${raw}`])].filter(Boolean);
+}
+async function getDb() {
+  if (dbCache) return dbCache;
+  const response = await fetch(PSL_DB_URL);
+  if (!response.ok) throw new Error('Database request failed');
+  dbCache = await response.json();
+  return dbCache;
+}
+function logoFor(team) {
+  const source = TEAM_LOGOS[team];
+  return source ? `<img class="match-team-logo" src="${source}" alt="${escapeHtml(team)} logo" onerror="this.style.display='none'">` : '';
+}
+function formatDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value).replace('T', ' ') : date.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', '');
+}
+function readMatch(db, id) {
+  for (const key of dbMatchCandidates(id)) {
+    if (db.matches && db.matches[key]) return db.matches[key];
+  }
+  return {};
+}
+function eventCounts(events, home) {
+  let homeGoals = 0, awayGoals = 0, homeOwnGoals = 0, awayOwnGoals = 0;
+  events.forEach(event => {
+    const isHome = event.team === home;
+    if (event.type === 'goal') isHome ? homeGoals++ : awayGoals++;
+    if (event.type === 'og') isHome ? homeOwnGoals++ : awayOwnGoals++;
+  });
+  return { homeGoals, awayGoals, homeOwnGoals, awayOwnGoals };
+}
+function renderEvent(event, home, away) {
+  const type = event.type || 'goal';
+  if (type === 'sub') {
+    return `<div class="event-row"><div class="event-icon icon-sub">SUB</div><div class="event-body"><div class="event-main">${escapeHtml(event.team || '')}</div><div class="event-detail">${escapeHtml(event.player || '')}${event.playerOut ? ` in / ${escapeHtml(event.playerOut)} out` : ''}</div></div><div class="event-score">-</div></div>`;
+  }
+  const isOwnGoal = type === 'og';
+  const beneficiary = isOwnGoal ? (event.team === home ? away : home) : event.team;
+  return `<div class="event-row"><div class="event-icon ${isOwnGoal ? 'icon-og' : 'icon-goal'}">${isOwnGoal ? 'OG' : 'G'}</div><div class="event-body"><div class="event-main"><strong>${escapeHtml(event.player || 'Unknown player')}</strong></div><div class="event-detail">${isOwnGoal ? `Own goal - point to ${escapeHtml(beneficiary || '')}` : `Goal - ${escapeHtml(event.team || '')}`}</div></div><div class="event-score">${escapeHtml(event.scoreline || '-')}</div></div>`;
+}
+async function initMatch() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const home = params.get('home') || 'Home team';
+  const away = params.get('away') || 'Away team';
+  const group = params.get('group') || 'Group stage';
+  const md = params.get('md') || '-';
+  const content = document.getElementById('match-content');
+  if (!id) {
+    content.innerHTML = '<div class="no-data">Match not found. <a class="back" href="table.html">Back to table</a></div>';
+    return;
+  }
+  try {
+    const db = await getDb();
+    const match = readMatch(db, id);
+    const events = Array.isArray(match.events) ? match.events : [];
+    const counts = eventCounts(events, home);
+    const homeScore = match.hs !== undefined && match.hs !== null ? match.hs : '-';
+    const awayScore = match.as !== undefined && match.as !== null ? match.as : '-';
+    const eventRows = events.length ? events.map(event => renderEvent(event, home, away)).join('') : '<div class="no-data">No event data available yet.</div>';
+    document.title = `${home} vs ${away} - PSL6`;
+    content.innerHTML = `
+      <section class="match-header">
+        <div class="match-kicker">${escapeHtml(group)} - Matchday ${escapeHtml(md)}</div>
+        <div class="match-teams">
+          <div class="match-team">${logoFor(home)}<div class="match-team-name">${escapeHtml(home)}</div></div>
+          <div class="match-score">${escapeHtml(homeScore)}-${escapeHtml(awayScore)}</div>
+          <div class="match-team">${logoFor(away)}<div class="match-team-name">${escapeHtml(away)}</div></div>
+        </div>
+        <div class="match-meta">${match.date ? `<span>${escapeHtml(formatDate(match.date))}</span>` : ''}<span>PSL6 Group Stage</span></div>
+      </section>
+      ${match.mvp ? `<section class="content-card mvp-card"><span class="mvp-icon">&#127942;</span><div><div class="mvp-label">Match MVP</div><div class="mvp-name">${escapeHtml(match.mvp)}</div></div></section>` : ''}
+      <section class="content-card"><div class="card-title">Match statistics</div><div class="stats-grid"><div class="stat"><span class="stat-label">${escapeHtml(home)} goals</span><span class="stat-value">${counts.homeGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} goals</span><span class="stat-value">${counts.awayGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(home)} own goals</span><span class="stat-value">${counts.homeOwnGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} own goals</span><span class="stat-value">${counts.awayOwnGoals}</span></div></div></section>
+      <section class="content-card"><div class="card-title">Match events</div>${eventRows}</section>`;
+  } catch (error) {
+    content.innerHTML = '<div class="no-data">Unable to load this match right now. <a class="back" href="table.html">Back to table</a></div>';
+  }
+}
+window.addEventListener('DOMContentLoaded', initMatch);
+</script>
+<script>
+const COMMENT_REACTIONS = ['Like', 'Goal', 'Fire'];
+function commentUser() {
+  try { return JSON.parse(localStorage.getItem('psl_session') || 'null'); } catch (error) { return null; }
+}
+function commentTime(value) {
+  const minutes = Math.floor((Date.now() - new Date(value).getTime()) / 60000);
+  if (!Number.isFinite(minutes) || minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return new Date(value).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+function commentAvatar(user) {
+  const name = user || '?';
+  return `<div class="comment-avatar">${escapeHtml(name.charAt(0).toUpperCase())}</div>`;
+}
+function commentReactionButtons(matchId, comment, isReply, parentId) {
+  const user = commentUser();
+  return COMMENT_REACTIONS.map(reaction => {
+    const users = (comment.reactions || {})[reaction] || [];
+    if (!users.length && !user) return '';
+    const reacted = user && users.includes(user.username) ? ' reacted' : '';
+    return `<button class="comment-action${reacted}" onclick="toggleCommentReaction('${matchId}','${comment.id}',${isReply ? `'${parentId}'` : 'null'},'${reaction}')">${reaction}${users.length ? ` ${users.length}` : ''}</button>`;
+  }).join('');
+}
+function renderComment(matchId, comment, isReply = false, parentId = '') {
+  const user = commentUser();
+  const canDelete = user && (user.isAdmin || user.username === comment.user);
+  const replies = !isReply && Array.isArray(comment.replies) ? comment.replies : [];
+  const replyMarkup = replies.length ? `<div class="comment-replies">${replies.map(reply => renderComment(matchId, reply, true, comment.id)).join('')}</div>` : '';
+  const replyBox = !isReply && user ? `<div class="reply-box" id="reply-box-${comment.id}"><textarea id="reply-input-${comment.id}" rows="1" placeholder="Write a reply..."></textarea><button class="comment-submit" onclick="postCommentReply('${matchId}','${comment.id}')">Post</button></div>` : '';
+  return `<article class="comment">${commentAvatar(comment.user)}<div class="comment-body"><div class="comment-header"><span class="comment-user">${escapeHtml(comment.user)}</span><span class="comment-time">${commentTime(comment.time)}</span></div><div class="comment-text">${escapeHtml(comment.text)}</div><div class="comment-actions">${commentReactionButtons(matchId, comment, isReply, parentId)}${!isReply && user ? `<button class="comment-action" onclick="toggleReplyBox('${comment.id}')">Reply</button>` : ''}${canDelete ? `<button class="comment-action" onclick="deleteComment('${matchId}','${comment.id}',${isReply ? `'${parentId}'` : 'null'})">Delete</button>` : ''}</div>${replyMarkup}${replyBox}</div></article>`;
+}
+function renderComments(matchId, comments) {
+  const mount = document.getElementById('comments-mount');
+  if (!mount) return;
+  const user = commentUser();
+  const count = comments.reduce((total, comment) => total + 1 + (comment.replies || []).length, 0);
+  const composer = user
+    ? `<div class="comment-compose"><textarea id="new-comment" rows="2" placeholder="Share your thoughts..."></textarea><div class="comment-compose-footer"><button class="comment-submit" onclick="postComment('${matchId}')">Post comment</button></div></div>`
+    : `<div class="comment-compose"><div class="comment-login">Sign in on the <a href="table.html">league table</a> to comment.</div></div>`;
+  const list = comments.length ? comments.map(comment => renderComment(matchId, comment)).join('') : '<div class="no-data">No comments yet.</div>';
+  mount.innerHTML = `<section class="comments"><div class="comments-title">Comments <span class="comments-count">${count}</span></div>${composer}<div>${list}</div></section>`;
+}
+async function loadComments() {
+  const matchId = new URLSearchParams(window.location.search).get('id');
+  if (!matchId) return;
+  try {
+    const db = await getDb();
+    renderComments(matchId, Array.isArray((db.comments || {})[matchId]) ? db.comments[matchId] : []);
+  } catch (error) {
+    document.getElementById('comments-mount').innerHTML = '<div class="no-data">Unable to load comments.</div>';
+  }
+}
+async function saveComments(matchId, comments) {
+  const db = await getDb();
+  if (!db.comments) db.comments = {};
+  db.comments[matchId] = comments;
+  dbCache = db;
+  const response = await fetch(PSL_DB_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(db) });
+  if (!response.ok) throw new Error('Comment save failed');
+  renderComments(matchId, comments);
+}
+async function postComment(matchId) {
+  const user = commentUser();
+  const input = document.getElementById('new-comment');
+  const text = input ? input.value.trim() : '';
+  if (!user || !text) return;
+  const db = await getDb();
+  const comments = Array.isArray((db.comments || {})[matchId]) ? db.comments[matchId] : [];
+  comments.unshift({ id: `c${Date.now()}`, user: user.username, avatar: user.avatar || null, text, time: new Date().toISOString(), reactions: {}, replies: [] });
+  await saveComments(matchId, comments);
+}
+async function postCommentReply(matchId, parentId) {
+  const user = commentUser();
+  const input = document.getElementById(`reply-input-${parentId}`);
+  const text = input ? input.value.trim() : '';
+  if (!user || !text) return;
+  const db = await getDb();
+  const comments = Array.isArray((db.comments || {})[matchId]) ? db.comments[matchId] : [];
+  const parent = comments.find(comment => comment.id === parentId);
+  if (!parent) return;
+  if (!Array.isArray(parent.replies)) parent.replies = [];
+  parent.replies.push({ id: `r${Date.now()}`, user: user.username, avatar: user.avatar || null, text, time: new Date().toISOString(), reactions: {} });
+  await saveComments(matchId, comments);
+}
+async function toggleCommentReaction(matchId, commentId, parentId, reaction) {
+  const user = commentUser();
+  if (!user) return;
+  const db = await getDb();
+  const comments = Array.isArray((db.comments || {})[matchId]) ? db.comments[matchId] : [];
+  const parent = parentId ? comments.find(comment => comment.id === parentId) : null;
+  const comment = parent ? (parent.replies || []).find(reply => reply.id === commentId) : comments.find(item => item.id === commentId);
+  if (!comment) return;
+  if (!comment.reactions) comment.reactions = {};
+  if (!comment.reactions[reaction]) comment.reactions[reaction] = [];
+  const index = comment.reactions[reaction].indexOf(user.username);
+  if (index >= 0) comment.reactions[reaction].splice(index, 1); else comment.reactions[reaction].push(user.username);
+  await saveComments(matchId, comments);
+}
+async function deleteComment(matchId, commentId, parentId) {
+  const user = commentUser();
+  if (!user || !confirm('Delete this comment?')) return;
+  const db = await getDb();
+  const comments = Array.isArray((db.comments || {})[matchId]) ? db.comments[matchId] : [];
+  if (parentId) {
+    const parent = comments.find(comment => comment.id === parentId);
+    if (parent) parent.replies = (parent.replies || []).filter(reply => reply.id !== commentId);
+  } else {
+    const target = comments.find(comment => comment.id === commentId);
+    if (!target || (!user.isAdmin && target.user !== user.username)) return;
+    db.comments[matchId] = comments.filter(comment => comment.id !== commentId);
+  }
+  await saveComments(matchId, comments);
+}
+function toggleReplyBox(commentId) {
+  document.getElementById(`reply-box-${commentId}`)?.classList.toggle('open');
+}
+window.addEventListener('DOMContentLoaded', loadComments);
+</script>
+</body>
+</html>
