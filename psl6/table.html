@@ -174,29 +174,132 @@
   .section-heading h2 { font-size: 1.35rem; font-weight: 400; color: var(--text-main); }
   .section-heading p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; line-height: 1.5; }
 
-  .pots-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-  .pot-card, .groups-placeholder {
-    border: 1px solid var(--border-color);
-    background: rgba(255, 255, 255, 0.035);
-    border-radius: 10px;
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.5rem;
   }
-  .pot-card { padding: 1rem; }
-  .pot-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.85rem; }
-  .pot-heading h3 { color: var(--neon-cyan); font-size: 1rem; font-weight: 600; }
-  .pot-heading span { color: var(--text-muted); font-size: 0.75rem; }
-  .team-row { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 0.45rem; align-items: center; margin-top: 0.55rem; }
-  .logo-preview { width: 32px; height: 32px; object-fit: contain; border: 1px solid var(--border-color); border-radius: 6px; background: rgba(0, 0, 0, 0.25); }
-  .team-name { min-width: 0; color: var(--text-main); font-size: 0.85rem; }
-  .team-logo-missing { opacity: 0.35; }
+  .group-card {
+    background: rgba(31, 24, 42, 0.82);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  }
+  .group-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .group-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .group-table th {
+    color: var(--text-muted);
+    padding: 6px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+  }
+  .group-table th:first-child { text-align: left; }
+  .group-table td {
+    padding: 8px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    background: rgba(255,255,255,0.01);
+  }
+  .group-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+  }
+  .group-table tr:last-child td { border-bottom: none; }
+  .group-qual { border-left: 3px solid #39c877; }
+  .group-best4 { border-left: 3px solid #f5c842; }
+  .group-elim { border-left: 3px solid rgba(255,255,255,0.12); }
+  .team-cell { display: flex; align-items: center; gap: 8px; }
+  .logo-preview { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); }
+  .fixtures-section {
+    margin-top: 14px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+  }
+  .fixtures-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .fixture-md-block {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .fixture-md-header {
+    background: rgba(0, 240, 255, 0.08);
+    color: var(--neon-cyan);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 7px 10px;
+  }
+  .fixture-md-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 7px;
+  }
+  .fixture-match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    padding: 7px 9px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255,255,255,0.04);
+    font-size: 12px;
+  }
+  .fixture-team {
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fixture-team.home { text-align: right; }
+  .fixture-team.away { text-align: left; }
+  .fixture-score {
+    min-width: 54px;
+    text-align: center;
+    color: var(--neon-purple);
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .fixture-empty {
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 8px 0;
+  }
   .save-note { color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem; }
-  .groups-placeholder { padding: 2rem; text-align: center; border-style: dashed; }
+  .groups-placeholder { padding: 2rem; text-align: center; border: 1px dashed var(--border-color); background: rgba(255,255,255,0.02); border-radius: 12px; }
   .groups-placeholder strong { display: block; color: var(--text-main); font-weight: 400; margin-bottom: 0.45rem; }
   .groups-placeholder span { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
 
   @media (max-width: 700px) {
     .container { padding: 2rem 1rem; }
-    .pots-grid { grid-template-columns: 1fr; }
-    .team-row { grid-template-columns: 34px minmax(0, 1fr); }
+    .groups-grid { grid-template-columns: 1fr; }
+    .fixture-match { grid-template-columns: 1fr auto 1fr; }
   }
 </style>
 </head>
@@ -210,55 +313,768 @@
       <div class="icon-badge">📋</div>
       <h1 class="title">League & Groups</h1>
       <div class="status-pill"><span class="dot"></span>Group Stages</div>
-      <p class="desc">The teams below are arranged into three pots ready for the group draw.</p>
+      <p class="desc">The PSL6 teams are split into the following groups for the league stage.</p>
     </div>
-
-    <section aria-labelledby="pots-title">
-      <div class="pots-grid" id="pots-grid"></div>
-      <p class="save-note">Read-only view. Team data is controlled from the code.</p>
-    </section>
 
     <section aria-labelledby="groups-title">
       <div class="section-heading">
         <h2 id="groups-title">Group Stage</h2>
-        <p>The group tables, fixtures and draw results will appear here after the pots are finalized.</p>
+        <p>Fixtures and standings for all PSL6 groups.</p>
       </div>
-      <div class="groups-placeholder">
-        <strong>Groups draw: September 22nd, 9:00 AM</strong>
-        <span>This is the reserved space for the PSL6 group-stage tables.</span>
-      </div>
+      <div class="groups-grid" id="groups-grid"></div>
     </section>
 
     <a href="index.html" class="back-link">&larr; Back to PSL6</a>
   </div>
 
   <script>
-    const pots = [
-      { name: 'Pot 1', teams: [['BADiles', 'logos/badiles.png'], ['R1', 'logos/r1.png'], ['Basement Boys', 'logos/basement.png'], ['Axtarmades', 'logos/axtar.png'], ['Oi Thryloi', 'logos/thryloi.png'], ['Volos Drummers', 'logos/volos.png']] },
-      { name: 'Pot 2', teams: [['Lampater PC', 'logos/lpc.png'], ['Spasmena Mila', 'logos/spasmena.png'], ['Polo', 'logos/polo.png'], ['Warriors', 'logos/warriors.png'], ['Team Till Death', 'logos/ttd.png'], ['Midi Kidz', 'logos/midi.png']]},
-      { name: 'Pot 3', teams: [['Niki Alimou', 'logos/alimou.png'], ['EX7T', 'logos/ex7t.png'], ['Golden Bullet', 'logos/gb.png'], ['Ksades', 'logos/ksades.png'],  ['Hornets', 'logos/hornets.png'], ['Air Condition', 'logos/ac.png']] }
-    // 
-    
-    
+    const teamData = {
+      'BADiles': { name: 'BADiles', logo: 'logos/badiles.png' },
+      'Volos Drummers': { name: 'Volos Dr.', logo: 'logos/volos.png' },
+      'Midi Kidz': { name: 'Midi Kidz', logo: 'logos/midi.png' },
+      'Team Till Death': { name: 'Team Till Death', logo: 'logos/ttd.png' },
+      'Hornets': { name: 'Hornets', logo: 'logos/hornets.png' },
+      'EX7T': { name: 'EX7T', logo: 'logos/ex7t.png' },
+      'R1': { name: 'R1', logo: 'logos/r1.png' },
+      'Basement Boys': { name: 'Basement Boys', logo: 'logos/basement.png' },
+      'Lampater': { name: 'Lampater', logo: 'logos/lpc.png' },
+      'Polo': { name: 'Polo', logo: 'logos/polo.png' },
+      'Ksades': { name: 'Ksades', logo: 'logos/ksades.png' },
+      'Air Condition': { name: 'Air Condition', logo: 'logos/ac.png' },
+      'Axtarmades': { name: 'Axtarmades', logo: 'logos/axtar.png' },
+      'Thryloi': { name: 'Thryloi', logo: 'logos/thryloi.png' },
+      'Spasmena Mila': { name: 'Spasmena Mila', logo: 'logos/spasmena.png' },
+      'Warriors': { name: 'Warriors', logo: 'logos/warriors.png' },
+      'Niki Alimou': { name: 'Niki Alimou', logo: 'logos/alimou.png' },
+      'Golden B.': { name: 'Golden B.', logo: 'logos/gb.png' }
+    };
+
+    const TEAM_ALIASES = {
+      'BAD': 'BADiles', 'BADiles': 'BADiles',
+      'Volos': 'Volos Drummers', 'V. Drummers': 'Volos Dr.', 'Volos Drummers': 'Volos Drummers',
+      'Midi': 'Midi Kidz', 'Midi Kidz': 'Midi Kidz',
+      'TTD': 'Team Till Death', 'Team Till Death': 'Team Till Death',
+      'Hornets': 'Hornets',
+      'EX7T': 'EX7T',
+      'R1': 'R1',
+      'BMB': 'Basement Boys', 'Basement Boys': 'Basement Boys',
+      'Lampater': 'Lampater',
+      'Polo': 'Polo',
+      'Ksades': 'Ksades',
+      'A/C': 'Air Condition', 'Air Condition': 'Air Condition',
+      'Axtarm': 'Axtarmades', 'Axtarmades': 'Axtarmades',
+      'Thryloi': 'Thryloi',
+      'Mila': 'Spasmena Mila', 'Spasmena Mila': 'Spasmena Mila',
+      'Warriors': 'Warriors',
+      'Niki A.': 'Niki Alimou', 'Niki Alimou': 'Niki Alimou',
+      'GB': 'Golden B.', 'Golden B.': 'Golden B.'
+    };
+
+    const groups = [
+      { name: 'Group A', teams: ['BADiles', 'Volos Drummers', 'Midi Kidz', 'Team Till Death', 'Hornets', 'EX7T'], fixtures: [] },
+      { name: 'Group B', teams: ['R1', 'Basement Boys', 'Lampater', 'Polo', 'Ksades', 'Air Condition'], fixtures: [] },
+      { name: 'Group C', teams: ['Axtarmades', 'Thryloi', 'Spasmena Mila', 'Warriors', 'Niki Alimou', 'Golden B.'], fixtures: [] }
     ];
 
-    function renderPots() {
-      document.getElementById('pots-grid').innerHTML = pots.map((pot, potIndex) => `
-        <article class="pot-card">
-          <div class="pot-heading"><h3>${escapeHtml(pot.name)}</h3><span>${pot.teams.length} teams</span></div>
-          ${pot.teams.map(team => `
-            <div class="team-row">
-              <img class="logo-preview${team[1] ? '' : ' team-logo-missing'}" src="${escapeAttribute(team[1])}" alt="" onerror="this.removeAttribute('src')">
-              <span class="team-name">${escapeHtml(team[0])}</span>
-            </div>`).join('')}
-        </article>`).join('');
+    const rawFixtures = [
+      { group: 'Group A', md: 1, h: 'EX7T', a: 'Midi', hs: null, as: null },
+      { group: 'Group A', md: 1, h: 'Hornets', a: 'BAD', hs: null, as: null },
+      { group: 'Group A', md: 1, h: 'TTD', a: 'Volos', hs: null, as: null },
+      { group: 'Group A', md: 2, h: 'BAD', a: 'EX7T', hs: null, as: null },
+      { group: 'Group A', md: 2, h: 'Volos', a: 'Midi', hs: null, as: null },
+      { group: 'Group A', md: 2, h: 'TTD', a: 'Hornets', hs: null, as: null },
+      { group: 'Group A', md: 3, h: 'EX7T', a: 'Volos', hs: null, as: null },
+      { group: 'Group A', md: 3, h: 'BAD', a: 'TTD', hs: null, as: null },
+      { group: 'Group A', md: 3, h: 'Midi', a: 'Hornets', hs: null, as: null },
+      { group: 'Group A', md: 4, h: 'TTD', a: 'EX7T', hs: null, as: null },
+      { group: 'Group A', md: 4, h: 'Hornets', a: 'Volos', hs: null, as: null },
+      { group: 'Group A', md: 4, h: 'Midi', a: 'BAD', hs: null, as: null },
+      { group: 'Group A', md: 5, h: 'EX7T', a: 'Hornets', hs: null, as: null },
+      { group: 'Group A', md: 5, h: 'TTD', a: 'Midi', hs: null, as: null },
+      { group: 'Group A', md: 5, h: 'Volos', a: 'BAD', hs: null, as: null },
+
+      { group: 'Group B', md: 1, h: 'Lampater', a: 'Polo', hs: null, as: null },
+      { group: 'Group B', md: 1, h: 'A/C', a: 'Ksades', hs: null, as: null },
+      { group: 'Group B', md: 1, h: 'BMB', a: 'R1', hs: null, as: null },
+      { group: 'Group B', md: 2, h: 'Ksades', a: 'Lampater', hs: null, as: null },
+      { group: 'Group B', md: 2, h: 'R1', a: 'Polo', hs: null, as: null },
+      { group: 'Group B', md: 2, h: 'BMB', a: 'A/C', hs: null, as: null },
+      { group: 'Group B', md: 3, h: 'Lampater', a: 'R1', hs: null, as: null },
+      { group: 'Group B', md: 3, h: 'Ksades', a: 'BMB', hs: null, as: null },
+      { group: 'Group B', md: 3, h: 'Polo', a: 'A/C', hs: null, as: null },
+      { group: 'Group B', md: 4, h: 'BMB', a: 'Lampater', hs: null, as: null },
+      { group: 'Group B', md: 4, h: 'A/C', a: 'R1', hs: null, as: null },
+      { group: 'Group B', md: 4, h: 'Polo', a: 'Ksades', hs: null, as: null },
+      { group: 'Group B', md: 5, h: 'Lampater', a: 'A/C', hs: null, as: null },
+      { group: 'Group B', md: 5, h: 'BMB', a: 'Polo', hs: null, as: null },
+      { group: 'Group B', md: 5, h: 'R1', a: 'Ksades', hs: null, as: null },
+
+      { group: 'Group C', md: 1, h: 'Axtarm', a: 'Niki A.', hs: null, as: null },
+      { group: 'Group C', md: 1, h: 'Thryloi', a: 'GB', hs: null, as: null },
+      { group: 'Group C', md: 1, h: 'Mila', a: 'Warriors', hs: null, as: null },
+      { group: 'Group C', md: 2, h: 'GB', a: 'Axtarm', hs: null, as: null },
+      { group: 'Group C', md: 2, h: 'Warriors', a: 'Niki A.', hs: null, as: null },
+      { group: 'Group C', md: 2, h: 'Mila', a: 'Thryloi', hs: null, as: null },
+      { group: 'Group C', md: 3, h: 'Axtarm', a: 'Warriors', hs: null, as: null },
+      { group: 'Group C', md: 3, h: 'GB', a: 'Mila', hs: null, as: null },
+      { group: 'Group C', md: 3, h: 'Niki A.', a: 'Thryloi', hs: null, as: null },
+      { group: 'Group C', md: 4, h: 'Mila', a: 'Axtarm', hs: null, as: null },
+      { group: 'Group C', md: 4, h: 'Thryloi', a: 'Warriors', hs: null, as: null },
+      { group: 'Group C', md: 4, h: 'Niki A.', a: 'GB', hs: null, as: null },
+      { group: 'Group C', md: 5, h: 'Axtarm', a: 'Thryloi', hs: null, as: null },
+      { group: 'Group C', md: 5, h: 'Mila', a: 'Niki A.', hs: null, as: null },
+      { group: 'Group C', md: 5, h: 'Warriors', a: 'GB', hs: null, as: null }
+    ];
+
+    function normalizeTeamName(teamName) {
+      const key = String(teamName || '').trim();
+      return TEAM_ALIASES[key] || key;
     }
 
-    function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character])); }
+    const fixtures = rawFixtures.map((fixture, index) => ({
+      ...fixture,
+      id: `fixture-${index}`,
+      home: normalizeTeamName(fixture.h),
+      away: normalizeTeamName(fixture.a),
+      hs: fixture.hs ?? null,
+      as: fixture.as ?? null,
+      confirmed: fixture.hs !== null && fixture.as !== null
+    }));
+
+    groups.forEach(group => {
+      group.fixtures = fixtures.filter(fixture => fixture.group === group.name);
+    });
+
+    function computeGroupStandings(teams, groupFixtures) {
+      const standings = teams.map(teamKey => {
+        const team = teamData[teamKey] || { name: teamKey, logo: '' };
+        return {
+          team: team.name,
+          logo: team.logo,
+          p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0
+        };
+      });
+
+      const standingsByTeam = new Map(standings.map(row => [row.team, row]));
+
+      (groupFixtures || []).filter(f => f.hs !== null && f.as !== null).forEach(f => {
+        const home = standingsByTeam.get(f.home);
+        const away = standingsByTeam.get(f.away);
+        if (!home || !away) return;
+
+        home.p += 1; away.p += 1;
+        home.gf += f.hs; home.ga += f.as;
+        away.gf += f.as; away.ga += f.hs;
+        home.gd += f.hs - f.as; away.gd += f.as - f.hs;
+
+        if (f.hs > f.as) {
+          home.w += 1; home.pts += 3;
+          away.l += 1;
+        } else if (f.as > f.hs) {
+          away.w += 1; away.pts += 3;
+          home.l += 1;
+        } else {
+          home.d += 1; away.d += 1;
+          home.pts += 1; away.pts += 1;
+        }
+      });
+
+      return standings.sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        if (b.gd !== a.gd) return b.gd - a.gd;
+        if (b.gf !== a.gf) return b.gf - a.gf;
+        return a.team.localeCompare(b.team);
+      });
+    }
+
+    function renderGroups() {
+      document.getElementById('groups-grid').innerHTML = groups.map(group => {
+        const standings = computeGroupStandings(group.teams, group.fixtures);
+        const rows = standings.map((row, index) => {
+          const cls = index < 3 ? 'group-qual' : index === 3 ? 'group-best4' : 'group-elim';
+          return `
+            <tr class="${cls}">
+              <td>
+                <div class="team-cell">
+                  <img class="logo-preview" src="${escapeAttribute(row.logo)}" alt="${escapeAttribute(row.team)}" onerror="this.style.display='none'">
+                  <span>${escapeHtml(row.team)}</span>
+                </div>
+              </td>
+              <td>${row.p}</td>
+              <td>${row.w}</td>
+              <td>${row.d}</td>
+              <td>${row.l}</td>
+              <td>${row.gd > 0 ? '+' + row.gd : row.gd}</td>
+              <td><strong>${row.pts}</strong></td>
+            </tr>`;
+        }).join('');
+
+        const fixtureByMd = Object.values(group.fixtures.reduce((acc, fixture) => {
+          const key = String(fixture.md);
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(fixture);
+          return acc;
+        }, {}));
+
+        const fixtureRows = fixtureByMd
+          .sort((a, b) => Number(a[0].md) - Number(b[0].md))
+          .map(matches => `
+            <div class="fixture-md-block">
+              <div class="fixture-md-header">MD${matches[0].md}</div>
+              <div class="fixture-md-body">
+                ${matches.map(fixture => {
+                  const score = fixture.hs !== null && fixture.as !== null ? `${fixture.hs} - ${fixture.as}` : 'TBD';
+                  return `
+                    <div class="fixture-match">
+                      <span class="fixture-team home">${escapeHtml(fixture.home)}</span>
+                      <span class="fixture-score">${score}</span>
+                      <span class="fixture-team away">${escapeHtml(fixture.away)}</span>
+                    </div>`;
+                }).join('')}
+              </div>
+            </div>`).join('');
+
+        return `
+          <article class="group-card">
+            <div class="group-title">${escapeHtml(group.name)}</div>
+            <table class="group-table">
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>P</th>
+                  <th>W</th>
+                  <th>D</th>
+                  <th>L</th>
+                  <th>GD</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+            <div class="fixtures-section">
+              <div class="fixtures-title">Matchdays</div>
+              ${fixtureRows || '<div class="fixture-empty">No fixtures yet.</div>'}
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
     function escapeAttribute(value) { return escapeHtml(value); }
 
-    renderPots();
+    renderGroups();
+
+    const PSL6_SQUADS = {
+      'BADiles': ['Alexis Petrou', 'Nikos Sarantis'],
+      'Volos': ['Giannis Markou', 'Panos Zervas'],
+      'Midi Kidz': ['Lazaros Tsirogiannis', 'Kostas Kanellopoulos'],
+      'Team Till Death': ['Xaris Tsiaras', 'Giorgos Vourlidis'],
+      'Hornets': ['Manos Koulouris', 'Nikos Papademetriou'],
+      'EX7T': ['Spyros Daskalakis', 'Vangelis Triantafyllou'],
+      'R1': ['Konstantinos Rizou', 'Theo Papanikolaou'],
+      'Basement Boys': ['Vasilis Gkogkos', 'Thodoris Lappas'],
+      'Lampater': ['Antonis Tzoumakis', 'Tasos Karpas'],
+      'Polo': ['Giorgos Kalogiannis', 'Nickolas Argyros'],
+      'Ksades': ['Lefteris Alexiou', 'Nikos Karadimas'],
+      'Air Condition': ['Marios Toumpas', 'Dimitris Sideris'],
+      'Axtarmades': ['Pavlos Chatzis', 'Petros Lambropoulos'],
+      'Thryloi': ['Sakis Giannopoulos', 'Kostas Vlahos'],
+      'Mila': ['Dionysis Kotsis', 'Panagiotis Dimos'],
+      'Warriors': ['Giorgos Halatsis', 'Nikos Mylonas'],
+      'Niki Alimou': ['Alexandros Alimou', 'Manos Pavlou'],
+      'GB': ['Tom Gikas', 'Vangelis Mavridis']
+    };
+
+    let adminEvents = [];
+    let adminCurrentHome = '';
+    let adminCurrentAway = '';
+    let adminEditModal = null;
+
+    const PSL_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
+    const PSL_ADMIN = 'pitchball';
+    let _pslDbCache = null;
+    let _pslDbFetching = null;
+
+    async function pslDbGet() {
+      if (_pslDbCache) return _pslDbCache;
+      if (_pslDbFetching) return _pslDbFetching;
+      _pslDbFetching = fetch(PSL_DB_URL)
+        .then(r => r.json())
+        .then(data => {
+          _pslDbCache = data;
+          _pslDbFetching = null;
+          return _pslDbCache;
+        });
+      return _pslDbFetching;
+    }
+
+    async function pslDbSet(data) {
+      _pslDbCache = data;
+      await fetch(PSL_DB_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    }
+
+    function pslDbInvalidate() {
+      _pslDbCache = null;
+    }
+
+    let pslCurrentUser = null;
+
+    function pslLoadSession() {
+      const s = localStorage.getItem('psl_session');
+      return s ? JSON.parse(s) : null;
+    }
+
+    function pslSaveSession(u) {
+      localStorage.setItem('psl_session', JSON.stringify(u));
+    }
+
+    function pslClearSession() {
+      localStorage.removeItem('psl_session');
+    }
+
+    async function pslHashPass(pass) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass + 'psl5salt'));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function injectAuthStyles() {
+      if (document.getElementById('psl-auth-styles')) return;
+      const s = document.createElement('style');
+      s.id = 'psl-auth-styles';
+      s.textContent = `#psl-auth-widget{position:fixed;top:12px;right:14px;z-index:99999;font-family:system-ui,sans-serif;}.psl-aw-btn{display:flex;align-items:center;gap:7px;background:rgba(20,20,20,0.92);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;backdrop-filter:blur(8px);font-size:12px;color:#fff;font-weight:500;}.psl-aw-btn:hover{border-color:rgba(57,200,119,0.6);}.psl-aw-avatar{width:22px;height:22px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;}.psl-aw-avatar.guest{background:rgba(255,255,255,0.15);color:#fff;font-size:13px;}.psl-aw-drop{position:absolute;top:calc(100% + 8px);right:0;background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.5);display:none;}.psl-aw-drop.open{display:block;}.psl-aw-drop-header{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:10px;}.psl-aw-drop-header strong{display:block;font-size:14px;color:#fff;margin-bottom:1px;}.psl-aw-drop-item{display:block;width:100%;padding:11px 14px;font-size:13px;font-weight:500;color:#fff;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.1s;font-family:inherit;text-decoration:none;}.psl-aw-drop-item:hover{background:rgba(255,255,255,0.06);}.psl-aw-drop-item.danger{color:#e74c3c;}.psl-aw-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:2px 0;}.psl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}.psl-modal{background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:100%;max-width:380px;overflow:hidden;}.psl-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}.psl-modal-title{font-size:16px;font-weight:600;color:#fff;}.psl-modal-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:20px;line-height:1;padding:2px;font-family:inherit;}.psl-modal-bd{padding:1.5rem;}.psl-form-group{margin-bottom:14px;}.psl-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:5px;display:block;font-weight:500;}.psl-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;box-sizing:border-box;}.psl-input:focus{outline:none;border-color:#39c877;}.psl-input::placeholder{color:rgba(255,255,255,0.3);}.psl-btn-primary{width:100%;padding:10px;background:#39c877;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}.psl-btn-primary:hover{background:#2fb366;}.psl-btn-primary:disabled{opacity:0.4;cursor:not-allowed;}.psl-err{font-size:11px;color:#e74c3c;margin-top:6px;}.psl-ok{font-size:11px;color:#39c877;margin-top:6px;}.psl-tabs{display:flex;margin-bottom:1.5rem;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;gap:3px;}.psl-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;}.psl-tab.active{background:#39c877;color:#000;}.psl-avatar-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);display:block;margin:0 auto 12px;}`;
+      document.head.appendChild(s);
+    }
+
+    function renderWidget() {
+      if (!document.body) { setTimeout(renderWidget, 50); return; }
+      const ex = document.getElementById('psl-auth-widget');
+      if (ex) ex.remove();
+      const w = document.createElement('div');
+      w.id = 'psl-auth-widget';
+      if (pslCurrentUser) {
+        const avatarBtn = pslCurrentUser.avatar ? `<img src="${pslCurrentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=psl-aw-avatar>${pslCurrentUser.username[0].toUpperCase()}</div>'">` : `<div class="psl-aw-avatar">${pslCurrentUser.username[0].toUpperCase()}</div>`;
+        const avatarDrop = pslCurrentUser.avatar ? `<img src="${pslCurrentUser.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">` : `<div class="psl-aw-avatar" style="width:36px;height:36px;font-size:15px;">${pslCurrentUser.username[0].toUpperCase()}</div>`;
+        w.innerHTML = `<div class="psl-aw-btn" onclick="pslToggleDrop()">${avatarBtn}<span>${pslCurrentUser.username}</span><span style="color:rgba(255,255,255,0.3);font-size:10px;">▾</span></div><div class="psl-aw-drop" id="psl-aw-drop"><div class="psl-aw-drop-header">${avatarDrop}<div><strong>${pslCurrentUser.username}</strong>${pslCurrentUser.isAdmin ? '<span style="color:#39c877;font-size:10px;">⚡ Admin</span>' : ''}</div></div><button class="psl-aw-drop-item" onclick="pslOpenProfile()">🖼️ Edit Profile Picture</button><hr class="psl-aw-divider"><button class="psl-aw-drop-item danger" onclick="pslLogout()">Sign out</button></div>`;
+      } else {
+        w.innerHTML = `<div class="psl-aw-btn" onclick="pslOpenAuth('login')"><div class="psl-aw-avatar guest">👤</div><span>Sign in</span></div>`;
+      }
+      document.body.appendChild(w);
+      document.addEventListener('click', e => {
+        if (!w.contains(e.target)) {
+          const d = document.getElementById('psl-aw-drop');
+          if (d) d.classList.remove('open');
+        }
+      }, { capture: true });
+    }
+
+    function pslToggleDrop() {
+      document.getElementById('psl-aw-drop')?.classList.toggle('open');
+    }
+
+    function pslOpenProfile() {
+      document.getElementById('psl-aw-drop')?.classList.remove('open');
+      if (_authModal) _authModal.remove();
+      const o = document.createElement('div');
+      o.className = 'psl-modal-overlay';
+      o.id = 'psl-auth-modal';
+      const current = pslCurrentUser.avatar || '';
+      o.innerHTML = `<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">Profile Picture</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd">${current ? `<img src="${current}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">` : `<div style="width:72px;height:72px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#000;margin:0 auto 12px;" id="psl-avatar-preview">${pslCurrentUser.username[0].toUpperCase()}</div>`}<div class="psl-form-group"><label class="psl-label">Image URL</label><input class="psl-input" id="psl-avatar-url" placeholder="https://..." value="${current}" oninput="pslPreviewAvatar(this.value)"></div><p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:14px;line-height:1.5;">Paste a direct link to any image. Tip: upload to <a href="https://imgur.com" target="_blank" style="color:#39c877;">imgur.com</a> and use the direct link.</p><div class="psl-err" id="psl-avatar-err" style="display:none;"></div><div class="psl-ok" id="psl-avatar-ok" style="display:none;">Saved!</div><button class="psl-btn-primary" id="psl-avatar-btn" onclick="pslSaveAvatar()">Save</button>${current ? `<button style="width:100%;padding:9px;background:none;border:1px solid rgba(231,76,60,0.3);color:#e74c3c;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;" onclick="pslRemoveAvatar()">Remove picture</button>` : ''}</div></div>`;
+      o.addEventListener('click', e => { if (e.target === o) pslCloseAuth(); });
+      document.body.appendChild(o); _authModal = o;
+    }
+
+    function pslPreviewAvatar(url) {
+      const el = document.getElementById('psl-avatar-preview');
+      if (!el) return;
+      if (url) {
+        el.outerHTML = `<img src="${url}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`;
+      }
+    }
+
+    async function pslSaveAvatar() {
+      const url = document.getElementById('psl-avatar-url').value.trim();
+      const err = document.getElementById('psl-avatar-err');
+      const ok = document.getElementById('psl-avatar-ok');
+      const btn = document.getElementById('psl-avatar-btn');
+      err.style.display = 'none'; ok.style.display = 'none'; btn.disabled = true; btn.textContent = 'Saving...';
+      try {
+        const db = await pslDbGet();
+        const users = db.users || {};
+        const uKey = pslCurrentUser.username.toLowerCase();
+        if (!users[uKey]) {
+          err.textContent = 'User not found.';
+          err.style.display = 'block';
+          return;
+        }
+        users[uKey].avatar = url || null;
+        await pslDbSet({ ...db, users });
+        pslDbInvalidate();
+        pslCurrentUser.avatar = url || null;
+        pslSaveSession(pslCurrentUser);
+        ok.style.display = 'block';
+        setTimeout(() => { pslCloseAuth(); renderWidget(); }, 800);
+      } catch (e) {
+        err.textContent = 'Connection error. Try again.';
+        err.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save';
+      }
+    }
+
+    async function pslRemoveAvatar() {
+      document.getElementById('psl-avatar-url').value = '';
+      await pslSaveAvatar();
+    }
+
+    let _authModal = null;
+
+    function pslOpenAuth(tab = 'login') {
+      if (_authModal) _authModal.remove();
+      const o = document.createElement('div');
+      o.className = 'psl-modal-overlay';
+      o.id = 'psl-auth-modal';
+      o.innerHTML = `<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">PSL Account</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd"><div class="psl-tabs"><button class="psl-tab ${tab === 'login' ? 'active' : ''}" onclick="pslSwitchTab('login')">Sign In</button><button class="psl-tab ${tab === 'register' ? 'active' : ''}" onclick="pslSwitchTab('register')">Register</button></div><div id="psl-tab-login" ${tab !== 'login' ? 'style="display:none"' : ''}><div class="psl-form-group"><label class="psl-label">Username or Email</label><input class="psl-input" id="psl-li-user" placeholder="Enter username or email"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-li-pass" type="password" placeholder="Enter password"></div><div class="psl-err" id="psl-li-err" style="display:none"></div><button class="psl-btn-primary" id="psl-li-btn" onclick="pslDoLogin()">Sign In</button></div><div id="psl-tab-register" ${tab !== 'register' ? 'style="display:none"' : ''}><div class="psl-form-group"><label class="psl-label">Username</label><input class="psl-input" id="psl-rg-user" placeholder="Choose a username" maxlength="20"></div><div class="psl-form-group"><label class="psl-label">Email</label><input class="psl-input" id="psl-rg-email" type="email" placeholder="your@email.com"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-rg-pass" type="password" placeholder="Min. 6 characters"></div><div class="psl-err" id="psl-rg-err" style="display:none"></div><button class="psl-btn-primary" id="psl-rg-btn" onclick="pslDoRegister()">Create Account</button></div></div></div>`;
+      o.addEventListener('click', e => { if (e.target === o) pslCloseAuth(); });
+      document.body.appendChild(o); _authModal = o;
+    }
+
+    function pslCloseAuth() {
+      _authModal?.remove();
+      _authModal = null;
+    }
+
+    function pslSwitchTab(tab) {
+      document.getElementById('psl-tab-login').style.display = tab === 'login' ? '' : 'none';
+      document.getElementById('psl-tab-register').style.display = tab === 'register' ? '' : 'none';
+      document.querySelectorAll('.psl-tab').forEach((b, i) => b.classList.toggle('active', i === (tab === 'login' ? 0 : 1)));
+    }
+
+    async function pslDoLogin() {
+      const raw = document.getElementById('psl-li-user').value.trim();
+      const pass = document.getElementById('psl-li-pass').value;
+      const e = document.getElementById('psl-li-err');
+      e.style.display = 'none';
+      if (!raw || !pass) {
+        e.textContent = 'Please fill in all fields.';
+        e.style.display = 'block';
+        return;
+      }
+      const btn = document.getElementById('psl-li-btn');
+      btn.disabled = true; btn.textContent = 'Signing in...';
+      try {
+        const db = await pslDbGet();
+        const users = db.users || {};
+        const user = Object.values(users).find(u => u.username.toLowerCase() === raw.toLowerCase() || u.email.toLowerCase() === raw.toLowerCase());
+        if (!user) {
+          e.textContent = 'Account not found.';
+          e.style.display = 'block';
+          return;
+        }
+        const hash = await pslHashPass(pass);
+        if (hash !== user.passHash) {
+          e.textContent = 'Incorrect password.';
+          e.style.display = 'block';
+          return;
+        }
+        pslCurrentUser = { username: user.username, email: user.email, avatar: user.avatar || null, isAdmin: user.username.toLowerCase() === PSL_ADMIN };
+        pslSaveSession(pslCurrentUser);
+        pslCloseAuth();
+        renderWidget();
+        renderAdminControls();
+        if (typeof onPslLogin === 'function') onPslLogin(pslCurrentUser);
+      } catch (err) {
+        e.textContent = 'Connection error. Try again.';
+        e.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Sign In';
+      }
+    }
+
+    async function pslDoRegister() {
+      const username = document.getElementById('psl-rg-user').value.trim();
+      const email = document.getElementById('psl-rg-email').value.trim().toLowerCase();
+      const pass = document.getElementById('psl-rg-pass').value;
+      const e = document.getElementById('psl-rg-err');
+      e.style.display = 'none';
+      if (!username || !email || !pass) {
+        e.textContent = 'Please fill in all fields.';
+        e.style.display = 'block';
+        return;
+      }
+      if (username.length < 2) {
+        e.textContent = 'Username too short.';
+        e.style.display = 'block';
+        return;
+      }
+      if (pass.length < 6) {
+        e.textContent = 'Password must be 6+ characters.';
+        e.style.display = 'block';
+        return;
+      }
+      const btn = document.getElementById('psl-rg-btn');
+      btn.disabled = true; btn.textContent = 'Creating...';
+      try {
+        const db = await pslDbGet();
+        const users = db.users || {};
+        if (users[username.toLowerCase()]) {
+          e.textContent = 'Username taken.';
+          e.style.display = 'block';
+          return;
+        }
+        const passHash = await pslHashPass(pass);
+        users[username.toLowerCase()] = { username, email, passHash, avatar: null, joined: new Date().toISOString() };
+        await pslDbSet({ ...db, users });
+        pslDbInvalidate();
+        pslCurrentUser = { username, email, avatar: null, isAdmin: username.toLowerCase() === PSL_ADMIN };
+        pslSaveSession(pslCurrentUser);
+        pslCloseAuth();
+        renderWidget();
+        renderAdminControls();
+        if (typeof onPslLogin === 'function') onPslLogin(pslCurrentUser);
+      } catch (err) {
+        e.textContent = 'Connection error. Try again.';
+        e.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create Account';
+      }
+    }
+
+    function pslLogout() {
+      pslClearSession();
+      pslCurrentUser = null;
+      pslDbInvalidate();
+      renderWidget();
+      renderAdminControls();
+      if (typeof onPslLogout === 'function') onPslLogout();
+    }
+
+    async function pslAuthInit() {
+      injectAuthStyles();
+      const session = pslLoadSession();
+      if (session) {
+        try {
+          const db = await pslDbGet();
+          const uData = (db.users || {})[session.username.toLowerCase()];
+          if (uData) {
+            pslCurrentUser = { username: uData.username, email: uData.email, avatar: uData.avatar || null, isAdmin: uData.username.toLowerCase() === PSL_ADMIN };
+            pslSaveSession(pslCurrentUser);
+          } else {
+            pslClearSession();
+          }
+        } catch (err) {
+          pslCurrentUser = session;
+        }
+      }
+      renderWidget();
+      renderAdminControls();
+      if (pslCurrentUser && typeof onPslLogin === 'function') onPslLogin(pslCurrentUser);
+    }
+
+    async function syncMatchesFromDB() {
+      const db = await pslDbGet();
+      if (db.matches) {
+        fixtures.forEach(f => {
+          const overrides = db.matches[f.id];
+          if (overrides) {
+            f.hs = overrides.hs !== null ? overrides.hs : f.hs;
+            f.as = overrides.as !== null ? overrides.as : f.as;
+            if (f.hs !== null && f.as !== null) f.confirmed = true;
+            f.date = overrides.date || f.date;
+            f.mvp = overrides.mvp || f.mvp;
+            f.events = overrides.events || f.events;
+          }
+        });
+      }
+    }
+
+    function renderAdminControls() {
+      const container = document.getElementById('admin-edit-container');
+      if (!pslCurrentUser || !pslCurrentUser.isAdmin) return container.innerHTML = '';
+      container.innerHTML = `<button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">✏️ Admin: Edit Match</button>`;
+    }
+
+    function getPlayerOpts(selectedPlayer) {
+      const allPlayers = [...(PSL6_SQUADS[adminCurrentHome] || []), ...(PSL6_SQUADS[adminCurrentAway] || [])];
+      return `<option value="">-- Select Player --</option>` + allPlayers.map(p => `<option value="${p}" ${p === selectedPlayer ? 'selected' : ''}>${p}</option>`).join('');
+    }
+
+    function getTeamOpts(selectedTeam) {
+      return `<option value="">-- Select Team --</option>
+              <option value="${adminCurrentHome}" ${adminCurrentHome === selectedTeam ? 'selected' : ''}>${adminCurrentHome}</option>
+              <option value="${adminCurrentAway}" ${adminCurrentAway === selectedTeam ? 'selected' : ''}>${adminCurrentAway}</option>`;
+    }
+
+    function openAdminMatchEdit() {
+      if (adminEditModal) adminEditModal.remove();
+      const o = document.createElement('div');
+      o.className = 'psl-modal-overlay';
+      const matchOpts = fixtures.map(f => `<option value="${f.id}">${f.group}: ${f.home} vs ${f.away}</option>`).join('');
+
+      o.innerHTML = `
+        <div class="psl-modal" style="max-width:500px; max-height: 90vh; display:flex; flex-direction:column;">
+          <div class="psl-modal-hd">
+            <div class="psl-modal-title">Edit Match Data</div>
+            <button class="psl-modal-close" onclick="adminEditModal.remove(); adminEditModal=null;">×</button>
+          </div>
+          <div class="psl-modal-bd" style="overflow-y:auto;">
+            <div class="psl-form-group">
+              <label class="psl-label">Select Match</label>
+              <select class="psl-input" id="ae-match-id" onchange="loadAdminMatchData()">${matchOpts}</select>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div class="psl-form-group" style="flex:1;">
+                <label class="psl-label">Home Score</label>
+                <input type="number" class="psl-input" id="ae-hs" min="0">
+              </div>
+              <div class="psl-form-group" style="flex:1;">
+                <label class="psl-label">Away Score</label>
+                <input type="number" class="psl-input" id="ae-as" min="0">
+              </div>
+            </div>
+            <div class="psl-form-group">
+              <label class="psl-label">Match Date & Time</label>
+              <input type="datetime-local" class="psl-input" id="ae-date">
+            </div>
+            <div class="psl-form-group">
+              <label class="psl-label">MVP</label>
+              <select class="psl-input" id="ae-mvp"></select>
+            </div>
+            <div class="section-title" style="margin: 1.5rem 0 0.5rem; font-size:14px;">Events</div>
+            <div id="ae-events-container" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+            <button class="psl-btn-primary" style="background:#535c2f; color:#fff; margin-bottom:1.5rem;" onclick="addAdminEvent()">+ Add Event</button>
+            <div class="psl-err" id="ae-err" style="display:none;"></div>
+            <div class="psl-ok" id="ae-ok" style="display:none;">Saved to Firebase!</div>
+            <button class="psl-btn-primary" id="ae-btn" onclick="saveAdminMatch()">Save Match</button>
+          </div>
+        </div>`;
+      document.body.appendChild(o);
+      adminEditModal = o;
+      loadAdminMatchData();
+    }
+
+    async function loadAdminMatchData() {
+      const matchId = document.getElementById('ae-match-id').value;
+      const f = fixtures.find(x => x.id == matchId);
+      if (!f) return;
+      adminCurrentHome = f.home;
+      adminCurrentAway = f.away;
+
+      const db = await pslDbGet();
+      const data = (db.matches || {})[matchId] || {};
+
+      document.getElementById('ae-hs').value = data.hs !== undefined && data.hs !== null ? data.hs : '';
+      document.getElementById('ae-as').value = data.as !== undefined && data.as !== null ? data.as : '';
+      document.getElementById('ae-date').value = data.date || '';
+      document.getElementById('ae-mvp').innerHTML = getPlayerOpts(data.mvp);
+      adminEvents = data.events ? JSON.parse(JSON.stringify(data.events)) : [];
+      renderAdminEvents();
+    }
+
+    function renderAdminEvents() {
+      const c = document.getElementById('ae-events-container');
+      c.innerHTML = adminEvents.map((ev, i) => `
+        <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px; position:relative;">
+          <button onclick="removeAdminEvent(${i})" style="position:absolute;top:5px;right:5px;background:none;border:none;color:#e74c3c;cursor:pointer;">✕</button>
+          <select class="psl-input" style="margin-bottom:6px; width:calc(100% - 20px);" onchange="updateEvent(${i}, 'type', this.value)">
+            <option value="goal" ${ev.type === 'goal' ? 'selected' : ''}>Goal</option>
+            <option value="og" ${ev.type === 'og' ? 'selected' : ''}>Own Goal</option>
+            <option value="sub" ${ev.type === 'sub' ? 'selected' : ''}>Substitution</option>
+          </select>
+          <div style="display:flex; gap:6px;">
+            <select class="psl-input" onchange="updateEvent(${i}, 'team', this.value)">${getTeamOpts(ev.team)}</select>
+            ${ev.type !== 'sub' ? `
+              <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)">${getPlayerOpts(ev.player)}</select>
+              <input type="text" class="psl-input" style="width:70px;" placeholder="Score" value="${ev.scoreline || ''}" oninput="updateEvent(${i}, 'scoreline', this.value)">
+            ` : `
+              <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)"><option value="">-- IN --</option>${getPlayerOpts(ev.player)}</select>
+              <select class="psl-input" onchange="updateEvent(${i}, 'playerOut', this.value)"><option value="">-- OUT --</option>${getPlayerOpts(ev.playerOut)}</select>
+            `}
+          </div>
+        </div>`).join('');
+    }
+
+    function addAdminEvent() {
+      adminEvents.push({ type: 'goal', team: '', player: '', playerOut: '', scoreline: '' });
+      renderAdminEvents();
+    }
+
+    function removeAdminEvent(index) {
+      adminEvents.splice(index, 1);
+      renderAdminEvents();
+    }
+
+    function updateEvent(index, field, value) {
+      adminEvents[index][field] = value;
+      if (field === 'type') renderAdminEvents();
+    }
+
+    async function saveAdminMatch() {
+      if (!confirm('Are you sure you want to save this match? This action cannot be reversed!')) {
+        return;
+      }
+      const btn = document.getElementById('ae-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      const matchId = document.getElementById('ae-match-id').value;
+      const hs = parseInt(document.getElementById('ae-hs').value);
+      const as = parseInt(document.getElementById('ae-as').value);
+
+      try {
+        const db = await pslDbGet();
+        if (!db.matches) db.matches = {};
+
+        db.matches[matchId] = {
+          hs: isNaN(hs) ? null : hs,
+          as: isNaN(as) ? null : as,
+          date: document.getElementById('ae-date').value,
+          mvp: document.getElementById('ae-mvp').value,
+          events: adminEvents
+        };
+
+        await pslDbSet(db);
+        pslDbInvalidate();
+
+        document.getElementById('ae-ok').style.display = 'block';
+        document.getElementById('ae-err').style.display = 'none';
+
+        const f = fixtures.find(x => x.id == matchId);
+        if (f) {
+          f.hs = db.matches[matchId].hs;
+          f.as = db.matches[matchId].as;
+          f.confirmed = f.hs !== null && f.as !== null;
+          f.date = db.matches[matchId].date;
+          f.mvp = db.matches[matchId].mvp;
+          f.events = adminEvents;
+        }
+
+        renderGroups();
+        setTimeout(() => {
+          if (adminEditModal) {
+            adminEditModal.remove();
+            adminEditModal = null;
+          }
+        }, 1000);
+      } catch (e) {
+        document.getElementById('ae-err').textContent = 'Error saving to database.';
+        document.getElementById('ae-err').style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save Match';
+      }
+    }
+
+    window.onPslLogin = renderAdminControls;
+    window.onPslLogout = renderAdminControls;
+
+    injectAuthStyles();
+    document.addEventListener('DOMContentLoaded', () => {
+      pslAuthInit();
+      syncMatchesFromDB();
+    });
   </script>
+
+  <div id="admin-edit-container"></div>
 
 </body>
 </html>
