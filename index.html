@@ -232,6 +232,117 @@ body::before {
   animation: fadeUp 0.8s 0.8s forwards;
 }
 
+.fantasy-cta {
+  position: relative;
+  display: block;
+  margin: 0 auto 2rem;
+  padding: 1.5rem 1.6rem;
+  border-radius: 22px;
+  color: var(--text);
+  text-decoration: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(120, 87, 255, 0.28), transparent 22%),
+    radial-gradient(circle at 76% 30%, rgba(40, 180, 255, 0.26), transparent 20%),
+    radial-gradient(circle at 50% 80%, rgba(57, 200, 119, 0.18), transparent 24%),
+    linear-gradient(135deg, rgba(10, 12, 18, 0.96), rgba(17, 12, 35, 0.88));
+  border: 1px solid rgba(126, 110, 255, 0.52);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 0 20px rgba(126, 110, 255, 0.22),
+    0 0 60px rgba(60, 180, 255, 0.12);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.fantasy-cta::before,
+.fantasy-cta::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.fantasy-cta::before {
+  width: 300px;
+  height: 300px;
+  right: -40px;
+  top: -60px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2), rgba(255,255,255,0) 60%);
+  box-shadow:
+    0 0 30px rgba(138, 92, 255, 0.5),
+    0 0 80px rgba(40, 160, 255, 0.3);
+}
+
+.fantasy-cta::after {
+  width: 160px;
+  height: 160px;
+  left: 70px;
+  bottom: -40px;
+  background: radial-gradient(circle, rgba(57,200,119,0.18), rgba(57,200,119,0) 60%);
+  box-shadow: 0 0 30px rgba(57,200,119,0.2);
+}
+
+.fantasy-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 0 28px rgba(126,110,255,0.34),
+    0 0 80px rgba(40,160,255,0.2);
+  border-color: rgba(149, 133, 255, 0.7);
+}
+
+.fantasy-cta-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fantasy-cta-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.fantasy-cta-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.7);
+}
+
+.fantasy-cta-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+.fantasy-cta-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.72);
+  font-weight: 300;
+}
+
+.fantasy-cta-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  background: rgba(57, 200, 119, 0.12);
+  border: 1px solid rgba(57,200,119,0.45);
+  color: #bff5d8;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  box-shadow: 0 0 18px rgba(57,200,119,0.2);
+}
+
 .section-label {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 12px;
@@ -512,6 +623,17 @@ body::before {
 
   <!-- Seasons -->
   <div class="seasons-section">
+    <a href="https://fantasy.pitchball.gr" target="_blank" rel="noopener noreferrer" class="fantasy-cta" aria-label="Go to Pitchball Fantasy">
+      <div class="fantasy-cta-inner">
+        <div class="fantasy-cta-copy">
+          <span class="fantasy-cta-label">Fantasy League</span>
+          <span class="fantasy-cta-title">Pitchball Fantasy</span>
+          <span class="fantasy-cta-sub">Build your squad, track your lineup and chase the title.</span>
+        </div>
+        <span class="fantasy-cta-badge">Enter</span>
+      </div>
+    </a>
+
     <div class="section-label">PAGES</div>
     <div class="seasons-grid">
 
