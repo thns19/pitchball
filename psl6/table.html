@@ -468,7 +468,7 @@
         };
       });
 
-      const standingsByTeam = new Map(standings.map(row => [row.team, row]));
+      const standingsByTeam = new Map(teams.map((teamKey, index) => [teamKey, standings[index]]));
 
       (groupFixtures || []).filter(f => f.hs !== null && f.as !== null).forEach(f => {
         const home = standingsByTeam.get(f.home);
