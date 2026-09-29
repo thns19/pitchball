@@ -254,6 +254,31 @@
     text-transform: uppercase;
     padding: 7px 10px;
   }
+  .fixtures-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .fixtures-controls .fixtures-title { margin: 0; }
+  .matchday-nav { display: flex; align-items: center; gap: 8px; }
+  .matchday-nav-label { min-width: 64px; text-align: center; color: var(--text-muted); font-size: 11px; }
+  .matchday-nav-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    background: rgba(255,255,255,0.04);
+    color: var(--neon-cyan);
+    font: inherit;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .matchday-nav-btn:hover:not(:disabled) { background: rgba(0,240,255,0.12); border-color: var(--neon-cyan); }
+  .matchday-nav-btn:disabled { opacity: .35; cursor: default; }
   .fixture-md-body {
     display: flex;
     flex-direction: column;
@@ -389,6 +414,7 @@
       { name: 'Group B', teams: ['R1', 'Basement Boys', 'Lampater', 'Polo', 'Ksades', 'Air Condition'], fixtures: [] },
       { name: 'Group C', teams: ['Axtarmades', 'Thryloi', 'Spasmena Mila', 'Hitters', 'Niki Alimou', 'Golden B.'], fixtures: [] }
     ];
+    const selectedMatchdayByGroup = {};
 
     const rawFixtures = [
       { group: 'Group A', md: 1, h: 'EX7T', a: 'Midi', hs: null, as: null },
@@ -459,6 +485,27 @@
       group.fixtures = fixtures.filter(fixture => fixture.group === group.name);
     });
 
+    function groupMatchdays(group) {
+      return [...new Set(group.fixtures.map(fixture => Number(fixture.md)))].sort((a, b) => a - b);
+    }
+
+    function firstIncompleteMatchday(group, matchdays) {
+      return matchdays.find(matchday => group.fixtures.some(fixture =>
+        Number(fixture.md) === matchday && (fixture.hs === null || fixture.hs === undefined || fixture.as === null || fixture.as === undefined)
+      )) ?? matchdays[matchdays.length - 1];
+    }
+
+    function navigateMatchday(groupName, direction) {
+      const group = groups.find(item => item.name === groupName);
+      if (!group) return;
+      const matchdays = groupMatchdays(group);
+      const selected = selectedMatchdayByGroup[groupName] ?? firstIncompleteMatchday(group, matchdays);
+      const nextIndex = matchdays.indexOf(selected) + direction;
+      if (nextIndex < 0 || nextIndex >= matchdays.length) return;
+      selectedMatchdayByGroup[groupName] = matchdays[nextIndex];
+      renderGroups();
+    }
+
     function computeGroupStandings(teams, groupFixtures) {
       const standings = teams.map(teamKey => {
         const team = teamData[teamKey] || { name: teamKey, logo: '' };
@@ -523,20 +570,15 @@
             </tr>`;
         }).join('');
 
-        const fixtureByMd = Object.values(group.fixtures.reduce((acc, fixture) => {
-          const key = String(fixture.md);
-          if (!acc[key]) acc[key] = [];
-          acc[key].push(fixture);
-          return acc;
-        }, {}));
-
-        const fixtureRows = fixtureByMd
-          .sort((a, b) => Number(a[0].md) - Number(b[0].md))
-          .map(matches => `
+        const matchdays = groupMatchdays(group);
+        const selectedMatchday = selectedMatchdayByGroup[group.name] ?? firstIncompleteMatchday(group, matchdays);
+        const selectedIndex = matchdays.indexOf(selectedMatchday);
+        const selectedFixtures = group.fixtures.filter(fixture => Number(fixture.md) === selectedMatchday);
+        const fixtureRows = selectedFixtures.length ? `
             <div class="fixture-md-block">
-              <div class="fixture-md-header">MD${matches[0].md}</div>
+              <div class="fixture-md-header">MD${selectedMatchday}</div>
               <div class="fixture-md-body">
-                ${matches.map(fixture => {
+                ${selectedFixtures.map(fixture => {
                   const score = fixture.hs !== null && fixture.as !== null ? `${fixture.hs} - ${fixture.as}` : 'TBD';
                   return `
                     <a class="fixture-match" href="match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}">
@@ -546,7 +588,7 @@
                     </a>`;
                 }).join('')}
               </div>
-            </div>`).join('');
+            </div>` : '<div class="fixture-empty">No fixtures yet.</div>';
 
         return `
           <article class="group-card">
@@ -568,8 +610,15 @@
               </tbody>
             </table>
             <div class="fixtures-section">
-              <div class="fixtures-title">Matchdays</div>
-              ${fixtureRows || '<div class="fixture-empty">No fixtures yet.</div>'}
+              <div class="fixtures-controls">
+                <div class="fixtures-title">Matchday</div>
+                <div class="matchday-nav">
+                  <button class="matchday-nav-btn" type="button" aria-label="Previous matchday in ${escapeAttribute(group.name)}" onclick="navigateMatchday('${escapeAttribute(group.name)}', -1)" ${selectedIndex <= 0 ? 'disabled' : ''}>&larr;</button>
+                  <span class="matchday-nav-label">${selectedIndex + 1} / ${matchdays.length}</span>
+                  <button class="matchday-nav-btn" type="button" aria-label="Next matchday in ${escapeAttribute(group.name)}" onclick="navigateMatchday('${escapeAttribute(group.name)}', 1)" ${selectedIndex < 0 || selectedIndex >= matchdays.length - 1 ? 'disabled' : ''}>&rarr;</button>
+                </div>
+              </div>
+              ${fixtureRows}
             </div>
           </article>`;
       }).join('');
