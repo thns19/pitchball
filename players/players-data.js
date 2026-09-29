@@ -1063,6 +1063,39 @@
     upcoming: null,
     description: "TBA"
   },
+         {
+    id: "iro",
+    name: "Iro Ganti",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Hitters", logo:"hitters.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+         {
+    id: "theof",
+    name: "Theofania Sotiropoulou",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Hitters", logo:"hitters.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+         {
+    id: "toussi",
+    name: "Polixeni Toussi",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Hitters", logo:"hitters.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
 
     // â”€â”€ ADD MORE PLAYERS BELOW â”€â”€
   // {
