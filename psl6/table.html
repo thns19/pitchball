@@ -225,6 +225,46 @@
   .group-elim { border-left: 3px solid rgba(255,255,255,0.12); }
   .team-cell { display: flex; align-items: center; gap: 8px; }
   .logo-preview { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); }
+  .projection-panel {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(179,102,255,0.25);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(179,102,255,0.09), rgba(0,240,255,0.035));
+  }
+  .projection-panel[hidden], .projection-results[hidden] { display: none; }
+  .projection-panel-header { margin-bottom: 1rem; }
+  .projection-panel-header h3 { color: var(--text-main); font-size: 1rem; font-weight: 600; }
+  .projection-panel-header p { margin-top: 0.35rem; color: var(--text-muted); font-size: 0.78rem; line-height: 1.5; }
+  .projection-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+  .projection-button {
+    min-height: 40px;
+    padding: 9px 14px;
+    border: 1px solid rgba(0,240,255,0.35);
+    border-radius: 9px;
+    background: rgba(0,240,255,0.1);
+    color: var(--neon-cyan);
+    font: 600 12px 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .projection-button:hover:not(:disabled) { background: rgba(0,240,255,0.18); border-color: var(--neon-cyan); transform: translateY(-1px); }
+  .projection-button.secondary { border-color: rgba(255,255,255,0.16); background: rgba(255,255,255,0.045); color: var(--text-muted); }
+  .projection-button.secondary:hover:not(:disabled) { border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.08); color: var(--text-main); }
+  .projection-button:disabled { opacity: 0.55; cursor: wait; }
+  .projection-results { margin-top: 1.25rem; }
+  .projection-results h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .projection-results-note { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 1rem; }
+  .position-probability-card { margin-top: 12px; padding: 1rem; background: rgba(255,255,255,0.025); border: 1px solid var(--border-color); border-radius: 11px; overflow-x: auto; }
+  .position-probability-title { color: var(--neon-cyan); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 8px; text-transform: uppercase; }
+  .position-probability-table { width: 100%; min-width: 440px; border-collapse: collapse; font-size: 11px; }
+  .position-probability-table th, .position-probability-table td { padding: 7px 6px; border-bottom: 1px solid var(--border-color); text-align: center; white-space: nowrap; }
+  .position-probability-table th { color: var(--text-muted); font-weight: 600; }
+  .position-probability-table th:first-child, .position-probability-table td:first-child { text-align: left; }
+  .position-probability-table tr:last-child td { border-bottom: 0; }
+  .position-probability-table .prob-qual { color: var(--accent-green); }
+  .position-probability-table .prob-best4 { color: var(--accent-gold); }
+  .position-probability-table .prob-muted { color: var(--text-muted); }
   .fixtures-section {
     margin-top: 14px;
     border-top: 1px solid var(--border-color);
@@ -360,11 +400,26 @@
         <p>Fixtures and standings for all PSL6 groups.</p>
       </div>
       <div class="groups-grid" id="groups-grid"></div>
+      <div id="admin-projection-controls" class="projection-panel" hidden>
+        <div class="projection-panel-header">
+          <h3>Admin projections &amp; position odds</h3>
+          <p>Projected scores are temporary and are not saved. Simulations use confirmed results and resimulate every pending match.</p>
+        </div>
+        <div class="projection-actions">
+          <button class="projection-button" type="button" onclick="simulateAllProjections()">Simulate pending scores</button>
+          <button id="run-position-simulations" class="projection-button" type="button" onclick="runPositionSimulations()">Run 10,000 position simulations</button>
+          <button id="run-best-fourth-simulations" class="projection-button" type="button" onclick="runBestFourthSimulations()">Project best fourth-place cutoff</button>
+          <button class="projection-button secondary" type="button" onclick="clearAllProjections()">Clear projected scores</button>
+        </div>
+        <div id="projection-results" class="projection-results" hidden></div>
+        <div id="best-fourth-results" class="projection-results" hidden></div>
+      </div>
     </section>
 
     <a href="index.html" class="back-link">&larr; Back to PSL6</a>
   </div>
 
+  <script src="teams.js"></script>
   <script>
     const teamData = {
       'BADiles': { name: 'BADiles', logo: 'logos/badiles.png' },
@@ -415,6 +470,9 @@
       { name: 'Group C', teams: ['Axtarmades', 'Thryloi', 'Spasmena Mila', 'Hitters', 'Niki Alimou', 'Golden B.'], fixtures: [] }
     ];
     const selectedMatchdayByGroup = {};
+    const projectionRatings = window.PSL6_DATA.teams;
+    const projectionRatingAliases = { 'Thryloi': 'Oi Thryloi', 'Golden B.': 'Golden Bullet' };
+    let pslCurrentUser = null;
 
     const rawFixtures = [
       { group: 'Group A', md: 1, h: 'EX7T', a: 'Midi', hs: null, as: null },
@@ -506,10 +564,20 @@
       renderGroups();
     }
 
+    function isPslAdmin() {
+      return Boolean(pslCurrentUser && pslCurrentUser.isAdmin);
+    }
+
+    function getProjectionScore(fixture) {
+      if (!isPslAdmin() || !fixture.projected) return null;
+      return { hs: fixture.projectedHs, as: fixture.projectedAs };
+    }
+
     function computeGroupStandings(teams, groupFixtures) {
       const standings = teams.map(teamKey => {
         const team = teamData[teamKey] || { name: teamKey, logo: '' };
         return {
+          teamKey,
           team: team.name,
           logo: team.logo,
           p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0
@@ -518,26 +586,31 @@
 
       const standingsByTeam = new Map(teams.map((teamKey, index) => [teamKey, standings[index]]));
 
-      (groupFixtures || []).filter(f => f.hs !== null && f.as !== null).forEach(f => {
+      (groupFixtures || []).forEach(f => {
+        const projectedScore = getProjectionScore(f);
+        const hasConfirmedScore = f.hs !== null && f.hs !== undefined && f.as !== null && f.as !== undefined;
+        const hs = hasConfirmedScore ? f.hs : projectedScore?.hs;
+        const as = hasConfirmedScore ? f.as : projectedScore?.as;
+        if (hs === null || hs === undefined || as === null || as === undefined) return;
         const home = standingsByTeam.get(f.home);
         const away = standingsByTeam.get(f.away);
         if (!home || !away) return;
 
         home.p += 1; away.p += 1;
-        home.gf += f.hs; home.ga += f.as;
-        away.gf += f.as; away.ga += f.hs;
-        home.gd += f.hs - f.as; away.gd += f.as - f.hs;
+        home.gf += hs; home.ga += as;
+        away.gf += as; away.ga += hs;
 
-        if (f.hs > f.as) {
+        if (hs > as) {
           home.w += 1; home.pts += 3;
           away.l += 1;
-        } else if (f.as > f.hs) {
+        } else if (as > hs) {
           away.w += 1; away.pts += 3;
           home.l += 1;
         } else {
           home.d += 1; away.d += 1;
           home.pts += 1; away.pts += 1;
         }
+        home.gd += hs - as; away.gd += as - hs;
       });
 
       return standings.sort((a, b) => {
@@ -579,13 +652,21 @@
               <div class="fixture-md-header">MD${selectedMatchday}</div>
               <div class="fixture-md-body">
                 ${selectedFixtures.map(fixture => {
-                  const score = fixture.hs !== null && fixture.as !== null ? `${fixture.hs} - ${fixture.as}` : 'TBD';
+                  const projectedScore = getProjectionScore(fixture);
+                  const hasConfirmedScore = fixture.hs !== null && fixture.as !== null;
+                  const score = hasConfirmedScore
+                    ? `${fixture.hs} - ${fixture.as}`
+                    : projectedScore
+                      ? `${projectedScore.hs} - ${projectedScore.as}`
+                      : 'TBD';
+                  const projectionBadge = projectedScore ? '<span style="display:block;font-size:9px;color:var(--neon-purple);">PROJECTED</span>' : '';
+                  const fixtureUrl = `match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}`;
                   return `
-                    <a class="fixture-match" href="match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}">
+                    <div class="fixture-match">
                       <span class="fixture-team home">${escapeHtml(fixture.home)}</span>
-                      <span class="fixture-score">${score}</span>
+                      <span class="fixture-score">${hasConfirmedScore ? `<a href="${fixtureUrl}" style="color:inherit;text-decoration:none;">${score}</a>` : `${score}${projectionBadge}`}</span>
                       <span class="fixture-team away">${escapeHtml(fixture.away)}</span>
-                    </a>`;
+                    </div>`;
                 }).join('')}
               </div>
             </div>` : '<div class="fixture-empty">No fixtures yet.</div>';
@@ -626,6 +707,169 @@
 
     function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
     function escapeAttribute(value) { return escapeHtml(value); }
+
+    function simulateScore(homeName, awayName) {
+      const home = projectionRatings[homeName] || projectionRatings[projectionRatingAliases[homeName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
+      const away = projectionRatings[awayName] || projectionRatings[projectionRatingAliases[awayName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
+      const overall = team => team.att * 0.35 + team.def * 0.3 + team.stm * 0.15 + team.con * 0.2;
+      const homeAdvantage = Math.max(0.04, Math.min(0.96, 0.5 + (overall(home) - overall(away)) * 0.007));
+      let hs = 0;
+      let as = 0;
+      let rallies = 0;
+      while (rallies++ < 300) {
+        if (Math.random() < homeAdvantage) hs++;
+        else as++;
+        if (Math.max(hs, as) >= 5 && Math.abs(hs - as) >= 2) break;
+      }
+      return { hs, as };
+    }
+
+    function simulateAllProjections() {
+      if (!isPslAdmin()) return;
+      fixtures.forEach(fixture => {
+        if (!fixture.confirmed && fixture.hs === null && fixture.as === null) {
+          const score = simulateScore(fixture.home, fixture.away);
+          fixture.projectedHs = score.hs;
+          fixture.projectedAs = score.as;
+          fixture.projected = true;
+        }
+      });
+      renderGroups();
+    }
+
+    function clearAllProjections() {
+      if (!isPslAdmin()) return;
+      fixtures.forEach(fixture => {
+        fixture.projectedHs = null;
+        fixture.projectedAs = null;
+        fixture.projected = false;
+      });
+      document.getElementById('projection-results').hidden = true;
+      document.getElementById('best-fourth-results').hidden = true;
+      renderGroups();
+    }
+
+    function runPositionSimulations() {
+      if (!isPslAdmin()) return;
+      const button = document.getElementById('run-position-simulations');
+      const results = document.getElementById('projection-results');
+      button.disabled = true;
+      button.textContent = 'Simulating...';
+      setTimeout(() => {
+        try {
+          const simulationCount = 10000;
+          const groupCounts = groups.map(group => {
+            const positionCounts = Object.fromEntries(group.teams.map(team => [team, Array(group.teams.length).fill(0)]));
+            for (let run = 0; run < simulationCount; run++) {
+              const simulatedFixtures = group.fixtures.map(fixture => {
+                if (fixture.confirmed && fixture.hs !== null && fixture.as !== null) return fixture;
+                return { ...fixture, ...simulateScore(fixture.home, fixture.away), projected: false };
+              });
+              computeGroupStandings(group.teams, simulatedFixtures)
+                .forEach((standing, position) => positionCounts[standing.teamKey][position]++);
+            }
+            return { group, positionCounts };
+          });
+
+          results.innerHTML = `
+            <h3>Position probabilities</h3>
+            <p class="projection-results-note">Chance of finishing in each position, based on ${simulationCount.toLocaleString()} simulations per group. Green = top 3; gold = 4th.</p>
+            ${groupCounts.map(({ group, positionCounts }) => {
+              const currentOrder = computeGroupStandings(group.teams, group.fixtures).map(row => row.teamKey);
+              return `<div class="position-probability-card">
+                <div class="position-probability-title">${escapeHtml(group.name)}</div>
+                <table class="position-probability-table">
+                  <thead><tr><th>Team</th>${group.teams.map((_, index) => `<th class="${index < 3 ? 'prob-qual' : index === 3 ? 'prob-best4' : 'prob-muted'}">${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'}</th>`).join('')}</tr></thead>
+                  <tbody>${currentOrder.map(team => `<tr>
+                    <td>${escapeHtml(teamData[team]?.name || team)}</td>
+                    ${positionCounts[team].map((count, position) => {
+                      const percentage = count / simulationCount * 100;
+                      const label = percentage >= 1 ? `${percentage.toFixed(0)}%` : percentage > 0 ? '&lt;1%' : '—';
+                      const className = position < 3 ? 'prob-qual' : position === 3 ? 'prob-best4' : 'prob-muted';
+                      return `<td class="${className}">${label}</td>`;
+                    }).join('')}
+                  </tr>`).join('')}</tbody>
+                </table>
+              </div>`;
+            }).join('')}`;
+          results.hidden = false;
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Run 10,000 position simulations';
+        }
+      }, 30);
+    }
+
+    function runBestFourthSimulations() {
+      if (!isPslAdmin()) return;
+      const button = document.getElementById('run-best-fourth-simulations');
+      const results = document.getElementById('best-fourth-results');
+      button.disabled = true;
+      button.textContent = 'Simulating...';
+      setTimeout(() => {
+        try {
+          const simulationCount = 10000;
+          const scenarioCounts = new Map();
+          const groupQualificationCounts = Object.fromEntries(groups.map(group => [group.name, 0]));
+
+          for (let run = 0; run < simulationCount; run++) {
+            const fourthPlaceTeams = groups.map(group => {
+              const simulatedFixtures = group.fixtures.map(fixture => {
+                if (fixture.confirmed && fixture.hs !== null && fixture.as !== null) return fixture;
+                return { ...fixture, ...simulateScore(fixture.home, fixture.away), projected: false };
+              });
+              return computeGroupStandings(group.teams, simulatedFixtures)[3];
+            });
+
+            const bestFourth = fourthPlaceTeams.reduce((best, candidate) => {
+              if (candidate.pts !== best.pts) return candidate.pts > best.pts ? candidate : best;
+              if (candidate.gd !== best.gd) return candidate.gd > best.gd ? candidate : best;
+              if (candidate.gf !== best.gf) return candidate.gf > best.gf ? candidate : best;
+              return candidate.teamKey.localeCompare(best.teamKey) < 0 ? candidate : best;
+            });
+            const qualifyingGroup = groups.find(group => group.teams.includes(bestFourth.teamKey));
+            groupQualificationCounts[qualifyingGroup.name]++;
+            const scenario = `${bestFourth.pts}|${bestFourth.gd}`;
+            scenarioCounts.set(scenario, (scenarioCounts.get(scenario) || 0) + 1);
+          }
+
+          const mostCommonScenarios = [...scenarioCounts.entries()]
+            .map(([scenario, count]) => {
+              const [points, goalDifference] = scenario.split('|').map(Number);
+              return { points, goalDifference, count };
+            })
+            .sort((a, b) => b.count - a.count || b.points - a.points || b.goalDifference - a.goalDifference)
+            .slice(0, 8);
+
+          results.innerHTML = `
+            <h3>Best fourth-place qualification cutoff</h3>
+            <p class="projection-results-note">Eight most frequent points and goal-difference cutoffs for the qualifying fourth-place team across ${simulationCount.toLocaleString()} simulated seasons. The team with the most points qualifies; goal difference breaks a points tie.</p>
+            <div class="position-probability-card">
+              <table class="position-probability-table">
+                <thead><tr><th>#</th><th>Points</th><th>Goal difference</th><th>Frequency</th><th>Share</th></tr></thead>
+                <tbody>${mostCommonScenarios.map((scenario, index) => `<tr>
+                  <td class="prob-muted">${index + 1}</td>
+                  <td class="prob-qual">${scenario.points}</td>
+                  <td class="${scenario.goalDifference >= 0 ? 'prob-qual' : 'prob-muted'}">${scenario.goalDifference > 0 ? '+' : ''}${scenario.goalDifference}</td>
+                  <td>${scenario.count.toLocaleString()}</td>
+                  <td>${(scenario.count / simulationCount * 100).toFixed(1)}%</td>
+                </tr>`).join('')}</tbody>
+              </table>
+            </div>
+            <div class="position-probability-card">
+              <div class="position-probability-title">Share of qualifying best-fourth finishes</div>
+              ${groups.map(group => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>${escapeHtml(group.name)}</span>
+                <strong>${(groupQualificationCounts[group.name] / simulationCount * 100).toFixed(1)}%</strong>
+              </div>`).join('')}
+            </div>`;
+          results.hidden = false;
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Project best fourth-place cutoff';
+        }
+      }, 30);
+    }
 
     renderGroups();
 
@@ -682,8 +926,6 @@
     function pslDbInvalidate() {
       _pslDbCache = null;
     }
-
-    let pslCurrentUser = null;
 
     function pslLoadSession() {
       const s = localStorage.getItem('psl_session');
@@ -973,9 +1215,25 @@
     }
 
     function renderAdminControls() {
+      const isAdmin = isPslAdmin();
+      const projectionControls = document.getElementById('admin-projection-controls');
+      projectionControls.hidden = !isAdmin;
+      if (!isAdmin) {
+        fixtures.forEach(fixture => {
+          fixture.projectedHs = null;
+          fixture.projectedAs = null;
+          fixture.projected = false;
+        });
+        const projectionResults = document.getElementById('projection-results');
+        projectionResults.innerHTML = '';
+        projectionResults.hidden = true;
+        const bestFourthResults = document.getElementById('best-fourth-results');
+        bestFourthResults.innerHTML = '';
+        bestFourthResults.hidden = true;
+      }
       const container = document.getElementById('admin-edit-container');
-      if (!pslCurrentUser || !pslCurrentUser.isAdmin) return container.innerHTML = '';
-      container.innerHTML = `<button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">✏️ Admin: Edit Match</button>`;
+      container.innerHTML = isAdmin ? `<button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">✏️ Admin: Edit Match</button>` : '';
+      renderGroups();
     }
 
     function getPlayerOpts(selectedPlayer) {

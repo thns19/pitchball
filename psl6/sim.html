@@ -456,52 +456,9 @@
 
 </div>
 
+<script src="teams.js"></script>
 <script>
-// ── SHARED DATA ──────────────────────────────────────────────────
-// Ratings on a 1–100 scale (att/def/stm/con/ten)
-const teams = {
-  "BADiles":         {att:89, def:91, stm:77, con:92, ten:81, tactic:"Zonal",   notes:"Thanos Chatziiordanou, Dimitris Gavalas"},
-  "R1":              {att:90, def:85, stm:89, con:80, ten:77, tactic:"Fluid",   notes:"Nikolas Moschonas, Michalis Lerogiannis"},
-  "Volos Drummers":  {att:70, def:81, stm:78, con:81, ten:63, tactic:"Zonal",   notes:"Vasilis Tzovanis, Giorgos Zacharopoulos, Giannis Stefanis"},
-  "Oi Thryloi":      {att:79, def:82, stm:78, con:84, ten:70, tactic:"Unknown", notes:"Vasilis Efstathiou, Alexandros Kalofolias"},
-  "Basement Boys":      {att:81, def:81, stm:80, con:67, ten:73, tactic:"Front-Back", notes:"Jordan Aslanis, Spyros Koskinas"},
-  "Warriors":      {att:51, def:66, stm:62, con:71, ten:30, tactic:"Front-Back", notes:"Panos Chardas, Sokratis Gkiolias Sr."},
-  "Team Till Death":      {att:39, def:43, stm:55, con:48, ten:31, tactic:"Zonal", notes:"Giorgos Karamolegkos, Miltos Kapnakis"},
-  "Spasmena Mila":      {att:75, def:70, stm:60, con:52, ten:55, tactic:"Front-Back", notes:"Aris Tsertos, Kalliopi Tsertou, Taxiarchis Kassotakis, Petros Papaspyropoulos"},
-  "Lampater":      {att:78, def:74, stm:77, con:70, ten:69, tactic:"Zonal", notes:"Johan Pilichos, Tzannis Mermigas, Stavros Stavropoulos, Giannis Akridas"},
-  "EX7T":      {att:46, def:53, stm:49, con:55, ten:32, tactic:"Front-Back", notes:"Sokratis Gkiolias Jr., Avaris Ntzamilis"},
-  "Polo":      {att:74, def:67, stm:62, con:67, ten:65, tactic:"Front-Back", notes:"Dimitris Antoninis, Filippos Laskaris"},
-  "Hornets":      {att:37, def:50, stm:44, con:34, ten:30, tactic:"Zonal", notes:"Christos Katopodis, Ennio Georgopoulos"},
-  "Ksades":      {att:34, def:40, stm:37, con:42, ten:31, tactic:"Unknown", notes:"Foivos Dousis, Konstantinos Sfikas"},
-  "Axtarmades":      {att:86, def:78, stm:84, con:70, ten:88, tactic:"Zonal", notes:"Giorgos Filippou, Filippos Efstathiou, Harris Rigas"},
-  "Golden Bullet":      {att:25, def:25, stm:25, con:25, ten:25, tactic:"Unknown", notes:"Giannis Katsavounis, Markos Kanellidis"},
-  "Niki Alimou":      {att:19, def:20, stm:29, con:11, ten:6, tactic:"Chaos", notes:"Dionysis Halikias, Panagiotis Perdikis, Orfeas Maragkos"},
-  "Midi Kidz":      {att:54, def:61, stm:62, con:47, ten:52, tactic:"Unknown", notes:"Stefanos Mavrogiannis, Stavros Moutaftsidis"},
-  "Air Condition":      {att:41, def:35, stm:49, con:40, ten:35, tactic:"Front-Back", notes:"Giannis Kordopatis, Pavlos Tsonis"},
-};
-
-const logos = {
-  "BADiles":        "logos/badiles.png",
-  "R1":             "logos/r1.png",
-  "Volos Drummers": "logos/volos.png",
-  "Oi Thryloi":     "logos/thryloi.png",
-  "Basement Boys": "logos/basement.png",
-  "Warriors": "logos/warriors.png",
-  "Team Till Death": "logos/ttd.png",
-  "Spasmena Mila": "logos/spasmena.png",
-  "Lampater": "logos/lpc.png",
-  "EX7T": "logos/ex7t.png",
-  "Polo": "logos/polo.png",
-  "Hornets": "logos/hornets.png",
-  "Ksades": "logos/ksades.png",
-  "Axtarmades": "logos/axtar.png",
-  "Golden Bullet": "logos/gb.png",
-  "Niki Alimou": "logos/alimou.png",
-  "Midi Kidz": "logos/midi.png",
-  "Air Condition": "logos/ac.png"
-};
-
-const names = Object.keys(teams);
+const { teams, logos, names } = window.PSL6_DATA;
 
 function logoImg(name, size=20) {
   return logos[name] ? `<img src="${logos[name]}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:5px;vertical-align:middle;margin-right:6px;" onerror="this.style.display='none'">` : '';
