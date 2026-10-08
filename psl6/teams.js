@@ -18,7 +18,7 @@ window.PSL6_DATA = {
     "Axtarmades":      {att:86, def:78, stm:84, con:70, ten:88, tactic:"Zonal", notes:"Giorgos Filippou, Filippos Efstathiou, Harris Rigas"},
     "Golden Bullet":   {att:41, def:48, stm:49, con:44, ten:35, tactic:"Zonal", notes:"Giannis Katsavounis, Markos Kanellidis"},
     "Niki Alimou":     {att:19, def:20, stm:29, con:11, ten:6, tactic:"Chaos", notes:"Dionysis Halikias, Panagiotis Perdikis, Orfeas Maragkos"},
-    "Midi Kidz":       {att:54, def:61, stm:62, con:47, ten:52, tactic:"Unknown", notes:"Stefanos Mavrogiannis, Stavros Moutaftsidis"},
+    "Midi Kidz":       {att:54, def:61, stm:62, con:47, ten:52, tactic:"Front-Back", notes:"Stefanos Mavrogiannis, Stavros Moutaftsidis"},
     "Air Condition":   {att:41, def:35, stm:49, con:40, ten:35, tactic:"Front-Back", notes:"Giannis Kordopatis, Pavlos Tsonis"},
   },
   logos: {

@@ -237,6 +237,18 @@
   .projection-panel-header h3 { color: var(--text-main); font-size: 1rem; font-weight: 600; }
   .projection-panel-header p { margin-top: 0.35rem; color: var(--text-muted); font-size: 0.78rem; line-height: 1.5; }
   .projection-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+  .qualification-controls { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 12px; }
+  .qualification-team-select {
+    min-height: 40px;
+    min-width: 190px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 9px;
+    background: rgba(255,255,255,0.045);
+    color: var(--text-main);
+    font: 500 12px 'Space Grotesk', sans-serif;
+  }
+  .qualification-team-select:focus { outline: none; border-color: var(--neon-cyan); }
   .projection-button {
     min-height: 40px;
     padding: 9px 14px;
@@ -252,6 +264,8 @@
   .projection-button.secondary { border-color: rgba(255,255,255,0.16); background: rgba(255,255,255,0.045); color: var(--text-muted); }
   .projection-button.secondary:hover:not(:disabled) { border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.08); color: var(--text-main); }
   .projection-button:disabled { opacity: 0.55; cursor: wait; }
+  #run-qualification-simulations:disabled { cursor: not-allowed; }
+  #run-qualification-simulations.is-simulating:disabled { cursor: wait; }
   .projection-results { margin-top: 1.25rem; }
   .projection-results h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
   .projection-results-note { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 1rem; }
@@ -359,6 +373,31 @@
     font-weight: 700;
     font-size: 11px;
   }
+  .preview-score-inputs { display: inline-flex; align-items: center; gap: 4px; }
+  .preview-score-control { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .preview-score-input {
+    width: 38px;
+    padding: 5px 3px;
+    border: 1px solid rgba(179,102,255,0.4);
+    border-radius: 6px;
+    background: rgba(0,0,0,0.25);
+    color: var(--text-main);
+    font: 600 12px 'Space Grotesk', sans-serif;
+    text-align: center;
+  }
+  .preview-score-input:focus { outline: none; border-color: var(--neon-cyan); }
+  .preview-score-lock {
+    padding: 3px 6px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font: 600 9px 'Space Grotesk', sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .preview-score-lock.locked { border-color: rgba(57,200,119,0.55); color: #39c877; }
+  .preview-score-lock:disabled { opacity: 0.45; cursor: not-allowed; }
   .fixture-empty {
     color: var(--text-muted);
     font-size: 12px;
@@ -376,6 +415,10 @@
   }
 
   select.psl-input option {
+    background: #1e2010;
+    color: #ffffff;
+  }
+  select.qualification-team-select option {
     background: #1e2010;
     color: #ffffff;
   }
@@ -403,14 +446,21 @@
       <div id="admin-projection-controls" class="projection-panel" hidden>
         <div class="projection-panel-header">
           <h3>Admin projections &amp; position odds</h3>
-          <p>Projected scores are temporary and are not saved. Simulations use confirmed results and resimulate every pending match.</p>
+          <p>Enter scores beside pending fixtures to preview how they change the standings, or simulate pending matches. Simulations use team ratings with no home advantage. Previews are temporary and are not saved.</p>
         </div>
         <div class="projection-actions">
           <button class="projection-button" type="button" onclick="simulateAllProjections()">Simulate pending scores</button>
-          <button id="run-position-simulations" class="projection-button" type="button" onclick="runPositionSimulations()">Run 10,000 position simulations</button>
-          <button id="run-best-fourth-simulations" class="projection-button" type="button" onclick="runBestFourthSimulations()">Project best fourth-place cutoff</button>
+          <button id="run-position-simulations" class="projection-button" type="button" onclick="runPositionSimulations()">Run 50,000 position simulations</button>
+          <button id="run-best-fourth-simulations" class="projection-button" type="button" onclick="runBestFourthSimulations()">Run 50,000 fourth-place cutoff simulations</button>
           <button class="projection-button secondary" type="button" onclick="clearAllProjections()">Clear projected scores</button>
         </div>
+        <div class="qualification-controls">
+          <select id="qualification-team" class="qualification-team-select" aria-label="Select team for qualification simulation" onchange="document.getElementById('run-qualification-simulations').disabled = !this.value">
+            <option value="">Choose a team</option>
+          </select>
+          <button id="run-qualification-simulations" class="projection-button" type="button" onclick="runQualificationSimulations()" disabled>Run 50,000 qualification simulations</button>
+        </div>
+        <div id="qualification-results" class="projection-results" hidden></div>
         <div id="projection-results" class="projection-results" hidden></div>
         <div id="best-fourth-results" class="projection-results" hidden></div>
       </div>
@@ -573,6 +623,96 @@
       return { hs: fixture.projectedHs, as: fixture.projectedAs };
     }
 
+    function renderStandingsRows(standings) {
+      return standings.map((row, index) => {
+        const cls = index < 3 ? 'group-qual' : index === 3 ? 'group-best4' : 'group-elim';
+        return `
+          <tr class="${cls}">
+            <td>
+              <div class="team-cell">
+                <img class="logo-preview" src="${escapeAttribute(row.logo)}" alt="${escapeAttribute(row.team)}" onerror="this.style.display='none'">
+                <span>${escapeHtml(row.team)}</span>
+              </div>
+            </td>
+            <td>${row.p}</td>
+            <td>${row.w}</td>
+            <td>${row.d}</td>
+            <td>${row.l}</td>
+            <td>${row.gd > 0 ? '+' + row.gd : row.gd}</td>
+            <td><strong>${row.pts}</strong></td>
+          </tr>`;
+      }).join('');
+    }
+
+    function updateStandings() {
+      groups.forEach((group, index) => {
+        const body = document.getElementById(`standings-${index}`);
+        if (body) body.innerHTML = renderStandingsRows(computeGroupStandings(group.teams, group.fixtures));
+      });
+    }
+
+    function hasValidPreviewScore(fixture) {
+      const homeScore = fixture.previewDraftHs;
+      const awayScore = fixture.previewDraftAs;
+      return homeScore !== undefined && homeScore !== null && homeScore !== ''
+        && awayScore !== undefined && awayScore !== null && awayScore !== ''
+        && Number.isInteger(Number(homeScore)) && Number(homeScore) >= 0
+        && Number.isInteger(Number(awayScore)) && Number(awayScore) >= 0;
+    }
+
+    function updatePreviewScore(fixtureId, side, input) {
+      if (!isPslAdmin()) return;
+      const fixture = fixtures.find(item => item.id === fixtureId);
+      if (!fixture || (fixture.hs !== null && fixture.as !== null) || !input.checkValidity()) {
+        input.reportValidity();
+        return;
+      }
+
+      if (fixture.previewDraftHs === undefined) {
+        fixture.previewDraftHs = fixture.projected ? String(fixture.projectedHs) : '';
+        fixture.previewDraftAs = fixture.projected ? String(fixture.projectedAs) : '';
+      }
+      fixture[side === 'hs' ? 'previewDraftHs' : 'previewDraftAs'] = input.value;
+
+      const homeScore = fixture.previewDraftHs;
+      const awayScore = fixture.previewDraftAs;
+      const hasBothScores = hasValidPreviewScore(fixture);
+      if (hasBothScores) {
+        fixture.projectedHs = Number(homeScore);
+        fixture.projectedAs = Number(awayScore);
+        fixture.projected = true;
+      } else {
+        fixture.projectedHs = null;
+        fixture.projectedAs = null;
+        fixture.projected = false;
+        fixture.tempLocked = false;
+      }
+      const lockButton = document.getElementById(`preview-lock-${fixtureId}`);
+      if (lockButton) {
+        lockButton.disabled = !hasBothScores;
+        lockButton.classList.toggle('locked', Boolean(fixture.tempLocked));
+        lockButton.textContent = fixture.tempLocked ? 'Locked for sims' : 'Lock for sims';
+        lockButton.setAttribute('aria-pressed', String(Boolean(fixture.tempLocked)));
+        lockButton.setAttribute('aria-label', fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations');
+      }
+      updateStandings();
+    }
+
+    function togglePreviewScoreLock(fixtureId) {
+      if (!isPslAdmin()) return;
+      const fixture = fixtures.find(item => item.id === fixtureId);
+      if (!fixture || (fixture.hs !== null && fixture.as !== null)) return;
+      if (!hasValidPreviewScore(fixture)) return;
+      fixture.tempLocked = !fixture.tempLocked;
+      const lockButton = document.getElementById(`preview-lock-${fixtureId}`);
+      if (lockButton) {
+        lockButton.classList.toggle('locked', fixture.tempLocked);
+        lockButton.textContent = fixture.tempLocked ? 'Locked for sims' : 'Lock for sims';
+        lockButton.setAttribute('aria-pressed', String(fixture.tempLocked));
+        lockButton.setAttribute('aria-label', fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations');
+      }
+    }
+
     function computeGroupStandings(teams, groupFixtures) {
       const standings = teams.map(teamKey => {
         const team = teamData[teamKey] || { name: teamKey, logo: '' };
@@ -622,26 +762,9 @@
     }
 
     function renderGroups() {
-      document.getElementById('groups-grid').innerHTML = groups.map(group => {
+      document.getElementById('groups-grid').innerHTML = groups.map((group, groupIndex) => {
         const standings = computeGroupStandings(group.teams, group.fixtures);
-        const rows = standings.map((row, index) => {
-          const cls = index < 3 ? 'group-qual' : index === 3 ? 'group-best4' : 'group-elim';
-          return `
-            <tr class="${cls}">
-              <td>
-                <div class="team-cell">
-                  <img class="logo-preview" src="${escapeAttribute(row.logo)}" alt="${escapeAttribute(row.team)}" onerror="this.style.display='none'">
-                  <span>${escapeHtml(row.team)}</span>
-                </div>
-              </td>
-              <td>${row.p}</td>
-              <td>${row.w}</td>
-              <td>${row.d}</td>
-              <td>${row.l}</td>
-              <td>${row.gd > 0 ? '+' + row.gd : row.gd}</td>
-              <td><strong>${row.pts}</strong></td>
-            </tr>`;
-        }).join('');
+        const rows = renderStandingsRows(standings);
 
         const matchdays = groupMatchdays(group);
         const selectedMatchday = selectedMatchdayByGroup[group.name] ?? firstIncompleteMatchday(group, matchdays);
@@ -660,11 +783,21 @@
                       ? `${projectedScore.hs} - ${projectedScore.as}`
                       : 'TBD';
                   const projectionBadge = projectedScore ? '<span style="display:block;font-size:9px;color:var(--neon-purple);">PROJECTED</span>' : '';
+                  const previewInputs = isPslAdmin() && !hasConfirmedScore
+                    ? `<span class="preview-score-control">
+                        <span class="preview-score-inputs">
+                          <input class="preview-score-input" type="number" min="0" step="1" aria-label="${escapeAttribute(fixture.home)} preview score" value="${escapeAttribute(fixture.previewDraftHs ?? (fixture.projected ? fixture.projectedHs : ''))}" onchange="updatePreviewScore('${escapeAttribute(fixture.id)}', 'hs', this)">
+                          <span>–</span>
+                          <input class="preview-score-input" type="number" min="0" step="1" aria-label="${escapeAttribute(fixture.away)} preview score" value="${escapeAttribute(fixture.previewDraftAs ?? (fixture.projected ? fixture.projectedAs : ''))}" onchange="updatePreviewScore('${escapeAttribute(fixture.id)}', 'as', this)">
+                        </span>
+                        <button id="preview-lock-${escapeAttribute(fixture.id)}" class="preview-score-lock${fixture.tempLocked ? ' locked' : ''}" type="button" aria-label="${fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations'}" aria-pressed="${Boolean(fixture.tempLocked)}" ${!hasValidPreviewScore(fixture) ? 'disabled' : ''} onclick="togglePreviewScoreLock('${escapeAttribute(fixture.id)}')">${fixture.tempLocked ? 'Locked for sims' : 'Lock for sims'}</button>
+                      </span>${projectionBadge}`
+                    : `${score}${projectionBadge}`;
                   const fixtureUrl = `match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}`;
                   return `
                     <div class="fixture-match">
                       <span class="fixture-team home">${escapeHtml(fixture.home)}</span>
-                      <span class="fixture-score">${hasConfirmedScore ? `<a href="${fixtureUrl}" style="color:inherit;text-decoration:none;">${score}</a>` : `${score}${projectionBadge}`}</span>
+                      <span class="fixture-score">${hasConfirmedScore ? `<a href="${fixtureUrl}" style="color:inherit;text-decoration:none;">${score}</a>` : previewInputs}</span>
                       <span class="fixture-team away">${escapeHtml(fixture.away)}</span>
                     </div>`;
                 }).join('')}
@@ -686,7 +819,7 @@
                   <th>Pts</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="standings-${groupIndex}">
                 ${rows}
               </tbody>
             </table>
@@ -707,31 +840,76 @@
 
     function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
     function escapeAttribute(value) { return escapeHtml(value); }
+    function formatSimulationShare(count, total) {
+      return `${count.toLocaleString()} / ${total.toLocaleString()} (${(count / total * 100).toFixed(2)}%)`;
+    }
 
-    function simulateScore(homeName, awayName) {
-      const home = projectionRatings[homeName] || projectionRatings[projectionRatingAliases[homeName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
-      const away = projectionRatings[awayName] || projectionRatings[projectionRatingAliases[awayName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
+    function simulateScore(teamAName, teamBName) {
+      const firstTeam = projectionRatings[teamAName] || projectionRatings[projectionRatingAliases[teamAName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
+      const secondTeam = projectionRatings[teamBName] || projectionRatings[projectionRatingAliases[teamBName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
       const overall = team => team.att * 0.35 + team.def * 0.3 + team.stm * 0.15 + team.con * 0.2;
-      const homeAdvantage = Math.max(0.04, Math.min(0.96, 0.5 + (overall(home) - overall(away)) * 0.007));
-      let hs = 0;
-      let as = 0;
-      let rallies = 0;
-      while (rallies++ < 300) {
-        if (Math.random() < homeAdvantage) hs++;
-        else as++;
-        if (Math.max(hs, as) >= 5 && Math.abs(hs - as) >= 2) break;
+      const firstTeamRallyChance = Math.max(0.04, Math.min(0.96, 0.5 + (overall(firstTeam) - overall(secondTeam)) * 0.007));
+      let firstScore = 0;
+      let secondScore = 0;
+      while (true) {
+        if (Math.random() < firstTeamRallyChance) firstScore++;
+        else secondScore++;
+        if (Math.max(firstScore, secondScore) >= 5 && Math.abs(firstScore - secondScore) >= 2) break;
       }
-      return { hs, as };
+      return { hs: firstScore, as: secondScore };
+    }
+
+    function resolveBestFourthQualification(fourthPlaceTeams) {
+      const bestPoints = Math.max(...fourthPlaceTeams.map(team => team.pts));
+      const bestGoalDifference = Math.max(...fourthPlaceTeams.filter(team => team.pts === bestPoints).map(team => team.gd));
+      const tiedTeams = fourthPlaceTeams.filter(team => team.pts === bestPoints && team.gd === bestGoalDifference);
+
+      if (tiedTeams.length === 1) {
+        return { qualified: tiedTeams, playoffTeams: [], scenario: 'direct' };
+      }
+      if (tiedTeams.length === 3 && tiedTeams.every(team => team.ga === tiedTeams[0].ga)) {
+        return { qualified: tiedTeams, playoffTeams: [], scenario: 'all-three-qualify' };
+      }
+
+      const playoffTeams = tiedTeams.length === 3
+        ? [...tiedTeams].sort((a, b) => a.ga - b.ga || a.teamKey.localeCompare(b.teamKey)).slice(0, 2)
+        : tiedTeams;
+      const playoffScore = simulateScore(playoffTeams[0].teamKey, playoffTeams[1].teamKey);
+      const winner = playoffScore.hs > playoffScore.as ? playoffTeams[0] : playoffTeams[1];
+      return {
+        qualified: [winner],
+        playoffTeams,
+        winner,
+        scenario: tiedTeams.length === 3 ? 'three-way-playoff' : 'two-way-playoff'
+      };
+    }
+
+    function getSimulationFixture(fixture) {
+      if (fixture.confirmed && fixture.hs !== null && fixture.hs !== undefined && fixture.as !== null && fixture.as !== undefined) {
+        return fixture;
+      }
+      if (fixture.tempLocked && hasValidPreviewScore(fixture)) {
+        return {
+          ...fixture,
+          hs: Number(fixture.previewDraftHs),
+          as: Number(fixture.previewDraftAs),
+          projected: false
+        };
+      }
+      return { ...fixture, ...simulateScore(fixture.home, fixture.away), projected: false };
     }
 
     function simulateAllProjections() {
       if (!isPslAdmin()) return;
       fixtures.forEach(fixture => {
-        if (!fixture.confirmed && fixture.hs === null && fixture.as === null) {
+        if (!fixture.confirmed && fixture.hs === null && fixture.as === null && !fixture.tempLocked) {
           const score = simulateScore(fixture.home, fixture.away);
           fixture.projectedHs = score.hs;
           fixture.projectedAs = score.as;
           fixture.projected = true;
+          fixture.previewDraftHs = null;
+          fixture.previewDraftAs = null;
+          fixture.tempLocked = false;
         }
       });
       renderGroups();
@@ -743,6 +921,9 @@
         fixture.projectedHs = null;
         fixture.projectedAs = null;
         fixture.projected = false;
+        fixture.previewDraftHs = null;
+        fixture.previewDraftAs = null;
+        fixture.tempLocked = false;
       });
       document.getElementById('projection-results').hidden = true;
       document.getElementById('best-fourth-results').hidden = true;
@@ -757,14 +938,11 @@
       button.textContent = 'Simulating...';
       setTimeout(() => {
         try {
-          const simulationCount = 10000;
+          const simulationCount = 50000;
           const groupCounts = groups.map(group => {
             const positionCounts = Object.fromEntries(group.teams.map(team => [team, Array(group.teams.length).fill(0)]));
             for (let run = 0; run < simulationCount; run++) {
-              const simulatedFixtures = group.fixtures.map(fixture => {
-                if (fixture.confirmed && fixture.hs !== null && fixture.as !== null) return fixture;
-                return { ...fixture, ...simulateScore(fixture.home, fixture.away), projected: false };
-              });
+              const simulatedFixtures = group.fixtures.map(getSimulationFixture);
               computeGroupStandings(group.teams, simulatedFixtures)
                 .forEach((standing, position) => positionCounts[standing.teamKey][position]++);
             }
@@ -783,8 +961,7 @@
                   <tbody>${currentOrder.map(team => `<tr>
                     <td>${escapeHtml(teamData[team]?.name || team)}</td>
                     ${positionCounts[team].map((count, position) => {
-                      const percentage = count / simulationCount * 100;
-                      const label = percentage >= 1 ? `${percentage.toFixed(0)}%` : percentage > 0 ? '&lt;1%' : '—';
+                      const label = formatSimulationShare(count, simulationCount);
                       const className = position < 3 ? 'prob-qual' : position === 3 ? 'prob-best4' : 'prob-muted';
                       return `<td class="${className}">${label}</td>`;
                     }).join('')}
@@ -795,7 +972,94 @@
           results.hidden = false;
         } finally {
           button.disabled = false;
-          button.textContent = 'Run 10,000 position simulations';
+          button.textContent = 'Run 50,000 position simulations';
+        }
+      }, 30);
+    }
+
+    function runQualificationSimulations() {
+      if (!isPslAdmin()) return;
+      const teamSelect = document.getElementById('qualification-team');
+      const selectedTeam = teamSelect.value;
+      const teamGroup = groups.find(group => group.teams.includes(selectedTeam));
+      if (!teamGroup) {
+        teamSelect.focus();
+        return;
+      }
+
+      const button = document.getElementById('run-qualification-simulations');
+      const results = document.getElementById('qualification-results');
+      button.disabled = true;
+      button.classList.add('is-simulating');
+      teamSelect.disabled = true;
+      button.textContent = 'Simulating...';
+      setTimeout(() => {
+        try {
+          const simulationCount = 50000;
+          let qualificationCount = 0;
+          let topThreeCount = 0;
+          let bestFourthQualificationCount = 0;
+          let playoffQualificationCount = 0;
+          let tiedFourthQualificationCount = 0;
+
+          for (let run = 0; run < simulationCount; run++) {
+            const standingsByGroup = groups.map(group => {
+              const simulatedFixtures = group.fixtures.map(getSimulationFixture);
+              return computeGroupStandings(group.teams, simulatedFixtures);
+            });
+            const fourthPlaceTeams = standingsByGroup.map(standings => standings[3]);
+            const fourthPlaceOutcome = resolveBestFourthQualification(fourthPlaceTeams);
+
+            const selectedStandings = standingsByGroup[groups.indexOf(teamGroup)];
+            const selectedPosition = selectedStandings.findIndex(standing => standing.teamKey === selectedTeam);
+            if (selectedPosition < 3) {
+              qualificationCount++;
+              topThreeCount++;
+              continue;
+            }
+            if (selectedPosition !== 3) continue;
+
+            if (fourthPlaceOutcome.scenario === 'direct'
+              && fourthPlaceOutcome.qualified.some(team => team.teamKey === selectedTeam)) {
+              qualificationCount++;
+              bestFourthQualificationCount++;
+            } else if (fourthPlaceOutcome.playoffTeams.length
+              && fourthPlaceOutcome.winner?.teamKey === selectedTeam) {
+              qualificationCount++;
+              playoffQualificationCount++;
+            } else if (fourthPlaceOutcome.scenario === 'all-three-qualify'
+              && fourthPlaceOutcome.qualified.some(team => team.teamKey === selectedTeam)) {
+              qualificationCount++;
+              tiedFourthQualificationCount++;
+            }
+          }
+
+          results.innerHTML = `
+            <h3>${escapeHtml(teamData[selectedTeam]?.name || selectedTeam)}: ${formatSimulationShare(qualificationCount, simulationCount)} chance to qualify</h3>
+            <p class="projection-results-note">Based on ${simulationCount.toLocaleString()} simulated seasons with no home advantage. Fourth-place tie and playoff details are shown in the fourth-place cutoff simulation.</p>
+            <div class="position-probability-card">
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualifies in the top three</span><strong class="prob-qual">${formatSimulationShare(topThreeCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified as best fourth place</span><strong class="prob-best4">${formatSimulationShare(bestFourthQualificationCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified from fourth-place play-off</span><strong class="prob-best4">${formatSimulationShare(playoffQualificationCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified from fourth-place tie</span><strong class="prob-qual">${formatSimulationShare(tiedFourthQualificationCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified simulations</span><strong>${qualificationCount.toLocaleString()} / ${simulationCount.toLocaleString()}</strong>
+              </div>
+            </div>`;
+          results.hidden = false;
+        } finally {
+          button.classList.remove('is-simulating');
+          teamSelect.disabled = false;
+          button.disabled = !teamSelect.value || !isPslAdmin();
+          button.textContent = 'Run 50,000 qualification simulations';
         }
       }, 30);
     }
@@ -808,28 +1072,52 @@
       button.textContent = 'Simulating...';
       setTimeout(() => {
         try {
-          const simulationCount = 10000;
+          const simulationCount = 50000;
           const scenarioCounts = new Map();
           const groupQualificationCounts = Object.fromEntries(groups.map(group => [group.name, 0]));
+          const tieOutcomeCounts = { direct: 0, twoWayPlayoff: 0, threeWayPlayoff: 0, allThreeQualify: 0 };
+          const fourthPlaceCounts = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const fourthQualificationCounts = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const playoffAppearances = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const playoffWins = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const playoffPairCounts = new Map();
 
           for (let run = 0; run < simulationCount; run++) {
             const fourthPlaceTeams = groups.map(group => {
-              const simulatedFixtures = group.fixtures.map(fixture => {
-                if (fixture.confirmed && fixture.hs !== null && fixture.as !== null) return fixture;
-                return { ...fixture, ...simulateScore(fixture.home, fixture.away), projected: false };
-              });
+              const simulatedFixtures = group.fixtures.map(getSimulationFixture);
               return computeGroupStandings(group.teams, simulatedFixtures)[3];
             });
 
-            const bestFourth = fourthPlaceTeams.reduce((best, candidate) => {
+            const outcome = resolveBestFourthQualification(fourthPlaceTeams);
+            const outcomeCountKey = {
+              direct: 'direct',
+              'two-way-playoff': 'twoWayPlayoff',
+              'three-way-playoff': 'threeWayPlayoff',
+              'all-three-qualify': 'allThreeQualify'
+            }[outcome.scenario];
+            if (!outcomeCountKey) throw new Error(`Unknown fourth-place outcome: ${outcome.scenario}`);
+            tieOutcomeCounts[outcomeCountKey]++;
+            fourthPlaceTeams.forEach(team => fourthPlaceCounts[team.teamKey]++);
+            outcome.qualified.forEach(team => {
+              fourthQualificationCounts[team.teamKey]++;
+              const qualifyingGroup = groups.find(group => group.teams.includes(team.teamKey));
+              groupQualificationCounts[qualifyingGroup.name]++;
+            });
+            if (outcome.playoffTeams.length) {
+              const pairKey = [...outcome.playoffTeams.map(team => team.teamKey)].sort().join('|');
+              const pairStats = playoffPairCounts.get(pairKey) || { count: 0, wins: {} };
+              pairStats.count++;
+              pairStats.wins[outcome.winner.teamKey] = (pairStats.wins[outcome.winner.teamKey] || 0) + 1;
+              playoffPairCounts.set(pairKey, pairStats);
+              outcome.playoffTeams.forEach(team => playoffAppearances[team.teamKey]++);
+              playoffWins[outcome.winner.teamKey]++;
+            }
+            const cutoffTeam = fourthPlaceTeams.reduce((best, candidate) => {
               if (candidate.pts !== best.pts) return candidate.pts > best.pts ? candidate : best;
               if (candidate.gd !== best.gd) return candidate.gd > best.gd ? candidate : best;
-              if (candidate.gf !== best.gf) return candidate.gf > best.gf ? candidate : best;
-              return candidate.teamKey.localeCompare(best.teamKey) < 0 ? candidate : best;
+              return candidate;
             });
-            const qualifyingGroup = groups.find(group => group.teams.includes(bestFourth.teamKey));
-            groupQualificationCounts[qualifyingGroup.name]++;
-            const scenario = `${bestFourth.pts}|${bestFourth.gd}`;
+            const scenario = `${cutoffTeam.pts}|${cutoffTeam.gd}`;
             scenarioCounts.set(scenario, (scenarioCounts.get(scenario) || 0) + 1);
           }
 
@@ -840,10 +1128,41 @@
             })
             .sort((a, b) => b.count - a.count || b.points - a.points || b.goalDifference - a.goalDifference)
             .slice(0, 8);
+          const teamDisplayName = team => teamData[team]?.name || team;
+          const fourthPlaceTeamRows = Object.keys(fourthPlaceCounts)
+            .filter(team => fourthPlaceCounts[team] > 0)
+            .sort((a, b) => fourthPlaceCounts[b] - fourthPlaceCounts[a] || teamDisplayName(a).localeCompare(teamDisplayName(b)))
+            .map(team => {
+              const appearances = playoffAppearances[team];
+              const wins = playoffWins[team];
+              return `<tr>
+              <td>${escapeHtml(teamDisplayName(team))}</td>
+              <td>${formatSimulationShare(fourthPlaceCounts[team], simulationCount)}</td>
+              <td>${formatSimulationShare(fourthQualificationCounts[team], simulationCount)}</td>
+              <td>${formatSimulationShare(appearances, simulationCount)}</td>
+              <td>${formatSimulationShare(wins, simulationCount)}</td>
+              <td>${appearances ? `${wins.toLocaleString()} / ${appearances.toLocaleString()} (${(wins / appearances * 100).toFixed(2)}%)` : '—'}</td>
+            </tr>`;
+            })
+            .join('');
+          const playoffPairRows = [...playoffPairCounts.entries()]
+            .sort((a, b) => b[1].count - a[1].count)
+            .map(([pair, stats]) => {
+              const [teamA, teamB] = pair.split('|');
+              const winsA = stats.wins[teamA] || 0;
+              const winsB = stats.wins[teamB] || 0;
+              return `<tr>
+                <td>${escapeHtml(teamDisplayName(teamA))} vs ${escapeHtml(teamDisplayName(teamB))}</td>
+                <td>${formatSimulationShare(stats.count, simulationCount)}</td>
+                <td>${winsA.toLocaleString()} / ${stats.count.toLocaleString()} (${(winsA / stats.count * 100).toFixed(2)}%)</td>
+                <td>${winsB.toLocaleString()} / ${stats.count.toLocaleString()} (${(winsB / stats.count * 100).toFixed(2)}%)</td>
+              </tr>`;
+            })
+            .join('');
 
           results.innerHTML = `
             <h3>Best fourth-place qualification cutoff</h3>
-            <p class="projection-results-note">Eight most frequent points and goal-difference cutoffs for the qualifying fourth-place team across ${simulationCount.toLocaleString()} simulated seasons. The team with the most points qualifies; goal difference breaks a points tie.</p>
+            <p class="projection-results-note">Fourth-place qualification outcomes from ${simulationCount.toLocaleString()} simulated seasons with no home advantage. Teams are compared by points, then goal difference. A tie is decided by a neutral playoff; for a three-way points and goal-difference tie, the two teams with fewer goals conceded play. If all three are also tied on goals conceded, all three qualify.</p>
             <div class="position-probability-card">
               <table class="position-probability-table">
                 <thead><tr><th>#</th><th>Points</th><th>Goal difference</th><th>Frequency</th><th>Share</th></tr></thead>
@@ -852,21 +1171,47 @@
                   <td class="prob-qual">${scenario.points}</td>
                   <td class="${scenario.goalDifference >= 0 ? 'prob-qual' : 'prob-muted'}">${scenario.goalDifference > 0 ? '+' : ''}${scenario.goalDifference}</td>
                   <td>${scenario.count.toLocaleString()}</td>
-                  <td>${(scenario.count / simulationCount * 100).toFixed(1)}%</td>
+                  <td>${(scenario.count / simulationCount * 100).toFixed(2)}%</td>
                 </tr>`).join('')}</tbody>
               </table>
             </div>
             <div class="position-probability-card">
-              <div class="position-probability-title">Share of qualifying best-fourth finishes</div>
+              <div class="position-probability-title">Fourth-place tie outcomes</div>
+              ${[
+                ['No playoff needed', tieOutcomeCounts.direct],
+                ['Two-way tie, playoff', tieOutcomeCounts.twoWayPlayoff],
+                ['Three-way tie, goals conceded selects playoff', tieOutcomeCounts.threeWayPlayoff],
+                ['Exact three-way tie, all qualify', tieOutcomeCounts.allThreeQualify]
+              ].map(([label, count]) => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>${label}</span><strong>${formatSimulationShare(count, simulationCount)}</strong>
+              </div>`).join('')}
+            </div>
+            <div class="position-probability-card">
+              <div class="position-probability-title">Chance each group supplies a qualifying fourth-place team</div>
+              <p class="projection-results-note">These probabilities can total more than 100% when an exact three-way tie means all three teams qualify.</p>
               ${groups.map(group => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
                 <span>${escapeHtml(group.name)}</span>
-                <strong>${(groupQualificationCounts[group.name] / simulationCount * 100).toFixed(1)}%</strong>
+                <strong>${formatSimulationShare(groupQualificationCounts[group.name], simulationCount)}</strong>
               </div>`).join('')}
+            </div>`;
+          results.innerHTML += `
+            <div class="position-probability-card">
+              <div class="position-probability-title">Fourth-place outcomes by team</div>
+              <table class="position-probability-table">
+                <thead><tr><th>Team</th><th>Finished 4th</th><th>Qualified from 4th</th><th>Playoff appearance</th><th>Playoff win</th><th>Win rate</th></tr></thead>
+                <tbody>${fourthPlaceTeamRows}</tbody>
+              </table>
+            </div>
+            <div class="position-probability-card">
+              <div class="position-probability-title">Playoff matchups and win percentages</div>
+              ${playoffPairRows
+                ? `<table class="position-probability-table"><thead><tr><th>Matchup</th><th>Occurred (% seasons)</th><th>First team wins</th><th>Second team wins</th></tr></thead><tbody>${playoffPairRows}</tbody></table>`
+                : '<p class="projection-results-note">No playoff matches occurred in these simulations.</p>'}
             </div>`;
           results.hidden = false;
         } finally {
           button.disabled = false;
-          button.textContent = 'Project best fourth-place cutoff';
+          button.textContent = 'Run 50,000 fourth-place cutoff simulations';
         }
       }, 30);
     }
@@ -901,7 +1246,10 @@
     let adminEditModal = null;
 
     const PSL_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
-    const PSL_ADMIN = 'pitchball';
+    const PSL_ADMIN = ['thanos','yman','pitchball'];
+    function isPslAdminUsername(username) {
+      return PSL_ADMIN.includes(String(username || '').trim().toLowerCase());
+    }
     let _pslDbCache = null;
     let _pslDbFetching = null;
 
@@ -1084,7 +1432,7 @@
           e.style.display = 'block';
           return;
         }
-        pslCurrentUser = { username: user.username, email: user.email, avatar: user.avatar || null, isAdmin: user.username.toLowerCase() === PSL_ADMIN };
+        pslCurrentUser = { username: user.username, email: user.email, avatar: user.avatar || null, isAdmin: isPslAdminUsername(user.username) };
         pslSaveSession(pslCurrentUser);
         pslCloseAuth();
         renderWidget();
@@ -1133,7 +1481,7 @@
         users[username.toLowerCase()] = { username, email, passHash, avatar: null, joined: new Date().toISOString() };
         await pslDbSet({ ...db, users });
         pslDbInvalidate();
-        pslCurrentUser = { username, email, avatar: null, isAdmin: username.toLowerCase() === PSL_ADMIN };
+        pslCurrentUser = { username, email, avatar: null, isAdmin: isPslAdminUsername(username) };
         pslSaveSession(pslCurrentUser);
         pslCloseAuth();
         renderWidget();
@@ -1164,7 +1512,7 @@
           const db = await pslDbGet();
           const uData = (db.users || {})[session.username.toLowerCase()];
           if (uData) {
-            pslCurrentUser = { username: uData.username, email: uData.email, avatar: uData.avatar || null, isAdmin: uData.username.toLowerCase() === PSL_ADMIN };
+            pslCurrentUser = { username: uData.username, email: uData.email, avatar: uData.avatar || null, isAdmin: isPslAdminUsername(uData.username) };
             pslSaveSession(pslCurrentUser);
           } else {
             pslClearSession();
@@ -1218,6 +1566,11 @@
       const isAdmin = isPslAdmin();
       const projectionControls = document.getElementById('admin-projection-controls');
       projectionControls.hidden = !isAdmin;
+      const qualificationTeam = document.getElementById('qualification-team');
+      const selectedTeam = qualificationTeam.value;
+      qualificationTeam.innerHTML = `<option value="">Choose a team</option>${groups.flatMap(group => group.teams).map(team => `<option value="${escapeAttribute(team)}">${escapeHtml(teamData[team]?.name || team)}</option>`).join('')}`;
+      if (groups.some(group => group.teams.includes(selectedTeam))) qualificationTeam.value = selectedTeam;
+      document.getElementById('run-qualification-simulations').disabled = !isAdmin || !qualificationTeam.value;
       if (!isAdmin) {
         fixtures.forEach(fixture => {
           fixture.projectedHs = null;
@@ -1230,6 +1583,9 @@
         const bestFourthResults = document.getElementById('best-fourth-results');
         bestFourthResults.innerHTML = '';
         bestFourthResults.hidden = true;
+        const qualificationResults = document.getElementById('qualification-results');
+        qualificationResults.innerHTML = '';
+        qualificationResults.hidden = true;
       }
       const container = document.getElementById('admin-edit-container');
       container.innerHTML = isAdmin ? `<button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">✏️ Admin: Edit Match</button>` : '';
