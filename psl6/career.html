@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNNGKMS578');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Career — PSL6</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05010f;
+    --panel: rgba(24, 17, 36, .9);
+    --panel-soft: rgba(255, 255, 255, .035);
+    --cyan: #00f0ff;
+    --purple: #b366ff;
+    --green: #39ff88;
+    --gold: #ffd166;
+    --red: #ff6b81;
+    --text: #fff;
+    --muted: rgba(255, 255, 255, .58);
+    --line: rgba(255, 255, 255, .1);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg) url('bg.png') center / cover fixed;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 1, 15, .88);
+    pointer-events: none;
+  }
+  button, select { font: inherit; }
+  button { cursor: pointer; }
+  .shell { position: relative; z-index: 1; width: min(1120px, 100%); margin: auto; padding: 28px 22px 56px; }
+  a { color: var(--muted); text-decoration: none; }
+  a:hover { color: var(--cyan); }
+  .back { display: inline-block; margin-bottom: 24px; font-size: .85rem; }
+  .eyebrow { color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+  h1 { margin: 5px 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; letter-spacing: -.05em; }
+  h1 span { color: var(--cyan); font-weight: 700; }
+  .subtitle { margin: 0 0 24px; color: var(--muted); }
+  .panel, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+  .panel { padding: 22px; }
+  .card { padding: 18px; }
+  .setup { max-width: 660px; margin: 42px auto; }
+  .setup h2, .section-head h2 { margin: 0 0 8px; font-size: 1.35rem; font-weight: 600; }
+  .muted { color: var(--muted); }
+  label { display: block; margin: 16px 0 7px; font-size: .82rem; color: var(--muted); }
+  select {
+    width: 100%; min-height: 42px; padding: 9px 12px;
+    color: var(--text); background: #171020; border: 1px solid var(--line); border-radius: 8px;
+  }
+  option { color: #fff; background: #171020; }
+  .primary, .secondary, .danger {
+    border: 0; border-radius: 8px; padding: 11px 16px; font-weight: 700; transition: transform .15s, filter .15s;
+  }
+  .primary { color: #041015; background: var(--cyan); }
+  .secondary { color: #fff; background: rgba(179, 102, 255, .24); border: 1px solid rgba(179, 102, 255, .5); }
+  .danger { color: #fff; background: rgba(255, 107, 129, .18); border: 1px solid rgba(255, 107, 129, .4); }
+  button:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
+  button:disabled { cursor: not-allowed; opacity: .45; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .notice { margin: 14px 0; padding: 12px 14px; border: 1px solid rgba(0, 240, 255, .26); border-radius: 9px; background: rgba(0, 240, 255, .07); color: #c8fbff; }
+  .notice.error { border-color: rgba(255, 107, 129, .4); background: rgba(255, 107, 129, .08); color: #ffd0d7; }
+  .hidden { display: none !important; }
+  .topline { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .topline h1 { margin-bottom: 2px; }
+  .team-mark { display: flex; align-items: center; gap: 12px; }
+  .team-mark img { width: 52px; height: 52px; object-fit: contain; }
+  .meta { color: var(--muted); font-size: .85rem; }
+  .tabs { display: flex; gap: 6px; margin: 22px 0 18px; padding: 5px; overflow-x: auto; background: var(--panel-soft); border: 1px solid var(--line); border-radius: 11px; }
+  .tab { flex: 1; min-width: 95px; padding: 10px; color: var(--muted); background: none; border: 0; border-radius: 8px; font-weight: 600; }
+  .tab.active { color: var(--cyan); background: rgba(0, 240, 255, .09); }
+  .view { display: none; }
+  .view.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .stat { padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .stat span { display: block; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; }
+  .stat strong { display: block; margin-top: 7px; font-size: 1.55rem; }
+  .feature-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 14px; margin-top: 14px; }
+  .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 14px; }
+  .section-head h2 { margin: 0; }
+  .rating { color: var(--cyan); font-weight: 700; }
+  .bar { height: 6px; margin-top: 8px; overflow: hidden; background: rgba(255,255,255,.09); border-radius: 9px; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--purple), var(--cyan)); border-radius: inherit; }
+  .match-card { min-height: 205px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+  .versus { display: flex; align-items: center; justify-content: space-around; gap: 10px; margin: 18px 0; }
+  .versus strong { display: block; font-size: 1.1rem; }
+  .versus span { color: var(--muted); }
+  .result { margin: 16px 0 0; color: var(--green); line-height: 1.6; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: .87rem; }
+  th, td { padding: 10px 9px; border-bottom: 1px solid var(--line); text-align: right; }
+  th { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+  tr.user-team td { color: var(--cyan); font-weight: 700; }
+  .player-list { display: grid; gap: 10px; }
+  .player { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 13px 14px; background: var(--panel-soft); border: 1px solid var(--line); border-radius: 10px; }
+  .player-name { font-weight: 600; }
+  .player-sub { color: var(--muted); font-size: .78rem; margin-top: 3px; }
+  .player-rating { text-align: right; font-size: 1.12rem; font-weight: 700; color: var(--cyan); }
+  .player-rating small { display: block; color: var(--muted); font-size: .68rem; font-weight: 400; }
+  .transfer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .empty { padding: 24px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+  .footer-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+  .save-note { color: var(--muted); font-size: .75rem; align-self: center; }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .feature-grid, .transfer-grid { grid-template-columns: 1fr; }
+    .shell { padding: 20px 14px 42px; }
+    .panel { padding: 16px; }
+    .stat { padding: 13px; }
+  }
+</style>
+</head>
+<body>
+<main class="shell">
+  <a class="back" href="index.html">← PSL6 Menu</a>
+  <div class="eyebrow">Pitchball Super League · PSL6</div>
+  <h1>Manager <span>Career</span></h1>
+  <p class="subtitle">Build a squad, outsmart the league, and play your season.</p>
+  <div id="app"></div>
+</main>
+<script src="teams.js"></script>
+<script src="../players/players-data.js"></script>
+<script>
+(() => {
+  'use strict';
+  const SAVE_KEY = 'psl6-manager-career-v1';
+  const teams = window.PSL6_DATA.teams;
+  const teamNames = window.PSL6_DATA.names;
+  const logos = window.PSL6_DATA.logos;
+  const app = document.getElementById('app');
+  let career = null;
+  let setupMode = false;
+  let notice = '';
+  let noticeIsError = false;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+  }
+
+  function seededValue(text) {
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i++) hash = Math.imul(hash ^ text.charCodeAt(i), 16777619);
+    return hash >>> 0;
+  }
+
+  function makePlayer(name, club, index, isReal) {
+    const base = teams[club];
+    const seed = seededValue(club + ':' + name);
+    const drift = offset => ((seed >>> offset) % 13) - 6;
+    const rating = {
+      att: clamp(base.att + drift(0), 8, 99),
+      def: clamp(base.def + drift(5), 8, 99),
+      con: clamp(base.con + drift(10), 8, 99),
+      stm: clamp(base.stm + drift(15), 8, 99)
+    };
+    const overall = playerOverall(rating);
+    return {
+      id: club + '-' + seed.toString(36) + '-' + index,
+      name,
+      rating,
+      overall,
+      value: Math.max(8, Math.round(overall * .72)),
+      real: isReal
+    };
+  }
+
+  function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+  function playerOverall(r) { return Math.round(r.att * .4 + r.def * .3 + r.con * .2 + r.stm * .1); }
+
+  function makeSchedule() {
+    const rotation = teamNames.slice();
+    if (rotation.length % 2) rotation.push(null);
+    const rounds = [];
+    const count = rotation.length;
+    for (let round = 0; round < count - 1; round++) {
+      const fixtures = [];
+      for (let i = 0; i < count / 2; i++) {
+        const one = rotation[i];
+        const two = rotation[count - 1 - i];
+        if (one && two) fixtures.push({ home: round % 2 ? two : one, away: round % 2 ? one : two });
+      }
+      rounds.push(fixtures);
+      rotation.splice(1, 0, rotation.pop());
+    }
+    return rounds;
+  }
+
+  function makeCareer(club) {
+    const squads = {};
+    for (const name of teamNames) {
+      const realPlayers = players
+        .filter(player => player.status === 'active' && (player.seasons || []).some(season => season && season.season === 'PSL6' && season.team === name))
+        .map(player => player.name);
+      const uniqueNames = Array.from(new Set(realPlayers));
+      squads[name] = uniqueNames.map((playerName, index) => makePlayer(playerName, name, index, true));
+      const realPlayerCount = squads[name].length;
+      for (let index = squads[name].length; index < 3; index++) {
+        squads[name].push(makePlayer(name + ' Academy ' + (index - realPlayerCount + 1), name, index, false));
+      }
+    }
+    return {
+      team: club,
+      budget: 120,
+      round: 0,
+      squads,
+      schedule: makeSchedule(),
+      results: [],
+      activeTab: 'overview'
+    };
+  }
+
+  function getRating(club) {
+    const roster = career.squads[club];
+    const sorted = roster.slice().sort((a, b) => b.overall - a.overall);
+    const starters = sorted.slice(0, 2);
+    const average = key => roster.reduce((sum, player) => sum + player.rating[key], 0) / roster.length;
+    const starterAverage = key => starters.reduce((sum, player) => sum + player.rating[key], 0) / starters.length;
+    const stats = {};
+    for (const key of ['att', 'def', 'con', 'stm']) {
+      stats[key] = Math.round(starterAverage(key) * .75 + average(key) * .25);
+    }
+    stats.overall = Math.round(stats.att * .35 + stats.def * .3 + stats.stm * .15 + stats.con * .2);
+    return stats;
+  }
+
+  function simulate(home, away) {
+    const homeRating = getRating(home);
+    const awayRating = getRating(away);
+    const edge = (homeRating.att - awayRating.def) * .025
+      + (homeRating.overall - awayRating.overall) * .018 + .025;
+    const homeChance = clamp(1 / (1 + Math.exp(-edge)), .18, .82);
+    let homeScore = 0;
+    let awayScore = 0;
+    while (!((homeScore >= 5 || awayScore >= 5) && Math.abs(homeScore - awayScore) >= 2)
+      && homeScore + awayScore < 18) {
+      if (Math.random() < homeChance) homeScore++;
+      else awayScore++;
+    }
+    while (Math.abs(homeScore - awayScore) < 2) {
+      if (Math.random() < homeChance) homeScore++;
+      else awayScore++;
+    }
+    return { home, away, homeScore, awayScore, winner: homeScore > awayScore ? home : away };
+  }
+
+  function getStandings() {
+    const rows = Object.fromEntries(teamNames.map(name => [name, {
+      name, played: 0, wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0
+    }]));
+    for (const roundResults of career.results) {
+      for (const result of roundResults) {
+        const home = rows[result.home];
+        const away = rows[result.away];
+        home.played++; away.played++;
+        home.pointsFor += result.homeScore; home.pointsAgainst += result.awayScore;
+        away.pointsFor += result.awayScore; away.pointsAgainst += result.homeScore;
+        if (result.winner === result.home) { home.wins++; away.losses++; }
+        else { away.wins++; home.losses++; }
+      }
+    }
+    return Object.values(rows).sort((a, b) =>
+      b.wins - a.wins
+      || (b.pointsFor - b.pointsAgainst) - (a.pointsFor - a.pointsAgainst)
+      || b.pointsFor - a.pointsFor
+      || a.name.localeCompare(b.name));
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(career));
+      notice = '';
+      noticeIsError = false;
+      return true;
+    } catch (error) {
+      notice = 'Your browser could not save this career. Check that local storage is available and not full.';
+      noticeIsError = true;
+      return false;
+    }
+  }
+
+  function load() {
+    try {
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (!parsed || !teams[parsed.team] || !parsed.squads || !parsed.schedule || !Array.isArray(parsed.results)) {
+        throw new Error('Invalid career save');
+      }
+      career = parsed;
+    } catch (error) {
+      notice = 'Could not load the saved career. Start a new career to replace the damaged save.';
+      noticeIsError = true;
+    }
+  }
+
+  function teamOptions(selected, exclude) {
+    return teamNames.filter(name => name !== exclude).map(name =>
+      '<option value="' + escapeHtml(name) + '"' + (name === selected ? ' selected' : '') + '>' + escapeHtml(name) + '</option>'
+    ).join('');
+  }
+
+  function playerOptions(club, selectedId) {
+    return career.squads[club].map(player =>
+      '<option value="' + escapeHtml(player.id) + '"' + (player.id === selectedId ? ' selected' : '') + '>' +
+      escapeHtml(player.name) + ' · ' + player.overall + ' OVR · ' + player.value + ' credits</option>'
+    ).join('');
+  }
+
+  function currentFixture() {
+    if (career.round >= career.schedule.length) return null;
+    return career.schedule[career.round].find(fixture => fixture.home === career.team || fixture.away === career.team);
+  }
+
+  function logo(club, size) {
+    return logos[club]
+      ? '<img src="' + escapeHtml(logos[club]) + '" alt="" width="' + size + '" height="' + size + '" onerror="this.style.display=\'none\'">'
+      : '';
+  }
+
+  function renderSetup() {
+    const options = teamNames.map(name =>
+      '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + ' · ' + getStaticOverall(name) + ' rated</option>'
+    ).join('');
+    app.innerHTML = '<section class="panel setup">' +
+      (career ? '<div class="notice">A manager career is already saved in this browser.</div>' : '') +
+      '<h2>Choose your club</h2><p class="muted">Every club starts with its PSL6 squad and three players minimum. Your players’ ratings make up your team strength.</p>' +
+      '<label for="new-team">Club to manage</label><select id="new-team">' + options + '</select>' +
+      '<div class="actions">' +
+      (career ? '<button class="primary" onclick="careerMode.continueCareer()">Continue career</button>' : '') +
+      '<button class="' + (career ? 'danger' : 'primary') + '" onclick="careerMode.startCareer()">' + (career ? 'Start a new career' : 'Start career') + '</button>' +
+      '</div></section>';
+  }
+
+  function getStaticOverall(club) {
+    const base = teams[club];
+    return (base.att * .35 + base.def * .3 + base.stm * .15 + base.con * .2).toFixed(1);
+  }
+
+  function renderOverview() {
+    const fixture = currentFixture();
+    const own = getRating(career.team);
+    const round = career.round + 1;
+    const match = fixture
+      ? '<div class="card match-card"><div class="eyebrow">Matchday ' + round + ' of ' + career.schedule.length + '</div>' +
+        '<div class="versus"><div>' + logo(fixture.home, 32) + '<strong>' + escapeHtml(fixture.home) + '</strong><span>' + getRating(fixture.home).overall + ' OVR</span></div>' +
+        '<span>VS</span><div>' + logo(fixture.away, 32) + '<strong>' + escapeHtml(fixture.away) + '</strong><span>' + getRating(fixture.away).overall + ' OVR</span></div></div>' +
+        '<button class="primary" onclick="careerMode.playMatchday()">Play matchday ' + round + '</button>' +
+        (career.results[career.round - 1] ? '<p class="result">Last matchday: ' + lastMatchSummary() + '</p>' : '') + '</div>'
+      : '<div class="card match-card"><div class="eyebrow">Season complete</div><h2>Final table is ready.</h2><button class="secondary" onclick="careerMode.newSeason()">Start next season</button></div>';
+    app.innerHTML = '<div class="grid">' +
+      statCard('Team rating', own.overall, 'Player-based OVR') +
+      statCard('Transfer budget', career.budget, 'Credits') +
+      statCard('Squad size', career.squads[career.team].length, 'Players') +
+      statCard('League position', getStandings().findIndex(row => row.name === career.team) + 1, 'of ' + teamNames.length + ' clubs') +
+      '</div><div class="feature-grid"><div class="card"><div class="section-head"><h2>Squad strength</h2><span class="rating">' + own.overall + ' OVR</span></div>' +
+      ratingBar('ATT', own.att) + ratingBar('DEF', own.def) + ratingBar('CON', own.con) + ratingBar('STM', own.stm) +
+      '<p class="muted" style="font-size:.8rem;margin:15px 0 0">Your two best players count most, with every squad member contributing to the club rating.</p></div>' +
+      match + '</div><div class="footer-actions"><span class="save-note">Career saves automatically on this device.</span><button class="danger" onclick="careerMode.showSetup()">Change / reset career</button></div>';
+  }
+
+  function statCard(label, value, detail) {
+    return '<div class="stat"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong><span style="margin-top:4px;text-transform:none;letter-spacing:0">' + escapeHtml(detail) + '</span></div>';
+  }
+  function ratingBar(label, value) {
+    return '<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;font-size:.83rem"><span>' + label + '</span><strong>' + value + '</strong></div><div class="bar"><i style="width:' + value + '%"></i></div></div>';
+  }
+
+  function renderSquad() {
+    const playersHtml = career.squads[career.team].slice().sort((a, b) => b.overall - a.overall).map(player =>
+      '<div class="player"><div><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-sub">' +
+      (player.real ? 'PSL6 player' : 'Career-mode academy player') + ' · ATT ' + player.rating.att + ' · DEF ' + player.rating.def +
+      ' · CON ' + player.rating.con + ' · STM ' + player.rating.stm + '</div></div><div class="player-rating">' + player.overall + '<small>OVERALL</small></div></div>'
+    ).join('');
+    app.innerHTML = '<section class="panel"><div class="section-head"><div><h2>' + escapeHtml(career.team) + ' squad</h2><div class="muted">' + career.squads[career.team].length + ' players · Club rating ' + getRating(career.team).overall + '</div></div></div>' +
+      '<div class="player-list">' + playersHtml + '</div></section>';
+  }
+
+  function renderTransfers() {
+    const rival = teamNames.find(name => name !== career.team);
+    const allPlayers = career.squads[career.team];
+    app.innerHTML = '<div class="transfer-grid">' +
+      '<section class="panel"><h2>Transfer market</h2><p class="muted">Buy a player directly from another club. Their asking price is shown in credits.</p>' +
+      '<label for="buy-club">Selling club</label><select id="buy-club" onchange="careerMode.refreshTransferOptions(\'buy\')">' + teamOptions(rival, career.team) + '</select>' +
+      '<label for="buy-player">Player</label><select id="buy-player">' + playerOptions(rival) + '</select>' +
+      '<div id="buy-price" class="notice">Transfer budget: ' + career.budget + ' credits.</div>' +
+      '<button class="primary" onclick="careerMode.buyPlayer()">Complete transfer</button></section>' +
+      '<section class="panel"><h2>Player swap</h2><p class="muted">Offer one of your players in a direct one-for-one trade.</p>' +
+      '<label for="trade-club">Trade with</label><select id="trade-club" onchange="careerMode.refreshTransferOptions(\'trade\')">' + teamOptions(rival, career.team) + '</select>' +
+      '<label for="trade-own">Your player</label><select id="trade-own">' + playerOptions(career.team) + '</select>' +
+      '<label for="trade-target">Their player</label><select id="trade-target">' + playerOptions(rival) + '</select>' +
+      '<button class="secondary" style="margin-top:15px" onclick="careerMode.tradePlayers()">Propose & complete swap</button></section>' +
+      '</div><section class="panel" style="margin-top:14px"><div class="section-head"><h2>Available at your club</h2><span class="muted">' + allPlayers.length + ' players</span></div><div class="player-list">' +
+      allPlayers.slice().sort((a, b) => b.overall - a.overall).map(player =>
+        '<div class="player"><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-rating">' + player.overall + '<small>' + player.value + ' credits</small></div></div>'
+      ).join('') + '</div></section>';
+    updateBuyPrice();
+  }
+
+  function updateBuyPrice() {
+    const club = document.getElementById('buy-club');
+    const playerSelect = document.getElementById('buy-player');
+    const price = document.getElementById('buy-price');
+    if (!club || !playerSelect || !price) return;
+    const player = career.squads[club.value].find(item => item.id === playerSelect.value);
+    price.textContent = player
+      ? player.value + ' credits · Your budget: ' + career.budget + ' credits.'
+      : 'No players are available at this club.';
+    playerSelect.disabled = !player;
+    const button = price.parentElement.querySelector('button');
+    button.disabled = !player || player.value > career.budget || career.squads[club.value].length <= 2;
+    if (career.squads[club.value].length <= 2) price.textContent += ' The club cannot sell below two players.';
+    else if (player && player.value > career.budget) price.textContent += ' Not enough credits.';
+  }
+
+  function renderLeague() {
+    const standings = getStandings();
+    const body = standings.map((row, index) =>
+      '<tr class="' + (row.name === career.team ? 'user-team' : '') + '"><td>' + (index + 1) + '</td><td>' +
+      logo(row.name, 20) + ' ' + escapeHtml(row.name) + '</td><td>' + row.played + '</td><td>' + row.wins + '</td><td>' +
+      row.losses + '</td><td>' + (row.pointsFor - row.pointsAgainst) + '</td></tr>'
+    ).join('');
+    app.innerHTML = '<section class="panel"><div class="section-head"><div><h2>League table</h2><div class="muted">Win count, then point difference.</div></div><span class="rating">Matchday ' + career.round + ' / ' + career.schedule.length + '</span></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>#</th><th>Club</th><th>P</th><th>W</th><th>L</th><th>PD</th></tr></thead><tbody>' + body + '</tbody></table></div></section>' +
+      '<section class="panel" style="margin-top:14px"><h2>Season results</h2>' + renderResults() + '</section>';
+  }
+
+  function renderResults() {
+    if (!career.results.length) return '<div class="empty">Play your first matchday to start the season.</div>';
+    return career.results.map((roundResults, index) => {
+      const userResult = roundResults.find(result => result.home === career.team || result.away === career.team);
+      return '<div class="player"><div><div class="player-name">Matchday ' + (index + 1) + '</div><div class="player-sub">' +
+        escapeHtml(userResult.home) + ' ' + userResult.homeScore + ' – ' + userResult.awayScore + ' ' + escapeHtml(userResult.away) +
+        '</div></div><strong class="' + (userResult.winner === career.team ? 'rating' : '') + '">' +
+        (userResult.winner === career.team ? 'WIN' : 'LOSS') + '</strong></div>';
+    }).join('');
+  }
+
+  function lastMatchSummary() {
+    const results = career.results[career.round - 1] || [];
+    const result = results.find(match => match.home === career.team || match.away === career.team);
+    return result ? escapeHtml(result.home) + ' ' + result.homeScore + ' – ' + result.awayScore + ' ' + escapeHtml(result.away) : '';
+  }
+
+  function render() {
+    if (!career || setupMode) {
+      renderSetup();
+      addNotice();
+      return;
+    }
+    const tabs = [
+      ['overview', 'Overview'], ['squad', 'Squad'], ['transfers', 'Transfers'], ['league', 'League']
+    ];
+    let content;
+    switch (career.activeTab) {
+      case 'squad': renderSquad(); break;
+      case 'transfers': renderTransfers(); break;
+      case 'league': renderLeague(); break;
+      default:
+        career.activeTab = 'overview';
+        renderOverview();
+    }
+    content = app.innerHTML;
+    app.innerHTML = '<div class="topline"><div class="team-mark">' + logo(career.team, 52) + '<div><div class="eyebrow">Your club · Season ' + (career.season || 1) + '</div><h1>' + escapeHtml(career.team) + '</h1></div></div>' +
+      '<div class="meta">Manager career · Saved locally</div></div><div class="tabs">' +
+      tabs.map(([id, label]) => '<button class="tab ' + (career.activeTab === id ? 'active' : '') + '" onclick="careerMode.switchTab(\'' + id + '\')">' + label + '</button>').join('') +
+      '</div><div id="active-view" class="view active">' + content + '</div>';
+    addNotice();
+  }
+
+  function addNotice() {
+    if (!notice) return;
+    app.insertAdjacentHTML('afterbegin', '<div class="notice' + (noticeIsError ? ' error' : '') + '">' + escapeHtml(notice) + '</div>');
+  }
+
+  function switchTab(tab) {
+    career.activeTab = tab;
+    render();
+  }
+
+  function startCareer() {
+    if (career && !window.confirm('Start a new career and replace your saved PSL6 manager career?')) return;
+    career = makeCareer(document.getElementById('new-team').value);
+    career.season = 1;
+    setupMode = false;
+    save();
+    render();
+  }
+
+  function continueCareer() { setupMode = false; render(); }
+  function showSetup() { setupMode = true; render(); }
+
+  function refreshTransferOptions(kind) {
+    if (kind === 'buy') {
+      const club = document.getElementById('buy-club');
+      const player = document.getElementById('buy-player');
+      player.innerHTML = playerOptions(club.value);
+      updateBuyPrice();
+      return;
+    }
+    const club = document.getElementById('trade-club');
+    const target = document.getElementById('trade-target');
+    target.innerHTML = playerOptions(club.value);
+  }
+
+  function buyPlayer() {
+    const club = document.getElementById('buy-club').value;
+    const id = document.getElementById('buy-player').value;
+    const rivalRoster = career.squads[club];
+    const index = rivalRoster.findIndex(player => player.id === id);
+    if (index < 0 || rivalRoster.length <= 2) return;
+    const player = rivalRoster[index];
+    if (player.value > career.budget) return;
+    rivalRoster.splice(index, 1);
+    career.squads[career.team].push(player);
+    career.budget -= player.value;
+    const saved = save();
+    career.activeTab = 'transfers';
+    render();
+    if (saved) notice = player.name + ' has joined ' + career.team + '.';
+    addNotice();
+  }
+
+  function tradePlayers() {
+    const club = document.getElementById('trade-club').value;
+    const ownRoster = career.squads[career.team];
+    const rivalRoster = career.squads[club];
+    if (ownRoster.length <= 2 || rivalRoster.length <= 2) {
+      notice = 'A trade needs both clubs to keep at least two players.';
+      noticeIsError = true;
+      render();
+      return;
+    }
+    const ownIndex = ownRoster.findIndex(player => player.id === document.getElementById('trade-own').value);
+    const rivalIndex = rivalRoster.findIndex(player => player.id === document.getElementById('trade-target').value);
+    if (ownIndex < 0 || rivalIndex < 0) return;
+    const ownPlayer = ownRoster[ownIndex];
+    const rivalPlayer = rivalRoster[rivalIndex];
+    ownRoster[ownIndex] = rivalPlayer;
+    rivalRoster[rivalIndex] = ownPlayer;
+    const saved = save();
+    if (saved) {
+      notice = 'Swap complete: ' + rivalPlayer.name + ' joins ' + career.team + '.';
+      noticeIsError = false;
+    }
+    render();
+  }
+
+  function playMatchday() {
+    const fixtures = career.schedule[career.round];
+    if (!fixtures) return;
+    const results = fixtures.map(fixture => simulate(fixture.home, fixture.away));
+    career.results.push(results);
+    career.round++;
+    career.activeTab = 'overview';
+    const saved = save();
+    render();
+    if (!saved) return;
+    const match = results.find(result => result.home === career.team || result.away === career.team);
+    notice = match.winner === career.team
+      ? 'Matchday ' + career.round + ': Victory! ' + match.home + ' ' + match.homeScore + '–' + match.awayScore + ' ' + match.away + '.'
+      : 'Matchday ' + career.round + ': Defeat. ' + match.home + ' ' + match.homeScore + '–' + match.awayScore + ' ' + match.away + '.';
+    noticeIsError = false;
+    addNotice();
+  }
+
+  function newSeason() {
+    career.round = 0;
+    career.results = [];
+    career.schedule = makeSchedule();
+    career.season = (career.season || 1) + 1;
+    career.activeTab = 'overview';
+    save();
+    render();
+  }
+
+  window.careerMode = {
+    startCareer, continueCareer, showSetup, switchTab,
+    refreshTransferOptions, buyPlayer, tradePlayers, playMatchday, newSeason
+  };
+  load();
+  render();
+})();
+</script>
+</body>
+</html>
