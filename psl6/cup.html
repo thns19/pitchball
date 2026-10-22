@@ -167,19 +167,623 @@
     box-shadow: 0 0 16px rgba(179, 102, 255, 0.25);
   }
 </style>
+<style>
+  :root { --dark:#05010f; --purple:#b366ff; --cyan:#00f0ff; --text:#fff; --muted:rgba(255,255,255,.58); --border:rgba(255,255,255,.12); --panel:rgba(15,8,31,.88); }
+  body { display:block; min-height:100vh; }
+  .container { width:min(100% - 2rem,1500px); max-width:none; margin:0 auto; padding:2.5rem 0 3rem; align-items:stretch; text-align:left; }
+  .page-header { text-align:center; margin:0 auto 2rem; }
+  .eyebrow { color:var(--muted); font-size:.78rem; letter-spacing:3px; text-transform:uppercase; font-weight:600; margin-bottom:.8rem; }
+  .icon-badge { font-size:2.6rem; margin-bottom:.4rem; }
+  .title { font-size:clamp(2.3rem,6vw,3.5rem); font-weight:300; line-height:1.1; letter-spacing:-1px; margin-bottom:.7rem; }
+  .desc { color:var(--muted); max-width:650px; line-height:1.6; margin:0 auto; }
+  .section-heading { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin:2rem 0 1rem; }
+  .section-heading h2 { font-size:1.35rem; font-weight:500; }
+  .section-heading p,.helper { color:var(--muted); font-size:.85rem; }
+  .admin-panel,.round-column,.match-card { border:1px solid var(--border); border-radius:12px; background:var(--panel); }
+  .admin-panel { padding:1rem; margin:1.5rem 0 2rem; }
+  .admin-panel h2 { font-size:1rem; font-weight:600; margin-bottom:.35rem; }
+  .admin-row { display:flex; flex-wrap:wrap; align-items:center; gap:.65rem; margin-top:.9rem; }
+  .control,.button { font:inherit; min-height:40px; border-radius:7px; }
+  .control { border:1px solid var(--border); background:#161027; color:var(--text); padding:.55rem .7rem; }
+  select.control { min-width:190px; }
+  select.control option { background:#161027; }
+  .button { padding:.55rem .9rem; border:1px solid rgba(0,240,255,.45); background:rgba(0,240,255,.09); color:var(--cyan); cursor:pointer; font-weight:600; }
+  .button:hover:not(:disabled) { background:rgba(0,240,255,.16); }
+  .button.secondary { border-color:var(--border); color:var(--muted); background:rgba(255,255,255,.04); }
+  .button:disabled { opacity:.5; cursor:not-allowed; }
+  .admin-status { min-height:1.3rem; color:var(--muted); font-size:.82rem; margin-top:.7rem; }
+  .admin-status.error { color:#ff8b9a; }
+  .admin-status.success { color:#72e6a1; }
+  .admin-link,.back-link { color:var(--muted); text-decoration:none; border:1px solid var(--border); border-radius:999px; padding:9px 16px; display:inline-block; font-size:.85rem; }
+  .admin-link:hover,.back-link:hover { color:var(--text); border-color:var(--purple); }
+  .bracket-labels,.bracket { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.12fr) repeat(4,minmax(0,1fr)); column-gap:clamp(2px,.55vw,8px); width:100%; min-width:0; }
+  .bracket-labels { margin-bottom:.25rem; text-align:center; color:var(--cyan); font-size:clamp(.43rem,.7vw,.7rem); text-transform:uppercase; letter-spacing:.04em; font-weight:700; }
+  .bracket-labels div { padding:.4rem 0; min-width:0; white-space:nowrap; }
+  .bracket-scroll { width:100%; overflow-x:hidden; overflow-y:hidden; padding:0 0 .5rem; }
+  .bracket { position:relative; grid-template-rows:repeat(15,44px); align-items:center; }
+  .bracket-lines { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+  .bracket-lines path { fill:none; stroke:rgba(179,102,255,.46); stroke-width:1.5; vector-effect:non-scaling-stroke; }
+  .match-card { position:relative; z-index:1; height:42px; padding:2px; background:rgba(11,5,26,.98); min-width:0; border-radius:6px; }
+  .match-label { display:flex; justify-content:space-between; gap:2px; color:var(--muted); font-size:clamp(.42rem,.55vw,.58rem); line-height:9px; margin-bottom:0; }
+  .match-team { display:flex; align-items:center; min-height:14px; height:14px; gap:2px; border-bottom:1px solid rgba(255,255,255,.06); padding:0; font-size:clamp(.58rem,.75vw,.68rem); line-height:14px; overflow:hidden; white-space:nowrap; }
+  .match-team:last-of-type { border-bottom:0; }
+  .match-team img { width:clamp(10px,1.1vw,16px); height:clamp(10px,1.1vw,16px); object-fit:contain; flex:0 0 clamp(10px,1.1vw,16px); }
+  .match-team span { overflow:hidden; text-overflow:ellipsis; }
+  .match-team.winner { color:var(--cyan); font-weight:700; }
+  .match-team.bye { color:var(--muted); font-style:italic; }
+  .match-team.empty { color:rgba(255,255,255,.3); }
+  .match-score { color:var(--purple); font-weight:700; font-size:clamp(.45rem,.6vw,.62rem); }
+  .match-meta { color:var(--muted); font-size:.62rem; margin-top:.25rem; overflow-wrap:anywhere; }
+  .match-edit-button { position:absolute; top:1px; right:2px; width:15px; height:12px; min-height:0; padding:0; font-size:.55rem; line-height:10px; }
+  .cup-modal-overlay { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:1rem; background:rgba(0,0,0,.78); }
+  .cup-modal { width:min(100%,540px); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:14px; background:#100a20; box-shadow:0 20px 70px rgba(0,0,0,.6); }
+  .cup-modal-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.2rem; border-bottom:1px solid var(--border); }
+  .cup-modal-header h2 { font-size:1rem; font-weight:600; }
+  .cup-modal-close { border:0; background:none; color:var(--muted); cursor:pointer; font-size:1.5rem; }
+  .cup-modal-body { overflow-y:auto; padding:1.2rem; }
+  .cup-form-group { margin-bottom:.8rem; }
+  .cup-form-group label,.cup-event-label { display:block; color:var(--muted); font-size:.74rem; margin-bottom:.3rem; }
+  .cup-form-control { width:100%; min-height:38px; border:1px solid var(--border); border-radius:7px; background:#19122a; color:var(--text); padding:.5rem .65rem; font:inherit; font-size:.82rem; }
+  .cup-form-control option { background:#19122a; }
+  .cup-score-inputs { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.6rem; }
+  .cup-event-list { display:flex; flex-direction:column; gap:.65rem; margin:.65rem 0; }
+  .cup-event { position:relative; border:1px solid var(--border); border-radius:8px; background:rgba(255,255,255,.035); padding:.7rem; }
+  .cup-event-type { width:calc(100% - 30px); margin-bottom:.55rem; }
+  .cup-event-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.45rem; }
+  .cup-event-remove { position:absolute; top:.65rem; right:.65rem; padding:0 .3rem; border:0; background:none; color:#ff8b9a; cursor:pointer; font-size:1rem; }
+  .cup-event-heading { margin:1.2rem 0 .4rem; font-size:.9rem; font-weight:600; }
+  .cup-modal-error { color:#ff8b9a; font-size:.78rem; margin:.6rem 0; }
+  .cup-modal-save { width:100%; }
+  @media(max-width:700px) { .bracket-scroll { overflow-x:auto; overflow-y:hidden; } .bracket-labels,.bracket { min-width:720px; } .bracket { grid-template-rows:repeat(15,44px); } }
+  .footer { margin-top:1.5rem; text-align:center; }
+  .loading { color:var(--muted); padding:2rem; text-align:center; }
+  @media(max-width:650px) { .container { width:min(100% - 1rem,1500px); padding-top:1.5rem; } .section-heading { display:block; } .section-heading p { margin-top:.35rem; } }
+</style>
 </head>
 <body>
 
   <div class="stars"></div>
 
-  <div class="container">
-    <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
-    <div class="icon-badge">🏆</div>
-    <h1 class="title">PSL Cup</h1>
-    <div class="status-pill"><span class="dot"></span>Coming Soon</div>
-    <p class="desc">Group stage standings, results and the full PSL Cup bracket will be published here once the cup draw is made.</p>
-    <a href="index.html" class="back-link">&larr; Back to PSL6</a>
-  </div>
+  <main class="container">
+    <header class="page-header">
+      <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
+      <div class="icon-badge" aria-hidden="true">🏆</div>
+      <h1 class="title">PSL Cup</h1>
+      <p class="desc">The knockout bracket starts at the Round of 32. Teams advance through the Round of 16, quarter-finals and semi-finals to the final.</p>
+    </header>
+
+    <section id="admin-panel" class="admin-panel" hidden aria-labelledby="admin-title">
+      <h2 id="admin-title">Cup administration</h2>
+      <p class="helper">Add teams and Byes in draw order. Each consecutive pair fills a Round of 32 match; a team paired with a Bye advances automatically.</p>
+      <div class="admin-row">
+        <select id="team-select" class="control" aria-label="Team to add"></select>
+        <button id="add-team" class="button" type="button" disabled>Add team</button>
+        <button id="add-bye" class="button secondary" type="button" disabled>Add Bye</button>
+        <button id="reset-bracket" class="button secondary" type="button" disabled>Reset bracket</button>
+      </div>
+      <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <div class="section-heading">
+      <h2>Knockout bracket</h2>
+      <p id="bracket-progress">Loading bracket…</p>
+    </div>
+    <div class="bracket-scroll">
+      <div id="bracket-labels" class="bracket-labels" aria-hidden="true"></div>
+      <div id="bracket" class="bracket"><div class="loading">Loading bracket…</div></div>
+    </div>
+    <div class="footer">
+      <a id="admin-login-link" class="admin-link" href="table.html">Admin? Sign in on the PSL6 League page</a>
+      <a href="index.html" class="back-link">&larr; Back to PSL6</a>
+    </div>
+  </main>
+
+  <script src="teams.js"></script>
+  <script>
+    const CUP_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/psl6Cup.json';
+    const CUP_DB_ROOT_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
+    const CUP_ADMIN_USERNAMES = ['thanos', 'yman', 'pitchball'];
+    const CUP_ROUNDS = [
+      { name: 'Round of 32', matches: 16, matchOffset: 0 },
+      { name: 'Round of 16', matches: 8, matchOffset: 16 },
+      { name: 'Quarter-finals', matches: 4, matchOffset: 24 },
+      { name: 'Semi-finals', matches: 2, matchOffset: 28 },
+      { name: 'Final', matches: 1, matchOffset: 30 }
+    ];
+    const CUP_TEAM_NAMES = window.PSL6_DATA.names;
+    const CUP_TEAM_ABBREVIATIONS = {
+      'BADiles': 'BAD',
+      'Volos Drummers': 'VOL',
+      'Midi Kidz': 'MDK',
+      'EX7T': 'EX7T',
+      'Team Till Death': 'TTD',
+      'Hornets': 'HOR',
+      'R1': 'R1',
+      'Basement Boys': 'BMB',
+      'Polo': 'POL',
+      'Lampater': 'LPC',
+      'Air Condition': 'A/C',
+      'Ksades': 'KSA',
+      'Axtarmades': 'AXT',
+      'Oi Thryloi': 'THR',
+      'Spasmena Mila': 'SPM',
+      'Hitters': 'HIT',
+      'Niki Alimou': 'NA',
+      'Golden Bullet': 'GB'
+    };
+    const CUP_SQUADS = {
+      'BADiles': ['Thanos Chatziiordanou', 'Dimitris Gavalas'],
+      'Volos Drummers': ['Vasilis Tzovanis', 'Giorgos Zacharopoulos', 'Giannis Stefanis'],
+      'Midi Kidz': ['Stefanos Mavrogiannis', 'Stavros Moutaftsidis'],
+      'Team Till Death': ['Giorgos Karamolegkos', 'Miltos Kapnakis'],
+      'Hornets': ['Christos Katopodis', 'Ennio Georgopoulos'],
+      'EX7T': ['Sokratis Gkiolias Jr.', 'Avaris Ntzamilis'],
+      'R1': ['Nikolas Moschonas', 'Michalis Lerogiannis'],
+      'Basement Boys': ['Jordan Aslanis', 'Spyros Koskinas'],
+      'Lampater': ['Johan Pilichos', 'Tzannis Mermigas', 'Stavros Stavropoulos', 'Giannis Akridas'],
+      'Polo': ['Dimitris Antoninis', 'Filippos Laskaris'],
+      'Ksades': ['Foivos Dousis', 'Konstantinos Sfikas'],
+      'Air Condition': ['Giannis Kordopatis', 'Pavlos Tsonis'],
+      'Axtarmades': ['Giorgos Filippou', 'Filippos Efstathiou', 'Harris Rigas'],
+      'Oi Thryloi': ['Vasilis Efstathiou', 'Alexandros Kalofolias'],
+      'Spasmena Mila': ['Aris Tsertos', 'Kalliopi Tsertou', 'Taxiarchis Kassotakis'],
+      'Niki Alimou': ['Dionysis Halikias', 'Panagiotis Perdikis', 'Orfeas Maragkos'],
+      'Golden Bullet': ['Giannis Katsavounis', 'Markos Kanellidis'],
+      'Hitters': ['Iro Ganti', 'Theofania Sotiropoulou', 'Polixeni Toussi']
+    };
+    let cupBracket = { participants: [], results: {} };
+    let cupIsAdmin = false;
+    let cupDataLoaded = false;
+    let cupSaving = false;
+    let cupEditorMatch = null;
+    let cupEditorEvents = [];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[character]));
+    }
+
+    function isCupAdmin() {
+      try {
+        const session = JSON.parse(localStorage.getItem('psl_session') || 'null');
+        return Boolean(session && CUP_ADMIN_USERNAMES.includes(String(session.username || '').trim().toLowerCase()));
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function readCupBracket() {
+      const response = await fetch(CUP_DB_URL);
+      if (!response.ok) throw new Error('Unable to load the cup bracket.');
+      const data = await response.json();
+      if (data === null) return { participants: [], results: {} };
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('The saved cup bracket has an invalid format.');
+      }
+      const participants = data.participants ?? [];
+      const results = data.results ?? {};
+      if (!Array.isArray(participants) || !results || typeof results !== 'object' || Array.isArray(results)) {
+        throw new Error('The saved cup bracket has an invalid format.');
+      }
+      const teams = participants.filter(value => value !== 'bye');
+      if (participants.length > 32 || participants.some(value => !validParticipant(value)) || new Set(teams).size !== teams.length) {
+        throw new Error('The saved cup bracket contains invalid team entries.');
+      }
+      return { participants, results };
+    }
+
+    async function writeCupBracket(bracket) {
+      const response = await fetch(CUP_DB_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bracket)
+      });
+      if (!response.ok) throw new Error('Unable to save the cup bracket.');
+    }
+
+    async function writeCupMatch(match, result, roundName) {
+      const matchRecord = {
+        id: match.id,
+        home: match.home,
+        away: match.away,
+        hs: result.hs,
+        as: result.as,
+        date: result.date,
+        mvp: result.mvp,
+        events: result.events,
+        round: roundName,
+        winner: result.winner
+      };
+      const updates = {
+        [`matches/${match.id}`]: matchRecord,
+        [`psl6Cup/results/${match.id}`]: result
+      };
+      const response = await fetch(CUP_DB_ROOT_URL, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (!response.ok) throw new Error(`Unable to save match ${match.id} to Firebase.`);
+    }
+
+    function validParticipant(value) {
+      return value === 'bye' || CUP_TEAM_NAMES.includes(value);
+    }
+
+    function getWinner(match, result) {
+      const { home, away } = match;
+      if (home === 'bye' && validParticipant(away) && away !== 'bye') return away;
+      if (away === 'bye' && validParticipant(home) && home !== 'bye') return home;
+      if (!home || !away || home === 'bye' || away === 'bye') return null;
+      return result && (result.winner === home || result.winner === away) ? result.winner : null;
+    }
+
+    function buildRounds() {
+      let participants = Array.from({ length: 32 }, (_, index) => {
+        const value = cupBracket.participants[index];
+        return validParticipant(value) ? value : null;
+      });
+      return CUP_ROUNDS.map((round, roundIndex) => {
+        const matches = Array.from({ length: round.matches }, (_, matchIndex) => {
+          const matchNumber = round.matchOffset + matchIndex + 1;
+          const id = `PSL6CUP${String(matchNumber).padStart(3, '0')}`;
+          const match = { id, round: round.name, roundIndex, matchIndex, home: participants[matchIndex * 2] || null, away: participants[matchIndex * 2 + 1] || null };
+          const previousId = `r${roundIndex}m${matchIndex}`;
+          match.winner = getWinner(match, cupBracket.results[id] || cupBracket.results[previousId]);
+          return match;
+        });
+        participants = matches.map(match => match.winner);
+        return { ...round, matches };
+      });
+    }
+
+    function renderTeam(team, match) {
+      if (!team) return '<div class="match-team empty">TBD</div>';
+      if (team === 'bye') return '<div class="match-team bye">Bye</div>';
+      const logo = window.PSL6_DATA.logos[team];
+      const isWinner = match.winner === team;
+      const abbreviation = CUP_TEAM_ABBREVIATIONS[team] || team;
+      return `<div class="match-team${isWinner ? ' winner' : ''}" title="${escapeHtml(team)}" aria-label="${escapeHtml(team)}">${logo ? `<img src="${escapeHtml(logo)}" alt="">` : ''}<span>${escapeHtml(abbreviation)}</span></div>`;
+    }
+
+    function renderMatch(match, roundIndex, matchIndex) {
+      const hasGame = match.home && match.away && match.home !== 'bye' && match.away !== 'bye';
+      const existing = cupBracket.results[match.id] || cupBracket.results[`r${roundIndex}m${matchIndex}`] || {};
+      const homeScore = existing.hs ?? existing.homeScore;
+      const awayScore = existing.as ?? existing.awayScore;
+      const score = Number.isInteger(homeScore) && Number.isInteger(awayScore)
+        ? `<span class="match-score">${homeScore}–${awayScore}</span>`
+        : '';
+      const events = Array.isArray(existing.events) ? existing.events : [];
+      const goals = events.filter(event => event.type === 'goal').length;
+      const ownGoals = events.filter(event => event.type === 'og').length;
+      const substitutions = events.filter(event => event.type === 'sub').length;
+      const editButton = cupIsAdmin && hasGame
+        ? `<button class="button match-edit-button" type="button" aria-label="Edit ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}" title="Edit match" onclick="openCupMatchEditor('${match.id}')">✎</button>`
+        : '';
+      return `<article class="match-card" id="cup-match-${match.id}" data-cup-match="${match.id}">
+        <div class="match-label"><span>M${matchIndex + 1}</span>${score}</div>
+        ${renderTeam(match.home, match)}${renderTeam(match.away, match)}
+        ${editButton}
+      </article>`;
+    }
+
+    function renderBracket() {
+      const rounds = buildRounds();
+      const labels = ['Round of 32', 'Round of 16', 'Quarter-finals', 'Semi-finals', 'Final', 'Semi-finals', 'Quarter-finals', 'Round of 16', 'Round of 32'];
+      document.getElementById('bracket-labels').innerHTML = labels.map((label, index) =>
+        `<div style="${index === 4 ? 'color:var(--purple);' : ''}">${label}</div>`
+      ).join('');
+      const matches = rounds.flatMap((round, roundIndex) => round.matches.map((match, matchIndex) => {
+        const isFinal = roundIndex === CUP_ROUNDS.length - 1;
+        const leftSide = !isFinal && matchIndex < round.matches.length / 2;
+        const column = isFinal ? 5 : leftSide ? roundIndex + 1 : 9 - roundIndex;
+        const matchesPerSide = round.matches.length / 2;
+        const sideMatchIndex = isFinal ? 0 : matchIndex % matchesPerSide;
+        const row = isFinal ? 8 : (2 ** (roundIndex + 1)) * sideMatchIndex + (2 ** roundIndex);
+        return `<div style="grid-column:${column};grid-row:${row};">${renderMatch(match, roundIndex, matchIndex)}</div>`;
+      })).join('');
+      document.getElementById('bracket').innerHTML = `<svg class="bracket-lines" id="bracket-lines" aria-hidden="true"></svg>${matches}`;
+      const count = cupBracket.participants.filter(validParticipant).length;
+      document.getElementById('bracket-progress').textContent = `${count} / 32 Round of 32 slots filled`;
+      renderTeamOptions();
+      requestAnimationFrame(renderBracketConnectors);
+    }
+
+    function renderBracketConnectors() {
+      const grid = document.getElementById('bracket');
+      const svg = document.getElementById('bracket-lines');
+      if (!grid || !svg) return;
+      const gridRect = grid.getBoundingClientRect();
+      svg.setAttribute('viewBox', `0 0 ${grid.scrollWidth} ${grid.scrollHeight}`);
+      svg.setAttribute('width', grid.scrollWidth);
+      svg.setAttribute('height', grid.scrollHeight);
+      svg.innerHTML = '';
+      const rounds = buildRounds();
+      rounds.slice(0, -1).forEach((round, roundIndex) => {
+        round.matches.forEach((match, matchIndex) => {
+          const source = document.getElementById(`cup-match-${match.id}`);
+          const nextMatch = rounds[roundIndex + 1].matches[Math.floor(matchIndex / 2)];
+          const target = document.getElementById(`cup-match-${nextMatch.id}`);
+          if (!source || !target) return;
+          const sourceRect = source.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          const leftToRight = sourceRect.left < gridRect.left + gridRect.width / 2;
+          const x1 = (leftToRight ? sourceRect.right : sourceRect.left) - gridRect.left + grid.scrollLeft;
+          const x2 = (leftToRight ? targetRect.left : targetRect.right) - gridRect.left + grid.scrollLeft;
+          const y1 = sourceRect.top + sourceRect.height / 2 - gridRect.top + grid.scrollTop;
+          const y2 = targetRect.top + targetRect.height / 2 - gridRect.top + grid.scrollTop;
+          const middleX = (x1 + x2) / 2;
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', `M ${x1} ${y1} H ${middleX} V ${y2} H ${x2}`);
+          svg.appendChild(path);
+        });
+      });
+    }
+
+    function renderTeamOptions() {
+      const select = document.getElementById('team-select');
+      const selected = select.value;
+      const entered = new Set(cupBracket.participants.filter(value => value !== 'bye'));
+      select.innerHTML = `<option value="">Choose a team</option>${CUP_TEAM_NAMES.map(team =>
+        `<option value="${escapeHtml(team)}" ${entered.has(team) ? 'disabled' : ''}>${escapeHtml(team)}${entered.has(team) ? ' (added)' : ''}</option>`
+      ).join('')}`;
+      if (selected && !entered.has(selected)) select.value = selected;
+      document.getElementById('add-team').disabled = !cupDataLoaded || cupSaving || !cupIsAdmin || entered.size >= 32 || CUP_TEAM_NAMES.every(team => entered.has(team));
+      document.getElementById('add-bye').disabled = !cupDataLoaded || cupSaving || !cupIsAdmin || cupBracket.participants.length >= 32;
+      document.getElementById('reset-bracket').disabled = !cupDataLoaded || cupSaving || !cupIsAdmin || cupBracket.participants.length === 0;
+    }
+
+    function setAdminStatus(message, type = '') {
+      const status = document.getElementById('admin-status');
+      status.textContent = message;
+      status.className = `admin-status${type ? ` ${type}` : ''}`;
+    }
+
+    function getCupMatch(matchId) {
+      return buildRounds().flatMap(round => round.matches).find(match => match.id === matchId);
+    }
+
+    function cupPlayerOptions(home, away, selected = '', placeholder = 'Select player') {
+      const players = [...new Set([...(CUP_SQUADS[home] || []), ...(CUP_SQUADS[away] || [])])];
+      return `<option value="">-- ${escapeHtml(placeholder)} --</option>${players.map(player =>
+        `<option value="${escapeHtml(player)}" ${player === selected ? 'selected' : ''}>${escapeHtml(player)}</option>`
+      ).join('')}`;
+    }
+
+    function cupTeamOptions(match, selected = '') {
+      return `<option value="">-- Select Team --</option>${[match.home, match.away].map(team =>
+        `<option value="${escapeHtml(team)}" ${team === selected ? 'selected' : ''}>${escapeHtml(team)}</option>`
+      ).join('')}`;
+    }
+
+    function renderCupEvents(match) {
+      const container = document.getElementById('cup-events');
+      if (!container) return;
+      container.innerHTML = cupEditorEvents.map((event, index) => `
+        <article class="cup-event">
+          <button class="cup-event-remove" type="button" aria-label="Remove event" onclick="removeCupEvent(${index})">×</button>
+          <select class="cup-form-control cup-event-type" aria-label="Event type" onchange="updateCupEvent(${index},'type',this.value)">
+            <option value="goal" ${event.type === 'goal' ? 'selected' : ''}>Goal</option>
+            <option value="og" ${event.type === 'og' ? 'selected' : ''}>Own goal</option>
+            <option value="sub" ${event.type === 'sub' ? 'selected' : ''}>Substitution</option>
+          </select>
+          <div class="cup-event-fields">
+            <select class="cup-form-control" aria-label="${event.type === 'og' ? 'Team responsible' : 'Team'}" onchange="updateCupEvent(${index},'team',this.value)">${cupTeamOptions(match, event.team)}</select>
+            ${event.type === 'sub'
+              ? `<select class="cup-form-control" aria-label="Player coming in" onchange="updateCupEvent(${index},'player',this.value)">${cupPlayerOptions(match.home, match.away, event.player, 'Player in')}</select>
+                 <select class="cup-form-control" aria-label="Player going out" onchange="updateCupEvent(${index},'playerOut',this.value)">${cupPlayerOptions(match.home, match.away, event.playerOut, 'Player out')}</select>`
+              : `<select class="cup-form-control" aria-label="Player" onchange="updateCupEvent(${index},'player',this.value)">${cupPlayerOptions(match.home, match.away, event.player)}</select>
+                 <input class="cup-form-control" type="text" aria-label="Scoreline at event" placeholder="Scoreline" value="${escapeHtml(event.scoreline || '')}" oninput="updateCupEvent(${index},'scoreline',this.value)">`}
+          </div>
+        </article>`).join('');
+    }
+
+    function openCupMatchEditor(matchId) {
+      if (!cupIsAdmin || !cupDataLoaded || cupSaving) return;
+      const match = getCupMatch(matchId);
+      if (!match || !match.home || !match.away || match.home === 'bye' || match.away === 'bye') return;
+      cupEditorMatch = match;
+      const result = cupBracket.results[matchId] || cupBracket.results[`r${match.roundIndex}m${match.matchIndex}`] || {};
+      cupEditorEvents = Array.isArray(result.events) ? JSON.parse(JSON.stringify(result.events)) : [];
+      const overlay = document.createElement('div');
+      overlay.className = 'cup-modal-overlay';
+      overlay.id = 'cup-match-modal';
+      overlay.innerHTML = `
+        <section class="cup-modal" role="dialog" aria-modal="true" aria-labelledby="cup-modal-title">
+          <header class="cup-modal-header">
+            <h2 id="cup-modal-title">${escapeHtml(match.home)} vs ${escapeHtml(match.away)}</h2>
+            <button class="cup-modal-close" type="button" aria-label="Close" onclick="closeCupMatchEditor()">×</button>
+          </header>
+          <div class="cup-modal-body">
+            <div class="cup-form-group">
+              <label for="cup-winner">Winner</label>
+              <select id="cup-winner" class="cup-form-control">
+                <option value="">Select winner</option>
+                <option value="${escapeHtml(match.home)}" ${result.winner === match.home ? 'selected' : ''}>${escapeHtml(match.home)}</option>
+                <option value="${escapeHtml(match.away)}" ${result.winner === match.away ? 'selected' : ''}>${escapeHtml(match.away)}</option>
+              </select>
+            </div>
+            <div class="cup-form-group">
+              <label>Score</label>
+              <div class="cup-score-inputs">
+                <input id="cup-home-score" class="cup-form-control" type="number" min="0" step="1" aria-label="${escapeHtml(match.home)} score" value="${result.hs ?? result.homeScore ?? ''}">
+                <span>–</span>
+                <input id="cup-away-score" class="cup-form-control" type="number" min="0" step="1" aria-label="${escapeHtml(match.away)} score" value="${result.as ?? result.awayScore ?? ''}">
+              </div>
+            </div>
+            <div class="cup-form-group">
+              <label for="cup-date">Match date &amp; time</label>
+              <input id="cup-date" class="cup-form-control" type="datetime-local" value="${escapeHtml(result.date || '')}">
+            </div>
+            <div class="cup-form-group">
+              <label for="cup-mvp">Match MVP</label>
+              <select id="cup-mvp" class="cup-form-control">${cupPlayerOptions(match.home, match.away, result.mvp, 'Select player')}</select>
+            </div>
+            <h3 class="cup-event-heading">Match events</h3>
+            <div id="cup-events" class="cup-event-list"></div>
+            <button class="button secondary" type="button" onclick="addCupEvent()">+ Add event</button>
+            <p id="cup-modal-error" class="cup-modal-error" role="alert"></p>
+            <button id="cup-save-match" class="button cup-modal-save" type="button" onclick="saveCupMatch()">Save match</button>
+          </div>
+        </section>`;
+      overlay.addEventListener('click', event => {
+        if (event.target === overlay) closeCupMatchEditor();
+      });
+      document.body.appendChild(overlay);
+      renderCupEvents(match);
+      overlay.querySelector('#cup-winner').focus();
+    }
+
+    function closeCupMatchEditor() {
+      document.getElementById('cup-match-modal')?.remove();
+      cupEditorMatch = null;
+      cupEditorEvents = [];
+    }
+
+    function addCupEvent() {
+      if (!cupEditorMatch) return;
+      cupEditorEvents.push({ type: 'goal', team: '', player: '', playerOut: '', scoreline: '' });
+      renderCupEvents(cupEditorMatch);
+    }
+
+    function removeCupEvent(index) {
+      cupEditorEvents.splice(index, 1);
+      renderCupEvents(cupEditorMatch);
+    }
+
+    function updateCupEvent(index, field, value) {
+      if (!cupEditorEvents[index]) return;
+      cupEditorEvents[index][field] = value;
+      if (field === 'type') renderCupEvents(cupEditorMatch);
+    }
+
+    async function saveCupMatch() {
+      if (!cupIsAdmin || !cupEditorMatch || cupSaving) return;
+      const match = getCupMatch(cupEditorMatch.id);
+      if (!match || match.home !== cupEditorMatch.home || match.away !== cupEditorMatch.away) {
+        document.getElementById('cup-modal-error').textContent = 'This match has changed. Close and reopen the editor.';
+        return;
+      }
+      const winner = document.getElementById('cup-winner').value;
+      const homeInput = document.getElementById('cup-home-score').value;
+      const awayInput = document.getElementById('cup-away-score').value;
+      const error = document.getElementById('cup-modal-error');
+      if (winner !== match.home && winner !== match.away) {
+        error.textContent = 'Select the match winner before saving.';
+        return;
+      }
+      const hasHomeScore = homeInput !== '';
+      const hasAwayScore = awayInput !== '';
+      if (hasHomeScore !== hasAwayScore || (hasHomeScore && (!Number.isInteger(Number(homeInput)) || !Number.isInteger(Number(awayInput)) || Number(homeInput) < 0 || Number(awayInput) < 0))) {
+        error.textContent = 'Enter both scores as non-negative whole numbers, or leave both blank.';
+        return;
+      }
+      if (hasHomeScore && Number(homeInput) !== Number(awayInput) && ((winner === match.home) !== (Number(homeInput) > Number(awayInput)))) {
+        error.textContent = 'The selected winner conflicts with the match score.';
+        return;
+      }
+      const result = {
+        winner,
+        hs: hasHomeScore ? Number(homeInput) : null,
+        as: hasAwayScore ? Number(awayInput) : null,
+        date: document.getElementById('cup-date').value,
+        mvp: document.getElementById('cup-mvp').value,
+        events: cupEditorEvents.map(event => ({ ...event }))
+      };
+      cupSaving = true;
+      renderTeamOptions();
+      setAdminStatus(`Saving match ${match.id}…`);
+      document.getElementById('cup-save-match').disabled = true;
+      try {
+        await writeCupMatch(match, result, match.round);
+        cupBracket = { ...cupBracket, results: { ...cupBracket.results, [match.id]: result } };
+        renderBracket();
+        setAdminStatus(`${match.id} saved. ${winner} advances to the next round.`, 'success');
+        closeCupMatchEditor();
+      } catch (saveError) {
+        setAdminStatus(saveError.message || `Unable to save match ${match.id}.`, 'error');
+        const modalError = document.getElementById('cup-modal-error');
+        if (modalError) modalError.textContent = saveError.message || 'Unable to save match details. Please try again.';
+      } finally {
+        cupSaving = false;
+        renderTeamOptions();
+      }
+    }
+
+    async function persistBracket(nextBracket, successMessage) {
+      if (cupSaving) return false;
+      cupSaving = true;
+      renderTeamOptions();
+      setAdminStatus('Saving…');
+      try {
+        await writeCupBracket(nextBracket);
+        cupBracket = nextBracket;
+        renderBracket();
+        setAdminStatus(successMessage, 'success');
+        return true;
+      } catch (error) {
+        setAdminStatus(error.message || 'Unable to save changes.', 'error');
+        return false;
+      } finally {
+        cupSaving = false;
+        renderTeamOptions();
+      }
+    }
+
+    async function addParticipant(participant) {
+      if (!cupIsAdmin || !cupDataLoaded) return;
+      if (cupBracket.participants.length >= 32) {
+        setAdminStatus('The Round of 32 is full.', 'error');
+        return;
+      }
+      if (participant === 'bye' && cupBracket.participants.filter(value => value !== 'bye').length === 0) {
+        setAdminStatus('Add a team before assigning a Bye.', 'error');
+        return;
+      }
+      if (participant !== 'bye' && (!validParticipant(participant) || cupBracket.participants.includes(participant))) {
+        setAdminStatus('Choose a valid team that has not already been added.', 'error');
+        return;
+      }
+      const nextBracket = {
+        ...cupBracket,
+        participants: [...cupBracket.participants, participant],
+        results: { ...cupBracket.results }
+      };
+      await persistBracket(nextBracket, participant === 'bye' ? 'Bye added to the draw.' : `${participant} added to the draw.`);
+    }
+
+    async function resetBracket() {
+      if (!cupIsAdmin || !cupDataLoaded || !confirm('Reset the PSL Cup bracket and remove all teams, Byes and results?')) return;
+      await persistBracket({ participants: [], results: {} }, 'Bracket reset.');
+    }
+
+    async function initCup() {
+      cupIsAdmin = isCupAdmin();
+      document.getElementById('admin-panel').hidden = !cupIsAdmin;
+      document.getElementById('admin-login-link').hidden = cupIsAdmin;
+      try {
+        cupBracket = await readCupBracket();
+        cupDataLoaded = true;
+        renderBracket();
+      } catch (error) {
+        document.getElementById('bracket').innerHTML = `<div class="loading">${escapeHtml(error.message || 'Unable to load the cup bracket.')}</div>`;
+        document.getElementById('bracket-progress').textContent = 'Bracket unavailable';
+        setAdminStatus(error.message || 'Unable to load the cup bracket.', 'error');
+      }
+    }
+
+    document.getElementById('add-team').addEventListener('click', () => {
+      const team = document.getElementById('team-select').value;
+      if (team) addParticipant(team);
+      else setAdminStatus('Choose a team to add.', 'error');
+    });
+    document.getElementById('add-bye').addEventListener('click', () => addParticipant('bye'));
+    document.getElementById('reset-bracket').addEventListener('click', resetBracket);
+    window.addEventListener('resize', renderBracketConnectors);
+    window.addEventListener('DOMContentLoaded', initCup);
+  </script>
 
 </body>
 </html>

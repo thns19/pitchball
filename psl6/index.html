@@ -190,6 +190,16 @@
     gap: 10px;
     transition: color 0.25s;
   }
+  .external-link-indicator {
+    color: var(--text-muted);
+    font-size: 0.75em;
+    opacity: 0.75;
+    transition: color 0.25s, opacity 0.25s;
+  }
+  .menu-item:hover .external-link-indicator {
+    color: var(--neon-cyan);
+    opacity: 1;
+  }
   
   .text h2::after {
     content: '';
@@ -207,6 +217,58 @@
   .menu-item:hover .text h2::after {
     opacity: 1;
     box-shadow: 0 0 10px var(--neon-cyan);
+  }
+
+  .menu-item-cup {
+    position: relative;
+    border-bottom-color: rgba(179, 102, 255, 0.42);
+    background: linear-gradient(90deg, rgba(179, 102, 255, 0.12), rgba(0, 240, 255, 0.035) 65%, transparent);
+    animation: cup-glow 2.8s ease-in-out infinite;
+  }
+  .menu-item-cup .icon {
+    filter: grayscale(0);
+    transform: scale(1.08);
+  }
+  .menu-item-cup .text h2 {
+    color: var(--neon-cyan);
+  }
+  .menu-item-cup .text h2::after {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--neon-cyan);
+  }
+  .cup-coming-soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    margin-top: 5px;
+    padding: 3px 8px;
+    border: 1px solid rgba(179, 102, 255, 0.48);
+    border-radius: 999px;
+    background: rgba(179, 102, 255, 0.13);
+    color: #dfbdff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .cup-coming-soon::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-purple);
+    box-shadow: 0 0 8px var(--neon-purple);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes cup-glow {
+    0%, 100% { box-shadow: inset 3px 0 0 rgba(179, 102, 255, 0.5); }
+    50% { box-shadow: inset 3px 0 0 rgba(0, 240, 255, 0.75); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.38; }
   }
 
   .text p {
@@ -256,21 +318,22 @@
         </div>
       </a>
 
-            <a href="cup.html" class="menu-item">
+      <a href="cup.html" class="menu-item menu-item-cup">
         <span class="num">02</span>
         <span class="icon">🏆</span>
         <div class="text">
           <h2>PSL Cup</h2>
           <p>Group stage standings, results & the full PSL Cup bracket.</p>
+          <span class="cup-coming-soon">Starting soon</span>
         </div>
       </a>
 
-            <a href="stats.html" class="menu-item">
+      <a href="https://fantasy.pitchball.gr/fantasy-players.html" class="menu-item" target="_blank" rel="noopener noreferrer">
         <span class="num">03</span>
         <span class="icon">📈</span>
         <div class="text">
-          <h2>Statistics</h2>
-          <p>In-depth player and team statistics for the current season.</p>
+          <h2>Statistics <span class="external-link-indicator" aria-hidden="true">↗</span></h2>
+          <p>In-depth player statistics from our fantasy website</p>
         </div>
       </a>
 
