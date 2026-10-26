@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSL6 Group Stage Archive</title>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNNGKMS578');
+  function loadAnalytics() {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config','G-XNNGKMS578');
+  }
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space-dark: #05010f;
+    --neon-purple: #b366ff;
+    --neon-cyan: #00f0ff;
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+  }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--space-dark);
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5, 1, 15, 0.85);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stars {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .stars::before, .stars::after {
+    content: ''; position: absolute; width: 2px; height: 2px;
+    background: transparent;
+    box-shadow:
+      10vw 20vh #fff, 40vw 80vh #fff, 80vw 10vh #fff, 20vw 90vh #fff,
+      60vw 50vh #fff, 90vw 70vh #fff, 30vw 40vh #fff, 70vw 20vh #fff,
+      50vw 10vh #fff, 15vw 60vh #fff, 85vw 90vh #fff, 95vw 30vh #fff;
+    animation: twinkle 4s infinite alternate;
+  }
+  .stars::after {
+    width: 3px; height: 3px;
+    box-shadow:
+      25vw 15vh var(--neon-cyan), 75vw 85vh var(--neon-purple), 5vw 50vh var(--neon-cyan),
+      55vw 95vh var(--neon-purple), 45vw 35vh var(--neon-cyan), 85vw 55vh var(--neon-purple);
+    animation: twinkle 3s infinite alternate-reverse;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 720px;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: clamp(0.7rem, 1.5vh, 0.85rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .icon-badge {
+    font-size: clamp(2.5rem, 6vh, 3.5rem);
+    margin-bottom: 1rem;
+    filter: grayscale(0.15);
+  }
+
+  .title {
+    font-size: clamp(2.2rem, 6vh, 3.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+  }
+  .status-pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .desc {
+    font-size: clamp(0.95rem, 2vh, 1.05rem);
+    color: var(--text-muted);
+    font-weight: 300;
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  .back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: clamp(0.8rem, 1.8vh, 0.9rem);
+    border: 1px solid var(--border-color);
+    padding: 10px 22px;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+  }
+  .back-link:hover {
+    color: var(--text-main);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 16px rgba(179, 102, 255, 0.25);
+  }
+
+  .container {
+    max-width: 1100px;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .page-header { text-align: center; }
+  .page-header .icon-badge { text-align: center; }
+  .page-header .title { text-align: center; }
+  .page-header .status-pill { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+  .page-header .desc { margin-left: auto; margin-right: auto; text-align: center; }
+
+  .section-heading { margin: 2rem 0 1rem; }
+  .section-heading h2 { font-size: 1.35rem; font-weight: 400; color: var(--text-main); }
+  .section-heading p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; line-height: 1.5; }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+  .group-card {
+    background: rgba(31, 24, 42, 0.82);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  }
+  .group-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .group-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .group-table th {
+    color: var(--text-muted);
+    padding: 6px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+  }
+  .group-table th:first-child { text-align: left; }
+  .group-table td {
+    padding: 8px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    background: rgba(255,255,255,0.01);
+  }
+  .group-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+  }
+  .group-table tr:last-child td { border-bottom: none; }
+  .group-qual { border-left: 3px solid #39c877; }
+  .group-best4 { border-left: 3px solid #f5c842; }
+  .group-elim { border-left: 3px solid rgba(255,255,255,0.12); }
+  .team-cell { display: flex; align-items: center; gap: 8px; }
+  .logo-preview { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); }
+  .projection-panel {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(179,102,255,0.25);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(179,102,255,0.09), rgba(0,240,255,0.035));
+  }
+  .projection-panel[hidden], .projection-results[hidden] { display: none; }
+  .projection-panel-header { margin-bottom: 1rem; }
+  .projection-panel-header h3 { color: var(--text-main); font-size: 1rem; font-weight: 600; }
+  .projection-panel-header p { margin-top: 0.35rem; color: var(--text-muted); font-size: 0.78rem; line-height: 1.5; }
+  .projection-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+  .qualification-controls { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 12px; }
+  .qualification-team-select {
+    min-height: 40px;
+    min-width: 190px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 9px;
+    background: rgba(255,255,255,0.045);
+    color: var(--text-main);
+    font: 500 12px 'Space Grotesk', sans-serif;
+  }
+  .qualification-team-select:focus { outline: none; border-color: var(--neon-cyan); }
+  .projection-button {
+    min-height: 40px;
+    padding: 9px 14px;
+    border: 1px solid rgba(0,240,255,0.35);
+    border-radius: 9px;
+    background: rgba(0,240,255,0.1);
+    color: var(--neon-cyan);
+    font: 600 12px 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .projection-button:hover:not(:disabled) { background: rgba(0,240,255,0.18); border-color: var(--neon-cyan); transform: translateY(-1px); }
+  .projection-button.secondary { border-color: rgba(255,255,255,0.16); background: rgba(255,255,255,0.045); color: var(--text-muted); }
+  .projection-button.secondary:hover:not(:disabled) { border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.08); color: var(--text-main); }
+  .projection-button:disabled { opacity: 0.55; cursor: wait; }
+  #run-qualification-simulations:disabled { cursor: not-allowed; }
+  #run-qualification-simulations.is-simulating:disabled { cursor: wait; }
+  .projection-results { margin-top: 1.25rem; }
+  .projection-results h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .projection-results-note { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 1rem; }
+  .position-probability-card { margin-top: 12px; padding: 1rem; background: rgba(255,255,255,0.025); border: 1px solid var(--border-color); border-radius: 11px; overflow-x: auto; }
+  .position-probability-title { color: var(--neon-cyan); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 8px; text-transform: uppercase; }
+  .position-probability-table { width: 100%; min-width: 440px; border-collapse: collapse; font-size: 11px; }
+  .position-probability-table th, .position-probability-table td { padding: 7px 6px; border-bottom: 1px solid var(--border-color); text-align: center; white-space: nowrap; }
+  .position-probability-table th { color: var(--text-muted); font-weight: 600; }
+  .position-probability-table th:first-child, .position-probability-table td:first-child { text-align: left; }
+  .position-probability-table tr:last-child td { border-bottom: 0; }
+  .position-probability-table .prob-qual { color: var(--accent-green); }
+  .position-probability-table .prob-best4 { color: var(--accent-gold); }
+  .position-probability-table .prob-muted { color: var(--text-muted); }
+  .fixtures-section {
+    margin-top: 14px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+  }
+  .fixtures-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .fixture-md-block {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .fixture-md-header {
+    background: rgba(0, 240, 255, 0.08);
+    color: var(--neon-cyan);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 7px 10px;
+  }
+  .fixtures-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .fixtures-controls .fixtures-title { margin: 0; }
+  .matchday-nav { display: flex; align-items: center; gap: 8px; }
+  .matchday-nav-label { min-width: 64px; text-align: center; color: var(--text-muted); font-size: 11px; }
+  .matchday-nav-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    background: rgba(255,255,255,0.04);
+    color: var(--neon-cyan);
+    font: inherit;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .matchday-nav-btn:hover:not(:disabled) { background: rgba(0,240,255,0.12); border-color: var(--neon-cyan); }
+  .matchday-nav-btn:disabled { opacity: .35; cursor: default; }
+  .fixture-md-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 7px;
+  }
+  .fixture-match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    padding: 7px 9px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255,255,255,0.04);
+    font-size: 12px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+  .fixture-match:hover {
+    border-color: rgba(0, 240, 255, 0.45);
+    background: rgba(0, 240, 255, 0.07);
+    transform: translateY(-1px);
+  }
+  .fixture-team {
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fixture-team.home { text-align: right; }
+  .fixture-team.away { text-align: left; }
+  .fixture-score {
+    min-width: 54px;
+    text-align: center;
+    color: var(--neon-purple);
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .preview-score-inputs { display: inline-flex; align-items: center; gap: 4px; }
+  .preview-score-control { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .preview-score-input {
+    width: 38px;
+    padding: 5px 3px;
+    border: 1px solid rgba(179,102,255,0.4);
+    border-radius: 6px;
+    background: rgba(0,0,0,0.25);
+    color: var(--text-main);
+    font: 600 12px 'Space Grotesk', sans-serif;
+    text-align: center;
+  }
+  .preview-score-input:focus { outline: none; border-color: var(--neon-cyan); }
+  .preview-score-lock {
+    padding: 3px 6px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font: 600 9px 'Space Grotesk', sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .preview-score-lock.locked { border-color: rgba(57,200,119,0.55); color: #39c877; }
+  .preview-score-lock:disabled { opacity: 0.45; cursor: not-allowed; }
+  .fixture-empty {
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 8px 0;
+  }
+  .save-note { color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem; }
+  .groups-placeholder { padding: 2rem; text-align: center; border: 1px dashed var(--border-color); background: rgba(255,255,255,0.02); border-radius: 12px; }
+  .groups-placeholder strong { display: block; color: var(--text-main); font-weight: 400; margin-bottom: 0.45rem; }
+  .groups-placeholder span { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
+
+  @media (max-width: 700px) {
+    .container { padding: 2rem 1rem; }
+    .groups-grid { grid-template-columns: 1fr; }
+    .fixture-match { grid-template-columns: 1fr auto 1fr; }
+  }
+
+  select.psl-input option {
+    background: #1e2010;
+    color: #ffffff;
+  }
+  select.qualification-team-select option {
+    background: #1e2010;
+    color: #ffffff;
+  }
+</style>
+</head>
+<body>
+
+  <div class="stars"></div>
+
+  <div class="container">
+    <div class="page-header">
+      <div class="eyebrow">Pitchball Super League &middot; PSL6</div>
+      <div class="icon-badge">📋</div>
+      <h1 class="title">Group Stage Archive</h1>
+      <div class="status-pill"><span class="dot"></span>Archived PSL6 Groups</div>
+      <p class="desc">The PSL6 group standings, fixtures and projections are preserved here.</p>
+    </div>
+
+    <section aria-labelledby="groups-title">
+      <div class="section-heading">
+        <h2 id="groups-title">Group Stage</h2>
+        <p>Fixtures and standings for all PSL6 groups.</p>
+      </div>
+      <div class="groups-grid" id="groups-grid"></div>
+      <div id="admin-projection-controls" class="projection-panel" hidden>
+        <div class="projection-panel-header">
+          <h3>Admin projections &amp; position odds</h3>
+          <p>Enter scores beside pending fixtures to preview how they change the standings, or simulate pending matches. Simulations use team ratings with no home advantage. Previews are temporary and are not saved.</p>
+        </div>
+        <div class="projection-actions">
+          <button class="projection-button" type="button" onclick="simulateAllProjections()">Simulate pending scores</button>
+          <button id="run-position-simulations" class="projection-button" type="button" onclick="runPositionSimulations()">Run 50,000 position simulations</button>
+          <button id="run-best-fourth-simulations" class="projection-button" type="button" onclick="runBestFourthSimulations()">Run 50,000 fourth-place cutoff simulations</button>
+          <button class="projection-button secondary" type="button" onclick="clearAllProjections()">Clear projected scores</button>
+        </div>
+        <div class="qualification-controls">
+          <select id="qualification-team" class="qualification-team-select" aria-label="Select team for qualification simulation" onchange="document.getElementById('run-qualification-simulations').disabled = !this.value">
+            <option value="">Choose a team</option>
+          </select>
+          <button id="run-qualification-simulations" class="projection-button" type="button" onclick="runQualificationSimulations()" disabled>Run 50,000 qualification simulations</button>
+        </div>
+        <div id="qualification-results" class="projection-results" hidden></div>
+        <div id="projection-results" class="projection-results" hidden></div>
+        <div id="best-fourth-results" class="projection-results" hidden></div>
+      </div>
+    </section>
+
+    <a href="table.html" class="back-link">&larr; Back to League Phase</a>
+  </div>
+
+  <script src="teams.js"></script>
+  <script>
+    const teamData = {
+      'BADiles': { name: 'BADiles', logo: 'logos/badiles.png' },
+      'Volos Drummers': { name: 'Volos Dr.', logo: 'logos/volos.png' },
+      'Midi Kidz': { name: 'Midi Kidz', logo: 'logos/midi.png' },
+      'Team Till Death': { name: 'Team Till Death', logo: 'logos/ttd.png' },
+      'Hornets': { name: 'Hornets', logo: 'logos/hornets.png' },
+      'EX7T': { name: 'EX7T', logo: 'logos/ex7t.png' },
+      'R1': { name: 'R1', logo: 'logos/r1.png' },
+      'Basement Boys': { name: 'Basement Boys', logo: 'logos/basement.png' },
+      'Lampater': { name: 'Lampater', logo: 'logos/lpc.png' },
+      'Polo': { name: 'Polo', logo: 'logos/polo.png' },
+      'Ksades': { name: 'Ksades', logo: 'logos/ksades.png' },
+      'Air Condition': { name: 'Air Condition', logo: 'logos/ac.png' },
+      'Axtarmades': { name: 'Axtarmades', logo: 'logos/axtar.png' },
+      'Thryloi': { name: 'Thryloi', logo: 'logos/thryloi.png' },
+      'Spasmena Mila': { name: 'Spasmena Mila', logo: 'logos/spasmena.png' },
+      'Warriors': { name: 'Warriors', logo: 'logos/warriors.png' },
+      'Niki Alimou': { name: 'Niki Alimou', logo: 'logos/alimou.png' },
+      'Golden B.': { name: 'Golden B.', logo: 'logos/gb.png' },
+      'Hitters': { name: 'Hitters', logo: 'logos/hitters.png' }
+    };
+
+    const TEAM_ALIASES = {
+      'BAD': 'BADiles', 'BADiles': 'BADiles',
+      'Volos': 'Volos Drummers', 'V. Drummers': 'Volos Dr.', 'Volos Drummers': 'Volos Drummers',
+      'Midi': 'Midi Kidz', 'Midi Kidz': 'Midi Kidz',
+      'TTD': 'Team Till Death', 'Team Till Death': 'Team Till Death',
+      'Hornets': 'Hornets',
+      'EX7T': 'EX7T',
+      'R1': 'R1',
+      'BMB': 'Basement Boys', 'Basement Boys': 'Basement Boys',
+      'Lampater': 'Lampater',
+      'Polo': 'Polo',
+      'Ksades': 'Ksades',
+      'A/C': 'Air Condition', 'Air Condition': 'Air Condition',
+      'Axtarm': 'Axtarmades', 'Axtarmades': 'Axtarmades',
+      'Thryloi': 'Thryloi',
+      'Mila': 'Spasmena Mila', 'Spasmena Mila': 'Spasmena Mila',
+      'Warriors': 'Warriors',
+      'Niki A.': 'Niki Alimou', 'Niki Alimou': 'Niki Alimou',
+      'GB': 'Golden B.', 'Golden B.': 'Golden B.'
+    };
+
+    const groups = [
+      { name: 'Group A', teams: ['BADiles', 'Volos Drummers', 'Midi Kidz', 'Team Till Death', 'Hornets', 'EX7T'], fixtures: [] },
+      { name: 'Group B', teams: ['R1', 'Basement Boys', 'Lampater', 'Polo', 'Ksades', 'Air Condition'], fixtures: [] },
+      { name: 'Group C', teams: ['Axtarmades', 'Thryloi', 'Spasmena Mila', 'Hitters', 'Niki Alimou', 'Golden B.'], fixtures: [] }
+    ];
+    const selectedMatchdayByGroup = {};
+    const projectionRatings = window.PSL6_DATA.teams;
+    const projectionRatingAliases = { 'Thryloi': 'Oi Thryloi', 'Golden B.': 'Golden Bullet' };
+    let pslCurrentUser = null;
+
+    const rawFixtures = [
+      { group: 'Group A', md: 1, h: 'EX7T', a: 'Midi', hs: null, as: null },
+      { group: 'Group A', md: 1, h: 'Hornets', a: 'BAD', hs: null, as: null },
+      { group: 'Group A', md: 1, h: 'TTD', a: 'Volos', hs: null, as: null },
+      { group: 'Group A', md: 2, h: 'BAD', a: 'EX7T', hs: null, as: null },
+      { group: 'Group A', md: 2, h: 'Volos', a: 'Midi', hs: null, as: null },
+      { group: 'Group A', md: 2, h: 'TTD', a: 'Hornets', hs: null, as: null },
+      { group: 'Group A', md: 3, h: 'EX7T', a: 'Volos', hs: null, as: null },
+      { group: 'Group A', md: 3, h: 'BAD', a: 'TTD', hs: null, as: null },
+      { group: 'Group A', md: 3, h: 'Midi', a: 'Hornets', hs: null, as: null },
+      { group: 'Group A', md: 4, h: 'TTD', a: 'EX7T', hs: null, as: null },
+      { group: 'Group A', md: 4, h: 'Hornets', a: 'Volos', hs: null, as: null },
+      { group: 'Group A', md: 4, h: 'Midi', a: 'BAD', hs: null, as: null },
+      { group: 'Group A', md: 5, h: 'EX7T', a: 'Hornets', hs: null, as: null },
+      { group: 'Group A', md: 5, h: 'TTD', a: 'Midi', hs: null, as: null },
+      { group: 'Group A', md: 5, h: 'Volos', a: 'BAD', hs: null, as: null },
+
+      { group: 'Group B', md: 1, h: 'Lampater', a: 'Polo', hs: null, as: null },
+      { group: 'Group B', md: 1, h: 'A/C', a: 'Ksades', hs: null, as: null },
+      { group: 'Group B', md: 1, h: 'BMB', a: 'R1', hs: null, as: null },
+      { group: 'Group B', md: 2, h: 'Ksades', a: 'Lampater', hs: null, as: null },
+      { group: 'Group B', md: 2, h: 'R1', a: 'Polo', hs: null, as: null },
+      { group: 'Group B', md: 2, h: 'BMB', a: 'A/C', hs: null, as: null },
+      { group: 'Group B', md: 3, h: 'Lampater', a: 'R1', hs: null, as: null },
+      { group: 'Group B', md: 3, h: 'Ksades', a: 'BMB', hs: null, as: null },
+      { group: 'Group B', md: 3, h: 'Polo', a: 'A/C', hs: null, as: null },
+      { group: 'Group B', md: 4, h: 'BMB', a: 'Lampater', hs: null, as: null },
+      { group: 'Group B', md: 4, h: 'A/C', a: 'R1', hs: null, as: null },
+      { group: 'Group B', md: 4, h: 'Polo', a: 'Ksades', hs: null, as: null },
+      { group: 'Group B', md: 5, h: 'Lampater', a: 'A/C', hs: null, as: null },
+      { group: 'Group B', md: 5, h: 'BMB', a: 'Polo', hs: null, as: null },
+      { group: 'Group B', md: 5, h: 'R1', a: 'Ksades', hs: null, as: null },
+
+      { group: 'Group C', md: 1, h: 'Axtarm', a: 'Niki A.', hs: null, as: null },
+      { group: 'Group C', md: 1, h: 'Thryloi', a: 'GB', hs: null, as: null },
+      { group: 'Group C', md: 1, h: 'Mila', a: 'Hitters', hs: null, as: null },
+      { group: 'Group C', md: 2, h: 'GB', a: 'Axtarm', hs: null, as: null },
+      { group: 'Group C', md: 2, h: 'Hitters', a: 'Niki A.', hs: null, as: null },
+      { group: 'Group C', md: 2, h: 'Mila', a: 'Thryloi', hs: null, as: null },
+      { group: 'Group C', md: 3, h: 'Axtarm', a: 'Hitters', hs: null, as: null },
+      { group: 'Group C', md: 3, h: 'GB', a: 'Mila', hs: null, as: null },
+      { group: 'Group C', md: 3, h: 'Niki A.', a: 'Thryloi', hs: null, as: null },
+      { group: 'Group C', md: 4, h: 'Mila', a: 'Axtarm', hs: null, as: null },
+      { group: 'Group C', md: 4, h: 'Thryloi', a: 'Hitters', hs: null, as: null },
+      { group: 'Group C', md: 4, h: 'Niki A.', a: 'GB', hs: null, as: null },
+      { group: 'Group C', md: 5, h: 'Axtarm', a: 'Thryloi', hs: null, as: null },
+      { group: 'Group C', md: 5, h: 'Mila', a: 'Niki A.', hs: null, as: null },
+      { group: 'Group C', md: 5, h: 'Hitters', a: 'GB', hs: null, as: null }
+    ];
+
+    function normalizeTeamName(teamName) {
+      const key = String(teamName || '').trim();
+      return TEAM_ALIASES[key] || key;
+    }
+
+    const fixtures = rawFixtures.map((fixture, index) => ({
+      ...fixture,
+      id: String(index + 1000),
+      home: normalizeTeamName(fixture.h),
+      away: normalizeTeamName(fixture.a),
+      hs: fixture.hs ?? null,
+      as: fixture.as ?? null,
+      confirmed: fixture.hs !== null && fixture.as !== null
+    }));
+
+    groups.forEach(group => {
+      group.fixtures = fixtures.filter(fixture => fixture.group === group.name);
+    });
+
+    function groupMatchdays(group) {
+      return [...new Set(group.fixtures.map(fixture => Number(fixture.md)))].sort((a, b) => a - b);
+    }
+
+    function firstIncompleteMatchday(group, matchdays) {
+      return matchdays.find(matchday => group.fixtures.some(fixture =>
+        Number(fixture.md) === matchday && (fixture.hs === null || fixture.hs === undefined || fixture.as === null || fixture.as === undefined)
+      )) ?? matchdays[matchdays.length - 1];
+    }
+
+    function navigateMatchday(groupName, direction) {
+      const group = groups.find(item => item.name === groupName);
+      if (!group) return;
+      const matchdays = groupMatchdays(group);
+      const selected = selectedMatchdayByGroup[groupName] ?? firstIncompleteMatchday(group, matchdays);
+      const nextIndex = matchdays.indexOf(selected) + direction;
+      if (nextIndex < 0 || nextIndex >= matchdays.length) return;
+      selectedMatchdayByGroup[groupName] = matchdays[nextIndex];
+      renderGroups();
+    }
+
+    function isPslAdmin() {
+      return Boolean(pslCurrentUser && pslCurrentUser.isAdmin);
+    }
+
+    function getProjectionScore(fixture) {
+      if (!isPslAdmin() || !fixture.projected) return null;
+      return { hs: fixture.projectedHs, as: fixture.projectedAs };
+    }
+
+    function renderStandingsRows(standings) {
+      return standings.map((row, index) => {
+        const cls = index < 3 ? 'group-qual' : index === 3 ? 'group-best4' : 'group-elim';
+        return `
+          <tr class="${cls}">
+            <td>
+              <div class="team-cell">
+                <img class="logo-preview" src="${escapeAttribute(row.logo)}" alt="${escapeAttribute(row.team)}" onerror="this.style.display='none'">
+                <span>${escapeHtml(row.team)}</span>
+              </div>
+            </td>
+            <td>${row.p}</td>
+            <td>${row.w}</td>
+            <td>${row.d}</td>
+            <td>${row.l}</td>
+            <td>${row.gd > 0 ? '+' + row.gd : row.gd}</td>
+            <td><strong>${row.pts}</strong></td>
+          </tr>`;
+      }).join('');
+    }
+
+    function updateStandings() {
+      groups.forEach((group, index) => {
+        const body = document.getElementById(`standings-${index}`);
+        if (body) body.innerHTML = renderStandingsRows(computeGroupStandings(group.teams, group.fixtures));
+      });
+    }
+
+    function hasValidPreviewScore(fixture) {
+      const homeScore = fixture.previewDraftHs;
+      const awayScore = fixture.previewDraftAs;
+      return homeScore !== undefined && homeScore !== null && homeScore !== ''
+        && awayScore !== undefined && awayScore !== null && awayScore !== ''
+        && Number.isInteger(Number(homeScore)) && Number(homeScore) >= 0
+        && Number.isInteger(Number(awayScore)) && Number(awayScore) >= 0;
+    }
+
+    function updatePreviewScore(fixtureId, side, input) {
+      if (!isPslAdmin()) return;
+      const fixture = fixtures.find(item => item.id === fixtureId);
+      if (!fixture || (fixture.hs !== null && fixture.as !== null) || !input.checkValidity()) {
+        input.reportValidity();
+        return;
+      }
+
+      if (fixture.previewDraftHs === undefined) {
+        fixture.previewDraftHs = fixture.projected ? String(fixture.projectedHs) : '';
+        fixture.previewDraftAs = fixture.projected ? String(fixture.projectedAs) : '';
+      }
+      fixture[side === 'hs' ? 'previewDraftHs' : 'previewDraftAs'] = input.value;
+
+      const homeScore = fixture.previewDraftHs;
+      const awayScore = fixture.previewDraftAs;
+      const hasBothScores = hasValidPreviewScore(fixture);
+      if (hasBothScores) {
+        fixture.projectedHs = Number(homeScore);
+        fixture.projectedAs = Number(awayScore);
+        fixture.projected = true;
+      } else {
+        fixture.projectedHs = null;
+        fixture.projectedAs = null;
+        fixture.projected = false;
+        fixture.tempLocked = false;
+      }
+      const lockButton = document.getElementById(`preview-lock-${fixtureId}`);
+      if (lockButton) {
+        lockButton.disabled = !hasBothScores;
+        lockButton.classList.toggle('locked', Boolean(fixture.tempLocked));
+        lockButton.textContent = fixture.tempLocked ? 'Locked for sims' : 'Lock for sims';
+        lockButton.setAttribute('aria-pressed', String(Boolean(fixture.tempLocked)));
+        lockButton.setAttribute('aria-label', fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations');
+      }
+      updateStandings();
+    }
+
+    function togglePreviewScoreLock(fixtureId) {
+      if (!isPslAdmin()) return;
+      const fixture = fixtures.find(item => item.id === fixtureId);
+      if (!fixture || (fixture.hs !== null && fixture.as !== null)) return;
+      if (!hasValidPreviewScore(fixture)) return;
+      fixture.tempLocked = !fixture.tempLocked;
+      const lockButton = document.getElementById(`preview-lock-${fixtureId}`);
+      if (lockButton) {
+        lockButton.classList.toggle('locked', fixture.tempLocked);
+        lockButton.textContent = fixture.tempLocked ? 'Locked for sims' : 'Lock for sims';
+        lockButton.setAttribute('aria-pressed', String(fixture.tempLocked));
+        lockButton.setAttribute('aria-label', fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations');
+      }
+    }
+
+    function computeGroupStandings(teams, groupFixtures) {
+      const standings = teams.map(teamKey => {
+        const team = teamData[teamKey] || { name: teamKey, logo: '' };
+        return {
+          teamKey,
+          team: team.name,
+          logo: team.logo,
+          p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0
+        };
+      });
+
+      const standingsByTeam = new Map(teams.map((teamKey, index) => [teamKey, standings[index]]));
+
+      (groupFixtures || []).forEach(f => {
+        const projectedScore = getProjectionScore(f);
+        const hasConfirmedScore = f.hs !== null && f.hs !== undefined && f.as !== null && f.as !== undefined;
+        const hs = hasConfirmedScore ? f.hs : projectedScore?.hs;
+        const as = hasConfirmedScore ? f.as : projectedScore?.as;
+        if (hs === null || hs === undefined || as === null || as === undefined) return;
+        const home = standingsByTeam.get(f.home);
+        const away = standingsByTeam.get(f.away);
+        if (!home || !away) return;
+
+        home.p += 1; away.p += 1;
+        home.gf += hs; home.ga += as;
+        away.gf += as; away.ga += hs;
+
+        if (hs > as) {
+          home.w += 1; home.pts += 3;
+          away.l += 1;
+        } else if (as > hs) {
+          away.w += 1; away.pts += 3;
+          home.l += 1;
+        } else {
+          home.d += 1; away.d += 1;
+          home.pts += 1; away.pts += 1;
+        }
+        home.gd += hs - as; away.gd += as - hs;
+      });
+
+      return standings.sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        if (b.gd !== a.gd) return b.gd - a.gd;
+        if (b.gf !== a.gf) return b.gf - a.gf;
+        return a.team.localeCompare(b.team);
+      });
+    }
+
+    function renderGroups() {
+      document.getElementById('groups-grid').innerHTML = groups.map((group, groupIndex) => {
+        const standings = computeGroupStandings(group.teams, group.fixtures);
+        const rows = renderStandingsRows(standings);
+
+        const matchdays = groupMatchdays(group);
+        const selectedMatchday = selectedMatchdayByGroup[group.name] ?? firstIncompleteMatchday(group, matchdays);
+        const selectedIndex = matchdays.indexOf(selectedMatchday);
+        const selectedFixtures = group.fixtures.filter(fixture => Number(fixture.md) === selectedMatchday);
+        const fixtureRows = selectedFixtures.length ? `
+            <div class="fixture-md-block">
+              <div class="fixture-md-header">MD${selectedMatchday}</div>
+              <div class="fixture-md-body">
+                ${selectedFixtures.map(fixture => {
+                  const projectedScore = getProjectionScore(fixture);
+                  const hasConfirmedScore = fixture.hs !== null && fixture.as !== null;
+                  const score = hasConfirmedScore
+                    ? `${fixture.hs} - ${fixture.as}`
+                    : projectedScore
+                      ? `${projectedScore.hs} - ${projectedScore.as}`
+                      : 'TBD';
+                  const projectionBadge = projectedScore ? '<span style="display:block;font-size:9px;color:var(--neon-purple);">PROJECTED</span>' : '';
+                  const previewInputs = isPslAdmin() && !hasConfirmedScore
+                    ? `<span class="preview-score-control">
+                        <span class="preview-score-inputs">
+                          <input class="preview-score-input" type="number" min="0" step="1" aria-label="${escapeAttribute(fixture.home)} preview score" value="${escapeAttribute(fixture.previewDraftHs ?? (fixture.projected ? fixture.projectedHs : ''))}" onchange="updatePreviewScore('${escapeAttribute(fixture.id)}', 'hs', this)">
+                          <span>–</span>
+                          <input class="preview-score-input" type="number" min="0" step="1" aria-label="${escapeAttribute(fixture.away)} preview score" value="${escapeAttribute(fixture.previewDraftAs ?? (fixture.projected ? fixture.projectedAs : ''))}" onchange="updatePreviewScore('${escapeAttribute(fixture.id)}', 'as', this)">
+                        </span>
+                        <button id="preview-lock-${escapeAttribute(fixture.id)}" class="preview-score-lock${fixture.tempLocked ? ' locked' : ''}" type="button" aria-label="${fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations'}" aria-pressed="${Boolean(fixture.tempLocked)}" ${!hasValidPreviewScore(fixture) ? 'disabled' : ''} onclick="togglePreviewScoreLock('${escapeAttribute(fixture.id)}')">${fixture.tempLocked ? 'Locked for sims' : 'Lock for sims'}</button>
+                      </span>${projectionBadge}`
+                    : `${score}${projectionBadge}`;
+                  const fixtureUrl = `match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}`;
+                  return `
+                    <div class="fixture-match">
+                      <span class="fixture-team home">${escapeHtml(fixture.home)}</span>
+                      <span class="fixture-score">${hasConfirmedScore ? `<a href="${fixtureUrl}" target="_top" style="color:inherit;text-decoration:none;">${score}</a>` : previewInputs}</span>
+                      <span class="fixture-team away">${escapeHtml(fixture.away)}</span>
+                    </div>`;
+                }).join('')}
+              </div>
+            </div>` : '<div class="fixture-empty">No fixtures yet.</div>';
+
+        return `
+          <article class="group-card">
+            <div class="group-title">${escapeHtml(group.name)}</div>
+            <table class="group-table">
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>P</th>
+                  <th>W</th>
+                  <th>D</th>
+                  <th>L</th>
+                  <th>GD</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody id="standings-${groupIndex}">
+                ${rows}
+              </tbody>
+            </table>
+            <div class="fixtures-section">
+              <div class="fixtures-controls">
+                <div class="fixtures-title">Matchday</div>
+                <div class="matchday-nav">
+                  <button class="matchday-nav-btn" type="button" aria-label="Previous matchday in ${escapeAttribute(group.name)}" onclick="navigateMatchday('${escapeAttribute(group.name)}', -1)" ${selectedIndex <= 0 ? 'disabled' : ''}>&larr;</button>
+                  <span class="matchday-nav-label">${selectedIndex + 1} / ${matchdays.length}</span>
+                  <button class="matchday-nav-btn" type="button" aria-label="Next matchday in ${escapeAttribute(group.name)}" onclick="navigateMatchday('${escapeAttribute(group.name)}', 1)" ${selectedIndex < 0 || selectedIndex >= matchdays.length - 1 ? 'disabled' : ''}>&rarr;</button>
+                </div>
+              </div>
+              ${fixtureRows}
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
+    function escapeAttribute(value) { return escapeHtml(value); }
+    function formatSimulationShare(count, total) {
+      return `${count.toLocaleString()} / ${total.toLocaleString()} (${(count / total * 100).toFixed(2)}%)`;
+    }
+
+    function simulateScore(teamAName, teamBName) {
+      const firstTeam = projectionRatings[teamAName] || projectionRatings[projectionRatingAliases[teamAName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
+      const secondTeam = projectionRatings[teamBName] || projectionRatings[projectionRatingAliases[teamBName]] || { att: 50, def: 50, stm: 50, con: 50, ten: 50 };
+      const overall = team => team.att * 0.35 + team.def * 0.3 + team.stm * 0.15 + team.con * 0.2;
+      const firstTeamRallyChance = Math.max(0.04, Math.min(0.96, 0.5 + (overall(firstTeam) - overall(secondTeam)) * 0.007));
+      let firstScore = 0;
+      let secondScore = 0;
+      while (true) {
+        if (Math.random() < firstTeamRallyChance) firstScore++;
+        else secondScore++;
+        if (Math.max(firstScore, secondScore) >= 5 && Math.abs(firstScore - secondScore) >= 2) break;
+      }
+      return { hs: firstScore, as: secondScore };
+    }
+
+    function resolveBestFourthQualification(fourthPlaceTeams) {
+      const bestPoints = Math.max(...fourthPlaceTeams.map(team => team.pts));
+      const bestGoalDifference = Math.max(...fourthPlaceTeams.filter(team => team.pts === bestPoints).map(team => team.gd));
+      const tiedTeams = fourthPlaceTeams.filter(team => team.pts === bestPoints && team.gd === bestGoalDifference);
+
+      if (tiedTeams.length === 1) {
+        return { qualified: tiedTeams, playoffTeams: [], scenario: 'direct' };
+      }
+      if (tiedTeams.length === 3 && tiedTeams.every(team => team.ga === tiedTeams[0].ga)) {
+        return { qualified: tiedTeams, playoffTeams: [], scenario: 'all-three-qualify' };
+      }
+
+      const playoffTeams = tiedTeams.length === 3
+        ? [...tiedTeams].sort((a, b) => a.ga - b.ga || a.teamKey.localeCompare(b.teamKey)).slice(0, 2)
+        : tiedTeams;
+      const playoffScore = simulateScore(playoffTeams[0].teamKey, playoffTeams[1].teamKey);
+      const winner = playoffScore.hs > playoffScore.as ? playoffTeams[0] : playoffTeams[1];
+      return {
+        qualified: [winner],
+        playoffTeams,
+        winner,
+        scenario: tiedTeams.length === 3 ? 'three-way-playoff' : 'two-way-playoff'
+      };
+    }
+
+    function getSimulationFixture(fixture) {
+      if (fixture.confirmed && fixture.hs !== null && fixture.hs !== undefined && fixture.as !== null && fixture.as !== undefined) {
+        return fixture;
+      }
+      if (fixture.tempLocked && hasValidPreviewScore(fixture)) {
+        return {
+          ...fixture,
+          hs: Number(fixture.previewDraftHs),
+          as: Number(fixture.previewDraftAs),
+          projected: false
+        };
+      }
+      return { ...fixture, ...simulateScore(fixture.home, fixture.away), projected: false };
+    }
+
+    function simulateAllProjections() {
+      if (!isPslAdmin()) return;
+      fixtures.forEach(fixture => {
+        if (!fixture.confirmed && fixture.hs === null && fixture.as === null && !fixture.tempLocked) {
+          const score = simulateScore(fixture.home, fixture.away);
+          fixture.projectedHs = score.hs;
+          fixture.projectedAs = score.as;
+          fixture.projected = true;
+          fixture.previewDraftHs = null;
+          fixture.previewDraftAs = null;
+          fixture.tempLocked = false;
+        }
+      });
+      renderGroups();
+    }
+
+    function clearAllProjections() {
+      if (!isPslAdmin()) return;
+      fixtures.forEach(fixture => {
+        fixture.projectedHs = null;
+        fixture.projectedAs = null;
+        fixture.projected = false;
+        fixture.previewDraftHs = null;
+        fixture.previewDraftAs = null;
+        fixture.tempLocked = false;
+      });
+      document.getElementById('projection-results').hidden = true;
+      document.getElementById('best-fourth-results').hidden = true;
+      renderGroups();
+    }
+
+    function runPositionSimulations() {
+      if (!isPslAdmin()) return;
+      const button = document.getElementById('run-position-simulations');
+      const results = document.getElementById('projection-results');
+      button.disabled = true;
+      button.textContent = 'Simulating...';
+      setTimeout(() => {
+        try {
+          const simulationCount = 50000;
+          const groupCounts = groups.map(group => {
+            const positionCounts = Object.fromEntries(group.teams.map(team => [team, Array(group.teams.length).fill(0)]));
+            for (let run = 0; run < simulationCount; run++) {
+              const simulatedFixtures = group.fixtures.map(getSimulationFixture);
+              computeGroupStandings(group.teams, simulatedFixtures)
+                .forEach((standing, position) => positionCounts[standing.teamKey][position]++);
+            }
+            return { group, positionCounts };
+          });
+
+          results.innerHTML = `
+            <h3>Position probabilities</h3>
+            <p class="projection-results-note">Chance of finishing in each position, based on ${simulationCount.toLocaleString()} simulations per group. Green = top 3; gold = 4th.</p>
+            ${groupCounts.map(({ group, positionCounts }) => {
+              const currentOrder = computeGroupStandings(group.teams, group.fixtures).map(row => row.teamKey);
+              return `<div class="position-probability-card">
+                <div class="position-probability-title">${escapeHtml(group.name)}</div>
+                <table class="position-probability-table">
+                  <thead><tr><th>Team</th>${group.teams.map((_, index) => `<th class="${index < 3 ? 'prob-qual' : index === 3 ? 'prob-best4' : 'prob-muted'}">${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'}</th>`).join('')}</tr></thead>
+                  <tbody>${currentOrder.map(team => `<tr>
+                    <td>${escapeHtml(teamData[team]?.name || team)}</td>
+                    ${positionCounts[team].map((count, position) => {
+                      const label = formatSimulationShare(count, simulationCount);
+                      const className = position < 3 ? 'prob-qual' : position === 3 ? 'prob-best4' : 'prob-muted';
+                      return `<td class="${className}">${label}</td>`;
+                    }).join('')}
+                  </tr>`).join('')}</tbody>
+                </table>
+              </div>`;
+            }).join('')}`;
+          results.hidden = false;
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Run 50,000 position simulations';
+        }
+      }, 30);
+    }
+
+    function runQualificationSimulations() {
+      if (!isPslAdmin()) return;
+      const teamSelect = document.getElementById('qualification-team');
+      const selectedTeam = teamSelect.value;
+      const teamGroup = groups.find(group => group.teams.includes(selectedTeam));
+      if (!teamGroup) {
+        teamSelect.focus();
+        return;
+      }
+
+      const button = document.getElementById('run-qualification-simulations');
+      const results = document.getElementById('qualification-results');
+      button.disabled = true;
+      button.classList.add('is-simulating');
+      teamSelect.disabled = true;
+      button.textContent = 'Simulating...';
+      setTimeout(() => {
+        try {
+          const simulationCount = 50000;
+          let qualificationCount = 0;
+          let topThreeCount = 0;
+          let bestFourthQualificationCount = 0;
+          let playoffQualificationCount = 0;
+          let tiedFourthQualificationCount = 0;
+
+          for (let run = 0; run < simulationCount; run++) {
+            const standingsByGroup = groups.map(group => {
+              const simulatedFixtures = group.fixtures.map(getSimulationFixture);
+              return computeGroupStandings(group.teams, simulatedFixtures);
+            });
+            const fourthPlaceTeams = standingsByGroup.map(standings => standings[3]);
+            const fourthPlaceOutcome = resolveBestFourthQualification(fourthPlaceTeams);
+
+            const selectedStandings = standingsByGroup[groups.indexOf(teamGroup)];
+            const selectedPosition = selectedStandings.findIndex(standing => standing.teamKey === selectedTeam);
+            if (selectedPosition < 3) {
+              qualificationCount++;
+              topThreeCount++;
+              continue;
+            }
+            if (selectedPosition !== 3) continue;
+
+            if (fourthPlaceOutcome.scenario === 'direct'
+              && fourthPlaceOutcome.qualified.some(team => team.teamKey === selectedTeam)) {
+              qualificationCount++;
+              bestFourthQualificationCount++;
+            } else if (fourthPlaceOutcome.playoffTeams.length
+              && fourthPlaceOutcome.winner?.teamKey === selectedTeam) {
+              qualificationCount++;
+              playoffQualificationCount++;
+            } else if (fourthPlaceOutcome.scenario === 'all-three-qualify'
+              && fourthPlaceOutcome.qualified.some(team => team.teamKey === selectedTeam)) {
+              qualificationCount++;
+              tiedFourthQualificationCount++;
+            }
+          }
+
+          results.innerHTML = `
+            <h3>${escapeHtml(teamData[selectedTeam]?.name || selectedTeam)}: ${formatSimulationShare(qualificationCount, simulationCount)} chance to qualify</h3>
+            <p class="projection-results-note">Based on ${simulationCount.toLocaleString()} simulated seasons with no home advantage. Fourth-place tie and playoff details are shown in the fourth-place cutoff simulation.</p>
+            <div class="position-probability-card">
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualifies in the top three</span><strong class="prob-qual">${formatSimulationShare(topThreeCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified as best fourth place</span><strong class="prob-best4">${formatSimulationShare(bestFourthQualificationCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified from fourth-place play-off</span><strong class="prob-best4">${formatSimulationShare(playoffQualificationCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified from fourth-place tie</span><strong class="prob-qual">${formatSimulationShare(tiedFourthQualificationCount, simulationCount)}</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>Qualified simulations</span><strong>${qualificationCount.toLocaleString()} / ${simulationCount.toLocaleString()}</strong>
+              </div>
+            </div>`;
+          results.hidden = false;
+        } finally {
+          button.classList.remove('is-simulating');
+          teamSelect.disabled = false;
+          button.disabled = !teamSelect.value || !isPslAdmin();
+          button.textContent = 'Run 50,000 qualification simulations';
+        }
+      }, 30);
+    }
+
+    function runBestFourthSimulations() {
+      if (!isPslAdmin()) return;
+      const button = document.getElementById('run-best-fourth-simulations');
+      const results = document.getElementById('best-fourth-results');
+      button.disabled = true;
+      button.textContent = 'Simulating...';
+      setTimeout(() => {
+        try {
+          const simulationCount = 50000;
+          const scenarioCounts = new Map();
+          const groupQualificationCounts = Object.fromEntries(groups.map(group => [group.name, 0]));
+          const tieOutcomeCounts = { direct: 0, twoWayPlayoff: 0, threeWayPlayoff: 0, allThreeQualify: 0 };
+          const fourthPlaceCounts = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const fourthQualificationCounts = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const playoffAppearances = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const playoffWins = Object.fromEntries(groups.flatMap(group => group.teams).map(team => [team, 0]));
+          const playoffPairCounts = new Map();
+
+          for (let run = 0; run < simulationCount; run++) {
+            const fourthPlaceTeams = groups.map(group => {
+              const simulatedFixtures = group.fixtures.map(getSimulationFixture);
+              return computeGroupStandings(group.teams, simulatedFixtures)[3];
+            });
+
+            const outcome = resolveBestFourthQualification(fourthPlaceTeams);
+            const outcomeCountKey = {
+              direct: 'direct',
+              'two-way-playoff': 'twoWayPlayoff',
+              'three-way-playoff': 'threeWayPlayoff',
+              'all-three-qualify': 'allThreeQualify'
+            }[outcome.scenario];
+            if (!outcomeCountKey) throw new Error(`Unknown fourth-place outcome: ${outcome.scenario}`);
+            tieOutcomeCounts[outcomeCountKey]++;
+            fourthPlaceTeams.forEach(team => fourthPlaceCounts[team.teamKey]++);
+            outcome.qualified.forEach(team => {
+              fourthQualificationCounts[team.teamKey]++;
+              const qualifyingGroup = groups.find(group => group.teams.includes(team.teamKey));
+              groupQualificationCounts[qualifyingGroup.name]++;
+            });
+            if (outcome.playoffTeams.length) {
+              const pairKey = [...outcome.playoffTeams.map(team => team.teamKey)].sort().join('|');
+              const pairStats = playoffPairCounts.get(pairKey) || { count: 0, wins: {} };
+              pairStats.count++;
+              pairStats.wins[outcome.winner.teamKey] = (pairStats.wins[outcome.winner.teamKey] || 0) + 1;
+              playoffPairCounts.set(pairKey, pairStats);
+              outcome.playoffTeams.forEach(team => playoffAppearances[team.teamKey]++);
+              playoffWins[outcome.winner.teamKey]++;
+            }
+            const cutoffTeam = fourthPlaceTeams.reduce((best, candidate) => {
+              if (candidate.pts !== best.pts) return candidate.pts > best.pts ? candidate : best;
+              if (candidate.gd !== best.gd) return candidate.gd > best.gd ? candidate : best;
+              return candidate;
+            });
+            const scenario = `${cutoffTeam.pts}|${cutoffTeam.gd}`;
+            scenarioCounts.set(scenario, (scenarioCounts.get(scenario) || 0) + 1);
+          }
+
+          const mostCommonScenarios = [...scenarioCounts.entries()]
+            .map(([scenario, count]) => {
+              const [points, goalDifference] = scenario.split('|').map(Number);
+              return { points, goalDifference, count };
+            })
+            .sort((a, b) => b.count - a.count || b.points - a.points || b.goalDifference - a.goalDifference)
+            .slice(0, 8);
+          const teamDisplayName = team => teamData[team]?.name || team;
+          const fourthPlaceTeamRows = Object.keys(fourthPlaceCounts)
+            .filter(team => fourthPlaceCounts[team] > 0)
+            .sort((a, b) => fourthPlaceCounts[b] - fourthPlaceCounts[a] || teamDisplayName(a).localeCompare(teamDisplayName(b)))
+            .map(team => {
+              const appearances = playoffAppearances[team];
+              const wins = playoffWins[team];
+              return `<tr>
+              <td>${escapeHtml(teamDisplayName(team))}</td>
+              <td>${formatSimulationShare(fourthPlaceCounts[team], simulationCount)}</td>
+              <td>${formatSimulationShare(fourthQualificationCounts[team], simulationCount)}</td>
+              <td>${formatSimulationShare(appearances, simulationCount)}</td>
+              <td>${formatSimulationShare(wins, simulationCount)}</td>
+              <td>${appearances ? `${wins.toLocaleString()} / ${appearances.toLocaleString()} (${(wins / appearances * 100).toFixed(2)}%)` : '—'}</td>
+            </tr>`;
+            })
+            .join('');
+          const playoffPairRows = [...playoffPairCounts.entries()]
+            .sort((a, b) => b[1].count - a[1].count)
+            .map(([pair, stats]) => {
+              const [teamA, teamB] = pair.split('|');
+              const winsA = stats.wins[teamA] || 0;
+              const winsB = stats.wins[teamB] || 0;
+              return `<tr>
+                <td>${escapeHtml(teamDisplayName(teamA))} vs ${escapeHtml(teamDisplayName(teamB))}</td>
+                <td>${formatSimulationShare(stats.count, simulationCount)}</td>
+                <td>${winsA.toLocaleString()} / ${stats.count.toLocaleString()} (${(winsA / stats.count * 100).toFixed(2)}%)</td>
+                <td>${winsB.toLocaleString()} / ${stats.count.toLocaleString()} (${(winsB / stats.count * 100).toFixed(2)}%)</td>
+              </tr>`;
+            })
+            .join('');
+
+          results.innerHTML = `
+            <h3>Best fourth-place qualification cutoff</h3>
+            <p class="projection-results-note">Fourth-place qualification outcomes from ${simulationCount.toLocaleString()} simulated seasons with no home advantage. Teams are compared by points, then goal difference. A tie is decided by a neutral playoff; for a three-way points and goal-difference tie, the two teams with fewer goals conceded play. If all three are also tied on goals conceded, all three qualify.</p>
+            <div class="position-probability-card">
+              <table class="position-probability-table">
+                <thead><tr><th>#</th><th>Points</th><th>Goal difference</th><th>Frequency</th><th>Share</th></tr></thead>
+                <tbody>${mostCommonScenarios.map((scenario, index) => `<tr>
+                  <td class="prob-muted">${index + 1}</td>
+                  <td class="prob-qual">${scenario.points}</td>
+                  <td class="${scenario.goalDifference >= 0 ? 'prob-qual' : 'prob-muted'}">${scenario.goalDifference > 0 ? '+' : ''}${scenario.goalDifference}</td>
+                  <td>${scenario.count.toLocaleString()}</td>
+                  <td>${(scenario.count / simulationCount * 100).toFixed(2)}%</td>
+                </tr>`).join('')}</tbody>
+              </table>
+            </div>
+            <div class="position-probability-card">
+              <div class="position-probability-title">Fourth-place tie outcomes</div>
+              ${[
+                ['No playoff needed', tieOutcomeCounts.direct],
+                ['Two-way tie, playoff', tieOutcomeCounts.twoWayPlayoff],
+                ['Three-way tie, goals conceded selects playoff', tieOutcomeCounts.threeWayPlayoff],
+                ['Exact three-way tie, all qualify', tieOutcomeCounts.allThreeQualify]
+              ].map(([label, count]) => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>${label}</span><strong>${formatSimulationShare(count, simulationCount)}</strong>
+              </div>`).join('')}
+            </div>
+            <div class="position-probability-card">
+              <div class="position-probability-title">Chance each group supplies a qualifying fourth-place team</div>
+              <p class="projection-results-note">These probabilities can total more than 100% when an exact three-way tie means all three teams qualify.</p>
+              ${groups.map(group => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
+                <span>${escapeHtml(group.name)}</span>
+                <strong>${formatSimulationShare(groupQualificationCounts[group.name], simulationCount)}</strong>
+              </div>`).join('')}
+            </div>`;
+          results.innerHTML += `
+            <div class="position-probability-card">
+              <div class="position-probability-title">Fourth-place outcomes by team</div>
+              <table class="position-probability-table">
+                <thead><tr><th>Team</th><th>Finished 4th</th><th>Qualified from 4th</th><th>Playoff appearance</th><th>Playoff win</th><th>Win rate</th></tr></thead>
+                <tbody>${fourthPlaceTeamRows}</tbody>
+              </table>
+            </div>
+            <div class="position-probability-card">
+              <div class="position-probability-title">Playoff matchups and win percentages</div>
+              ${playoffPairRows
+                ? `<table class="position-probability-table"><thead><tr><th>Matchup</th><th>Occurred (% seasons)</th><th>First team wins</th><th>Second team wins</th></tr></thead><tbody>${playoffPairRows}</tbody></table>`
+                : '<p class="projection-results-note">No playoff matches occurred in these simulations.</p>'}
+            </div>`;
+          results.hidden = false;
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Run 50,000 fourth-place cutoff simulations';
+        }
+      }, 30);
+    }
+
+    renderGroups();
+
+    const PSL6_SQUADS = {
+      'BADiles': ['Thanos Chatziiordanou', 'Dimitris Gavalas'],
+      'Volos Drummers': ['Vasilis Tzovanis', 'Giorgos Zacharopoulos', 'Giannis Stefanis'],
+      'Midi Kidz': ['Stefanos Mavrogiannis', 'Stavros Moutaftsidis'],
+      'Team Till Death': ['Giorgos Karamolegkos', 'Miltos Kapnakis'],
+      'Hornets': ['Christos Katopodis', 'Ennio Georgopoulos'],
+      'EX7T': ['Sokratis Gkiolias Jr.', 'Avaris Ntzamilis'],
+      'R1': ['Nikolas Moschonas', 'Michalis Lerogiannis'],
+      'Basement Boys': ['Jordan Aslanis', 'Spyros Koskinas'],
+      'Lampater': ['Johan Pilichos', 'Tzannis Mermigas', 'Stavros Stavropoulos', 'Giannis Akridas'],
+      'Polo': ['Dimitris Antoninis', 'Filippos Laskaris'],
+      'Ksades': ['Foivos Dousis', 'Konstantinos Sfikas'],
+      'Air Condition': ['Giannis Kordopatis', 'Pavlos Tsonis'],
+      'Axtarmades': ['Giorgos Filippou', 'Filippos Efstathiou', 'Harris Rigas'],
+      'Thryloi': ['Vasilis Efstathiou', 'Alexandros Kalofolias'],
+      'Spasmena Mila': ['Aris Tsertos', 'Kalliopi Tsertou', 'Taxiarchis Kassotakis'],
+      'Warriors': ['Panos Chardas', 'Sokratis Gkiolias Sr.'],
+      'Niki Alimou': ['Dionysis Halikias', 'Panagiotis Perdikis', 'Orfeas Maragkos'],
+      'Golden B.': ['Giannis Katsavounis', 'Markos Kanellidis'],
+      'Hitters': ['Iro Ganti', 'Theofania Sotiropoulou', 'Polixeni Toussi'],
+    };
+
+    let adminEvents = [];
+    let adminCurrentHome = '';
+    let adminCurrentAway = '';
+    let adminEditModal = null;
+
+    const PSL_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
+    const PSL_ADMIN = ['thanos','yman','pitchball'];
+    function isPslAdminUsername(username) {
+      return PSL_ADMIN.includes(String(username || '').trim().toLowerCase());
+    }
+    let _pslDbCache = null;
+    let _pslDbFetching = null;
+
+    async function pslDbGet() {
+      if (_pslDbCache) return _pslDbCache;
+      if (_pslDbFetching) return _pslDbFetching;
+      _pslDbFetching = fetch(PSL_DB_URL)
+        .then(r => r.json())
+        .then(data => {
+          _pslDbCache = data;
+          _pslDbFetching = null;
+          return _pslDbCache;
+        });
+      return _pslDbFetching;
+    }
+
+    async function pslDbSet(data) {
+      _pslDbCache = data;
+      await fetch(PSL_DB_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    }
+
+    function pslDbInvalidate() {
+      _pslDbCache = null;
+    }
+
+    function pslLoadSession() {
+      const s = localStorage.getItem('psl_session');
+      return s ? JSON.parse(s) : null;
+    }
+
+    function pslSaveSession(u) {
+      localStorage.setItem('psl_session', JSON.stringify(u));
+    }
+
+    function pslClearSession() {
+      localStorage.removeItem('psl_session');
+    }
+
+    async function pslHashPass(pass) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass + 'psl5salt'));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function injectAuthStyles() {
+      if (document.getElementById('psl-auth-styles')) return;
+      const s = document.createElement('style');
+      s.id = 'psl-auth-styles';
+      s.textContent = `#psl-auth-widget{position:fixed;top:12px;right:14px;z-index:99999;font-family:system-ui,sans-serif;}.psl-aw-btn{display:flex;align-items:center;gap:7px;background:rgba(20,20,20,0.92);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;backdrop-filter:blur(8px);font-size:12px;color:#fff;font-weight:500;}.psl-aw-btn:hover{border-color:rgba(57,200,119,0.6);}.psl-aw-avatar{width:22px;height:22px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;}.psl-aw-avatar.guest{background:rgba(255,255,255,0.15);color:#fff;font-size:13px;}.psl-aw-drop{position:absolute;top:calc(100% + 8px);right:0;background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.5);display:none;}.psl-aw-drop.open{display:block;}.psl-aw-drop-header{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:10px;}.psl-aw-drop-header strong{display:block;font-size:14px;color:#fff;margin-bottom:1px;}.psl-aw-drop-item{display:block;width:100%;padding:11px 14px;font-size:13px;font-weight:500;color:#fff;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.1s;font-family:inherit;text-decoration:none;}.psl-aw-drop-item:hover{background:rgba(255,255,255,0.06);}.psl-aw-drop-item.danger{color:#e74c3c;}.psl-aw-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:2px 0;}.psl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}.psl-modal{background:#1e2010;border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:100%;max-width:380px;overflow:hidden;}.psl-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}.psl-modal-title{font-size:16px;font-weight:600;color:#fff;}.psl-modal-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:20px;line-height:1;padding:2px;font-family:inherit;}.psl-modal-bd{padding:1.5rem;}.psl-form-group{margin-bottom:14px;}.psl-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:5px;display:block;font-weight:500;}.psl-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;box-sizing:border-box;}.psl-input:focus{outline:none;border-color:#39c877;}.psl-input::placeholder{color:rgba(255,255,255,0.3);}.psl-btn-primary{width:100%;padding:10px;background:#39c877;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}.psl-btn-primary:hover{background:#2fb366;}.psl-btn-primary:disabled{opacity:0.4;cursor:not-allowed;}.psl-err{font-size:11px;color:#e74c3c;margin-top:6px;}.psl-ok{font-size:11px;color:#39c877;margin-top:6px;}.psl-tabs{display:flex;margin-bottom:1.5rem;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;gap:3px;}.psl-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;}.psl-tab.active{background:#39c877;color:#000;}.psl-avatar-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);display:block;margin:0 auto 12px;}`;
+      document.head.appendChild(s);
+    }
+
+    function renderWidget() {
+      if (!document.body) { setTimeout(renderWidget, 50); return; }
+      const ex = document.getElementById('psl-auth-widget');
+      if (ex) ex.remove();
+      const w = document.createElement('div');
+      w.id = 'psl-auth-widget';
+      if (pslCurrentUser) {
+        const avatarBtn = pslCurrentUser.avatar ? `<img src="${pslCurrentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=psl-aw-avatar>${pslCurrentUser.username[0].toUpperCase()}</div>'">` : `<div class="psl-aw-avatar">${pslCurrentUser.username[0].toUpperCase()}</div>`;
+        const avatarDrop = pslCurrentUser.avatar ? `<img src="${pslCurrentUser.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">` : `<div class="psl-aw-avatar" style="width:36px;height:36px;font-size:15px;">${pslCurrentUser.username[0].toUpperCase()}</div>`;
+        w.innerHTML = `<div class="psl-aw-btn" onclick="pslToggleDrop()">${avatarBtn}<span>${pslCurrentUser.username}</span><span style="color:rgba(255,255,255,0.3);font-size:10px;">▾</span></div><div class="psl-aw-drop" id="psl-aw-drop"><div class="psl-aw-drop-header">${avatarDrop}<div><strong>${pslCurrentUser.username}</strong>${pslCurrentUser.isAdmin ? '<span style="color:#39c877;font-size:10px;">⚡ Admin</span>' : ''}</div></div><button class="psl-aw-drop-item" onclick="pslOpenProfile()">🖼️ Edit Profile Picture</button><hr class="psl-aw-divider"><button class="psl-aw-drop-item danger" onclick="pslLogout()">Sign out</button></div>`;
+      } else {
+        w.innerHTML = `<div class="psl-aw-btn" onclick="pslOpenAuth('login')"><div class="psl-aw-avatar guest">👤</div><span>Sign in</span></div>`;
+      }
+      document.body.appendChild(w);
+      document.addEventListener('click', e => {
+        if (!w.contains(e.target)) {
+          const d = document.getElementById('psl-aw-drop');
+          if (d) d.classList.remove('open');
+        }
+      }, { capture: true });
+    }
+
+    function pslToggleDrop() {
+      document.getElementById('psl-aw-drop')?.classList.toggle('open');
+    }
+
+    function pslOpenProfile() {
+      document.getElementById('psl-aw-drop')?.classList.remove('open');
+      if (_authModal) _authModal.remove();
+      const o = document.createElement('div');
+      o.className = 'psl-modal-overlay';
+      o.id = 'psl-auth-modal';
+      const current = pslCurrentUser.avatar || '';
+      o.innerHTML = `<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">Profile Picture</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd">${current ? `<img src="${current}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">` : `<div style="width:72px;height:72px;border-radius:50%;background:#39c877;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#000;margin:0 auto 12px;" id="psl-avatar-preview">${pslCurrentUser.username[0].toUpperCase()}</div>`}<div class="psl-form-group"><label class="psl-label">Image URL</label><input class="psl-input" id="psl-avatar-url" placeholder="https://..." value="${current}" oninput="pslPreviewAvatar(this.value)"></div><p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:14px;line-height:1.5;">Paste a direct link to any image. Tip: upload to <a href="https://imgur.com" target="_blank" style="color:#39c877;">imgur.com</a> and use the direct link.</p><div class="psl-err" id="psl-avatar-err" style="display:none;"></div><div class="psl-ok" id="psl-avatar-ok" style="display:none;">Saved!</div><button class="psl-btn-primary" id="psl-avatar-btn" onclick="pslSaveAvatar()">Save</button>${current ? `<button style="width:100%;padding:9px;background:none;border:1px solid rgba(231,76,60,0.3);color:#e74c3c;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;" onclick="pslRemoveAvatar()">Remove picture</button>` : ''}</div></div>`;
+      o.addEventListener('click', e => { if (e.target === o) pslCloseAuth(); });
+      document.body.appendChild(o); _authModal = o;
+    }
+
+    function pslPreviewAvatar(url) {
+      const el = document.getElementById('psl-avatar-preview');
+      if (!el) return;
+      if (url) {
+        el.outerHTML = `<img src="${url}" class="psl-avatar-preview" id="psl-avatar-preview" onerror="this.style.opacity='0.3'">`;
+      }
+    }
+
+    async function pslSaveAvatar() {
+      const url = document.getElementById('psl-avatar-url').value.trim();
+      const err = document.getElementById('psl-avatar-err');
+      const ok = document.getElementById('psl-avatar-ok');
+      const btn = document.getElementById('psl-avatar-btn');
+      err.style.display = 'none'; ok.style.display = 'none'; btn.disabled = true; btn.textContent = 'Saving...';
+      try {
+        const db = await pslDbGet();
+        const users = db.users || {};
+        const uKey = pslCurrentUser.username.toLowerCase();
+        if (!users[uKey]) {
+          err.textContent = 'User not found.';
+          err.style.display = 'block';
+          return;
+        }
+        users[uKey].avatar = url || null;
+        await pslDbSet({ ...db, users });
+        pslDbInvalidate();
+        pslCurrentUser.avatar = url || null;
+        pslSaveSession(pslCurrentUser);
+        ok.style.display = 'block';
+        setTimeout(() => { pslCloseAuth(); renderWidget(); }, 800);
+      } catch (e) {
+        err.textContent = 'Connection error. Try again.';
+        err.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save';
+      }
+    }
+
+    async function pslRemoveAvatar() {
+      document.getElementById('psl-avatar-url').value = '';
+      await pslSaveAvatar();
+    }
+
+    let _authModal = null;
+
+    function pslOpenAuth(tab = 'login') {
+      if (_authModal) _authModal.remove();
+      const o = document.createElement('div');
+      o.className = 'psl-modal-overlay';
+      o.id = 'psl-auth-modal';
+      o.innerHTML = `<div class="psl-modal"><div class="psl-modal-hd"><div class="psl-modal-title">PSL Account</div><button class="psl-modal-close" onclick="pslCloseAuth()">×</button></div><div class="psl-modal-bd"><div class="psl-tabs"><button class="psl-tab ${tab === 'login' ? 'active' : ''}" onclick="pslSwitchTab('login')">Sign In</button><button class="psl-tab ${tab === 'register' ? 'active' : ''}" onclick="pslSwitchTab('register')">Register</button></div><div id="psl-tab-login" ${tab !== 'login' ? 'style="display:none"' : ''}><div class="psl-form-group"><label class="psl-label">Username or Email</label><input class="psl-input" id="psl-li-user" placeholder="Enter username or email"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-li-pass" type="password" placeholder="Enter password"></div><div class="psl-err" id="psl-li-err" style="display:none"></div><button class="psl-btn-primary" id="psl-li-btn" onclick="pslDoLogin()">Sign In</button></div><div id="psl-tab-register" ${tab !== 'register' ? 'style="display:none"' : ''}><div class="psl-form-group"><label class="psl-label">Username</label><input class="psl-input" id="psl-rg-user" placeholder="Choose a username" maxlength="20"></div><div class="psl-form-group"><label class="psl-label">Email</label><input class="psl-input" id="psl-rg-email" type="email" placeholder="your@email.com"></div><div class="psl-form-group"><label class="psl-label">Password</label><input class="psl-input" id="psl-rg-pass" type="password" placeholder="Min. 6 characters"></div><div class="psl-err" id="psl-rg-err" style="display:none"></div><button class="psl-btn-primary" id="psl-rg-btn" onclick="pslDoRegister()">Create Account</button></div></div></div>`;
+      o.addEventListener('click', e => { if (e.target === o) pslCloseAuth(); });
+      document.body.appendChild(o); _authModal = o;
+    }
+
+    function pslCloseAuth() {
+      _authModal?.remove();
+      _authModal = null;
+    }
+
+    function pslSwitchTab(tab) {
+      document.getElementById('psl-tab-login').style.display = tab === 'login' ? '' : 'none';
+      document.getElementById('psl-tab-register').style.display = tab === 'register' ? '' : 'none';
+      document.querySelectorAll('.psl-tab').forEach((b, i) => b.classList.toggle('active', i === (tab === 'login' ? 0 : 1)));
+    }
+
+    async function pslDoLogin() {
+      const raw = document.getElementById('psl-li-user').value.trim();
+      const pass = document.getElementById('psl-li-pass').value;
+      const e = document.getElementById('psl-li-err');
+      e.style.display = 'none';
+      if (!raw || !pass) {
+        e.textContent = 'Please fill in all fields.';
+        e.style.display = 'block';
+        return;
+      }
+      const btn = document.getElementById('psl-li-btn');
+      btn.disabled = true; btn.textContent = 'Signing in...';
+      try {
+        const db = await pslDbGet();
+        const users = db.users || {};
+        const user = Object.values(users).find(u => u.username.toLowerCase() === raw.toLowerCase() || u.email.toLowerCase() === raw.toLowerCase());
+        if (!user) {
+          e.textContent = 'Account not found.';
+          e.style.display = 'block';
+          return;
+        }
+        const hash = await pslHashPass(pass);
+        if (hash !== user.passHash) {
+          e.textContent = 'Incorrect password.';
+          e.style.display = 'block';
+          return;
+        }
+        pslCurrentUser = { username: user.username, email: user.email, avatar: user.avatar || null, isAdmin: isPslAdminUsername(user.username) };
+        pslSaveSession(pslCurrentUser);
+        pslCloseAuth();
+        renderWidget();
+        renderAdminControls();
+        if (typeof onPslLogin === 'function') onPslLogin(pslCurrentUser);
+      } catch (err) {
+        e.textContent = 'Connection error. Try again.';
+        e.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Sign In';
+      }
+    }
+
+    async function pslDoRegister() {
+      const username = document.getElementById('psl-rg-user').value.trim();
+      const email = document.getElementById('psl-rg-email').value.trim().toLowerCase();
+      const pass = document.getElementById('psl-rg-pass').value;
+      const e = document.getElementById('psl-rg-err');
+      e.style.display = 'none';
+      if (!username || !email || !pass) {
+        e.textContent = 'Please fill in all fields.';
+        e.style.display = 'block';
+        return;
+      }
+      if (username.length < 2) {
+        e.textContent = 'Username too short.';
+        e.style.display = 'block';
+        return;
+      }
+      if (pass.length < 6) {
+        e.textContent = 'Password must be 6+ characters.';
+        e.style.display = 'block';
+        return;
+      }
+      const btn = document.getElementById('psl-rg-btn');
+      btn.disabled = true; btn.textContent = 'Creating...';
+      try {
+        const db = await pslDbGet();
+        const users = db.users || {};
+        if (users[username.toLowerCase()]) {
+          e.textContent = 'Username taken.';
+          e.style.display = 'block';
+          return;
+        }
+        const passHash = await pslHashPass(pass);
+        users[username.toLowerCase()] = { username, email, passHash, avatar: null, joined: new Date().toISOString() };
+        await pslDbSet({ ...db, users });
+        pslDbInvalidate();
+        pslCurrentUser = { username, email, avatar: null, isAdmin: isPslAdminUsername(username) };
+        pslSaveSession(pslCurrentUser);
+        pslCloseAuth();
+        renderWidget();
+        renderAdminControls();
+        if (typeof onPslLogin === 'function') onPslLogin(pslCurrentUser);
+      } catch (err) {
+        e.textContent = 'Connection error. Try again.';
+        e.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create Account';
+      }
+    }
+
+    function pslLogout() {
+      pslClearSession();
+      pslCurrentUser = null;
+      pslDbInvalidate();
+      renderWidget();
+      renderAdminControls();
+      if (typeof onPslLogout === 'function') onPslLogout();
+    }
+
+    async function pslAuthInit() {
+      injectAuthStyles();
+      const session = pslLoadSession();
+      if (session) {
+        try {
+          const db = await pslDbGet();
+          const uData = (db.users || {})[session.username.toLowerCase()];
+          if (uData) {
+            pslCurrentUser = { username: uData.username, email: uData.email, avatar: uData.avatar || null, isAdmin: isPslAdminUsername(uData.username) };
+            pslSaveSession(pslCurrentUser);
+          } else {
+            pslClearSession();
+          }
+        } catch (err) {
+          pslCurrentUser = session;
+        }
+      }
+      renderWidget();
+      renderAdminControls();
+      if (pslCurrentUser && typeof onPslLogin === 'function') onPslLogin(pslCurrentUser);
+    }
+
+    function getDbMatchCandidates(matchId) {
+      const raw = String(matchId ?? '');
+      const candidates = new Set([raw]);
+      if (raw.startsWith('fixture-')) {
+        candidates.add(raw.replace(/^fixture-/, ''));
+        candidates.add(String(Number(raw.replace(/^fixture-/, ''))));
+      } else {
+        candidates.add(`fixture-${raw}`);
+      }
+      return [...candidates].filter(Boolean);
+    }
+
+    async function syncMatchesFromDB() {
+      const db = await pslDbGet();
+      if (db.matches) {
+        fixtures.forEach(f => {
+          let overrides = null;
+          for (const key of getDbMatchCandidates(f.id)) {
+            if (db.matches[key]) {
+              overrides = db.matches[key];
+              break;
+            }
+          }
+          if (overrides) {
+            f.hs = overrides.hs !== null ? overrides.hs : f.hs;
+            f.as = overrides.as !== null ? overrides.as : f.as;
+            if (f.hs !== null && f.as !== null) f.confirmed = true;
+            f.date = overrides.date || f.date;
+            f.mvp = overrides.mvp || f.mvp;
+            f.events = overrides.events || f.events;
+          }
+        });
+      }
+      if (typeof renderGroups === 'function') renderGroups();
+    }
+
+    function renderAdminControls() {
+      const isAdmin = isPslAdmin();
+      const projectionControls = document.getElementById('admin-projection-controls');
+      projectionControls.hidden = !isAdmin;
+      const qualificationTeam = document.getElementById('qualification-team');
+      const selectedTeam = qualificationTeam.value;
+      qualificationTeam.innerHTML = `<option value="">Choose a team</option>${groups.flatMap(group => group.teams).map(team => `<option value="${escapeAttribute(team)}">${escapeHtml(teamData[team]?.name || team)}</option>`).join('')}`;
+      if (groups.some(group => group.teams.includes(selectedTeam))) qualificationTeam.value = selectedTeam;
+      document.getElementById('run-qualification-simulations').disabled = !isAdmin || !qualificationTeam.value;
+      if (!isAdmin) {
+        fixtures.forEach(fixture => {
+          fixture.projectedHs = null;
+          fixture.projectedAs = null;
+          fixture.projected = false;
+        });
+        const projectionResults = document.getElementById('projection-results');
+        projectionResults.innerHTML = '';
+        projectionResults.hidden = true;
+        const bestFourthResults = document.getElementById('best-fourth-results');
+        bestFourthResults.innerHTML = '';
+        bestFourthResults.hidden = true;
+        const qualificationResults = document.getElementById('qualification-results');
+        qualificationResults.innerHTML = '';
+        qualificationResults.hidden = true;
+      }
+      const container = document.getElementById('admin-edit-container');
+      container.innerHTML = isAdmin ? `<button class="psl-btn-primary" style="position:fixed;bottom:20px;right:20px;width:auto;z-index:9000;box-shadow:0 4px 12px rgba(0,0,0,0.5);" onclick="openAdminMatchEdit()">✏️ Admin: Edit Match</button>` : '';
+      renderGroups();
+    }
+
+    function getPlayerOpts(selectedPlayer) {
+      const allPlayers = [...(PSL6_SQUADS[adminCurrentHome] || []), ...(PSL6_SQUADS[adminCurrentAway] || [])];
+      return `<option value="">-- Select Player --</option>` + allPlayers.map(p => `<option value="${p}" ${p === selectedPlayer ? 'selected' : ''}>${p}</option>`).join('');
+    }
+
+    function getTeamOpts(selectedTeam) {
+      return `<option value="">-- Select Team --</option>
+              <option value="${adminCurrentHome}" ${adminCurrentHome === selectedTeam ? 'selected' : ''}>${adminCurrentHome}</option>
+              <option value="${adminCurrentAway}" ${adminCurrentAway === selectedTeam ? 'selected' : ''}>${adminCurrentAway}</option>`;
+    }
+
+    function openAdminMatchEdit() {
+      if (adminEditModal) adminEditModal.remove();
+      const o = document.createElement('div');
+      o.className = 'psl-modal-overlay';
+      const matchOpts = fixtures.map(f => `<option value="${f.id}">${f.group}: ${f.home} vs ${f.away}</option>`).join('');
+
+      o.innerHTML = `
+        <div class="psl-modal" style="max-width:500px; max-height: 90vh; display:flex; flex-direction:column;">
+          <div class="psl-modal-hd">
+            <div class="psl-modal-title">Edit Match Data</div>
+            <button class="psl-modal-close" onclick="adminEditModal.remove(); adminEditModal=null;">×</button>
+          </div>
+          <div class="psl-modal-bd" style="overflow-y:auto;">
+            <div class="psl-form-group">
+              <label class="psl-label">Select Match</label>
+              <select class="psl-input" id="ae-match-id" onchange="loadAdminMatchData()">${matchOpts}</select>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div class="psl-form-group" style="flex:1;">
+                <label class="psl-label">Home Score</label>
+                <input type="number" class="psl-input" id="ae-hs" min="0">
+              </div>
+              <div class="psl-form-group" style="flex:1;">
+                <label class="psl-label">Away Score</label>
+                <input type="number" class="psl-input" id="ae-as" min="0">
+              </div>
+            </div>
+            <div class="psl-form-group">
+              <label class="psl-label">Match Date & Time</label>
+              <input type="datetime-local" class="psl-input" id="ae-date">
+            </div>
+            <div class="psl-form-group">
+              <label class="psl-label">MVP</label>
+              <select class="psl-input" id="ae-mvp"></select>
+            </div>
+            <div class="section-title" style="margin: 1.5rem 0 0.5rem; font-size:14px;">Events</div>
+            <div id="ae-events-container" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+            <button class="psl-btn-primary" style="background:#535c2f; color:#fff; margin-bottom:1.5rem;" onclick="addAdminEvent()">+ Add Event</button>
+            <div class="psl-err" id="ae-err" style="display:none;"></div>
+            <div class="psl-ok" id="ae-ok" style="display:none;">Saved to Firebase!</div>
+            <button class="psl-btn-primary" id="ae-btn" onclick="saveAdminMatch()">Save Match</button>
+          </div>
+        </div>`;
+      document.body.appendChild(o);
+      adminEditModal = o;
+      loadAdminMatchData();
+    }
+
+    async function loadAdminMatchData() {
+      const matchId = document.getElementById('ae-match-id').value;
+      const f = fixtures.find(x => x.id == matchId);
+      if (!f) return;
+      adminCurrentHome = f.home;
+      adminCurrentAway = f.away;
+
+      const db = await pslDbGet();
+      const data = (db.matches || {})[matchId] || {};
+
+      document.getElementById('ae-hs').value = data.hs !== undefined && data.hs !== null ? data.hs : '';
+      document.getElementById('ae-as').value = data.as !== undefined && data.as !== null ? data.as : '';
+      document.getElementById('ae-date').value = data.date || '';
+      document.getElementById('ae-mvp').innerHTML = getPlayerOpts(data.mvp);
+      adminEvents = data.events ? JSON.parse(JSON.stringify(data.events)) : [];
+      renderAdminEvents();
+    }
+
+    function renderAdminEvents() {
+      const c = document.getElementById('ae-events-container');
+      c.innerHTML = adminEvents.map((ev, i) => `
+        <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px; position:relative;">
+          <button onclick="removeAdminEvent(${i})" style="position:absolute;top:5px;right:5px;background:none;border:none;color:#e74c3c;cursor:pointer;">✕</button>
+          <select class="psl-input" style="margin-bottom:6px; width:calc(100% - 20px);" onchange="updateEvent(${i}, 'type', this.value)">
+            <option value="goal" ${ev.type === 'goal' ? 'selected' : ''}>Goal</option>
+            <option value="og" ${ev.type === 'og' ? 'selected' : ''}>Own Goal</option>
+            <option value="sub" ${ev.type === 'sub' ? 'selected' : ''}>Substitution</option>
+          </select>
+          <div style="display:flex; gap:6px;">
+            <select class="psl-input" onchange="updateEvent(${i}, 'team', this.value)">${getTeamOpts(ev.team)}</select>
+            ${ev.type !== 'sub' ? `
+              <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)">${getPlayerOpts(ev.player)}</select>
+              <input type="text" class="psl-input" style="width:70px;" placeholder="Score" value="${ev.scoreline || ''}" oninput="updateEvent(${i}, 'scoreline', this.value)">
+            ` : `
+              <select class="psl-input" onchange="updateEvent(${i}, 'player', this.value)"><option value="">-- IN --</option>${getPlayerOpts(ev.player)}</select>
+              <select class="psl-input" onchange="updateEvent(${i}, 'playerOut', this.value)"><option value="">-- OUT --</option>${getPlayerOpts(ev.playerOut)}</select>
+            `}
+          </div>
+        </div>`).join('');
+    }
+
+    function addAdminEvent() {
+      adminEvents.push({ type: 'goal', team: '', player: '', playerOut: '', scoreline: '' });
+      renderAdminEvents();
+    }
+
+    function removeAdminEvent(index) {
+      adminEvents.splice(index, 1);
+      renderAdminEvents();
+    }
+
+    function updateEvent(index, field, value) {
+      adminEvents[index][field] = value;
+      if (field === 'type') renderAdminEvents();
+    }
+
+    async function saveAdminMatch() {
+      if (!confirm('Are you sure you want to save this match? This action cannot be reversed!')) {
+        return;
+      }
+      const btn = document.getElementById('ae-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      const matchId = document.getElementById('ae-match-id').value;
+      const hs = parseInt(document.getElementById('ae-hs').value);
+      const as = parseInt(document.getElementById('ae-as').value);
+
+      try {
+        const db = await pslDbGet();
+        if (!db.matches) db.matches = {};
+
+        const matchPayload = {
+          hs: isNaN(hs) ? null : hs,
+          as: isNaN(as) ? null : as,
+          date: document.getElementById('ae-date').value,
+          mvp: document.getElementById('ae-mvp').value,
+          events: adminEvents
+        };
+
+        const candidateKeys = getDbMatchCandidates(matchId);
+        for (const key of candidateKeys) {
+          db.matches[key] = matchPayload;
+        }
+
+        await pslDbSet(db);
+        pslDbInvalidate();
+
+        document.getElementById('ae-ok').style.display = 'block';
+        document.getElementById('ae-err').style.display = 'none';
+
+        const f = fixtures.find(x => x.id == matchId);
+        if (f) {
+          f.hs = matchPayload.hs;
+          f.as = matchPayload.as;
+          f.confirmed = f.hs !== null && f.as !== null;
+          f.date = matchPayload.date;
+          f.mvp = matchPayload.mvp;
+          f.events = adminEvents;
+        }
+
+        if (typeof renderGroups === 'function') renderGroups();
+        setTimeout(() => {
+          if (adminEditModal) {
+            adminEditModal.remove();
+            adminEditModal = null;
+          }
+        }, 1000);
+      } catch (e) {
+        document.getElementById('ae-err').textContent = 'Error saving to database.';
+        document.getElementById('ae-err').style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save Match';
+      }
+    }
+
+    window.onPslLogin = renderAdminControls;
+    window.onPslLogout = renderAdminControls;
+
+    injectAuthStyles();
+    document.addEventListener('DOMContentLoaded', () => {
+      pslAuthInit();
+      syncMatchesFromDB();
+    });
+  </script>
+
+  <div id="admin-edit-container"></div>
+
+</body>
+</html>
