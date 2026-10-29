@@ -1,6 +1,10 @@
 // Shared PSL6 team data for browser pages.
 // Ratings are on a 1–100 scale (att/def/stm/con/ten).
 window.PSL6_DATA = {
+  cupRatings: {
+    "Sapioi":    {att:27, def:24, stm:32, con:45, ten:26},
+    "Kritsinia": {att:30, def:27, stm:40, con:42, ten:37}
+  },
   teams: {
     "BADiles":         {att:89, def:91, stm:77, con:92, ten:81, tactic:"Zonal",   notes:"Thanos Chatziiordanou, Dimitris Gavalas"},
     "R1":              {att:90, def:85, stm:89, con:80, ten:77, tactic:"Fluid",   notes:"Nikolas Moschonas, Michalis Lerogiannis"},

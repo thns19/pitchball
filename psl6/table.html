@@ -60,11 +60,14 @@ td { color: #fff; border-bottom-color: rgba(255,255,255,.08); }
 .position-probability-table th button:focus-visible { outline:2px solid #00f0ff; outline-offset:2px; }
 .league-fixture { margin-bottom:.5rem; }
 .league-fixture .fixture { margin-bottom:0; }
-.fixture-projection { display:flex; align-items:center; justify-content:flex-end; gap:6px; padding:5px 0 7px; color:rgba(255,255,255,.55); font-size:10px; }
-.fixture-projection input { width:34px; padding:4px 2px; border:1px solid rgba(179,102,255,.4); border-radius:5px; background:rgba(0,0,0,.25); color:#fff; text-align:center; }
-.fixture-projection input:focus { outline:none; border-color:#00f0ff; }
+.fix-score input {
+  border-color:rgba(179,102,255,.5);
+  background:rgba(25,18,42,.9);
+  color:#fff;
+}
+.fix-score input:focus { border-color:#00f0ff; }
 .preview-score-lock { padding:4px 7px; border:1px solid rgba(255,255,255,.16); border-radius:5px; background:rgba(255,255,255,.05); color:rgba(255,255,255,.65); font:600 9px system-ui,sans-serif; cursor:pointer; }
-.preview-score-lock.locked { border-color:rgba(57,200,119,.55); color:#39c877; }
+.preview-score-lock.locked { border-color:rgba(0,240,255,.55); color:#00f0ff; }
 .preview-score-lock:disabled { opacity:.45; cursor:not-allowed; }
 .tab-switcher { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 1.5rem; }
 .tab-switcher button { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.16); color:rgba(255,255,255,.65); }
@@ -364,11 +367,17 @@ function renderTable() {
   }).join('');
 }
 
+function getPreviewScore(fixture) {
+  const home = fixture.previewDraftHs ?? (fixture.projectedPreview ? fixture.projectedHs : null);
+  const away = fixture.previewDraftAs ?? (fixture.projectedPreview ? fixture.projectedAs : null);
+  if (home === null || home === '' || away === null || away === ''
+    || !Number.isInteger(Number(home)) || Number(home) < 0
+    || !Number.isInteger(Number(away)) || Number(away) < 0) return null;
+  return { hs: Number(home), as: Number(away) };
+}
+
 function hasValidPreviewScore(fixture) {
-  return fixture.previewDraftHs !== undefined && fixture.previewDraftHs !== null && fixture.previewDraftHs !== ''
-    && fixture.previewDraftAs !== undefined && fixture.previewDraftAs !== null && fixture.previewDraftAs !== ''
-    && Number.isInteger(Number(fixture.previewDraftHs)) && Number(fixture.previewDraftHs) >= 0
-    && Number.isInteger(Number(fixture.previewDraftAs)) && Number(fixture.previewDraftAs) >= 0;
+  return getPreviewScore(fixture) !== null;
 }
 
 function renderFixtures() {
@@ -402,37 +411,34 @@ function renderFixtures() {
            <button class="clear-btn" onclick="clearResult(${f.id})">✕</button>`
         : `<button class="sim-btn" onclick="simulateOne(${f.id})">Simulate</button>`;
 
-      const hasPreview = isPslAdmin() && f.projectedPreview;
+      const previewHome = f.previewDraftHs ?? (f.projectedPreview ? f.projectedHs : '');
+      const previewAway = f.previewDraftAs ?? (f.projectedPreview ? f.projectedAs : '');
       const scoreDisplay = f.confirmed && hasResult && !f.inProgress
         ? (() => {
             const matchId = f.id;
             const scoreEl = `<span style="font-weight:500;min-width:40px;text-align:center;" class="${f.confirmed?'confirmed':'projected'}">${f.hs}–${f.as}</span>`;
             return `<a href="match.html?id=${matchId}" style="text-decoration:none;">${scoreEl}</a>`;
           })()
-        : hasPreview
-        ? `<span style="font-weight:500;min-width:40px;text-align:center;color:#b366ff;">${f.projectedHs}–${f.projectedAs}</span>`
+        : isPslAdmin() && !f.confirmed
+        ? `<input type="number" min="0" step="1" aria-label="${f.home} preview score" value="${previewHome}" onchange="updatePreviewScore(${f.id}, 'hs', this)">
+           <span>–</span>
+           <input type="number" min="0" step="1" aria-label="${f.away} preview score" value="${previewAway}" onchange="updatePreviewScore(${f.id}, 'as', this)">`
         : hasResult && !f.inProgress
         ? `<span style="font-weight:500;min-width:40px;text-align:center;" class="${f.projected?'projected':'confirmed'}">${f.hs}–${f.as}</span>`
-        : `<input type="number" min="0" id="hs-${f.id}" placeholder="–" ${hasProjected ? `value="${f.hs}"` : ''} onchange="manualScore(${f.id})">
+        : `<input type="number" min="0" id="hs-${f.id}" aria-label="${f.home} score" placeholder="–" ${hasProjected ? `value="${f.hs}"` : ''} onchange="manualScore(${f.id})">
            <span>–</span>
-           <input type="number" min="0" id="as-${f.id}" placeholder="–" ${hasProjected ? `value="${f.as}"` : ''} onchange="manualScore(${f.id})">`;
+           <input type="number" min="0" id="as-${f.id}" aria-label="${f.away} score" placeholder="–" ${hasProjected ? `value="${f.as}"` : ''} onchange="manualScore(${f.id})">`;
 
-      const previewControls = isPslAdmin() && !f.confirmed
-        ? `<div class="fixture-projection">
-            <span>Preview</span>
-            <input type="number" min="0" step="1" aria-label="${f.home} preview score" value="${f.previewDraftHs ?? (f.projectedPreview ? f.projectedHs : '')}" onchange="updatePreviewScore(${f.id}, 'hs', this)">
-            <span>–</span>
-            <input type="number" min="0" step="1" aria-label="${f.away} preview score" value="${f.previewDraftAs ?? (f.projectedPreview ? f.projectedAs : '')}" onchange="updatePreviewScore(${f.id}, 'as', this)">
-            <button id="preview-lock-${f.id}" class="preview-score-lock${f.tempLocked ? ' locked' : ''}" type="button" aria-label="${f.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations'}" aria-pressed="${Boolean(f.tempLocked)}" ${!hasValidPreviewScore(f) ? 'disabled' : ''} onclick="togglePreviewScoreLock(${f.id})">${f.tempLocked ? 'Locked for sims' : 'Lock for sims'}</button>
-          </div>`
+      const previewLock = isPslAdmin() && !f.confirmed
+        ? `<button id="preview-lock-${f.id}" class="preview-score-lock${f.tempLocked ? ' locked' : ''}" type="button" aria-label="${f.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations'}" aria-pressed="${Boolean(f.tempLocked)}" ${!hasValidPreviewScore(f) ? 'disabled' : ''} onclick="togglePreviewScoreLock(${f.id})">${f.tempLocked ? 'Locked for sims' : 'Lock for sims'}</button>`
         : '';
       html += `<div class="league-fixture"><div class="fixture" style="flex-wrap:nowrap;gap:6px;">
         <span class="fix-team right" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${f.home}${tlogo(f.home)}</span>
         <div class="fix-score" style="flex-shrink:0;">${scoreDisplay}</div>
         <span class="fix-team" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${tlogo(f.away)}${f.away}</span>
         ${badge}
-        <span style="flex-shrink:0;display:flex;gap:4px;align-items:center;">${liveLabel}${btns}</span>
-      </div>${previewControls}</div>`;
+        <span style="flex-shrink:0;display:flex;gap:4px;align-items:center;">${previewLock}${liveLabel}${btns}</span>
+      </div></div>`;
     });
     html += `</div>`;
   });
@@ -443,6 +449,18 @@ function simulateOne(id) {
   const f = fixtures.find(x => x.id === id);
   if(!f || f.confirmed) return;
   const result = simMatch(f.home, f.away);
+  if(isPslAdmin()) {
+    f.projectedHs = result.hs;
+    f.projectedAs = result.as;
+    f.previewDraftHs = null;
+    f.previewDraftAs = null;
+    f.projectedPreview = true;
+    f.tempLocked = false;
+    invalidatePositionSimulations();
+    renderTable();
+    renderFixtures();
+    return;
+  }
   f.hs = result.hs;
   f.as = result.as;
   f.projected = true;
@@ -486,6 +504,16 @@ function manualScore(id) {
 function simulateAll() {
   fixtures.forEach(f => {
     if(f.confirmed) return;
+    if(isPslAdmin()) {
+      if(f.tempLocked || f.projectedPreview) return;
+      const result = simMatch(f.home, f.away);
+      f.projectedHs = result.hs;
+      f.projectedAs = result.as;
+      f.previewDraftHs = null;
+      f.previewDraftAs = null;
+      f.projectedPreview = true;
+      return;
+    }
     if(f.hs === null || f.as === null) {
       const result = simMatch(f.home, f.away);
       f.hs = result.hs;
@@ -516,8 +544,8 @@ function updatePreviewScore(fixtureId, side, input) {
       }
       fixture[side === 'hs' ? 'previewDraftHs' : 'previewDraftAs'] = input.value;
       if (hasValidPreviewScore(fixture)) {
-        fixture.projectedHs = Number(fixture.previewDraftHs);
-        fixture.projectedAs = Number(fixture.previewDraftAs);
+        fixture.projectedHs = Number(fixture.previewDraftHs ?? fixture.projectedHs);
+        fixture.projectedAs = Number(fixture.previewDraftAs ?? fixture.projectedAs);
         fixture.projectedPreview = true;
       } else {
         fixture.projectedHs = null;
@@ -673,10 +701,11 @@ function runPositionSimulations() {
   const simulationFixtures = fixtures.map(fixture => {
     const homeIndex = teamIndices[fixture.home];
     const awayIndex = teamIndices[fixture.away];
+    const previewScore = getPreviewScore(fixture);
     const fixedScore = fixture.confirmed && fixture.hs !== null && fixture.as !== null
       ? {hs: fixture.hs, as: fixture.as}
-      : fixture.tempLocked && hasValidPreviewScore(fixture)
-      ? {hs: Number(fixture.previewDraftHs), as: Number(fixture.previewDraftAs)}
+      : fixture.tempLocked && previewScore
+      ? previewScore
       : null;
     return {
       homeIndex,
@@ -815,10 +844,11 @@ function runTitleSimulations() {
   const fixedGoalDifferences = teams.map(team => PENALTY_GD[team] || 0);
   const ranking = teams.map((team, index) => index);
   const simulationFixtures = fixtures.map(fixture => {
+    const previewScore = getPreviewScore(fixture);
     const fixedScore = fixture.confirmed && fixture.hs !== null && fixture.as !== null
       ? {hs: fixture.hs, as: fixture.as}
-      : fixture.tempLocked && hasValidPreviewScore(fixture)
-      ? {hs: Number(fixture.previewDraftHs), as: Number(fixture.previewDraftAs)}
+      : fixture.tempLocked && previewScore
+      ? previewScore
       : null;
     return {
       homeIndex: teamIndices[fixture.home],

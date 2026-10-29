@@ -16,9 +16,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --space-dark: #05010f;
-    --neon-purple: #b366ff;
-    --neon-cyan: #00f0ff;
+    --space-dark: #111811;
+    --neon-purple: #f0654f;
+    --neon-cyan: #95df75;
     --text-main: #ffffff;
     --text-muted: rgba(255, 255, 255, 0.5);
     --border-color: rgba(255, 255, 255, 0.08);
@@ -33,7 +33,7 @@
   body {
     font-family: 'Space Grotesk', sans-serif;
     background-color: var(--space-dark);
-    background-image: url('bg.png');
+    background-image: url('cupbg.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -49,7 +49,7 @@
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(5, 1, 15, 0.85);
+    background: rgba(10, 16, 11, 0.62);
     z-index: 0;
     pointer-events: none;
   }
@@ -168,7 +168,7 @@
   }
 </style>
 <style>
-  :root { --dark:#05010f; --purple:#b366ff; --cyan:#00f0ff; --text:#fff; --muted:rgba(255,255,255,.58); --border:rgba(255,255,255,.12); --panel:rgba(15,8,31,.88); }
+  :root { --dark:#111811; --purple:#f0654f; --cyan:#95df75; --text:#fff; --muted:rgba(255,255,255,.72); --border:rgba(255,255,255,.18); --panel:rgba(14,22,15,.88); }
   body { display:block; min-height:100vh; }
   .container { width:min(100% - 2rem,1500px); max-width:none; margin:0 auto; padding:2.5rem 0 3rem; align-items:stretch; text-align:left; }
   .page-header { text-align:center; margin:0 auto 2rem; }
@@ -183,12 +183,38 @@
   .admin-panel { padding:1rem; margin:1.5rem 0 2rem; }
   .admin-panel h2 { font-size:1rem; font-weight:600; margin-bottom:.35rem; }
   .admin-row { display:flex; flex-wrap:wrap; align-items:center; gap:.65rem; margin-top:.9rem; }
+  .cup-simulation-results { margin-top:1rem; padding:1rem; border:1px solid var(--border); border-radius:10px; background:rgba(255,255,255,.035); }
+  .cup-simulation-results h3 { font-size:.95rem; margin-bottom:.7rem; }
+  .cup-simulation-results h4 { color:var(--cyan); font-size:.76rem; margin:1rem 0 .45rem; text-transform:uppercase; letter-spacing:.06em; }
+  .cup-simulation-results table { width:100%; border-collapse:collapse; font-size:.8rem; }
+  .cup-simulation-results th,.cup-simulation-results td { padding:.4rem .3rem; text-align:left; border-bottom:1px solid var(--border); }
+  .cup-simulation-results th:last-child,.cup-simulation-results td:last-child { text-align:right; }
+  .cup-prediction-panel { margin:1.5rem 0; padding:1rem; border:1px solid var(--border); border-radius:12px; background:var(--panel); }
+  .cup-prediction-panel h2 { font-size:1.1rem; margin-bottom:.4rem; }
+  .cup-prediction-note,.cup-prediction-status { color:var(--muted); font-size:.82rem; line-height:1.5; }
+  .cup-prediction-status { margin-top:.7rem; }
+  .cup-prediction-round { margin-top:1rem; }
+  .cup-prediction-round h3 { margin-bottom:.45rem; color:var(--cyan); font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; }
+  .cup-prediction-match { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; padding:.45rem 0; border-top:1px solid var(--border); }
+  .cup-prediction-match-label { width:3.2rem; flex:0 0 3.2rem; color:var(--muted); font-size:.72rem; }
+  .cup-pick-button { display:inline-flex; align-items:center; gap:.35rem; min-width:110px; min-height:34px; padding:.35rem .55rem; border:1px solid var(--border); border-radius:7px; background:rgba(255,255,255,.04); color:var(--text); cursor:pointer; font:inherit; font-size:.78rem; text-align:left; }
+  .cup-pick-button:hover:not(:disabled),.cup-pick-button.selected { border-color:var(--cyan); background:rgba(149,223,117,.12); color:var(--cyan); }
+  .cup-pick-button:disabled { opacity:.45; cursor:not-allowed; }
+  .cup-pick-button img { width:18px; height:18px; object-fit:contain; }
+  .cup-prediction-actions { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem; }
+  .cup-prediction-login { color:var(--cyan); }
+  .cup-prediction-admin { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
+  .cup-prediction-admin h3 { margin-bottom:.65rem; }
+  .cup-submission { border-top:1px solid var(--border); padding:.65rem 0; }
+  .cup-submission summary { cursor:pointer; font-size:.85rem; }
+  .cup-submission-details { color:var(--muted); font-size:.78rem; padding:.5rem 0; }
+  .cup-prediction-export { display:none; }
   .control,.button { font:inherit; min-height:40px; border-radius:7px; }
-  .control { border:1px solid var(--border); background:#161027; color:var(--text); padding:.55rem .7rem; }
+  .control { border:1px solid var(--border); background:#182219; color:var(--text); padding:.55rem .7rem; }
   select.control { min-width:190px; }
-  select.control option { background:#161027; }
-  .button { padding:.55rem .9rem; border:1px solid rgba(0,240,255,.45); background:rgba(0,240,255,.09); color:var(--cyan); cursor:pointer; font-weight:600; }
-  .button:hover:not(:disabled) { background:rgba(0,240,255,.16); }
+  select.control option { background:#182219; }
+  .button { padding:.55rem .9rem; border:1px solid rgba(149,223,117,.5); background:rgba(149,223,117,.1); color:var(--cyan); cursor:pointer; font-weight:600; }
+  .button:hover:not(:disabled) { background:rgba(149,223,117,.2); }
   .button.secondary { border-color:var(--border); color:var(--muted); background:rgba(255,255,255,.04); }
   .button:disabled { opacity:.5; cursor:not-allowed; }
   .admin-status { min-height:1.3rem; color:var(--muted); font-size:.82rem; margin-top:.7rem; }
@@ -202,29 +228,29 @@
   .bracket-scroll { width:100%; overflow-x:hidden; overflow-y:hidden; padding:0 0 .5rem; }
   .bracket { position:relative; grid-template-rows:repeat(15,44px); align-items:center; }
   .bracket-lines { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
-  .bracket-lines path { fill:none; stroke:rgba(179,102,255,.46); stroke-width:1.5; vector-effect:non-scaling-stroke; }
-  .match-card { position:relative; z-index:1; height:42px; padding:2px; background:rgba(11,5,26,.98); min-width:0; border-radius:6px; }
-  .match-label { display:flex; justify-content:space-between; gap:2px; color:var(--muted); font-size:clamp(.42rem,.55vw,.58rem); line-height:9px; margin-bottom:0; }
+  .bracket-lines path { fill:none; stroke:rgba(149,223,117,.55); stroke-width:1.5; vector-effect:non-scaling-stroke; }
+  .match-card { position:relative; z-index:1; height:42px; padding:2px; background:rgba(14,22,15,.96); min-width:0; border-radius:6px; }
+  .match-label { display:flex; justify-content:space-between; gap:2px; padding-right:17px; color:var(--muted); font-size:clamp(.42rem,.55vw,.58rem); line-height:9px; margin-bottom:0; }
   .match-team { display:flex; align-items:center; min-height:14px; height:14px; gap:2px; border-bottom:1px solid rgba(255,255,255,.06); padding:0; font-size:clamp(.58rem,.75vw,.68rem); line-height:14px; overflow:hidden; white-space:nowrap; }
   .match-team:last-of-type { border-bottom:0; }
   .match-team img { width:clamp(10px,1.1vw,16px); height:clamp(10px,1.1vw,16px); object-fit:contain; flex:0 0 clamp(10px,1.1vw,16px); }
-  .match-team span { overflow:hidden; text-overflow:ellipsis; }
+  .match-team-name { min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .match-team-score { flex:0 0 auto; margin-left:auto; padding-left:2px; }
   .match-team.winner { color:var(--cyan); font-weight:700; }
   .match-team.bye { color:var(--muted); font-style:italic; }
   .match-team.empty { color:rgba(255,255,255,.3); }
-  .match-score { color:var(--purple); font-weight:700; font-size:clamp(.45rem,.6vw,.62rem); }
   .match-meta { color:var(--muted); font-size:.62rem; margin-top:.25rem; overflow-wrap:anywhere; }
   .match-edit-button { position:absolute; top:1px; right:2px; width:15px; height:12px; min-height:0; padding:0; font-size:.55rem; line-height:10px; }
   .cup-modal-overlay { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:1rem; background:rgba(0,0,0,.78); }
-  .cup-modal { width:min(100%,540px); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:14px; background:#100a20; box-shadow:0 20px 70px rgba(0,0,0,.6); }
+  .cup-modal { width:min(100%,540px); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:14px; background:#141d15; box-shadow:0 20px 70px rgba(0,0,0,.6); }
   .cup-modal-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.2rem; border-bottom:1px solid var(--border); }
   .cup-modal-header h2 { font-size:1rem; font-weight:600; }
   .cup-modal-close { border:0; background:none; color:var(--muted); cursor:pointer; font-size:1.5rem; }
   .cup-modal-body { overflow-y:auto; padding:1.2rem; }
   .cup-form-group { margin-bottom:.8rem; }
   .cup-form-group label,.cup-event-label { display:block; color:var(--muted); font-size:.74rem; margin-bottom:.3rem; }
-  .cup-form-control { width:100%; min-height:38px; border:1px solid var(--border); border-radius:7px; background:#19122a; color:var(--text); padding:.5rem .65rem; font:inherit; font-size:.82rem; }
-  .cup-form-control option { background:#19122a; }
+  .cup-form-control { width:100%; min-height:38px; border:1px solid var(--border); border-radius:7px; background:#1b261c; color:var(--text); padding:.5rem .65rem; font:inherit; font-size:.82rem; }
+  .cup-form-control option { background:#1b261c; }
   .cup-score-inputs { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.6rem; }
   .cup-event-list { display:flex; flex-direction:column; gap:.65rem; margin:.65rem 0; }
   .cup-event { position:relative; border:1px solid var(--border); border-radius:8px; background:rgba(255,255,255,.035); padding:.7rem; }
@@ -235,6 +261,7 @@
   .cup-modal-error { color:#ff8b9a; font-size:.78rem; margin:.6rem 0; }
   .cup-modal-save { width:100%; }
   @media(max-width:700px) { .bracket-scroll { overflow-x:auto; overflow-y:hidden; } .bracket-labels,.bracket { min-width:720px; } .bracket { grid-template-rows:repeat(15,44px); } }
+  @media(max-width:600px) { .cup-prediction-match-label { width:100%; flex-basis:100%; } .cup-pick-button { flex:1; min-width:0; } }
   .footer { margin-top:1.5rem; text-align:center; }
   .loading { color:var(--muted); padding:2rem; text-align:center; }
   @media(max-width:650px) { .container { width:min(100% - 1rem,1500px); padding-top:1.5rem; } .section-heading { display:block; } .section-heading p { margin-top:.35rem; } }
@@ -252,16 +279,27 @@
       <p class="desc">The knockout bracket starts at the Round of 32. Teams advance through the Round of 16, quarter-finals and semi-finals to the final.</p>
     </header>
 
+    <section id="cup-prediction-panel" class="cup-prediction-panel" aria-labelledby="cup-prediction-title">
+      <h2 id="cup-prediction-title">Cup winner predictions</h2>
+      <p class="cup-prediction-note">Pick the winner of each matchup to advance your bracket. Score 1 point per correct Round of 32 pick, then 2, 4, 8 and 16 points for each successive round. One final submission per account; submit before the cup begins. Your picks are not editable after submission.</p>
+      <div id="cup-prediction-content"><p class="loading">Loading prediction bracket…</p></div>
+      <p id="cup-prediction-status" class="cup-prediction-status" role="status" aria-live="polite"></p>
+    </section>
+
     <section id="admin-panel" class="admin-panel" hidden aria-labelledby="admin-title">
-      <h2 id="admin-title">Cup administration</h2>
-      <p class="helper">Add teams and Byes in draw order. Each consecutive pair fills a Round of 32 match; a team paired with a Bye advances automatically.</p>
+      <h2 id="admin-title">Match administration</h2>
+      <p class="helper">Select a match to edit its result. Simulations use current saved winners, PSL6 ratings (average rating for unrated teams), play to 5 points (final: 7), with no win-by-two rule, and do not change saved results.</p>
       <div class="admin-row">
-        <select id="team-select" class="control" aria-label="Team to add"></select>
-        <button id="add-team" class="button" type="button" disabled>Add team</button>
-        <button id="add-bye" class="button secondary" type="button" disabled>Add Bye</button>
-        <button id="reset-bracket" class="button secondary" type="button" disabled>Reset bracket</button>
+        <button id="simulate-cup" class="button" type="button" onclick="simulateFullCup()">Simulate full cup</button>
+        <button id="simulate-cup-odds" class="button secondary" type="button" onclick="runCupOddsSimulations()">Run 50K simulations</button>
+        <button id="clear-cup-simulation" class="button secondary" type="button" onclick="clearCupSimulation()" hidden>Clear bracket simulation</button>
       </div>
       <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
+      <div id="cup-simulation-results" class="cup-simulation-results" hidden aria-live="polite"></div>
+      <section id="cup-prediction-admin" class="cup-prediction-admin" hidden aria-labelledby="cup-prediction-admin-title">
+        <h3 id="cup-prediction-admin-title">Account submissions</h3>
+        <div id="cup-prediction-submissions"><p class="helper">Loading submissions…</p></div>
+      </section>
     </section>
 
     <div class="section-heading">
@@ -282,6 +320,7 @@
   <script>
     const CUP_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/psl6Cup.json';
     const CUP_DB_ROOT_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
+    const CUP_PREDICTIONS_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/psl6CupPredictions.json';
     const CUP_ADMIN_USERNAMES = ['thanos', 'yman', 'pitchball'];
     const CUP_ROUNDS = [
       { name: 'Round of 32', matches: 16, matchOffset: 0 },
@@ -310,8 +349,12 @@
       'Hitters': 'HIT',
       'Niki Alimou': 'NA',
       'Golden Bullet': 'GB',
-      'Sapioi': 'sap',
+      'Sapioi': 'SAP',
       'Kritsinia': 'KRT'
+    };
+    const CUP_TEAM_LOGOS = {
+      'Sapioi': 'logos/sapioi.png',
+      'Kritsinia': 'logos/kritsinia.png'
     };
     const CUP_SQUADS = {
       'BADiles': ['Thanos Chatziiordanou', 'Dimitris Gavalas'],
@@ -329,9 +372,11 @@
       'Axtarmades': ['Giorgos Filippou', 'Filippos Efstathiou', 'Harris Rigas'],
       'Oi Thryloi': ['Vasilis Efstathiou', 'Alexandros Kalofolias'],
       'Spasmena Mila': ['Aris Tsertos', 'Kalliopi Tsertou', 'Taxiarchis Kassotakis'],
-      'Niki Alimou': ['Dionysis Halikias', 'Panagiotis Perdikis', 'Orfeas Maragkos'],
+      'Niki Alimou': ['Dionysis Halikias',],
       'Golden Bullet': ['Giannis Katsavounis', 'Markos Kanellidis'],
-      'Hitters': ['Iro Ganti', 'Theofania Sotiropoulou', 'Polixeni Toussi']
+      'Hitters': ['Iro Ganti', 'Theofania Sotiropoulou', 'Polixeni Toussi'],
+      'Sapioi': ['Panagiotis Perdikis',  'Konstantinos Megalooikonomou'],
+      'Kritsinia': ['Orfeas Maragkos',  'Leonidas Amplas'],
     };
     let cupBracket = { participants: [], results: {} };
     let cupIsAdmin = false;
@@ -339,6 +384,14 @@
     let cupSaving = false;
     let cupEditorMatch = null;
     let cupEditorEvents = [];
+    let cupSimulationResults = {};
+    let cupSimulationActive = false;
+    let cupSimulationRunning = false;
+    let cupPredictionUsername = '';
+    let cupPredictionKey = '';
+    let cupPredictionPicks = {};
+    let cupPredictionRecords = {};
+    let cupPredictionSubmitted = false;
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -373,15 +426,6 @@
         throw new Error('The saved cup bracket contains invalid team entries.');
       }
       return { participants, results };
-    }
-
-    async function writeCupBracket(bracket) {
-      const response = await fetch(CUP_DB_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bracket)
-      });
-      if (!response.ok) throw new Error('Unable to save the cup bracket.');
     }
 
     async function writeCupMatch(match, result, roundName) {
@@ -421,7 +465,7 @@
       return result && (result.winner === home || result.winner === away) ? result.winner : null;
     }
 
-    function buildRounds() {
+    function buildRounds(includeSimulation = true) {
       let participants = Array.from({ length: 32 }, (_, index) => {
         const value = cupBracket.participants[index];
         return validParticipant(value) ? value : null;
@@ -432,7 +476,12 @@
           const id = `PSL6CUP${String(matchNumber).padStart(3, '0')}`;
           const match = { id, round: round.name, roundIndex, matchIndex, home: participants[matchIndex * 2] || null, away: participants[matchIndex * 2 + 1] || null };
           const previousId = `r${roundIndex}m${matchIndex}`;
-          match.winner = getWinner(match, cupBracket.results[id] || cupBracket.results[previousId]);
+          const simulatedResult = includeSimulation && cupSimulationActive ? cupSimulationResults[id] : null;
+          match.winner = getWinner(match, cupBracket.results[id] || cupBracket.results[previousId] || simulatedResult);
+          if (!match.winner && simulatedResult) {
+            if (!match.home && match.away && match.away !== 'bye') match.winner = match.away;
+            else if (!match.away && match.home && match.home !== 'bye') match.winner = match.home;
+          }
           return match;
         });
         participants = matches.map(match => match.winner);
@@ -440,23 +489,528 @@
       });
     }
 
-    function renderTeam(team, match) {
+    function buildCupPredictionRounds(picks) {
+      let participants = Array.from({ length: 32 }, (_, index) => {
+        const value = cupBracket.participants[index];
+        return validParticipant(value) ? value : null;
+      });
+      return CUP_ROUNDS.map((round, roundIndex) => {
+        const matches = Array.from({ length: round.matches }, (_, matchIndex) => {
+          const matchNumber = round.matchOffset + matchIndex + 1;
+          const id = `PSL6CUP${String(matchNumber).padStart(3, '0')}`;
+          const home = participants[matchIndex * 2];
+          const away = participants[matchIndex * 2 + 1];
+          const selected = picks[id];
+          const winner = home === 'bye' && away && away !== 'bye'
+            ? away
+            : away === 'bye' && home && home !== 'bye'
+              ? home
+              : home && away && home !== 'bye' && away !== 'bye' && (selected === home || selected === away)
+                ? selected
+                : null;
+          return { id, round: round.name, roundIndex, matchIndex, home, away, winner };
+        });
+        participants = matches.map(match => match.winner);
+        return { ...round, roundIndex, matches };
+      });
+    }
+
+    function cupPredictionIsComplete(picks) {
+      return buildCupPredictionRounds(picks).every(round =>
+        round.matches.every(match =>
+          !match.home || !match.away || match.home === 'bye' || match.away === 'bye' || Boolean(match.winner)
+        )
+      );
+    }
+
+    function renderCupPredictionTeamButton(match, team, selected, disabled) {
+      const logo = team !== 'bye' && (window.PSL6_DATA.logos[team] || CUP_TEAM_LOGOS[team]);
+      const label = team === 'bye' ? 'Bye' : CUP_TEAM_ABBREVIATIONS[team] || team;
+      return `<button class="cup-pick-button${selected ? ' selected' : ''}" type="button" data-pred-match="${escapeHtml(match.id)}" data-pred-team="${escapeHtml(team)}" aria-pressed="${selected}" ${disabled ? 'disabled' : ''}>${logo ? `<img src="${escapeHtml(logo)}" alt="">` : ''}<span>${escapeHtml(label)}</span>${selected ? '<span aria-hidden="true">✓</span>' : ''}</button>`;
+    }
+
+    function renderCupPredictionBracket(picks, readOnly) {
+      return buildCupPredictionRounds(picks).map(round => `
+        <section class="cup-prediction-round">
+          <h3>${escapeHtml(round.name)} <span>· ${2 ** round.roundIndex} pt${round.roundIndex ? 's' : ''} per correct pick</span></h3>
+          ${round.matches.map(match => {
+            const home = match.home && match.home !== 'bye' ? match.home : null;
+            const away = match.away && match.away !== 'bye' ? match.away : null;
+            if (match.home === 'bye' || match.away === 'bye') {
+              const team = match.home === 'bye' ? away : home;
+              return `<div class="cup-prediction-match"><span class="cup-prediction-match-label">M${match.matchIndex + 1}</span><span class="helper">${team ? `${escapeHtml(team)} advances (Bye)` : 'Bye'}</span></div>`;
+            }
+            if (!home || !away) {
+              return `<div class="cup-prediction-match"><span class="cup-prediction-match-label">M${match.matchIndex + 1}</span><span class="helper">TBD vs TBD</span></div>`;
+            }
+            return `<div class="cup-prediction-match">
+              <span class="cup-prediction-match-label">M${match.matchIndex + 1}</span>
+              ${renderCupPredictionTeamButton(match, home, match.winner === home, readOnly)}
+              ${renderCupPredictionTeamButton(match, away, match.winner === away, readOnly)}
+            </div>`;
+          }).join('')}
+        </section>`).join('');
+    }
+
+    async function getCupPredictionKey(username) {
+      const normalized = username.trim().toLowerCase();
+      const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(normalized));
+      return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function loadCupPredictions() {
+      const session = (() => {
+        try { return JSON.parse(localStorage.getItem('psl_session') || 'null'); }
+        catch (error) { return null; }
+      })();
+      cupPredictionUsername = session && typeof session.username === 'string' ? session.username.trim() : '';
+      cupPredictionKey = cupPredictionUsername ? await getCupPredictionKey(cupPredictionUsername) : '';
+      const adminSection = document.getElementById('cup-prediction-admin');
+      adminSection.hidden = !cupIsAdmin;
+
+      if (!cupPredictionUsername) {
+        renderCupPredictionPanel();
+        return;
+      }
+
+      const url = cupIsAdmin
+        ? CUP_PREDICTIONS_URL
+        : CUP_PREDICTIONS_URL.replace(/\.json$/, `/${cupPredictionKey}.json`);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Unable to load cup predictions.');
+      const data = await response.json();
+
+      if (cupIsAdmin) {
+        cupPredictionRecords = data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+      } else {
+        cupPredictionRecords = data ? { [cupPredictionKey]: data } : {};
+      }
+      const ownSubmission = cupPredictionRecords[cupPredictionKey];
+      cupPredictionSubmitted = Boolean(ownSubmission && ownSubmission.picks && typeof ownSubmission.picks === 'object');
+      cupPredictionPicks = cupPredictionSubmitted ? ownSubmission.picks : {};
+      renderCupPredictionPanel();
+      if (cupIsAdmin) renderCupPredictionSubmissions();
+    }
+
+    function getCupPredictionPoints(picks) {
+      let points = 0;
+      buildRounds(false).forEach((round, roundIndex) => {
+        round.matches.forEach((match, matchIndex) => {
+          if (!match.home || !match.away || match.home === 'bye' || match.away === 'bye') return;
+          const id = `PSL6CUP${String(round.matchOffset + matchIndex + 1).padStart(3, '0')}`;
+          const legacyId = `r${roundIndex}m${matchIndex}`;
+          const result = cupBracket.results[id] || cupBracket.results[legacyId];
+          const winner = result && (result.winner === match.home || result.winner === match.away) ? result.winner : null;
+          if (winner && picks[id] === winner) points += 2 ** roundIndex;
+        });
+      });
+      return points;
+    }
+
+    function renderCupPredictionSubmissions() {
+      const container = document.getElementById('cup-prediction-submissions');
+      const submissions = Object.entries(cupPredictionRecords)
+        .filter(([, record]) => record && record.picks && typeof record.picks === 'object')
+        .sort((first, second) =>
+          getCupPredictionPoints(second[1].picks) - getCupPredictionPoints(first[1].picks)
+          || String(first[1].username || '').localeCompare(String(second[1].username || '')));
+      if (!submissions.length) {
+        container.innerHTML = '<p class="helper">No predictions have been submitted yet.</p>';
+        return;
+      }
+      container.innerHTML = submissions.map(([, record], index) => {
+        const picks = record.picks;
+        const details = buildCupPredictionRounds(picks).flatMap(round =>
+          round.matches.filter(match => match.home && match.away && match.home !== 'bye' && match.away !== 'bye' && match.winner)
+            .map(match => `<div>${escapeHtml(match.round)} M${match.matchIndex + 1}: ${escapeHtml(match.home)} vs ${escapeHtml(match.away)} — <strong>${escapeHtml(match.winner)}</strong></div>`)
+        ).join('');
+        const score = getCupPredictionPoints(picks);
+        const submittedAt = record.submittedAt ? new Date(record.submittedAt).toLocaleString() : 'Submission time unavailable';
+        return `<details class="cup-submission">
+          <summary>#${index + 1} ${escapeHtml(record.username || 'Unknown account')} — ${score} pts</summary>
+          <div class="cup-submission-details"><div>${escapeHtml(submittedAt)}</div>${details || '<div>No valid picks found.</div>'}</div>
+        </details>`;
+      }).join('');
+    }
+
+    function renderCupPredictionPanel(message = '') {
+      const container = document.getElementById('cup-prediction-content');
+      const status = document.getElementById('cup-prediction-status');
+      status.textContent = message;
+      if (!cupPredictionUsername) {
+        container.innerHTML = '<p class="cup-prediction-note">Sign in to your PSL account to make one cup bracket submission. <a class="cup-prediction-login" href="predindex.html">Sign in or create an account</a>, then return here.</p>';
+        return;
+      }
+      if (cupPredictionSubmitted) {
+        const score = getCupPredictionPoints(cupPredictionPicks);
+        container.innerHTML = `<p class="cup-prediction-note">Submission received for <strong>${escapeHtml(cupPredictionUsername)}</strong>. Your current score is <strong>${score} point${score === 1 ? '' : 's'}</strong>. This submission is locked.</p>
+          ${renderCupPredictionBracket(cupPredictionPicks, true)}
+          <div class="cup-prediction-actions"><button class="button" type="button" id="export-cup-prediction">Export bracket image</button></div>`;
+        document.getElementById('export-cup-prediction').addEventListener('click', exportCupPredictionImage);
+        return;
+      }
+      const complete = cupPredictionIsComplete(cupPredictionPicks);
+      container.innerHTML = `<p class="cup-prediction-note">Signed in as <strong>${escapeHtml(cupPredictionUsername)}</strong>. Select a winner in every playable matchup. Byes advance automatically.</p>
+        ${renderCupPredictionBracket(cupPredictionPicks, false)}
+        <div class="cup-prediction-actions">
+          <button class="button" type="button" id="submit-cup-prediction" ${complete ? '' : 'disabled'}>Submit final bracket</button>
+          <button class="button secondary" type="button" id="export-cup-prediction">Export bracket image</button>
+        </div>`;
+      container.querySelectorAll('[data-pred-match]').forEach(button => {
+        button.addEventListener('click', () => {
+          cupPredictionPicks[button.dataset.predMatch] = button.dataset.predTeam;
+          renderCupPredictionPanel();
+        });
+      });
+      const submit = document.getElementById('submit-cup-prediction');
+      if (submit) submit.addEventListener('click', submitCupPrediction);
+      document.getElementById('export-cup-prediction')?.addEventListener('click', exportCupPredictionImage);
+    }
+
+    async function submitCupPrediction() {
+      if (!cupPredictionUsername || !cupPredictionKey || cupPredictionSubmitted) return;
+      if (!cupPredictionIsComplete(cupPredictionPicks)) {
+        renderCupPredictionPanel('Choose a winner for every available matchup before submitting.');
+        return;
+      }
+      const button = document.getElementById('submit-cup-prediction');
+      if (button) button.disabled = true;
+      const record = {
+        username: cupPredictionUsername,
+        submittedAt: new Date().toISOString(),
+        picks: { ...cupPredictionPicks }
+      };
+      try {
+        const response = await fetch(CUP_PREDICTIONS_URL.replace(/\.json$/, `/${cupPredictionKey}.json`), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'If-Match': 'null_etag' },
+          body: JSON.stringify(record)
+        });
+        if (response.status === 412) {
+          await loadCupPredictions();
+          renderCupPredictionPanel('This account already has a submission. The saved bracket has been loaded.');
+          return;
+        }
+        if (!response.ok) throw new Error('Unable to save your cup prediction.');
+        cupPredictionRecords[cupPredictionKey] = record;
+        cupPredictionSubmitted = true;
+        renderCupPredictionPanel('Your bracket has been submitted and locked.');
+        if (cupIsAdmin) renderCupPredictionSubmissions();
+      } catch (error) {
+        if (button) button.disabled = false;
+        renderCupPredictionPanel(error.message || 'Unable to save your cup prediction.');
+      }
+    }
+
+    async function exportCupPredictionImage() {
+      if (!cupPredictionUsername) return;
+      const button = document.getElementById('export-cup-prediction');
+      if (button) button.disabled = true;
+      const width = 2200;
+      const height = 1080;
+      const margin = 24;
+      const gap = 16;
+      const rowHeight = 32;
+      const top = 62;
+      const columnWidth = (width - margin * 2 - gap * 8) / 9;
+      const cardWidth = columnWidth - 8;
+      const rounds = buildCupPredictionRounds(cupPredictionPicks);
+      const labels = ['Round of 32', 'Round of 16', 'Quarter-finals', 'Semi-finals', 'Final', 'Semi-finals', 'Quarter-finals', 'Round of 16', 'Round of 32'];
+      const xForColumn = column => margin + column * (columnWidth + gap);
+      const yForMatch = (roundIndex, matchIndex) => {
+        const count = CUP_ROUNDS[roundIndex].matches;
+        const final = roundIndex === CUP_ROUNDS.length - 1;
+        const leftSide = !final && matchIndex < count / 2;
+        const sideIndex = final ? 0 : matchIndex % (count / 2);
+        const row = final ? 16 : 2 ** (roundIndex + 1) * sideIndex + 2 ** roundIndex;
+        return top + (row - 0.5) * rowHeight;
+      };
+      const columnForMatch = (roundIndex, matchIndex) => {
+        const count = CUP_ROUNDS[roundIndex].matches;
+        if (roundIndex === CUP_ROUNDS.length - 1) return 4;
+        return matchIndex < count / 2 ? roundIndex : 8 - roundIndex;
+      };
+      const svg = [
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+        '<rect width="100%" height="100%" fill="#111811"/>',
+        `<text x="${width / 2}" y="28" fill="#ffffff" font-family="Arial,sans-serif" font-size="22" font-weight="700" text-anchor="middle">PSL6 Cup Picks — ${escapeHtml(cupPredictionUsername)}</text>`
+      ];
+      labels.forEach((label, column) => {
+        svg.push(`<text x="${xForColumn(column) + cardWidth / 2}" y="52" fill="#95df75" font-family="Arial,sans-serif" font-size="11" font-weight="700" text-anchor="middle">${escapeHtml(label.toUpperCase())}</text>`);
+      });
+      rounds.slice(0, -1).forEach((round, roundIndex) => {
+        round.matches.forEach((match, matchIndex) => {
+          const nextMatch = rounds[roundIndex + 1].matches[Math.floor(matchIndex / 2)];
+          const sourceColumn = columnForMatch(roundIndex, matchIndex);
+          const targetColumn = columnForMatch(roundIndex + 1, Math.floor(matchIndex / 2));
+          const sourceX = xForColumn(sourceColumn);
+          const targetX = xForColumn(targetColumn);
+          const sourceY = yForMatch(roundIndex, matchIndex);
+          const targetY = yForMatch(roundIndex + 1, Math.floor(matchIndex / 2));
+          const isLeft = sourceColumn < 4;
+          const startX = isLeft ? sourceX + cardWidth : sourceX;
+          const endX = isLeft ? targetX : targetX + cardWidth;
+          const middleX = (startX + endX) / 2;
+          svg.push(`<path d="M${startX} ${sourceY} H${middleX} V${targetY} H${endX}" fill="none" stroke="#718454" stroke-width="1.5"/>`);
+        });
+      });
+      rounds.forEach((round, roundIndex) => {
+        round.matches.forEach((match, matchIndex) => {
+          const column = columnForMatch(roundIndex, matchIndex);
+          const x = xForColumn(column);
+          const y = yForMatch(roundIndex, matchIndex);
+          const home = match.home === 'bye' ? 'Bye' : match.home ? (CUP_TEAM_ABBREVIATIONS[match.home] || match.home) : 'TBD';
+          const away = match.away === 'bye' ? 'Bye' : match.away ? (CUP_TEAM_ABBREVIATIONS[match.away] || match.away) : 'TBD';
+          const homeColor = match.winner === match.home ? '#95df75' : '#ffffff';
+          const awayColor = match.winner === match.away ? '#95df75' : '#ffffff';
+          svg.push(`<rect x="${x}" y="${y - 14}" width="${cardWidth}" height="28" rx="5" fill="#0b120c" stroke="#43513c"/>`);
+          svg.push(`<text x="${x + 5}" y="${y - 2}" fill="#9aaa90" font-family="Arial,sans-serif" font-size="8">M${matchIndex + 1}</text>`);
+          svg.push(`<text x="${x + 27}" y="${y - 2}" fill="${homeColor}" font-family="Arial,sans-serif" font-size="10" font-weight="${match.winner === match.home ? 700 : 400}">${escapeHtml(home)}</text>`);
+          svg.push(`<text x="${x + cardWidth - 6}" y="${y - 2}" fill="${homeColor}" font-family="Arial,sans-serif" font-size="10" text-anchor="end">${match.winner === match.home ? '✓' : ''}</text>`);
+          svg.push(`<text x="${x + 27}" y="${y + 10}" fill="${awayColor}" font-family="Arial,sans-serif" font-size="10" font-weight="${match.winner === match.away ? 700 : 400}">${escapeHtml(away)}</text>`);
+          svg.push(`<text x="${x + cardWidth - 6}" y="${y + 10}" fill="${awayColor}" font-family="Arial,sans-serif" font-size="10" text-anchor="end">${match.winner === match.away ? '✓' : ''}</text>`);
+        });
+      });
+      svg.push('</svg>');
+
+      const imageUrl = URL.createObjectURL(new Blob([svg.join('')], { type: 'image/svg+xml;charset=utf-8' }));
+      const image = new Image();
+      image.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('Unable to create the bracket image.');
+          context.drawImage(image, 0, 0);
+          canvas.toBlob(blob => {
+            URL.revokeObjectURL(imageUrl);
+            if (!blob) {
+              renderCupPredictionPanel('Unable to export the bracket image.');
+              return;
+            }
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `psl6-cup-picks-${cupPredictionUsername.toLowerCase().replace(/[^a-z0-9_-]+/g, '-')}.png`;
+            link.click();
+            setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+            renderCupPredictionPanel('Bracket image downloaded.');
+          }, 'image/png');
+        } catch (error) {
+          URL.revokeObjectURL(imageUrl);
+          renderCupPredictionPanel(error.message || 'Unable to export the bracket image.');
+        }
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(imageUrl);
+        renderCupPredictionPanel('Unable to render the bracket image.');
+      };
+      image.src = imageUrl;
+    }
+
+    function cupTeamRating(team) {
+      const rating = window.PSL6_DATA.cupRatings[team] || window.PSL6_DATA.teams[team];
+      if (rating) return rating.att * 0.35 + rating.def * 0.3 + rating.stm * 0.15 + rating.con * 0.2;
+      const ratings = Object.values(window.PSL6_DATA.teams);
+      return ratings.reduce((total, entry) =>
+        total + entry.att * 0.35 + entry.def * 0.3 + entry.stm * 0.15 + entry.con * 0.2, 0) / ratings.length;
+    }
+
+    function simulateCupMatch(home, away, roundIndex) {
+      const target = roundIndex === CUP_ROUNDS.length - 1 ? 7 : 5;
+      const homeRating = cupTeamRating(home);
+      const awayRating = cupTeamRating(away);
+      let homeScore = 0;
+      let awayScore = 0;
+      let servingHome = Math.random() < 0.5;
+      while (homeScore < target && awayScore < target) {
+        const pointChance = Math.max(0.15, Math.min(0.85,
+          0.5 + (homeRating - awayRating) / 180 + (servingHome ? 0.025 : -0.025)));
+        const homeWinsPoint = Math.random() < pointChance;
+        if (homeWinsPoint) homeScore++;
+        else awayScore++;
+        servingHome = homeWinsPoint;
+      }
+      return {
+        winner: homeScore > awayScore ? home : away,
+        hs: homeScore,
+        as: awayScore
+      };
+    }
+
+    function simulateCupTournament() {
+      let participants = Array.from({ length: 32 }, (_, index) => {
+        const value = cupBracket.participants[index];
+        return validParticipant(value) ? value : null;
+      });
+      const results = {};
+
+      CUP_ROUNDS.forEach((round, roundIndex) => {
+        const winners = [];
+        for (let matchIndex = 0; matchIndex < round.matches; matchIndex++) {
+          const home = participants[matchIndex * 2];
+          const away = participants[matchIndex * 2 + 1];
+          const matchNumber = round.matchOffset + matchIndex + 1;
+          const id = `PSL6CUP${String(matchNumber).padStart(3, '0')}`;
+          const previousId = `r${roundIndex}m${matchIndex}`;
+          const match = { home, away };
+          const savedResult = cupBracket.results[id] || cupBracket.results[previousId];
+          const savedWinner = savedResult && (savedResult.winner === home || savedResult.winner === away)
+            ? savedResult.winner
+            : null;
+          let result;
+
+          if (savedWinner) {
+            result = { winner: savedWinner };
+          } else if (home && home !== 'bye' && (!away || away === 'bye')) {
+            result = { winner: home };
+          } else if (away && away !== 'bye' && (!home || home === 'bye')) {
+            result = { winner: away };
+          } else if (home && away && home !== 'bye' && away !== 'bye') {
+            result = simulateCupMatch(home, away, roundIndex);
+          } else {
+            result = { winner: null };
+          }
+
+          if (result.winner) results[id] = { ...result, home, away };
+          winners.push(result.winner);
+        }
+        participants = winners;
+      });
+
+      return { results, champion: participants[0] || null };
+    }
+
+    function setCupSimulationButtonsDisabled(disabled) {
+      document.getElementById('simulate-cup').disabled = disabled;
+      document.getElementById('simulate-cup-odds').disabled = disabled;
+    }
+
+    function simulateFullCup() {
+      if (!cupIsAdmin || !cupDataLoaded || cupSimulationRunning) return;
+      const entrants = cupBracket.participants.filter(value => value && value !== 'bye');
+      if (entrants.length < 2) {
+        setAdminStatus('Add at least two teams to the cup bracket before simulating.', 'error');
+        return;
+      }
+      const simulation = simulateCupTournament();
+      if (!simulation.champion) {
+        setAdminStatus('Unable to determine a cup champion from the current bracket.', 'error');
+        return;
+      }
+      cupSimulationResults = simulation.results;
+      cupSimulationActive = true;
+      document.getElementById('clear-cup-simulation').hidden = false;
+      renderBracket();
+      setAdminStatus(`Full cup simulation complete: ${simulation.champion} wins. Simulated results are not saved.`, 'success');
+    }
+
+    function clearCupSimulation() {
+      if (!cupIsAdmin || cupSimulationRunning) return;
+      cupSimulationResults = {};
+      cupSimulationActive = false;
+      document.getElementById('clear-cup-simulation').hidden = true;
+      renderBracket();
+      setAdminStatus('Bracket simulation cleared. Saved results are unchanged.', 'success');
+    }
+
+    function renderCupOdds(titleCounts, finalPairings, simulationCount) {
+      const results = document.getElementById('cup-simulation-results');
+      const teams = [...titleCounts.entries()].sort((first, second) =>
+        second[1] - first[1] || first[0].localeCompare(second[0]));
+      const pairings = [...finalPairings.entries()].sort((first, second) =>
+        second[1] - first[1] || first[0].localeCompare(second[0])).slice(0, 5);
+      results.innerHTML = `
+        <h3>50,000 cup simulations</h3>
+        <h4>Title odds</h4>
+        <table>
+          <thead><tr><th>Team</th><th>Title %</th></tr></thead>
+          <tbody>${teams.map(([team, count]) =>
+            `<tr><td>${escapeHtml(team)}</td><td>${(count / simulationCount * 100).toFixed(1)}%</td></tr>`
+          ).join('')}</tbody>
+        </table>
+        <h4>Most likely final pairings</h4>
+        <table>
+          <thead><tr><th>Final</th><th>Probability</th></tr></thead>
+          <tbody>${pairings.map(([pairing, count]) => {
+            const [home, away] = JSON.parse(pairing);
+            return `<tr><td>${escapeHtml(home)} vs ${escapeHtml(away)}</td><td>${(count / simulationCount * 100).toFixed(1)}%</td></tr>`;
+          }).join('')}</tbody>
+        </table>`;
+      results.hidden = false;
+    }
+
+    function runCupOddsSimulations() {
+      if (!cupIsAdmin || !cupDataLoaded || cupSimulationRunning) return;
+      const entrants = [...new Set(cupBracket.participants.filter(value => value && value !== 'bye'))];
+      if (entrants.length < 2) {
+        setAdminStatus('Add at least two teams to the cup bracket before running simulations.', 'error');
+        return;
+      }
+
+      const simulationCount = 50000;
+      const batchSize = 250;
+      const titleCounts = new Map(entrants.map(team => [team, 0]));
+      const finalPairings = new Map();
+      let completed = 0;
+      let failed = false;
+      cupSimulationRunning = true;
+      setCupSimulationButtonsDisabled(true);
+
+      const runBatch = () => {
+        try {
+          const batchEnd = Math.min(completed + batchSize, simulationCount);
+          for (; completed < batchEnd; completed++) {
+            const simulation = simulateCupTournament();
+            if (simulation.champion) {
+              titleCounts.set(simulation.champion, (titleCounts.get(simulation.champion) || 0) + 1);
+            }
+            const final = simulation.results.PSL6CUP031;
+            if (final?.winner && final.home && final.away) {
+              const pairing = JSON.stringify([final.home, final.away].sort((a, b) => a.localeCompare(b)));
+              finalPairings.set(pairing, (finalPairings.get(pairing) || 0) + 1);
+            }
+          }
+
+          if (completed < simulationCount) {
+            setAdminStatus(`Running cup simulations: ${completed.toLocaleString()} / ${simulationCount.toLocaleString()}…`);
+            setTimeout(runBatch, 0);
+            return;
+          }
+
+          renderCupOdds(titleCounts, finalPairings, simulationCount);
+          setAdminStatus('50,000 cup simulations complete. Odds are estimates, not saved results.', 'success');
+        } catch (error) {
+          failed = true;
+          setAdminStatus(error.message || 'Unable to complete cup simulations.', 'error');
+        } finally {
+          if (completed >= simulationCount || failed) {
+            cupSimulationRunning = false;
+            setCupSimulationButtonsDisabled(false);
+          }
+        }
+      };
+
+      document.getElementById('cup-simulation-results').hidden = true;
+      setAdminStatus(`Running cup simulations: 0 / ${simulationCount.toLocaleString()}…`);
+      setTimeout(runBatch, 0);
+    }
+
+    function renderTeam(team, match, score) {
       if (!team) return '<div class="match-team empty">TBD</div>';
       if (team === 'bye') return '<div class="match-team bye">Bye</div>';
-      const logo = window.PSL6_DATA.logos[team];
+      const logo = window.PSL6_DATA.logos[team] || CUP_TEAM_LOGOS[team];
       const isWinner = match.winner === team;
       const abbreviation = CUP_TEAM_ABBREVIATIONS[team] || team;
-      return `<div class="match-team${isWinner ? ' winner' : ''}" title="${escapeHtml(team)}" aria-label="${escapeHtml(team)}">${logo ? `<img src="${escapeHtml(logo)}" alt="">` : ''}<span>${escapeHtml(abbreviation)}</span></div>`;
+      const scoreDisplay = Number.isInteger(score) ? `<span class="match-team-score">${score}</span>` : '';
+      return `<div class="match-team${isWinner ? ' winner' : ''}" title="${escapeHtml(team)}" aria-label="${escapeHtml(team)}">${logo ? `<img src="${escapeHtml(logo)}" alt="">` : ''}<span class="match-team-name">${escapeHtml(abbreviation)}</span>${scoreDisplay}</div>`;
     }
 
     function renderMatch(match, roundIndex, matchIndex) {
       const hasGame = match.home && match.away && match.home !== 'bye' && match.away !== 'bye';
-      const existing = cupBracket.results[match.id] || cupBracket.results[`r${roundIndex}m${matchIndex}`] || {};
+      const existing = cupBracket.results[match.id] || cupBracket.results[`r${roundIndex}m${matchIndex}`] || (cupSimulationActive ? cupSimulationResults[match.id] : null) || {};
       const homeScore = existing.hs ?? existing.homeScore;
       const awayScore = existing.as ?? existing.awayScore;
-      const score = Number.isInteger(homeScore) && Number.isInteger(awayScore)
-        ? `<span class="match-score">${homeScore}–${awayScore}</span>`
-        : '';
       const events = Array.isArray(existing.events) ? existing.events : [];
       const goals = events.filter(event => event.type === 'goal').length;
       const ownGoals = events.filter(event => event.type === 'og').length;
@@ -465,8 +1019,8 @@
         ? `<button class="button match-edit-button" type="button" aria-label="Edit ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}" title="Edit match" onclick="openCupMatchEditor('${match.id}')">✎</button>`
         : '';
       return `<article class="match-card" id="cup-match-${match.id}" data-cup-match="${match.id}">
-        <div class="match-label"><span>M${matchIndex + 1}</span>${score}</div>
-        ${renderTeam(match.home, match)}${renderTeam(match.away, match)}
+        <div class="match-label"><span>M${matchIndex + 1}</span></div>
+        ${renderTeam(match.home, match, homeScore)}${renderTeam(match.away, match, awayScore)}
         ${editButton}
       </article>`;
     }
@@ -489,7 +1043,6 @@
       document.getElementById('bracket').innerHTML = `<svg class="bracket-lines" id="bracket-lines" aria-hidden="true"></svg>${matches}`;
       const count = cupBracket.participants.filter(validParticipant).length;
       document.getElementById('bracket-progress').textContent = `${count} / 32 Round of 32 slots filled`;
-      renderTeamOptions();
       requestAnimationFrame(renderBracketConnectors);
     }
 
@@ -522,19 +1075,6 @@
           svg.appendChild(path);
         });
       });
-    }
-
-    function renderTeamOptions() {
-      const select = document.getElementById('team-select');
-      const selected = select.value;
-      const entered = new Set(cupBracket.participants.filter(value => value !== 'bye'));
-      select.innerHTML = `<option value="">Choose a team</option>${CUP_TEAM_NAMES.map(team =>
-        `<option value="${escapeHtml(team)}" ${entered.has(team) ? 'disabled' : ''}>${escapeHtml(team)}${entered.has(team) ? ' (added)' : ''}</option>`
-      ).join('')}`;
-      if (selected && !entered.has(selected)) select.value = selected;
-      document.getElementById('add-team').disabled = !cupDataLoaded || cupSaving || !cupIsAdmin || entered.size >= 32 || CUP_TEAM_NAMES.every(team => entered.has(team));
-      document.getElementById('add-bye').disabled = !cupDataLoaded || cupSaving || !cupIsAdmin || cupBracket.participants.length >= 32;
-      document.getElementById('reset-bracket').disabled = !cupDataLoaded || cupSaving || !cupIsAdmin || cupBracket.participants.length === 0;
     }
 
     function setAdminStatus(message, type = '') {
@@ -695,13 +1235,17 @@
         events: cupEditorEvents.map(event => ({ ...event }))
       };
       cupSaving = true;
-      renderTeamOptions();
       setAdminStatus(`Saving match ${match.id}…`);
       document.getElementById('cup-save-match').disabled = true;
       try {
         await writeCupMatch(match, result, match.round);
         cupBracket = { ...cupBracket, results: { ...cupBracket.results, [match.id]: result } };
+        cupSimulationResults = {};
+        cupSimulationActive = false;
+        document.getElementById('clear-cup-simulation').hidden = true;
+        document.getElementById('cup-simulation-results').hidden = true;
         renderBracket();
+        if (cupIsAdmin) renderCupPredictionSubmissions();
         setAdminStatus(`${match.id} saved. ${winner} advances to the next round.`, 'success');
         closeCupMatchEditor();
       } catch (saveError) {
@@ -710,55 +1254,7 @@
         if (modalError) modalError.textContent = saveError.message || 'Unable to save match details. Please try again.';
       } finally {
         cupSaving = false;
-        renderTeamOptions();
       }
-    }
-
-    async function persistBracket(nextBracket, successMessage) {
-      if (cupSaving) return false;
-      cupSaving = true;
-      renderTeamOptions();
-      setAdminStatus('Saving…');
-      try {
-        await writeCupBracket(nextBracket);
-        cupBracket = nextBracket;
-        renderBracket();
-        setAdminStatus(successMessage, 'success');
-        return true;
-      } catch (error) {
-        setAdminStatus(error.message || 'Unable to save changes.', 'error');
-        return false;
-      } finally {
-        cupSaving = false;
-        renderTeamOptions();
-      }
-    }
-
-    async function addParticipant(participant) {
-      if (!cupIsAdmin || !cupDataLoaded) return;
-      if (cupBracket.participants.length >= 32) {
-        setAdminStatus('The Round of 32 is full.', 'error');
-        return;
-      }
-      if (participant === 'bye' && cupBracket.participants.filter(value => value !== 'bye').length === 0) {
-        setAdminStatus('Add a team before assigning a Bye.', 'error');
-        return;
-      }
-      if (participant !== 'bye' && (!validParticipant(participant) || cupBracket.participants.includes(participant))) {
-        setAdminStatus('Choose a valid team that has not already been added.', 'error');
-        return;
-      }
-      const nextBracket = {
-        ...cupBracket,
-        participants: [...cupBracket.participants, participant],
-        results: { ...cupBracket.results }
-      };
-      await persistBracket(nextBracket, participant === 'bye' ? 'Bye added to the draw.' : `${participant} added to the draw.`);
-    }
-
-    async function resetBracket() {
-      if (!cupIsAdmin || !cupDataLoaded || !confirm('Reset the PSL Cup bracket and remove all teams, Byes and results?')) return;
-      await persistBracket({ participants: [], results: {} }, 'Bracket reset.');
     }
 
     async function initCup() {
@@ -769,6 +1265,15 @@
         cupBracket = await readCupBracket();
         cupDataLoaded = true;
         renderBracket();
+        try {
+          await loadCupPredictions();
+        } catch (error) {
+          renderCupPredictionPanel(error.message || 'Unable to load cup predictions.');
+          if (cupIsAdmin) {
+            document.getElementById('cup-prediction-submissions').innerHTML =
+              `<p class="helper">${escapeHtml(error.message || 'Unable to load cup submissions.')}</p>`;
+          }
+        }
       } catch (error) {
         document.getElementById('bracket').innerHTML = `<div class="loading">${escapeHtml(error.message || 'Unable to load the cup bracket.')}</div>`;
         document.getElementById('bracket-progress').textContent = 'Bracket unavailable';
@@ -776,13 +1281,6 @@
       }
     }
 
-    document.getElementById('add-team').addEventListener('click', () => {
-      const team = document.getElementById('team-select').value;
-      if (team) addParticipant(team);
-      else setAdminStatus('Choose a team to add.', 'error');
-    });
-    document.getElementById('add-bye').addEventListener('click', () => addParticipant('bye'));
-    document.getElementById('reset-bracket').addEventListener('click', resetBracket);
     window.addEventListener('resize', renderBracketConnectors);
     window.addEventListener('DOMContentLoaded', initCup);
   </script>
