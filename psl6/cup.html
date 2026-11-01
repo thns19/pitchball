@@ -316,6 +316,8 @@
     </div>
   </main>
 
+  <script src="../news/bg-export-data.js"></script>
+  <script src="../simulation-export.js"></script>
   <script src="teams.js"></script>
   <script>
     const CUP_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/psl6Cup.json';
@@ -917,27 +919,64 @@
     function renderCupOdds(titleCounts, finalPairings, simulationCount) {
       const results = document.getElementById('cup-simulation-results');
       const teams = [...titleCounts.entries()].sort((first, second) =>
-        second[1] - first[1] || first[0].localeCompare(second[0]));
+        second[1] - first[1] || first[0].localeCompare(second[0]))
+        .filter(([, count]) => count > 0);
       const pairings = [...finalPairings.entries()].sort((first, second) =>
-        second[1] - first[1] || first[0].localeCompare(second[0])).slice(0, 5);
+        second[1] - first[1] || first[0].localeCompare(second[0])).slice(0, 10);
       results.innerHTML = `
         <h3>50,000 cup simulations</h3>
-        <h4>Title odds</h4>
+        <h4>Winners</h4>
         <table>
           <thead><tr><th>Team</th><th>Title %</th></tr></thead>
           <tbody>${teams.map(([team, count]) =>
             `<tr><td>${escapeHtml(team)}</td><td>${(count / simulationCount * 100).toFixed(1)}%</td></tr>`
           ).join('')}</tbody>
         </table>
-        <h4>Most likely final pairings</h4>
+        <button class="simulation-export-button" type="button" onclick="exportCupWinnersPng()">Export winners as PNG</button>
+        <h4>Likely finals</h4>
         <table>
           <thead><tr><th>Final</th><th>Probability</th></tr></thead>
           <tbody>${pairings.map(([pairing, count]) => {
             const [home, away] = JSON.parse(pairing);
             return `<tr><td>${escapeHtml(home)} vs ${escapeHtml(away)}</td><td>${(count / simulationCount * 100).toFixed(1)}%</td></tr>`;
           }).join('')}</tbody>
-        </table>`;
+        </table>
+        <button class="simulation-export-button" type="button" onclick="exportCupFinalsPng()">Export likely finals as PNG</button>`;
       results.hidden = false;
+    }
+
+    function exportCupWinnersPng() {
+      const table = document.querySelector('#cup-simulation-results table');
+      const items = [...(table?.tBodies[0]?.rows || [])].map(row => ({
+        label: row.cells[0].textContent.trim(),
+        value: parseFloat(row.cells[1].textContent) || 0,
+        display: row.cells[1].textContent.trim(),
+        detail: 'Cup champion probability'
+      }));
+      downloadSimulationPng({
+        title: 'PSL6 Cup Winners',
+        subtitle: 'Champion odds from 50,000 simulations',
+        scaleMax: 100,
+        items,
+        footer: 'Based on 50,000 cup simulations · Winners only'
+      });
+    }
+
+    function exportCupFinalsPng() {
+      const table = document.querySelectorAll('#cup-simulation-results table')[1];
+      const items = [...(table?.tBodies[0]?.rows || [])].map(row => ({
+        label: `Final: ${row.cells[0].textContent.trim()}`,
+        value: parseFloat(row.cells[1].textContent) || 0,
+        display: row.cells[1].textContent.trim(),
+        detail: 'Probability of this final pairing'
+      }));
+      downloadSimulationPng({
+        title: 'PSL6 Cup Likely Finals',
+        subtitle: 'Top 10 final pairings from 50,000 simulations',
+        scaleMax: 100,
+        items,
+        footer: 'Based on 50,000 cup simulations · Top 10 final pairings'
+      });
     }
 
     function runCupOddsSimulations() {

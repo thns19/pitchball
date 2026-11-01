@@ -180,6 +180,8 @@ td { color: #fff; border-bottom-color: rgba(255,255,255,.08); }
   </div>
 </div>
 
+<script src="../news/bg-export-data.js"></script>
+<script src="../simulation-export.js"></script>
 <script src="teams.js"></script>
 <script>
 const TEAMS = {
@@ -762,10 +764,20 @@ function runPositionSimulations() {
       }
 
       const positionLabels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
-      const tableRows = computeTable().map(({team}) => `
+      const tableRows = computeTable()
+        .map(({team}) => {
+          const counts = positionCounts[teamIndices[team]];
+          const topTwoChance = counts[0] + counts[1];
+          const playoffChance = counts.slice(2, 6).reduce((sum, count) => sum + count, 0);
+          return {team, counts, topTwoChance, playoffChance};
+        })
+        .sort((first, second) => second.topTwoChance - first.topTwoChance
+          || second.playoffChance - first.playoffChance
+          || first.team.localeCompare(second.team))
+        .map(({team, counts}) => `
         <tr>
           <td data-sort-team="${team}">${tlogo(team)}${team}</td>
-          ${positionCounts[teamIndices[team]].map((count, position) => {
+          ${counts.map((count, position) => {
             const percentage = count / simulationCount * 100;
             const color = position < 2 ? '#39c877' : position < 6 ? '#00f0ff' : 'rgba(255,255,255,.6)';
             const display = percentage >= 1 ? `${percentage.toFixed(1)}%` : percentage > 0 ? '<1%' : '—';
@@ -784,6 +796,11 @@ function runPositionSimulations() {
             </tr></thead>
             <tbody>${tableRows}</tbody>
           </table>
+        </div>
+        <div class="projection-actions" style="margin-top:12px;">
+          <button class="simulation-export-button" type="button" onclick="exportLeagueFinishPng('top-two')">Export Top 2 Chances</button>
+          <button class="simulation-export-button" type="button" onclick="exportLeagueFinishPng('playoff')">Export 3rd-6th Chances</button>
+          <button class="simulation-export-button" type="button" onclick="exportLeagueFinishPng('missed')">Export Missing Out Chances</button>
         </div>`;
       results.hidden = false;
     } catch (error) {
@@ -893,7 +910,9 @@ function runTitleSimulations() {
           || goalDifferences[b] - goalDifferences[a]
           || goalsFor[b] - goalsFor[a]
           || teams[a].localeCompare(teams[b]));
-        titleCounts[ranking[0]]++;
+        const seeds = ranking.slice(0, 6).map(index => teams[index]);
+        const champion = simulatePlayoffChampion(seeds);
+        titleCounts[teamIndices[champion]]++;
       }
 
       if (completedRuns < simulationCount) {
@@ -905,23 +924,24 @@ function runTitleSimulations() {
       const rankedTeams = teams.map((team, index) => ({team, wins: titleCounts[index]}))
         .sort((a, b) => b.wins - a.wins || a.team.localeCompare(b.team));
       results.innerHTML = `
-        <h3>Projected title chances</h3>
-        <p class="projection-results-note">Title winners from ${simulationCount.toLocaleString()} full-season simulations. Confirmed and locked preview scores are held fixed; other fixtures use PSL6 team ratings. Ties are ordered by points, goal difference, goals scored, then team name.</p>
+        <h3>Projected PSL6 champions</h3>
+        <p class="projection-results-note">Champions from ${simulationCount.toLocaleString()} complete-season simulations. Each simulated League Phase standings table seeds the six-team playoffs: 3rd vs 4th and 5th vs 6th in the qualification round, followed by the last-chance round, semi-finals and final. Confirmed and locked preview scores are held fixed; other league fixtures and every playoff match use PSL6 team ratings. League ties are ordered by points, goal difference, goals scored, then team name.</p>
         <div class="position-probability-card">
           ${rankedTeams.map(({team, wins}, index) => {
             const percentage = wins / simulationCount * 100;
             return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.08);">
               <span style="width:22px;color:rgba(255,255,255,.55);text-align:right;">${index + 1}</span>
-              <span style="flex:1;color:#fff;">${tlogo(team)}${team}</span>
+              <span data-projection-team="${team}" data-percentage="${percentage}" data-wins="${wins}" style="flex:1;color:#fff;">${tlogo(team)}${team}</span>
               <span style="color:#39c877;font-weight:600;">${percentage.toFixed(2)}%</span>
               <span style="width:96px;color:rgba(255,255,255,.5);text-align:right;">${wins.toLocaleString()} wins</span>
             </div>`;
           }).join('')}
-        </div>`;
+        </div>
+        <button class="simulation-export-button" type="button" onclick="exportTitleChancePng()">Export results as PNG</button>`;
       results.hidden = false;
     } catch (error) {
       failed = true;
-      console.error('League Phase title simulations failed.', error);
+      console.error('Full-season title simulations failed.', error);
       results.innerHTML = '<p class="projection-results-note">Unable to complete the title simulations. Please try again.</p>';
       results.hidden = false;
     } finally {
@@ -933,6 +953,76 @@ function runTitleSimulations() {
   };
 
   setTimeout(simulateBatch, 30);
+}
+
+function exportLeagueFinishPng(band) {
+  const rows = [...document.querySelectorAll('#projection-results .position-probability-table tbody tr')];
+  const bands = {
+    'top-two': {
+      title: 'PSL6 Top 2 Chances',
+      subtitle: 'Chance to finish 1st or 2nd',
+      label: 'Top 2 chance',
+      start: 1,
+      end: 3
+    },
+    playoff: {
+      title: 'PSL6 3rd-6th Chances',
+      subtitle: 'Chance to finish 3rd, 4th, 5th or 6th',
+      label: '3rd-6th chance',
+      start: 3,
+      end: 7
+    },
+    missed: {
+      title: 'PSL6 Missing Out Chances',
+      subtitle: 'Chance to finish 7th or lower',
+      label: 'Missing out chance',
+      start: 7,
+      end: 11
+    }
+  };
+  const selectedBand = bands[band];
+  if (!selectedBand) {
+    console.error('Unknown League Phase export band.', band);
+    return;
+  }
+  const items = rows.map(row => {
+    const cells = [...row.cells];
+    const percentages = cells.slice(selectedBand.start, selectedBand.end)
+      .map(cell => Number(cell.dataset.sortValue) || 0);
+    const value = percentages.reduce((sum, percentage) => sum + percentage, 0);
+    return {
+      label: cells[0]?.dataset.sortTeam || cells[0]?.textContent.trim(),
+      value,
+      display: `${value.toFixed(1)}%`,
+      detail: selectedBand.label
+    };
+  }).sort((first, second) => second.value - first.value || first.label.localeCompare(second.label));
+  downloadSimulationPng({
+    title: selectedBand.title,
+    subtitle: selectedBand.subtitle,
+    scaleMax: 100,
+    items,
+    footer: 'Based on 50,000 League Phase simulations · PTCHBL Report'
+  });
+}
+
+function exportTitleChancePng() {
+  const items = [...document.querySelectorAll('#title-simulation-results [data-projection-team]')].map(team => {
+    const value = Number(team.dataset.percentage) || 0;
+    return {
+      label: team.dataset.projectionTeam,
+      value,
+      display: `${value.toFixed(2)}%`,
+      detail: `${Number(team.dataset.wins).toLocaleString()} simulated titles`
+    };
+  });
+  downloadSimulationPng({
+    title: 'PSL6 Champion Chances',
+    subtitle: 'Probability of winning the League Phase and playoffs',
+    scaleMax: 100,
+    items,
+    footer: 'Based on 50,000 complete-season simulations · PTCHBL Report'
+  });
 }
 
 renderTable();
@@ -981,6 +1071,17 @@ function simSingleMatch(hn, an, target=5, winBy2=true) {
     if(rallies>500) break;
   }
   return {winner: s1>s2?hn:an, hs:s1, as:s2};
+}
+
+function simulatePlayoffChampion(seeds) {
+  const [first, second, third, fourth, fifth, sixth] = seeds;
+  const thirdVsFourth = simSingleMatch(third, fourth, 7, false).winner;
+  const fifthVsSixth = simSingleMatch(fifth, sixth, 7, false).winner;
+  const lastChanceLoser = thirdVsFourth === third ? fourth : third;
+  const lastChanceWinner = simSingleMatch(lastChanceLoser, fifthVsSixth, 7, false).winner;
+  const firstSemiWinner = simSingleMatch(first, lastChanceWinner, 7, false).winner;
+  const secondSemiWinner = simSingleMatch(second, thirdVsFourth, 7, false).winner;
+  return simSingleMatch(firstSemiWinner, secondSemiWinner, 10, false).winner;
 }
 
 // Bracket is stored as a list of rounds, each with matches
@@ -1288,11 +1389,11 @@ function runLeagueMC() {
         }).join('')}
       </tr>`;
     }).join('')}
-    </tbody></table></div>`;
-  html += `<p style="font-size:11px;color:#535c2f;margin-top:6px;">Green = auto-qualify · Blue = playoff contention · Based on ${N.toLocaleString()} simulations of remaining fixtures</p>`;
+      </tbody></table></div>`;
+    html += `<p style="font-size:11px;color:#535c2f;margin-top:6px;">Green = auto-qualify · Blue = playoff contention · Based on ${N.toLocaleString()} simulations of remaining fixtures</p>`;
 
-  document.getElementById('league-mc-results').innerHTML = html;
-  document.getElementById('league-mc-section').style.display = 'block';
+    document.getElementById('league-mc-results').innerHTML = html;
+    document.getElementById('league-mc-section').style.display = 'block';
 }
 
 function renderTopScorers() {

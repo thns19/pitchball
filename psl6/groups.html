@@ -486,6 +486,8 @@
     <a href="table.html" class="back-link">&larr; Back to League Phase</a>
   </div>
 
+  <script src="../news/bg-export-data.js"></script>
+  <script src="../simulation-export.js"></script>
   <script src="teams.js"></script>
   <script>
     const teamData = {
@@ -986,6 +988,7 @@
                 </table>
               </div>`;
             }).join('')}`;
+          results.innerHTML += '<button class="simulation-export-button" type="button" onclick="exportGroupPositionPng()">Export results as PNG</button>';
           results.hidden = false;
         } finally {
           button.disabled = false;
@@ -1070,7 +1073,8 @@
               <div style="display:flex;justify-content:space-between;gap:1rem;padding:6px 0;color:var(--text-main);font-size:12px;">
                 <span>Qualified simulations</span><strong>${qualificationCount.toLocaleString()} / ${simulationCount.toLocaleString()}</strong>
               </div>
-            </div>`;
+            </div>
+            <button class="simulation-export-button" type="button" onclick="exportGroupQualificationPng()">Export results as PNG</button>`;
           results.hidden = false;
         } finally {
           button.classList.remove('is-simulating');
@@ -1224,13 +1228,80 @@
               ${playoffPairRows
                 ? `<table class="position-probability-table"><thead><tr><th>Matchup</th><th>Occurred (% seasons)</th><th>First team wins</th><th>Second team wins</th></tr></thead><tbody>${playoffPairRows}</tbody></table>`
                 : '<p class="projection-results-note">No playoff matches occurred in these simulations.</p>'}
-            </div>`;
+            </div>
+            <button class="simulation-export-button" type="button" onclick="exportBestFourthPng()">Export results as PNG</button>`;
           results.hidden = false;
         } finally {
           button.disabled = false;
           button.textContent = 'Run 50,000 fourth-place cutoff simulations';
         }
       }, 30);
+    }
+
+    function exportGroupPositionPng() {
+      const parseShare = text => text.trim().startsWith('<1') ? 0.5 : parseFloat(text) || 0;
+      const items = [...document.querySelectorAll('#projection-results .position-probability-card')].flatMap(card => {
+        const groupName = card.querySelector('.position-probability-title')?.textContent.trim() || '';
+        const table = card.querySelector('.position-probability-table');
+        if (!table) return [];
+        return [...table.tBodies[0].rows].map(row => {
+          const positions = [...row.cells].slice(1, 4).map(cell => parseShare(cell.textContent));
+          const topThree = positions.reduce((sum, value) => sum + value, 0);
+          return {
+            label: row.cells[0].textContent.trim(),
+            value: topThree,
+            display: `${topThree.toFixed(1)}%`,
+            detail: `${groupName} · top-three qualification chance`
+          };
+        });
+      });
+      downloadSimulationPng({
+        title: 'PSL6 Group Position Simulations',
+        subtitle: 'Chance to finish in the top three of each group',
+        scaleMax: 100,
+        items,
+        footer: 'Based on 50,000 simulations per group · PTCHBL Report'
+      });
+    }
+
+    function exportGroupQualificationPng() {
+      const items = [...document.querySelectorAll('#qualification-results .position-probability-card > div')].flatMap(row => {
+        const label = row.querySelector('span')?.textContent.trim() || '';
+        const display = row.querySelector('strong')?.textContent.trim() || '';
+        if (!label || !display.includes('%')) return [];
+        const value = display.startsWith('<1') ? 0.5 : parseFloat(display) || 0;
+        return [{label, value, display, detail: 'Selected team qualification outcome'}];
+      });
+      downloadSimulationPng({
+        title: 'PSL6 Group Qualification Odds',
+        subtitle: document.querySelector('#qualification-results h3')?.textContent.trim() || 'Qualification simulation',
+        scaleMax: 100,
+        items,
+        footer: 'Based on 50,000 simulated seasons · PTCHBL Report'
+      });
+    }
+
+    function exportBestFourthPng() {
+      const teamCard = [...document.querySelectorAll('#best-fourth-results .position-probability-card')]
+        .find(card => card.querySelector('.position-probability-title')?.textContent.includes('Fourth-place outcomes by team'));
+      const rows = [...(teamCard?.querySelector('tbody')?.rows || [])];
+      const items = rows.map(row => {
+        const display = row.cells[2]?.textContent.trim() || '0%';
+        const value = display.startsWith('<1') ? 0.5 : parseFloat(display) || 0;
+        return {
+          label: row.cells[0]?.textContent.trim() || '',
+          value,
+          display,
+          detail: `Finished 4th ${row.cells[1]?.textContent.trim() || '0%'}`
+        };
+      });
+      downloadSimulationPng({
+        title: 'PSL6 Fourth-Place Qualification',
+        subtitle: 'Chance each team qualifies as a best fourth-place team',
+        scaleMax: 100,
+        items,
+        footer: 'Based on 50,000 simulated seasons · PTCHBL Report'
+      });
     }
 
     renderGroups();

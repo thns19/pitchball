@@ -63,12 +63,15 @@
   </div>
 
   <div id="result-banner" class="result-banner hidden"></div>
+  <button id="export-match-png" class="hidden simulation-export-button" type="button" onclick="exportMatchPng()">Export result as PNG</button>
   <div class="match-log hidden" id="log"></div>
 
   <div class="section-title" style="margin-top:2rem;">Team Ratings</div>
   <div class="teams-grid" id="teams-grid" style="margin-top:1rem;"></div>
 </div>
 
+<script src="../news/bg-export-data.js"></script>
+<script src="../simulation-export.js"></script>
 <script>
 const teams = {
   "BADiles":       {att:7, def:8, stm:8, con:9, ten:6, players:"Gavalas & Efstathiou V."},
@@ -173,6 +176,7 @@ function simulate() {
   const winner=sc1>sc2?n1:n2;
   log.push({cls:'log-point',text:`Match over! ${winner} wins ${sc1}-${sc2}.`});
   show('scoreboard');show('statsrow');show('result-banner');show('log');
+  document.getElementById('export-match-png').classList.remove('hidden');
   document.getElementById('sname1').innerHTML=`${tlogo(n1,24)}${n1}`;
   document.getElementById('sname2').innerHTML=`${tlogo(n2,24)}${n2}`;
   document.getElementById('sscore1').textContent=sc1;
@@ -191,6 +195,23 @@ function simulate() {
   const logEl=document.getElementById('log');
   logEl.innerHTML=log.map(e=>`<div class="log-entry ${e.cls}">${e.text}</div>`).join('');
   logEl.scrollTop=logEl.scrollHeight;
+}
+
+function exportMatchPng() {
+  const name1 = s1.value, name2 = s2.value;
+  const score1 = Number(document.getElementById('sscore1').textContent);
+  const score2 = Number(document.getElementById('sscore2').textContent);
+  const winner = score1 > score2 ? name1 : name2;
+  downloadSimulationPng({
+    title: 'PSL3 Match Result',
+    subtitle: `${name1} vs ${name2} · First to ${document.getElementById('target').value}`,
+    scaleMax: Math.max(score1, score2),
+    items: [
+      {label: name1, value: score1, display: `${score1} pts`, detail: `${winner === name1 ? 'Winner' : 'Final score'} · ${document.getElementById('breakdown1').textContent}`},
+      {label: name2, value: score2, display: `${score2} pts`, detail: `${winner === name2 ? 'Winner' : 'Final score'} · ${document.getElementById('breakdown2').textContent}`}
+    ],
+    footer: `Rallies ${document.getElementById('st-rallies').textContent} · Average rally ${document.getElementById('st-avg').textContent}s · Duration ${document.getElementById('st-dur').textContent}`
+  });
 }
 
 document.getElementById('teams-grid').innerHTML = Object.entries(teams).map(([name,t])=>{

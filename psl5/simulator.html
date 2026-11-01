@@ -109,6 +109,7 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
     </div>
 
     <div id="result-banner" class="result-banner hidden"></div>
+    <button id="export-match-png" class="hidden simulation-export-button" type="button" onclick="exportMatchPng()">Export result as PNG</button>
     <div class="match-log hidden" id="log"></div>
   </div>
 
@@ -169,6 +170,7 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
         <div class="score-dist-title">Most common scorelines</div>
         <div id="score-dist-list"></div>
       </div>
+      <button class="simulation-export-button" type="button" onclick="exportMonteCarloPng()">Export results as PNG</button>
     </div>
   </div>
 
@@ -198,6 +200,8 @@ body { background-image: url("bg.png"); background-size: cover; background-posit
 
 </div>
 
+<script src="../news/bg-export-data.js"></script>
+<script src="../simulation-export.js"></script>
 <script>
 // ── SHARED DATA ──────────────────────────────────────────────────
 const teams = {
@@ -324,6 +328,7 @@ function simulate() {
   const winner=sc1>sc2?n1:n2;
   log.push({cls:'log-point',text:`Match over! ${winner} wins ${sc1}-${sc2}.`});
   show('scoreboard');show('statsrow');show('result-banner');show('log');
+  document.getElementById('export-match-png').classList.remove('hidden');
   document.getElementById('sname1').innerHTML=`${logoImg(n1,24)}${n1}`;
   document.getElementById('sname2').innerHTML=`${logoImg(n2,24)}${n2}`;
   document.getElementById('sscore1').textContent=sc1;
@@ -342,6 +347,46 @@ function simulate() {
   const logEl=document.getElementById('log');
   logEl.innerHTML=log.map(e=>`<div class="log-entry ${e.cls}">${e.text}</div>`).join('');
   logEl.scrollTop=logEl.scrollHeight;
+}
+
+function exportMatchPng() {
+  const name1 = document.getElementById('sm-team1').value;
+  const name2 = document.getElementById('sm-team2').value;
+  const score1 = Number(document.getElementById('sscore1').textContent);
+  const score2 = Number(document.getElementById('sscore2').textContent);
+  const winner = score1 > score2 ? name1 : name2;
+  downloadSimulationPng({
+    title: 'PSL5 Match Result',
+    subtitle: `${name1} vs ${name2} · First to ${document.getElementById('sm-target').value}`,
+    scaleMax: Math.max(score1, score2),
+    items: [
+      {label: name1, value: score1, display: `${score1} pts`, detail: `${winner === name1 ? 'Winner' : 'Final score'} · ${document.getElementById('breakdown1').textContent}`},
+      {label: name2, value: score2, display: `${score2} pts`, detail: `${winner === name2 ? 'Winner' : 'Final score'} · ${document.getElementById('breakdown2').textContent}`}
+    ],
+    footer: `Rallies ${document.getElementById('st-rallies').textContent} · Average rally ${document.getElementById('st-avg').textContent}s · Duration ${document.getElementById('st-dur').textContent}`
+  });
+}
+
+function exportMonteCarloPng() {
+  const name1 = document.getElementById('mc-team1').value;
+  const name2 = document.getElementById('mc-team2').value;
+  const scorelines = [...document.querySelectorAll('#score-dist-list .score-item')].map(row => ({
+    label: `Scoreline ${row.querySelector('.score-label').textContent}`,
+    value: parseFloat(row.querySelector('.score-pct').textContent) || 0,
+    display: row.querySelector('.score-pct').textContent,
+    detail: 'Most common simulated score'
+  }));
+  downloadSimulationPng({
+    title: 'PSL5 Match Probabilities',
+    subtitle: `${name1} vs ${name2} · ${document.getElementById('sim-count').textContent} simulations`,
+    scaleMax: 100,
+    items: [
+      {label: name1, value: parseFloat(document.getElementById('rpct1').textContent), display: document.getElementById('rpct1').textContent, detail: `${document.getElementById('rwins1').textContent} · average score ${document.getElementById('avg-score1').textContent}`},
+      {label: name2, value: parseFloat(document.getElementById('rpct2').textContent), display: document.getElementById('rpct2').textContent, detail: `${document.getElementById('rwins2').textContent} · average score ${document.getElementById('avg-score2').textContent}`},
+      ...scorelines
+    ],
+    footer: `Average duration ${document.getElementById('avg-dur').textContent} · Average errors ${document.getElementById('avg-err1').textContent}–${document.getElementById('avg-err2').textContent}`
+  });
 }
 
 // ── MONTE CARLO ──────────────────────────────────────────────────

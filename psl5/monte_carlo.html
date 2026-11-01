@@ -81,9 +81,12 @@
       <div class="score-dist-title">Most common scorelines</div>
       <div id="score-dist-list"></div>
     </div>
+    <button class="simulation-export-button" type="button" onclick="exportMonteCarloPng()">Export results as PNG</button>
   </div>
 </div>
 
+<script src="../news/bg-export-data.js"></script>
+<script src="../simulation-export.js"></script>
 <script>
 const teams = {
   "BADiles":         {att:8,def:8,stm:7,con:9,ten:7},
@@ -226,6 +229,25 @@ function runMonteCarlo() {
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('runbtn').disabled=false;
   },50);
+}
+function exportMonteCarloPng() {
+  const scorelines = [...document.querySelectorAll('#score-dist-list .score-item')].map(row => ({
+    label: `Scoreline ${row.querySelector('.score-label').textContent}`,
+    value: parseFloat(row.querySelector('.score-pct').textContent) || 0,
+    display: row.querySelector('.score-pct').textContent,
+    detail: 'Most common simulated score'
+  }));
+  downloadSimulationPng({
+    title: 'PSL5 Match Probabilities',
+    subtitle: `${s1.value} vs ${s2.value} · ${document.getElementById('sim-count').textContent} simulations`,
+    scaleMax: 100,
+    items: [
+      {label: s1.value, value: parseFloat(document.getElementById('rpct1').textContent), display: document.getElementById('rpct1').textContent, detail: `${document.getElementById('rwins1').textContent} · average score ${document.getElementById('avg-score1').textContent}`},
+      {label: s2.value, value: parseFloat(document.getElementById('rpct2').textContent), display: document.getElementById('rpct2').textContent, detail: `${document.getElementById('rwins2').textContent} · average score ${document.getElementById('avg-score2').textContent}`},
+      ...scorelines
+    ],
+    footer: `Average duration ${document.getElementById('avg-dur').textContent} · Average errors ${document.getElementById('avg-err1').textContent}–${document.getElementById('avg-err2').textContent}`
+  });
 }
 </script>
 <style>body{position:relative;}</style>
