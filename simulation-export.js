@@ -14,8 +14,25 @@
   let downloadUrl = null;
   let downloadLink = null;
   const style = document.createElement('style');
-  style.textContent = '.simulation-export-button,.simulation-export-download{display:inline-flex;align-items:center;gap:8px;margin:12px 8px 12px 0;padding:10px 15px;border:1px solid #bd3215;border-radius:8px;background:#bd3215;color:#fff8e8;font:600 13px Arial,sans-serif;cursor:pointer;text-decoration:none}.simulation-export-button:hover,.simulation-export-download:hover{background:#96270f;border-color:#96270f}.simulation-export-button:focus-visible,.simulation-export-download:focus-visible{outline:2px solid #30201a;outline-offset:3px}.simulation-export-download{background:rgba(255,249,235,.92);color:#762914}';
+  style.textContent = '.simulation-export-button,.simulation-export-download{display:inline-flex;align-items:center;gap:8px;margin:12px 8px 12px 0;padding:10px 15px;border:1px solid #bd3215;border-radius:8px;background:#bd3215;color:#fff8e8;font:600 13px Arial,sans-serif;cursor:pointer;text-decoration:none}.simulation-export-button:hover,.simulation-export-download:hover{background:#96270f;border-color:#96270f}.simulation-export-button:focus-visible,.simulation-export-download:focus-visible{outline:2px solid #30201a;outline-offset:3px}.simulation-export-download{background:rgba(255,249,235,.92);color:#762914}.simulation-export-button:not(.simulation-export-authorized),.simulation-export-download:not(.simulation-export-authorized){display:none!important}';
   document.head.appendChild(style);
+
+  function isExportAdmin() {
+    if (typeof isPslAdmin === 'function') return Boolean(isPslAdmin());
+    if (typeof cupIsAdmin !== 'undefined') return Boolean(cupIsAdmin);
+    if (typeof pslCurrentUser !== 'undefined') return Boolean(pslCurrentUser && pslCurrentUser.isAdmin);
+    return false;
+  }
+
+  function updateExportControls() {
+    const authorized = isExportAdmin();
+    document.querySelectorAll('.simulation-export-button,.simulation-export-download').forEach(button => {
+      button.classList.toggle('simulation-export-authorized', authorized);
+    });
+  }
+
+  updateExportControls();
+  new MutationObserver(updateExportControls).observe(document.body, {childList: true, subtree: true});
 
   function roundedRect(context, x, y, width, height, radius) {
     const r = Math.min(radius, width / 2, height / 2);
@@ -30,6 +47,10 @@
   }
 
   function downloadSimulationPng({title, subtitle, items, scaleMax, footer}) {
+    if (!isExportAdmin()) {
+      alert('Only administrators can export simulation PNGs.');
+      return;
+    }
     if (!Array.isArray(items) || items.length === 0) {
       alert('There are no simulation results to export yet.');
       return;
@@ -193,7 +214,7 @@
         downloadLink = document.createElement('a');
         downloadLink.href = downloadUrl;
         downloadLink.download = filename;
-        downloadLink.className = 'simulation-export-download';
+        downloadLink.className = 'simulation-export-download simulation-export-authorized';
         downloadLink.textContent = 'Download PNG';
         downloadLink.setAttribute('aria-label', `Download ${filename}`);
         if (exportButton?.isConnected) exportButton.insertAdjacentElement('afterend', downloadLink);
