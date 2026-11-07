@@ -12,7 +12,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Players | Pitchball</title>
+<title>Pitchball Encyclopedia</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,26 +20,58 @@
   <div class="nav">
     <a href="../index.html" class="back">← All Seasons</a>
   </div>
-  <h1>Players</h1>
-  <p class="subtitle">Every player in Pitchball history · <span id="total-players"></span></p>
+  <h1>Pitchball Encyclopedia</h1>
+  <p class="subtitle">Explore the people, teams, and history of Pitchball.</p>
 
-<div class="search-row">
-  <input type="text" class="search-input" id="search" placeholder="Search players..." oninput="renderGrid()">
-  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-  <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
-  <button class="filter-btn" onclick="setFilter('retired',this)">Retired</button>
-  <button class="filter-btn" onclick="setFilter('unknown',this)">Unknown</button>
-  <select class="search-input" id="sort-select" onchange="renderGrid()" style="flex:0;width:130px;">
-    <option value="az">A → Z</option>
-    <option value="za">Z → A</option>
-    <option value="titles">Most Titles</option>
-  </select>
-</div>
+  <div class="encyclopedia-tabs" role="tablist" aria-label="Encyclopedia sections">
+    <button class="encyclopedia-tab active" id="players-tab" role="tab" aria-selected="true" aria-controls="players-panel" onclick="showSection('players')">Players <span id="total-players"></span></button>
+    <button class="encyclopedia-tab" id="teams-tab" role="tab" aria-selected="false" aria-controls="teams-panel" onclick="showSection('teams')">Teams <span id="total-teams"></span></button>
+    <button class="encyclopedia-tab" id="history-tab" role="tab" aria-selected="false" aria-controls="history-panel" onclick="showSection('history')">History</button>
+  </div>
 
-  <div class="players-grid" id="players-grid"></div>
+  <section id="players-panel" class="encyclopedia-panel" role="tabpanel" aria-labelledby="players-tab">
+    <p class="section-intro">Every player in Pitchball history.</p>
+    <div class="search-row">
+      <input type="text" class="search-input" id="search" placeholder="Search players..." oninput="renderGrid()">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
+      <button class="filter-btn" onclick="setFilter('retired',this)">Retired</button>
+      <button class="filter-btn" onclick="setFilter('unknown',this)">Unknown</button>
+      <select class="search-input" id="sort-select" aria-label="Sort players" onchange="renderGrid()" style="flex:0;width:130px;">
+        <option value="az">A → Z</option>
+        <option value="za">Z → A</option>
+        <option value="titles">Most Titles</option>
+      </select>
+    </div>
+    <div class="players-grid" id="players-grid"></div>
+  </section>
+
+  <section id="teams-panel" class="encyclopedia-panel" role="tabpanel" aria-labelledby="teams-tab" hidden>
+    <p class="section-intro">Teams gathered from player career records. Open a season archive to explore its results.</p>
+    <div class="search-row">
+      <input type="search" class="search-input" id="team-search" placeholder="Search teams..." oninput="renderTeams()">
+    </div>
+    <div class="teams-grid" id="teams-grid"></div>
+  </section>
+
+  <section id="history-panel" class="encyclopedia-panel" role="tabpanel" aria-labelledby="history-tab" hidden>
+    <p class="section-intro">Browse season archives and the story of the league.</p>
+    <div class="history-grid">
+      <a class="history-card" href="../psl1/history.html"><span class="history-season">PSL 1</span><span class="history-copy">Season results and league history</span><span class="history-arrow">→</span></a>
+      <a class="history-card" href="../psl2/history.html"><span class="history-season">PSL 2</span><span class="history-copy">Season results and league history</span><span class="history-arrow">→</span></a>
+      <a class="history-card" href="../psl3/history.html"><span class="history-season">PSL 3</span><span class="history-copy">Season results and league history</span><span class="history-arrow">→</span></a>
+      <a class="history-card" href="../psl4/history.html"><span class="history-season">PSL 4</span><span class="history-copy">Season results and league history</span><span class="history-arrow">→</span></a>
+      <a class="history-card" href="../psl5/history.html"><span class="history-season">PSL 5</span><span class="history-copy">Season results and league history</span><span class="history-arrow">→</span></a>
+      <a class="history-card" href="../psl6/index.html"><span class="history-season">PSL 6</span><span class="history-copy">Current season hub and competition updates</span><span class="history-arrow">→</span></a>
+      <div class="history-card history-card-unavailable" aria-label="PSL 1v1 S1 results are listed on player profiles"><span class="history-season">PSL 1v1 S1</span><span class="history-copy">Results listed on player profiles</span></div>
+      <div class="history-card history-card-unavailable" aria-label="PSL 1v1 S2 results are listed on player profiles"><span class="history-season">PSL 1v1 S2</span><span class="history-copy">Results listed on player profiles</span></div>
+      <div class="history-card history-card-unavailable" aria-label="PSL 3v3 S1 results are listed on player and team profiles"><span class="history-season">PSL 3v3 S1</span><span class="history-copy">Results listed on player and team profiles</span></div>
+    </div>
+  </section>
 </div>
 
 <script src="players-data.js"></script>
+<script src="awards.js"></script>
 <script>
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // PLAYER DATA
@@ -53,7 +85,19 @@
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let currentFilter = 'all';
 
-document.getElementById('total-players').textContent = `Total Players: ${players.length}`;
+document.getElementById('total-players').textContent = players.length;
+
+function showSection(section) {
+  document.querySelectorAll('.encyclopedia-tab').forEach(tab => {
+    const active = tab.id === `${section}-tab`;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', String(active));
+  });
+  document.querySelectorAll('.encyclopedia-panel').forEach(panel => {
+    panel.hidden = panel.id !== `${section}-panel`;
+  });
+  if (section === 'teams') renderTeams();
+}
 
 function setFilter(f, btn) {
   currentFilter = f;
@@ -74,18 +118,55 @@ function renderGrid() {
   const sort = document.getElementById('sort-select').value;
 if(sort === 'az') filtered.sort((a,b) => a.name.localeCompare(b.name));
 if(sort === 'za') filtered.sort((a,b) => b.name.localeCompare(a.name));
-if(sort === 'titles') filtered.sort((a,b) => b.titles.length - a.titles.length);
+if(sort === 'titles') filtered.sort((a,b) => getPlayerAwards(b).length - getPlayerAwards(a).length);
 
   document.getElementById('players-grid').innerHTML = filtered.map(p => {
-    const titleCount = p.titles.length;
+    const awardCount = getPlayerAwards(p).length;
     const photoSrc = `photos/${p.id}.png`;
       return `<a href="player.html?id=${p.id}" class="player-card ${p.status==='active'?'active-player':''}">
       <img class="player-photo" src="${photoSrc}" onerror="this.src='photos/placeholder.png'" alt="${p.name}">
       <div class="player-name">${p.name}</div>
       <span class="player-status ${p.status==='active'?'status-active':p.status==='retired'?'status-retired':'status-unknown'}">${p.status==='active'?'Active':p.status==='retired'?'Retired':'Unknown'}</span>
-      <div class="player-titles">${titleCount>0?`<span class="title-icon">🏆</span> ${titleCount} title${titleCount>1?'s':''}` : 'No titles'}</div>
+      <div class="player-titles">${awardCount>0?`<span class="title-icon">🏆</span> ${awardCount} Titles &amp; Accolades` : 'No titles or accolades'}</div>
     </a>`;
   }).join('') || '<p style="color:#535c2f;font-size:13px;">No players found.</p>';
+}
+
+function renderTeams() {
+  const query = document.getElementById('team-search').value.trim().toLowerCase();
+  const teamMap = new Map();
+  players.forEach(player => {
+    (player.seasons || []).filter(Boolean).forEach(season => {
+      if (!season.team) return;
+      if (!teamMap.has(season.team)) {
+        teamMap.set(season.team, {name: season.team, logo: season.logo, seasons: new Set(), players: new Map(), latestSeason: 0});
+      }
+      const team = teamMap.get(season.team);
+      const seasonNumber = Number((season.season || '').replace(/\D/g, '')) || 0;
+      team.seasons.add(season.season);
+      team.players.set(player.id, player.name);
+      if (seasonNumber >= team.latestSeason) {
+        team.latestSeason = seasonNumber;
+        team.logo = season.logo || team.logo;
+      }
+    });
+  });
+
+  const teams = Array.from(teamMap.values())
+    .filter(team => team.name.toLowerCase().includes(query))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  document.getElementById('total-teams').textContent = teams.length;
+  document.getElementById('teams-grid').innerHTML = teams.map(team => {
+    return `<a class="team-card" href="team.html?name=${encodeURIComponent(team.name)}">
+      <div class="team-card-heading">
+        ${team.logo ? `<img class="team-logo" src="logos/${team.logo}" alt="${team.name} logo" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'team-logo-fallback',textContent:'Logo unavailable'}))">` : ''}
+        <h2>${team.name}</h2>
+      </div>
+      <p class="team-meta">${team.seasons.size} season${team.seasons.size === 1 ? '' : 's'} recorded</p>
+      <p class="team-seasons">${Array.from(team.seasons).sort((a, b) => Number(a.replace(/\D/g, '')) - Number(b.replace(/\D/g, ''))).join(' · ')}</p>
+      <p class="team-archive-link">View team profile →</p>
+    </a>`;
+  }).join('') || '<p class="empty-state">No teams found.</p>';
 }
 
 renderGrid();
@@ -124,4 +205,3 @@ document.addEventListener('DOMContentLoaded',pslAuthInit);
 </script>
 </body>
 </html>
-

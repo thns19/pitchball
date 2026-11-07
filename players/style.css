@@ -20,6 +20,127 @@ h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; color: #D7DBC8; }
 h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; }
 .subtitle { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
 
+/* ── Encyclopedia ── */
+.encyclopedia-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid #535c2f;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+.encyclopedia-tab {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.encyclopedia-tab:hover, .encyclopedia-tab.active { color: #D7DBC8; }
+.encyclopedia-tab.active { border-bottom-color: #39c877; }
+.encyclopedia-tab span {
+  display: inline-block;
+  margin-left: 5px;
+  color: #888;
+  font-size: 11px;
+}
+.encyclopedia-panel[hidden] { display: none; }
+.section-intro { color: #888; font-size: 13px; margin-bottom: 1rem; line-height: 1.6; }
+.teams-grid, .history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.team-card, .history-card {
+  background: #363C1F;
+  border: 1px solid #535c2f;
+  border-radius: 12px;
+  padding: 1rem;
+}
+.team-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.team-card:hover, .team-card:focus-visible { border-color: #39c877; transform: translateY(-2px); }
+.team-card-heading { display: flex; align-items: center; gap: 10px; }
+.team-card-heading h2 { margin: 0; }
+.team-logo { width: 34px; height: 34px; object-fit: contain; }
+.team-logo-fallback { color: #888; font-size: 8px; line-height: 1.2; width: 44px; flex-shrink: 0; }
+.team-meta, .team-seasons { color: #888; font-size: 11px; margin-top: 8px; }
+.team-members { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 12px; }
+.team-members a { color: #D7DBC8; font-size: 11px; text-decoration: none; }
+.team-members a:hover, .team-archive-link:hover { color: #39c877; }
+.team-archive-link {
+  display: inline-block;
+  color: #39c877;
+  font-size: 11px;
+  margin-top: 14px;
+  text-decoration: none;
+}
+.team-archive-link:hover { color: #D7DBC8; }
+.team-profile-container { max-width: 720px; }
+.team-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.team-profile-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  background: #282d15;
+  border: 1px solid #535c2f;
+  border-radius: 12px;
+  padding: 8px;
+  flex-shrink: 0;
+}
+.team-profile-header .section-label { margin-bottom: 6px; }
+.team-profile-header h1 { font-size: 28px; margin-bottom: 6px; }
+.team-profile-summary { color: #888; font-size: 12px; }
+.team-history-heading { font-size: 18px; margin-bottom: 0.75rem; }
+.team-season-heading, .team-season-title {
+  display: flex;
+  align-items: center;
+}
+.team-season-heading { justify-content: space-between; gap: 12px; }
+.team-season-title { gap: 10px; }
+.team-season-title h2 { margin: 0; }
+.team-profile-season-logo { width: 28px; height: 28px; object-fit: contain; }
+.team-roster { margin-top: 12px; }
+.team-roster-entry {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #282d15;
+}
+.team-roster-entry:last-child { border-bottom: none; }
+.team-player-link, .inline-link { color: #D7DBC8; font-size: 13px; text-decoration: none; }
+.team-player-link:hover, .inline-link:hover { color: #39c877; }
+.team-roster-detail { color: #888; font-size: 11px; }
+.history-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.history-card:hover { border-color: #39c877; transform: translateY(-2px); }
+.history-card-unavailable { opacity: 0.68; cursor: default; }
+.history-season { font-size: 15px; font-weight: 500; }
+.history-copy { color: #888; font-size: 11px; grid-column: 1; }
+.history-arrow { color: #39c877; grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.empty-state { color: #888; font-size: 13px; }
+
 /* ── Search / Filter ── */
 .search-row { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .search-input {
@@ -131,8 +252,10 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 }
 .career-info { flex: 1; }
 .career-team-name { font-size: 13px; font-weight: 500; color: #D7DBC8; }
-.career-detail { font-size: 11px; color: #888; margin-top: 2px; }
+.career-team-link { color: inherit; text-decoration: none; }
+.career-team-link:hover { color: #39c877; }
 .career-trophy { color: #f5c842; font-size: 11px; margin-top: 2px; }
+.accolade-icon { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
 
 /* ── Upcoming match ── */
 .upcoming-match {
@@ -159,6 +282,27 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
   align-items: center;
   gap: 6px;
 }
+.title-card .accolade-icon { width: 32px; height: 32px; }
+.award-group { margin-top: 12px; }
+.award-group h3, .team-accolade-group h3 { color: #888; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 7px; text-transform: uppercase; }
+.award-group:first-child { margin-top: 0; }
+.team-awards { display: grid; gap: 14px; margin-top: 14px; }
+.team-awards-heading { color: #D7DBC8; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+.team-accolades { display: grid; gap: 12px; }
+.team-accolade-list { display: flex; flex-wrap: wrap; gap: 7px; }
+.team-accolade {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid #535c2f;
+  border-radius: 8px;
+  color: #D7DBC8;
+  font-size: 11px;
+  text-decoration: none;
+}
+.team-accolade:hover { border-color: #39c877; color: #39c877; }
+.team-accolade-icon { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; }
 
 /* ── Utility ── */
 .hidden { display: none; }

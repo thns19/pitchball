@@ -18,13 +18,14 @@
 <body>
 <div class="container" style="max-width:720px;">
   <div class="nav">
-    <a href="index.html" class="back">← Players</a>
+    <a href="index.html" class="back">← Encyclopedia</a>
   </div>
   <div id="player-content"></div>
 </div>
 
 
 <script src="players-data.js"></script>
+<script src="awards.js"></script>
 <script>
 // â”€â”€ Same player data as index.html â€” keep both in sync â”€â”€
 
@@ -36,17 +37,27 @@ if(!p) {
     <p style="color:#888;font-size:14px;">Player not found. <a href="index.html" style="color:#39c877;">â† Back to players</a></p>`;
 } else {
   const photoSrc = `photos/${p.id}.png`;
-  const titlesHTML = p.titles.length
-    ? `<div class="titles-grid">${p.titles.map(t=>`<div class="title-card">🏆 ${t}</div>`).join('')}</div>`
-    : `<p style="font-size:13px;color:#535c2f;">No titles</p>`;
+  const playerAwards = getPlayerAwards(p);
+  const titles = playerAwards.filter(award => award.category === 'Cup' || award.category === 'League');
+  const accolades = playerAwards.filter(award => !['Cup', 'League'].includes(award.category));
+
+  const renderAwardGroups = (items, categories) => categories.map(category => {
+    const categoryItems = items.filter(item => item.category === category);
+    if (!categoryItems.length) return '';
+    return `<div class="award-group">
+      <h3>${category}</h3>
+      <div class="titles-grid">${categoryItems.map(item => awardCardHTML(item, item.text || item.label, 'title-card')).join('')}</div>
+    </div>`;
+  }).join('');
+  const titlesHTML = renderAwardGroups(titles, ['Cup', 'League']) || '<p class="empty-state">No titles recorded.</p>';
+  const accoladesHTML = renderAwardGroups(accolades, ['Medals', 'MVPs', 'Top Scorers', 'ROTS']) || '<p class="empty-state">No accolades recorded.</p>';
 
   const careerHTML = p.seasons.map(s => `
     <div class="career-entry">
       <div class="career-season">${s.season}</div>
       <img class="career-team-logo" src="logos/${s.logo}" onerror="this.src='photos/placeholder.png'" alt="${s.team}">
       <div class="career-info">
-        <div class="career-team-name">${s.team}</div>
-        ${s.detail ? `<div class="career-detail">${s.detail}</div>` : ''}
+        <div class="career-team-name"><a class="career-team-link" href="team.html?name=${encodeURIComponent(s.team)}">${s.team}</a></div>
       </div>
     </div>`).join('');
 
@@ -70,7 +81,7 @@ if(!p) {
         <div class="player-full-name">${p.name}</div>
         <div class="player-badges">
           <span class="badge ${p.status==='active'?'badge-active':p.status==='retired'?'badge-retired':'badge-unknown'}">${p.status==='active'?'Active':p.status==='retired'?'Retired':'Unknown'}</span>
-          ${p.titles.length ? `<span class="badge badge-title">🏆 ${p.titles.length} Title${p.titles.length>1?'s':''}</span>` : ''}
+          ${playerAwards.length ? `<span class="badge badge-title">🏆 ${playerAwards.length} Titles &amp; Accolades</span>` : ''}
         </div>
         <p class="player-desc">${p.description}</p>
       </div>
@@ -81,6 +92,11 @@ if(!p) {
     <div class="section-card">
       <div class="section-label">Titles</div>
       ${titlesHTML}
+    </div>
+
+    <div class="section-card">
+      <div class="section-label">Accolades</div>
+      ${accoladesHTML}
     </div>
 
     <div class="section-card">
@@ -124,4 +140,3 @@ document.addEventListener('DOMContentLoaded',pslAuthInit);
 
 </script>
 </html>
-

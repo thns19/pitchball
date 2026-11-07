@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNNGKMS578');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team | Pitchball Encyclopedia</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container team-profile-container">
+  <div class="nav">
+    <a href="index.html" class="back">← Encyclopedia</a>
+  </div>
+  <main id="team-content"></main>
+</div>
+
+<script src="players-data.js"></script>
+<script src="awards.js"></script>
+<script>
+const teamName = new URLSearchParams(window.location.search).get('name');
+const teamSeasons = new Map();
+
+players.forEach(player => {
+  (player.seasons || []).filter(Boolean).forEach(season => {
+    if (season.team !== teamName || !season.season) return;
+    if (!teamSeasons.has(season.season)) {
+      teamSeasons.set(season.season, {logo: season.logo, players: new Map()});
+    }
+    const teamSeason = teamSeasons.get(season.season);
+    if (!teamSeason.logo && season.logo) teamSeason.logo = season.logo;
+    teamSeason.players.set(player.id, {player, detail: season.detail});
+  });
+});
+
+historicalCompetitions.forEach(competition => {
+  competition.placements.filter(placement => placement.team === teamName).forEach(placement => {
+    if (!teamSeasons.has(competition.name)) {
+      const logo = (placement.players || [])
+        .map(id => players.find(player => player.id === id)?.seasons?.find(season => season && season.team === teamName && season.season === competition.name)?.logo)
+        .find(Boolean);
+      teamSeasons.set(competition.name, {logo, players: new Map()});
+    }
+    const teamSeason = teamSeasons.get(competition.name);
+    (placement.players || []).forEach(id => {
+      const player = players.find(entry => entry.id === id);
+      if (player && !teamSeason.players.has(id)) teamSeason.players.set(id, {player});
+    });
+  });
+});
+
+const seasons = Array.from(teamSeasons, ([season, data]) => ({season, ...data}))
+  .sort((a, b) => {
+    const seasonNumber = value => Number((value.match(/PSL\s*(\d+)/i) || [])[1]) || 0;
+    const numberDifference = seasonNumber(a.season) - seasonNumber(b.season);
+    if (numberDifference) return numberDifference;
+    const aIsMainSeason = /^PSL\d+$/i.test(a.season);
+    const bIsMainSeason = /^PSL\d+$/i.test(b.season);
+    if (aIsMainSeason !== bIsMainSeason) return aIsMainSeason ? -1 : 1;
+    return a.season.localeCompare(b.season);
+  });
+const teamLogo = [...seasons].reverse().find(season => season.logo)?.logo;
+const teamContent = document.getElementById('team-content');
+
+if (!teamName || seasons.length === 0) {
+  teamContent.innerHTML = '<p class="empty-state">Team not found. <a class="inline-link" href="index.html">Browse teams</a></p>';
+} else {
+  const memberCount = new Set(seasons.flatMap(season => Array.from(season.players.keys()))).size;
+  const seasonCards = seasons.map(({season, logo, players: seasonPlayers}) => {
+    const seasonMatch = season.match(/^PSL(\d+)$/i);
+    const seasonNumber = seasonMatch ? Number(seasonMatch[1]) : null;
+    const archiveHref = seasonNumber === 6 ? `../psl${seasonNumber}/index.html` : seasonNumber ? `../psl${seasonNumber}/history.html` : null;
+    const roster = Array.from(seasonPlayers.values());
+    const {titles, accolades} = getTeamSeasonAwards(teamName, season, roster.map(entry => entry.player));
+    const renderAwardGroups = (items, categories) => categories.map(category => {
+      const categoryItems = items.filter(item => item.category === category);
+      if (!categoryItems.length) return '';
+      return `<div class="team-accolade-group">
+        <h3>${category}</h3>
+        <div class="team-accolade-list">${categoryItems.map(item => {
+          const content = `${accoladeIconHTML(item, 'team-accolade-icon')}<span>${item.text || item.label}</span>`;
+          return item.playerId
+            ? `<a class="team-accolade" href="player.html?id=${encodeURIComponent(item.playerId)}">${content}</a>`
+            : `<span class="team-accolade">${content}</span>`;
+        }).join('')}</div>
+      </div>`;
+    }).join('');
+    const titlesHTML = renderAwardGroups(Array.from(titles.values()), ['Cup', 'League']);
+    const accoladesHTML = renderAwardGroups(Array.from(accolades.values()), ['Medals', 'MVPs', 'Top Scorers', 'ROTS']);
+    const awardsHTML = titlesHTML || accoladesHTML
+      ? `<div class="team-awards">
+          ${titlesHTML ? `<section><h3 class="team-awards-heading">Titles</h3>${titlesHTML}</section>` : ''}
+          ${accoladesHTML ? `<section><h3 class="team-awards-heading">Accolades</h3>${accoladesHTML}</section>` : ''}
+        </div>`
+      : '';
+    const playersHTML = roster
+      .sort((a, b) => a.player.name.localeCompare(b.player.name))
+      .map(({player}) => `
+        <div class="team-roster-entry">
+          <a class="team-player-link" href="player.html?id=${encodeURIComponent(player.id)}">${player.name}</a>
+        </div>`)
+      .join('');
+    return `
+      <section class="section-card team-season-card">
+        <div class="team-season-heading">
+          <div class="team-season-title">
+            ${logo ? `<img class="team-profile-season-logo" src="logos/${logo}" alt="" onerror="this.hidden=true">` : ''}
+            <h2>${season}</h2>
+          </div>
+          ${archiveHref ? `<a class="team-archive-link" href="${archiveHref}">${seasonNumber === 6 ? 'Season hub →' : 'Season archive →'}</a>` : ''}
+        </div>
+        <p class="team-meta">${seasonPlayers.size} player${seasonPlayers.size === 1 ? '' : 's'} recorded</p>
+        ${awardsHTML}
+        <div class="team-roster">${playersHTML}</div>
+      </section>`;
+  }).join('');
+
+  document.title = `${teamName} | Pitchball Encyclopedia`;
+  teamContent.innerHTML = `
+    <header class="team-profile-header">
+      ${teamLogo ? `<img class="team-profile-logo" src="logos/${teamLogo}" alt="${teamName} logo" onerror="this.hidden=true">` : ''}
+      <div>
+        <p class="section-label">Team profile</p>
+        <h1>${teamName}</h1>
+        <p class="team-profile-summary">${seasons.length} season${seasons.length === 1 ? '' : 's'} recorded · ${memberCount} player${memberCount === 1 ? '' : 's'} recorded</p>
+      </div>
+    </header>
+    <h2 class="team-history-heading">Season history</h2>
+    ${seasonCards}`;
+}
+</script>
+<style>body{position:relative;}</style>
+</body>
+</html>
