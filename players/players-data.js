@@ -149,7 +149,7 @@
     {
     id: "applej",
     name: "Iasonas Miliaras",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL2", team:"S Tiers", logo:"stier.png", detail:""},
@@ -163,7 +163,7 @@
     {
     id: "nb74",
     name: "Petros Papaspyropoulos",
-    status: "unknown",
+    status: "active",
     titles: [],
     seasons: [
       {season:"PSL3", team:"NFFC", logo:"nffc.png", detail:""},
@@ -221,7 +221,7 @@
       {season:"PSL6", team:"Volos Drummers", logo:"volos.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Vasilis Tziovanis, known for his consistent performances, has been a key player for Volos Drummers. His defensive skills make him a valuable asset to the team."
   },
     {
     id: "mermigas",
@@ -234,7 +234,7 @@
       {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "After many failed attempts to find a proper team, Tzannis Mermigas finally found his home in Lampater. He is a player who is known for his work ethic, determination and passion."
   },
     {
     id: "mavrogiannis",
@@ -247,34 +247,32 @@
       {season:"PSL6", team:"Midi Kidz", logo:"midi.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Even though he is one of the most unserious players Pitchball has ever seen, Stefanos has managed to stay to a mid-tier level throughout his career. He is a player that can be very dangerous when he is focused, but unfortunately that doesn't happen often."
   },
     {
     id: "chardas",
     name: "Panos Chardas",
-    status: "active",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Panannaikos", logo:"panann.png", detail:""},
       {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
       {season:"PSL5", team:"Warriors", logo:"warriors.png", detail:""},
-      {season:"PSL6", team:"Warriors", logo:"warriors.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "The Warriors legend and captain gave it his all to lead the team to glory, but unfortunately he was never able to challenge for a title. He is one of the most respected people around the Pitchball community."
   },
     {
     id: "gkiolias",
     name: "Sokratis Gkiolias",
-    status: "active",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
       {season:"PSL5", team:"Warriors", logo:"warriors.png", detail:""},
-      {season:"PSL6", team:"Warriors", logo:"warriors.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Despite his height, Sokratis Gkiolias wasn't a very good attacker and opted to playing it safe."
   },
       {
     id: "stavropoulos",
@@ -287,7 +285,7 @@
       {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Stavros is more known for his off-the-field antics and shenanigans. He rarely manages to keep his temper in a calm state, and that has cost him many matches."
   },
     {
     id: "johanito",
@@ -299,12 +297,12 @@
       {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Coming from a basketball career, Johan was a very good player for all his teams. He recently took the decision to leave Lampater mid-season, but is expected to return for PSL7."
   },
     {
     id: "kalisperis",
     name: "Nikos Kalisperis",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Kalyma", logo:"kalyma.png", detail:""},
@@ -344,7 +342,7 @@
     {
     id: "iliadis",
     name: "Antonis Iliadis",
-    status: "unknown",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Snipers", logo:"snipers.png", detail:""},
@@ -360,6 +358,7 @@
     seasons: [
       {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
       {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
+      {season:"PSL6", team:"Kritsinia", logo:"kritsinia.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -379,7 +378,7 @@
     {
     id: "zois",
     name: "Grigoris Zois",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Grivnikikos", logo:"grivnik.png", detail:""},
@@ -391,7 +390,7 @@
     {
     id: "arkado",
     name: "Marios Arkadopoulos",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Trixes", logo:"trixes.png", detail:""},
@@ -402,7 +401,7 @@
     {
     id: "mpog",
     name: "Petros Mpogeas",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
@@ -414,7 +413,7 @@
     {
     id: "loverdos",
     name: "Ilias Loverdos",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Hoopers", logo:"hoopers.png", detail:""},
@@ -450,7 +449,7 @@
     {
     id: "mavraganis",
     name: "Vasilis Mavraganis",
-    status: "unknown",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Chewbacca", logo:"chewbacca.png", detail:""},
@@ -461,7 +460,7 @@
     {
     id: "paliouras",
     name: "Spyros Paliouras",
-    status: "unknown",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Chewbacca", logo:"chewbacca.png", detail:""},
@@ -484,7 +483,7 @@
     {
     id: "chorti",
     name: "Daniel Chortikoglou",
-    status: "unknown",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:""},
@@ -533,7 +532,7 @@
     {
     id: "glezos",
     name: "Nikos Glezos",
-    status: "unknown",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:"Mid-season signing"},
@@ -553,7 +552,7 @@
       {season:"PSL3", team:"Brazil", logo:"brazil.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "The Brazilian himself. The amount of flair and style Bekos brought to the game was unmatched. He was a player that could change the course of a match with his unpredictable moves. His retirement was a big loss for the sport."
   },
     {
     id: "makis",
@@ -565,7 +564,7 @@
       {season:"PSL4", team:"MAKFI", logo:"makfi.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Makis' unexpected retirement was a shock to the Pitchball community. He really is one of the biggest what-ifs of the sport, as he was a player that could have reached the very top if he had continued playing."
   },
     {
     id: "joestav",
@@ -592,7 +591,7 @@
       {season:"PSL3", team:"AXR", logo:"axr.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Christos' setter abilities were unmatched in the early days of Pitchball. He was part of one of the most iconic duos of all time at AXR with Achilleas."
   },
     {
     id: "filios",
@@ -606,7 +605,7 @@
       {season:"PSL4", team:"AXR", logo:"axr.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Achilleas Filios put his Pitchball career into an abrupt end after winning the PSL4 Cup with AXR. After yearning for a trophy for years, he finally pulled it off with the help of Kostis Vasileiou. He was also involved in the organization of Pitchball in the earlier days, but left to pursue his musical career with Teketzides. He remains respected in the Pitchball community for his contributions to the sport."
   },
     {
     id: "georgakas",
@@ -657,7 +656,7 @@
       {season:"PSL4", team:"Didymoi Pyrgoi", logo:"ddm.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Known for his incredible attacking skills, Dimitris was an icon for Didymoi Pyrgoi. He followed his teammate Poniros into retirement during PSL4. Later on he became a helper in the organization, taking part in casting on the PSL Livestreams. He has now moved to Munich to pursue his career as a musician."
   },
     {
     id: "efsta",
@@ -711,7 +710,7 @@
       {season:"PSL3", team:"Clippers", logo:"clippers.png", detail:""}, 
     ],
     upcoming: null,
-    description: "TBA"
+    description: "Nikos Nikolaou was basically carried to a PSL Final by his teammate Kostas Kapetanios. He was a player that could have been a lot better if he had taken the game more seriously, but unfortunately he didn't. He retired after PSL3."
   },
     {
     id: "ladas",
@@ -728,7 +727,7 @@
     {
     id: "vnikos",
     name: "Christos Nikolopoulos",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Grivnikikos", logo:"grivnik.png", detail:""},
@@ -788,7 +787,7 @@
     {
     id: "teotell",
     name: "Thodoris Telloglou",
-    status: "retired",
+    status: "inactive",
     titles: [],
     seasons: [
       {season:"PSL2", team:"S Tiers", logo:"stier.png", detail:""},
@@ -1037,6 +1036,7 @@
     titles: [],
     seasons: [
       {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
+      {season:"PSL6", team:"Sapioi", logo:"sapioi.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -1096,6 +1096,39 @@
     upcoming: null,
     description: "TBA"
   },
+  {
+    id: "konstantinos-megalooikonomou",
+    name: "Konstantinos Megalooikonomou",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Sapioi", logo:"sapioi.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+  {
+    id: "leonidas-amplas",
+    name: "Leonidas Amplas",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Kritsinia", logo:"kritsinia.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
+  {
+    id: "priovolos",
+    name: "Priovolos",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
 
     // â”€â”€ ADD MORE PLAYERS BELOW â”€â”€
   // {
@@ -1110,4 +1143,3 @@
   //   description: "Bio text here."
   // },
 ];
-

@@ -194,6 +194,7 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .player-status { font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 500; margin-bottom: 6px; }
 .status-active { background: #1a3d2a; color: #39c877; }
 .status-retired { background: #282d15; color: #888; }
+.status-inactive { background: #282d15; color: #888; }
 .status-unknown { background: #ADD8E6; color: #003f5c; }
 .player-titles { font-size: 11px; color: #888; }
 .title-icon { color: #f5c842; }
@@ -220,6 +221,7 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
 .badge-active { background: #1a3d2a; color: #39c877; }
 .badge-retired { background: #282d15; color: #888; border: 1px solid #535c2f; }
+.badge-inactive { background: #282d15; color: #888; border: 1px solid #535c2f; }
 .badge-unknown { background: #ADD8E6; color: #003f5c; }
 .badge-title { background: #3d3010; color: #f5c842; }
 .player-desc { font-size: 13px; color: #888; line-height: 1.7; }
@@ -433,7 +435,7 @@ h2 { font-size: 21px; }
 .player-name, .team-card-heading h2, .history-season { color: var(--page-text); }
 .player-status { letter-spacing: 0.4px; text-transform: uppercase; }
 .status-active, .badge-active { background: var(--page-green-dim); color: var(--page-green); }
-.status-retired, .badge-retired { background: rgba(255,255,255,0.04); color: var(--page-muted); border-color: var(--page-border); }
+.status-retired, .badge-retired, .status-inactive, .badge-inactive { background: rgba(255,255,255,0.04); color: var(--page-muted); border-color: var(--page-border); }
 .status-unknown, .badge-unknown { background: rgba(83, 92, 47, 0.18); color: #b6bd93; }
 .player-titles, .team-meta, .team-seasons, .team-profile-summary, .history-copy { color: var(--page-muted); }
 .team-logo, .team-profile-logo, .team-profile-season-logo, .career-team-logo {
@@ -462,6 +464,86 @@ h2 { font-size: 21px; }
 .team-accolade:hover { border-color: var(--page-green); color: var(--page-green); }
 .history-card-unavailable { opacity: 0.58; }
 
+.player-profile-container { max-width: 1000px; }
+.player-profile-container > .nav { margin-bottom: 1rem; }
+.player-profile-hero {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 210px;
+  padding: 1.5rem;
+  border: 1px solid var(--page-border);
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 10% 100%, rgba(57, 200, 119, 0.12), transparent 55%),
+    linear-gradient(135deg, var(--page-surface-raised), var(--page-surface));
+}
+.player-profile-hero .player-header-photo {
+  width: 170px;
+  height: 170px;
+  border: 2px solid var(--page-olive);
+  border-radius: 12px;
+  background: var(--page-bg);
+}
+.player-profile-hero .player-header-photo.active { border-color: var(--page-green); }
+.player-profile-hero .player-header-info { min-width: 0; }
+.player-profile-hero .player-full-name {
+  margin-bottom: 0.6rem;
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1;
+}
+.player-profile-hero .player-badges { margin-bottom: 0.85rem; }
+.player-description { max-width: 68ch; }
+.player-profile-hero .player-desc {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.player-description-toggle { display: none; }
+.player-description-toggle[hidden] { display: none; }
+.player-section-nav {
+  display: flex;
+  gap: 4px;
+  margin: 1rem 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--page-border);
+  background: rgba(21, 26, 13, 0.85);
+}
+.player-section-nav a {
+  flex: 0 0 auto;
+  padding: 12px 14px 10px;
+  border-bottom: 2px solid transparent;
+  color: var(--page-muted);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.15s, border-color 0.15s;
+}
+.player-section-nav a:hover, .player-section-nav a:focus-visible {
+  border-bottom-color: var(--page-green);
+  color: var(--page-text);
+}
+.player-profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  grid-template-areas:
+    "titles career"
+    "accolades career";
+  align-items: start;
+  gap: 12px;
+}
+.player-profile-grid .section-card { min-width: 0; margin-bottom: 0; }
+.player-titles-section { grid-area: titles; }
+.player-accolades-section { grid-area: accolades; }
+.player-career-section { grid-area: career; }
+.player-upcoming-card { margin-top: 12px; }
+.player-section-nav,
+.player-titles-section,
+.player-accolades-section,
+.player-career-section { scroll-margin-top: 1rem; }
+
 @media (max-width: 600px) {
   body { padding: 1.25rem 1rem 2rem; }
   .container { width: 100%; }
@@ -476,8 +558,61 @@ h2 { font-size: 21px; }
   .team-season-heading { align-items: flex-start; flex-direction: column; }
   .team-archive-link { margin-top: 2px; }
   .title-card { padding: 7px 10px; }
+  .player-profile-hero {
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: start;
+    gap: 1rem;
+    min-height: 0;
+    padding: 1rem;
+  }
+  .player-profile-hero .player-header-photo { width: 92px; height: 92px; }
+  .player-profile-hero .player-header-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .player-profile-hero .player-full-name { font-size: 30px; }
+  .player-profile-hero .player-badges {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 0;
+  }
+  .player-description { width: 100%; }
+  .player-profile-hero .player-desc.is-collapsed {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .player-description-toggle:not([hidden]) {
+    display: inline;
+    margin-top: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--page-green);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+  }
+  .player-profile-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "titles" "accolades" "career";
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
+
+.psl-aw-btn .psl-aw-chevron {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-top: 5px solid rgba(255, 255, 255, 0.55);
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  font-size: 0 !important;
 }
