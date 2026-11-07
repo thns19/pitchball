@@ -230,6 +230,8 @@
   .bracket-lines { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
   .bracket-lines path { fill:none; stroke:rgba(149,223,117,.55); stroke-width:1.5; vector-effect:non-scaling-stroke; }
   .match-card { position:relative; z-index:1; height:42px; padding:2px; background:rgba(14,22,15,.96); min-width:0; border-radius:6px; }
+  .match-view-link { display:block; height:100%; color:inherit; text-decoration:none; }
+  .match-view-link:focus-visible { outline:2px solid var(--cyan); outline-offset:1px; border-radius:4px; }
   .match-label { display:flex; justify-content:space-between; gap:2px; padding-right:17px; color:var(--muted); font-size:clamp(.42rem,.55vw,.58rem); line-height:9px; margin-bottom:0; }
   .match-team { display:flex; align-items:center; min-height:14px; height:14px; gap:2px; border-bottom:1px solid rgba(255,255,255,.06); padding:0; font-size:clamp(.58rem,.75vw,.68rem); line-height:14px; overflow:hidden; white-space:nowrap; }
   .match-team:last-of-type { border-bottom:0; }
@@ -240,7 +242,7 @@
   .match-team.bye { color:var(--muted); font-style:italic; }
   .match-team.empty { color:rgba(255,255,255,.3); }
   .match-meta { color:var(--muted); font-size:.62rem; margin-top:.25rem; overflow-wrap:anywhere; }
-  .match-edit-button { position:absolute; top:1px; right:2px; width:15px; height:12px; min-height:0; padding:0; font-size:.55rem; line-height:10px; }
+  .match-edit-button { position:absolute; z-index:2; top:1px; right:2px; width:15px; height:12px; min-height:0; padding:0; font-size:.55rem; line-height:10px; }
   .cup-modal-overlay { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:1rem; background:rgba(0,0,0,.78); }
   .cup-modal { width:min(100%,540px); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:14px; background:#141d15; box-shadow:0 20px 70px rgba(0,0,0,.6); }
   .cup-modal-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.2rem; border-bottom:1px solid var(--border); }
@@ -1047,19 +1049,21 @@
 
     function renderMatch(match, roundIndex, matchIndex) {
       const hasGame = match.home && match.away && match.home !== 'bye' && match.away !== 'bye';
-      const existing = cupBracket.results[match.id] || cupBracket.results[`r${roundIndex}m${matchIndex}`] || (cupSimulationActive ? cupSimulationResults[match.id] : null) || {};
+      const savedResult = cupBracket.results[match.id] || cupBracket.results[`r${roundIndex}m${matchIndex}`];
+      const existing = savedResult || (cupSimulationActive ? cupSimulationResults[match.id] : null) || {};
       const homeScore = existing.hs ?? existing.homeScore;
       const awayScore = existing.as ?? existing.awayScore;
-      const events = Array.isArray(existing.events) ? existing.events : [];
-      const goals = events.filter(event => event.type === 'goal').length;
-      const ownGoals = events.filter(event => event.type === 'og').length;
-      const substitutions = events.filter(event => event.type === 'sub').length;
+      const matchUrl = `match.html?id=${encodeURIComponent(match.id)}&cup=1&round=${encodeURIComponent(match.round)}&home=${encodeURIComponent(match.home)}&away=${encodeURIComponent(match.away)}`;
+      const matchContent = `<div class="match-label"><span>M${matchIndex + 1}</span></div>
+        ${renderTeam(match.home, match, homeScore)}${renderTeam(match.away, match, awayScore)}`;
+      const viewLink = savedResult && hasGame
+        ? `<a class="match-view-link" href="${matchUrl}" aria-label="View ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}">${matchContent}</a>`
+        : matchContent;
       const editButton = cupIsAdmin && hasGame
         ? `<button class="button match-edit-button" type="button" aria-label="Edit ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}" title="Edit match" onclick="openCupMatchEditor('${match.id}')">✎</button>`
         : '';
       return `<article class="match-card" id="cup-match-${match.id}" data-cup-match="${match.id}">
-        <div class="match-label"><span>M${matchIndex + 1}</span></div>
-        ${renderTeam(match.home, match, homeScore)}${renderTeam(match.away, match, awayScore)}
+        ${viewLink}
         ${editButton}
       </article>`;
     }

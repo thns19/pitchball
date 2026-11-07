@@ -66,6 +66,11 @@
   .match-score { color: var(--text); font-size: 42px; font-weight: 700; line-height: 1; min-width: 90px; }
   .match-meta { color: var(--muted); font-size: 11px; line-height: 1.6; margin-top: 1rem; }
   .match-meta span { display: inline-block; margin: 0 5px; }
+  .match-export-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 1rem; }
+  .match-export-controls[hidden] { display: none; }
+  .match-export-button { background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.35); border-radius: 7px; color: var(--cyan); cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; padding: 9px 13px; }
+  .match-export-button:hover { background: rgba(0, 240, 255, 0.18); }
+  .match-export-button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
   .content-card { overflow: hidden; margin-bottom: 1rem; }
   .card-title { color: var(--cyan); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 11px 14px; text-transform: uppercase; }
   .mvp-card { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1rem; border-color: rgba(245, 200, 66, 0.55); }
@@ -125,11 +130,17 @@
 </head>
 <body>
   <main class="container">
-    <div class="nav"><a class="back" href="table.html">&larr; League table</a></div>
+    <div class="nav"><a id="match-back-link" class="back" href="table.html">&larr; League table</a></div>
     <div id="match-content"></div>
+    <div id="match-export-controls" class="match-export-controls" hidden>
+      <button class="match-export-button" type="button" onclick="exportCupMatch(false)">Export Match</button>
+      <button class="match-export-button" type="button" onclick="exportCupMatch(true)">Export Match + Chances</button>
+    </div>
     <div id="comments-mount"></div>
   </main>
 
+<script src="../news/bg-export-data.js"></script>
+<script src="teams.js"></script>
 <script>
 const PSL_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
 const TEAM_LOGOS = {
@@ -141,6 +152,7 @@ const TEAM_LOGOS = {
   'Warriors': 'logos/warriors.png', 'Niki Alimou': 'logos/alimou.png', 'Golden B.': 'logos/gb.png'
 };
 let dbCache = null;
+let currentCupExport = null;
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
@@ -189,6 +201,353 @@ function renderEvent(event, home, away) {
   const beneficiary = isOwnGoal ? (event.team === home ? away : home) : event.team;
   return `<div class="event-row"><div class="event-icon ${isOwnGoal ? 'icon-og' : 'icon-goal'}">${isOwnGoal ? 'OG' : 'G'}</div><div class="event-body"><div class="event-main"><strong>${escapeHtml(event.player || 'Unknown player')}</strong></div><div class="event-detail">${isOwnGoal ? `Own goal - point to ${escapeHtml(beneficiary || '')}` : `Goal - ${escapeHtml(event.team || '')}`}</div></div><div class="event-score">${escapeHtml(event.scoreline || '-')}</div></div>`;
 }
+function getCupPointScorer(event, home, away) {
+  if (event.type === 'goal') {
+    if (event.team === home) return true;
+    if (event.team === away) return false;
+  }
+  if (event.type === 'og') {
+    if (event.team === home) return false;
+    if (event.team === away) return true;
+  }
+  return null;
+}
+function getCupExportRating(team) {
+  const data = window.PSL6_DATA;
+  const rating = data.cupRatings[team] || data.teams[team];
+  if (rating) return rating.att * 0.35 + rating.def * 0.3 + rating.stm * 0.15 + rating.con * 0.2;
+  const ratings = Object.values(data.teams);
+  return ratings.reduce((total, entry) =>
+    total + entry.att * 0.35 + entry.def * 0.3 + entry.stm * 0.15 + entry.con * 0.2, 0) / ratings.length;
+}
+function simulateCupWinChance(homeScore, awayScore, servingHome, homeRating, awayRating, target) {
+  const simulationCount = 3000;
+  let homeWins = 0;
+  for (let simulation = 0; simulation < simulationCount; simulation++) {
+    let scoreHome = homeScore;
+    let scoreAway = awayScore;
+    let serving = servingHome;
+    while (scoreHome < target && scoreAway < target) {
+      const pointChance = Math.max(0.15, Math.min(0.85,
+        0.5 + (homeRating - awayRating) / 180 + (serving ? 0.025 : -0.025)));
+      const homeWinsPoint = Math.random() < pointChance;
+      if (homeWinsPoint) scoreHome++;
+      else scoreAway++;
+      serving = homeWinsPoint;
+    }
+    if (scoreHome > scoreAway) homeWins++;
+  }
+  return homeWins / simulationCount * 100;
+}
+function buildCupChanceTimeline() {
+  const {home, away, events, round} = currentCupExport;
+  const target = round.toLowerCase() === 'final' ? 7 : 5;
+  const homeRating = getCupExportRating(home);
+  const awayRating = getCupExportRating(away);
+  let homeScore = 0;
+  let awayScore = 0;
+  const points = [];
+  events.forEach(event => {
+    const homeScored = getCupPointScorer(event, home, away);
+    if (homeScored === null) return;
+    if (homeScored) homeScore++;
+    else awayScore++;
+    points.push({
+      homeScore,
+      awayScore,
+      homeChance: simulateCupWinChance(homeScore, awayScore, homeScored, homeRating, awayRating, target)
+    });
+  });
+  return points;
+}
+function exportMatchEventLabel(event, home, away) {
+  const scorer = getCupPointScorer(event, home, away);
+  const score = event.scoreline ? ` · ${event.scoreline}` : '';
+  if (event.type === 'sub') {
+    return `Substitution · ${event.team || 'Team'} · ${event.player || 'Player in'}${event.playerOut ? ` for ${event.playerOut}` : ''}`;
+  }
+  if (event.type === 'og') {
+    const beneficiary = event.team === home ? away : home;
+    return `Own goal · ${event.player || 'Unknown player'} · point to ${beneficiary}${score}`;
+  }
+  if (event.type === 'goal') {
+    return `Goal · ${event.player || 'Unknown player'} · ${scorer === null ? event.team || 'Unknown team' : scorer ? home : away}${score}`;
+  }
+  return `${event.type || 'Event'} · ${event.player || event.team || ''}${score}`;
+}
+function wrappedExportLines(context, text, maxWidth) {
+  const words = String(text).split(/\s+/);
+  let line = '';
+  const lines = [];
+  words.forEach(word => {
+    const candidate = line ? `${line} ${word}` : word;
+    if (line && context.measureText(candidate).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+function drawWrappedExportText(context, text, x, y, maxWidth, lineHeight) {
+  const lines = wrappedExportLines(context, text, maxWidth);
+  lines.forEach((line, index) => context.fillText(line, x, y + index * lineHeight));
+  return lines.length;
+}
+function drawCupChanceChart(context, points, home, away, top, width) {
+  const left = 100;
+  const right = width - 72;
+  const chartTop = top + 105;
+  const chartBottom = top + 330;
+  const chartHeight = chartBottom - chartTop;
+  const chartWidth = right - left;
+  context.fillStyle = '#9b3218';
+  context.font = '700 23px Arial, sans-serif';
+  context.fillText('WIN PROBABILITY DURING THE MATCH', left, top + 16);
+  context.font = '16px Arial, sans-serif';
+  context.fillStyle = '#30201a';
+  context.fillRect(left, top + 60, 14, 14);
+  context.fillText(home, left + 23, top + 58, 390);
+  context.fillStyle = '#bd3215';
+  context.fillRect(left + 430, top + 60, 14, 14);
+  context.fillStyle = '#30201a';
+  context.fillText(away, left + 453, top + 58, 390);
+
+  context.font = '15px Arial, sans-serif';
+  [0, 50, 100].forEach(value => {
+    const y = chartBottom - chartHeight * value / 100;
+    context.strokeStyle = 'rgba(125,68,28,.24)';
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(left, y);
+    context.lineTo(right, y);
+    context.stroke();
+    context.fillStyle = '#775b4c';
+    context.textAlign = 'right';
+    context.fillText(`${value}%`, left - 12, y + 5);
+  });
+  context.textAlign = 'left';
+
+  if (!points.length) {
+    context.fillStyle = '#775b4c';
+    context.font = '18px Arial, sans-serif';
+    context.fillText('No goal or own-goal events were available to simulate.', left, chartTop + 40);
+    return;
+  }
+
+  const xFor = index => points.length === 1 ? left + chartWidth / 2 : left + chartWidth * index / (points.length - 1);
+  const yFor = chance => chartBottom - chartHeight * chance / 100;
+  [
+    {key: 'homeChance', color: '#30201a'},
+    {key: 'awayChance', color: '#bd3215', value: chance => 100 - chance}
+  ].forEach(series => {
+    context.strokeStyle = series.color;
+    context.lineWidth = 4;
+    context.lineJoin = 'round';
+    context.lineCap = 'round';
+    context.beginPath();
+    points.forEach((point, index) => {
+      const chance = series.value ? series.value(point.homeChance) : point[series.key];
+      const x = xFor(index);
+      const y = yFor(chance);
+      if (index === 0) context.moveTo(x, y);
+      else context.lineTo(x, y);
+    });
+    context.stroke();
+    points.forEach((point, index) => {
+      const chance = series.value ? series.value(point.homeChance) : point[series.key];
+      context.beginPath();
+      context.arc(xFor(index), yFor(chance), 4, 0, Math.PI * 2);
+      context.fillStyle = series.color;
+      context.fill();
+    });
+  });
+  const labelIndices = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])];
+  context.font = '14px Arial, sans-serif';
+  context.fillStyle = '#775b4c';
+  labelIndices.forEach(index => {
+    const x = xFor(index);
+    context.textAlign = index === 0 ? 'left' : index === points.length - 1 ? 'right' : 'center';
+    context.fillText(`Event ${index}`, x, chartBottom + 28);
+  });
+  context.textAlign = 'left';
+}
+function loadExportImage(source) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`Unable to load export image: ${source}`));
+    image.src = source;
+  });
+}
+function roundedExportRect(context, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(x + r, y);
+  context.arcTo(x + width, y, x + width, y + height, r);
+  context.arcTo(x + width, y + height, x, y + height, r);
+  context.arcTo(x, y + height, x, y, r);
+  context.arcTo(x, y, x + r, y, r);
+  context.closePath();
+  context.fill();
+}
+function cupExportLogoSource(team) {
+  const logo = window.PSL6_DATA.logos[team] || {
+    Sapioi: 'logos/sapioi.png',
+    Kritsinia: 'logos/kritsinia.png'
+  }[team];
+  return logo ? new URL(logo, window.location.href).href : '';
+}
+function makeExportSafeImage(image) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 96;
+  canvas.height = 96;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('Your browser could not prepare a team logo for export.');
+  const scale = Math.min(canvas.width / image.width, canvas.height / image.height);
+  const width = image.width * scale;
+  const height = image.height * scale;
+  context.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+  context.getImageData(0, 0, 1, 1);
+  return loadExportImage(canvas.toDataURL('image/png'));
+}
+async function loadCupExportLogo(team) {
+  const source = cupExportLogoSource(team);
+  if (!source) return null;
+  if (window.location.protocol === 'file:') return makeExportSafeImage(await loadExportImage(source));
+  const response = await fetch(source, {mode: 'cors'});
+  if (!response.ok) throw new Error(`Logo request failed with status ${response.status}.`);
+  const objectUrl = URL.createObjectURL(await response.blob());
+  try {
+    const logo = await loadExportImage(objectUrl);
+    return await makeExportSafeImage(logo);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+async function exportCupMatch(includeChances) {
+  if (!currentCupExport) {
+    alert('Cup match data is not available for export.');
+    return;
+  }
+  try {
+    const {id, home, away, round, match, events} = currentCupExport;
+    const points = includeChances ? buildCupChanceTimeline() : [];
+    if (!window.PSL_EXPORT_BACKGROUND_DATA) throw new Error('The export background did not load. Please reload the match page and try again.');
+    const background = await loadExportImage(window.PSL_EXPORT_BACKGROUND_DATA);
+    const [homeLogo, awayLogo] = await Promise.all([home, away].map(async team => {
+      try {
+        return await loadCupExportLogo(team);
+      } catch (error) {
+        console.warn(`Unable to load the ${team} logo for the match export.`, error);
+        return null;
+      }
+    }));
+    const width = 1400;
+    const padding = 64;
+    const eventTop = 320;
+    const eventLineHeight = 24;
+    const eventRowGap = 20;
+    const exportEvents = events.length ? [...events].reverse() : [{type: 'none'}];
+    const eventLabels = ['Match Start', ...exportEvents.map((event, index) =>
+      event.type === 'none' ? 'No event data available.' : `${String(index + 1).padStart(2, '0')}  ${exportMatchEventLabel(event, home, away)}`
+    )];
+    const measureCanvas = document.createElement('canvas');
+    const measureContext = measureCanvas.getContext('2d');
+    if (!measureContext) throw new Error('Your browser could not measure the match export text.');
+    measureContext.font = '17px Arial, sans-serif';
+    const eventBlockHeight = eventLabels.reduce((height, label) =>
+      height + Math.max(eventRowGap, wrappedExportLines(measureContext, label, width - padding * 2).length * eventLineHeight) + 18, 0);
+    const chartHeight = includeChances ? 430 : 0;
+    const height = eventTop + eventBlockHeight + chartHeight + padding;
+    const scale = Math.min(1, Math.sqrt(4000000 / (width * height)), 32000 / height);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.floor(width * scale);
+    canvas.height = Math.floor(height * scale);
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Your browser could not create the match export image.');
+    context.scale(scale, scale);
+    const imageScale = Math.max(width / background.width, height / background.height);
+    const imageWidth = background.width * imageScale;
+    const imageHeight = background.height * imageScale;
+    context.drawImage(background, (width - imageWidth) / 2, (height - imageHeight) / 2, imageWidth, imageHeight);
+    try {
+      context.getImageData(0, 0, 1, 1);
+    } catch (error) {
+      throw new Error('The export background could not be embedded in the PNG.');
+    }
+    context.fillStyle = 'rgba(255,249,235,.10)';
+    roundedExportRect(context, 32, 32, width - 64, 210, 20);
+    context.fillStyle = 'rgba(255,249,235,.10)';
+    roundedExportRect(context, 32, 260, width - 64, eventBlockHeight + 48, 18);
+    if (includeChances) {
+      context.fillStyle = 'rgba(255,249,235,.10)';
+      roundedExportRect(context, 32, eventTop + eventBlockHeight + 18, width - 64, chartHeight - 8, 18);
+    }
+    context.textBaseline = 'top';
+
+    context.fillStyle = '#9b3218';
+    context.font = '700 17px Arial, sans-serif';
+    context.fillText(`PSL6 CUP  ·  ${round.toUpperCase()}`, padding, 58);
+    context.fillStyle = '#30201a';
+    context.font = '700 34px Arial, sans-serif';
+    if (homeLogo) context.drawImage(homeLogo, padding, 100, 46, 46);
+    context.textAlign = 'left';
+    context.fillText(home, padding + (homeLogo ? 60 : 0), 106, 420);
+    context.textAlign = 'center';
+    context.font = '700 48px Arial, sans-serif';
+    context.fillText(`${match.hs ?? '-'}  -  ${match.as ?? '-'}`, width / 2, 100);
+    context.textAlign = 'right';
+    context.font = '700 34px Arial, sans-serif';
+    context.fillText(away, width - padding - (awayLogo ? 60 : 0), 106, 420);
+    if (awayLogo) context.drawImage(awayLogo, width - padding - 46, 100, 46, 46);
+    context.textAlign = 'left';
+    context.fillStyle = '#775b4c';
+    context.font = '16px Arial, sans-serif';
+    const metadata = [match.date ? formatDate(match.date) : '', match.mvp ? `MVP: ${match.mvp}` : ''].filter(Boolean).join('  ·  ');
+    if (metadata) context.fillText(metadata, padding, 168, width - padding * 2);
+
+    context.fillStyle = '#9b3218';
+    context.font = '700 18px Arial, sans-serif';
+    context.fillText('MATCH EVENTS', padding, 220);
+    context.strokeStyle = 'rgba(125,68,28,.28)';
+    context.beginPath();
+    context.moveTo(padding, 250);
+    context.lineTo(width - padding, 250);
+    context.stroke();
+    context.fillStyle = '#f2f0eb';
+    context.font = '17px Arial, sans-serif';
+    let y = eventTop;
+    eventLabels.forEach(label => {
+      const lineCount = drawWrappedExportText(context, label, padding, y, width - padding * 2, eventLineHeight);
+      y += Math.max(eventRowGap, lineCount * eventLineHeight) + 18;
+    });
+
+    if (includeChances) drawCupChanceChart(context, points, home, away, eventTop + eventBlockHeight + 28, width);
+    context.getImageData(0, 0, 1, 1);
+    try {
+      canvas.toBlob(blob => {
+        if (!blob) {
+          alert('The match export image could not be created.');
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${id.toLowerCase()}${includeChances ? '-chances' : ''}.png`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }, 'image/png');
+    } catch (error) {
+      throw new Error(`The match export image could not be saved: ${error.message || 'unknown error'}`);
+    }
+  } catch (error) {
+    console.error('Cup match export failed.', error);
+    alert(error.message || 'Unable to export this cup match.');
+  }
+}
 async function initMatch() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
@@ -196,35 +555,47 @@ async function initMatch() {
   const away = params.get('away') || 'Away team';
   const group = params.get('group') || 'Group stage';
   const md = params.get('md') || '-';
+  const isCupMatch = params.get('cup') === '1';
+  const round = params.get('round') || group;
   const content = document.getElementById('match-content');
+  if (isCupMatch) {
+    const backLink = document.getElementById('match-back-link');
+    backLink.href = 'cup.html';
+    backLink.innerHTML = '&larr; PSL6 Cup';
+  }
   if (!id) {
-    content.innerHTML = '<div class="no-data">Match not found. <a class="back" href="table.html">Back to table</a></div>';
+    content.innerHTML = `<div class="no-data">Match not found. <a class="back" href="${isCupMatch ? 'cup.html' : 'table.html'}">Back to ${isCupMatch ? 'cup' : 'table'}</a></div>`;
     return;
   }
   try {
     const db = await getDb();
     const match = readMatch(db, id);
     const events = Array.isArray(match.events) ? match.events : [];
+    if (isCupMatch && match && Object.keys(match).length) {
+      currentCupExport = {id, home, away, round, match, events};
+      document.getElementById('match-export-controls').hidden = false;
+    }
     const counts = eventCounts(events, home);
     const homeScore = match.hs !== undefined && match.hs !== null ? match.hs : '-';
     const awayScore = match.as !== undefined && match.as !== null ? match.as : '-';
     const eventRows = events.length ? events.map(event => renderEvent(event, home, away)).join('') : '<div class="no-data">No event data available yet.</div>';
-    document.title = `${home} vs ${away} - PSL6`;
+    const competition = isCupMatch ? 'PSL6 Cup' : 'PSL6 Group Stage';
+    document.title = `${home} vs ${away} - ${competition}`;
     content.innerHTML = `
       <section class="match-header">
-        <div class="match-kicker">${escapeHtml(group)} - Matchday ${escapeHtml(md)}</div>
+        <div class="match-kicker">${isCupMatch ? `${escapeHtml(competition)} - ${escapeHtml(round)}` : `${escapeHtml(group)} - Matchday ${escapeHtml(md)}`}</div>
         <div class="match-teams">
           <div class="match-team">${logoFor(home)}<div class="match-team-name">${escapeHtml(home)}</div></div>
           <div class="match-score">${escapeHtml(homeScore)}-${escapeHtml(awayScore)}</div>
           <div class="match-team">${logoFor(away)}<div class="match-team-name">${escapeHtml(away)}</div></div>
         </div>
-        <div class="match-meta">${match.date ? `<span>${escapeHtml(formatDate(match.date))}</span>` : ''}<span>PSL6 Group Stage</span></div>
+        <div class="match-meta">${match.date ? `<span>${escapeHtml(formatDate(match.date))}</span>` : ''}<span>${escapeHtml(competition)}</span></div>
       </section>
       ${match.mvp ? `<section class="content-card mvp-card"><span class="mvp-icon">&#127942;</span><div><div class="mvp-label">Match MVP</div><div class="mvp-name">${escapeHtml(match.mvp)}</div></div></section>` : ''}
       <section class="content-card"><div class="card-title">Match statistics</div><div class="stats-grid"><div class="stat"><span class="stat-label">${escapeHtml(home)} goals</span><span class="stat-value">${counts.homeGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} goals</span><span class="stat-value">${counts.awayGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(home)} own goals</span><span class="stat-value">${counts.homeOwnGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} own goals</span><span class="stat-value">${counts.awayOwnGoals}</span></div></div></section>
       <section class="content-card"><div class="card-title">Match events</div>${eventRows}</section>`;
   } catch (error) {
-    content.innerHTML = '<div class="no-data">Unable to load this match right now. <a class="back" href="table.html">Back to table</a></div>';
+    content.innerHTML = `<div class="no-data">Unable to load this match right now. <a class="back" href="${isCupMatch ? 'cup.html' : 'table.html'}">Back to ${isCupMatch ? 'cup' : 'table'}</a></div>`;
   }
 }
 window.addEventListener('DOMContentLoaded', initMatch);
