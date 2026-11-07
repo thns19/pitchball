@@ -734,7 +734,7 @@
       {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:""},
     ],
     upcoming: null,
-    description: "TBA"
+    description: "vNiko vroom vroom, I clean with the broom. The blue AR doesn't have that much bloom. I pull up, boom boom. I will put you in the tomb, I will put you in the room, all you watch is Tung Tung."
   },
     {
     id: "mantikou",
