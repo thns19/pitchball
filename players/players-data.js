@@ -1140,6 +1140,6 @@
   //     {season:"PSL1", team:"Team Name", logo:"teamlogo.png", detail:""},
   //   ],
   //   upcoming: null, // or {opponent:"X", date:"DD/MM", competition:"PSL5 League Phase"}
-  //   description: "Bio text here."
+  //   description: "Bio text here. Hi :)"
   // },
 ];
