@@ -304,6 +304,17 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .badge-title { background: #3d3010; color: #f5c842; }
 .badge-owner { background: #20394a; color: #9bd6f3; text-decoration: none; }
 .badge-owner:hover, .badge-owner:focus-visible { background: #2a4d64; color: #d3efff; }
+.badge-hall-of-fame {
+  background: linear-gradient(110deg, #5c430d, #f5c842, #8a6413);
+  background-size: 200% 100%;
+  color: #fff4ce;
+  box-shadow: 0 0 14px rgba(245, 200, 66, 0.3);
+  animation: hall-of-fame-badge-shimmer 3s ease-in-out infinite alternate;
+}
+@keyframes hall-of-fame-badge-shimmer {
+  from { background-position: 0 50%; box-shadow: 0 0 8px rgba(245, 200, 66, 0.18); }
+  to { background-position: 100% 50%; box-shadow: 0 0 18px rgba(245, 200, 66, 0.42); }
+}
 .player-desc { font-size: 13px; color: #888; line-height: 1.7; }
 
 /* ── Section Cards ── */
@@ -459,6 +470,10 @@ body::after {
 body.hall-of-fame-mode::after {
   opacity: 1;
   animation: hall-of-fame-sweep 1.4s ease-out both;
+}
+
+body.hall-of-fame-profile::after {
+  animation: hall-of-fame-sweep 5s ease-in-out infinite;
 }
 
 @keyframes hall-of-fame-sweep {
@@ -737,6 +752,7 @@ h2 { font-size: 21px; }
   body,
   body::after { transition: none; }
   body.hall-of-fame-mode::after { animation: none; }
+  .badge-hall-of-fame { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

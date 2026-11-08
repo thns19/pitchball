@@ -39,6 +39,9 @@ if(!p) {
   document.getElementById('player-content').innerHTML = `
     <p style="color:#888;font-size:14px;">Player not found. <a href="index.html" style="color:#39c877;">â† Back to players</a></p>`;
 } else {
+  const isHallOfFame = (p.hallofFame || '').toLowerCase() === 'yes';
+  document.body.classList.toggle('hall-of-fame-mode', isHallOfFame);
+  document.body.classList.toggle('hall-of-fame-profile', isHallOfFame);
   const photoSrc = `photos/${p.id}.png`;
   const playerAwards = getPlayerAwards(p);
   const titles = playerAwards.filter(award => award.category === 'Cup' || award.category === 'League');
@@ -89,6 +92,7 @@ if(!p) {
         <div class="player-badges">
           <span class="badge ${p.status==='active'?'badge-active':p.status==='retired'?'badge-retired':p.status==='inactive'?'badge-inactive':'badge-unknown'}">${p.status==='active'?'Active':p.status==='retired'?'Retired':p.status==='inactive'?'Inactive':'Unknown'}</span>
           ${playerAwards.length ? `<span class="badge badge-title">🏆 ${playerAwards.length} Titles &amp; Accolades</span>` : ''}
+          ${isHallOfFame ? '<span class="badge badge-hall-of-fame">Hall of Fame Inductee</span>' : ''}
           ${ownedTeams}
         </div>
         <div class="player-description">
