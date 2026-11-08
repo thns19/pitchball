@@ -1193,6 +1193,17 @@ const players = [
     upcoming: null,
     description: "TBA"
   },
+  {
+    id: "chiclap-cartel",
+    name: "Nikolas Koletsos",
+    status: "active",
+    titles: [],
+    seasons: [
+      {season:"PSL4", team:"Shadow Wizard Money Gang", logo:"swmg.png", detail:""},
+    ],
+    upcoming: null,
+    description: "TBA"
+  },
 
     // â”€â”€ ADD MORE PLAYERS BELOW â”€â”€
   // {
