@@ -73,6 +73,12 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .team-logo { width: 34px; height: 34px; object-fit: contain; }
 .team-logo-fallback { color: #888; font-size: 8px; line-height: 1.2; width: 44px; flex-shrink: 0; }
 .team-meta, .team-seasons { color: #888; font-size: 11px; margin-top: 8px; }
+.team-card-description {
+  color: #D7DBC8;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
 .team-members { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 12px; }
 .team-members a { color: #D7DBC8; font-size: 11px; text-decoration: none; }
 .team-members a:hover, .team-archive-link:hover { color: #39c877; }
@@ -104,6 +110,41 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .team-profile-header .section-label { margin-bottom: 6px; }
 .team-profile-header h1 { font-size: 28px; margin-bottom: 6px; }
 .team-profile-summary { color: #888; font-size: 12px; }
+.team-profile-details {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.1rem;
+}
+.team-profile-description {
+  color: #d7dbc8;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.team-profile-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.team-profile-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(83, 92, 47, 0.9);
+}
+.team-profile-meta-label {
+  color: #888;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.team-profile-meta-item strong {
+  color: #d7dbc8;
+  font-size: 13px;
+  font-weight: 600;
+}
 .team-history-heading { font-size: 18px; margin-bottom: 0.75rem; }
 .team-season-heading, .team-season-title {
   display: flex;
@@ -155,6 +196,43 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
   background: transparent; border: 1px solid #535c2f; color: #888; transition: all 0.15s;
 }
 .filter-btn.active { background: #363C1F; border-color: #D7DBC8; color: #D7DBC8; }
+.hall-of-fame-filters {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #888;
+  font-size: 12px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.hall-of-fame-filters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #D7DBC8;
+  cursor: pointer;
+}
+.hall-of-fame-filters input { accent-color: #39c877; }
+.players-search-row {
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+}
+.players-search-row #search {
+  flex: 1 1 150px;
+  min-width: 130px;
+  width: auto;
+}
+.players-search-row .filter-btn {
+  flex: 0 0 auto;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+.players-search-row #sort-select {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+  min-width: 130px;
+}
 
 /* ── Player Grid ── */
 .players-grid {
@@ -224,6 +302,8 @@ h2 { font-size: 18px; font-weight: 500; color: #D7DBC8; margin-bottom: 0.75rem; 
 .badge-inactive { background: #282d15; color: #888; border: 1px solid #535c2f; }
 .badge-unknown { background: #ADD8E6; color: #003f5c; }
 .badge-title { background: #3d3010; color: #f5c842; }
+.badge-owner { background: #20394a; color: #9bd6f3; text-decoration: none; }
+.badge-owner:hover, .badge-owner:focus-visible { background: #2a4d64; color: #d3efff; }
 .player-desc { font-size: 13px; color: #888; line-height: 1.7; }
 
 /* ── Section Cards ── */
@@ -338,6 +418,52 @@ body {
   background-size: auto, 48px 48px, 48px 48px, auto;
   color: var(--page-text);
   font-family: 'DM Sans', sans-serif;
+  transition: background 900ms ease, color 900ms ease;
+}
+
+body.hall-of-fame-mode {
+  --page-bg: #171107;
+  --page-surface: #211907;
+  --page-surface-raised: #2b210b;
+  --page-green: #f5c842;
+  --page-green-dim: #49370b;
+  --page-olive: #9a7623;
+  --page-text: #fff3cc;
+  --page-muted: #b89c5d;
+  --page-gold: #ffd95c;
+  --page-border: rgba(245, 200, 66, 0.32);
+  background:
+    radial-gradient(ellipse at 50% -18%, rgba(245, 200, 66, 0.2), transparent 58%),
+    linear-gradient(rgba(245, 200, 66, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 200, 66, 0.045) 1px, transparent 1px),
+    var(--page-bg);
+  background-size: auto, 48px 48px, 48px 48px, auto;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 35%, rgba(255, 233, 153, 0.16) 50%, transparent 65%),
+    radial-gradient(ellipse at 50% 12%, rgba(255, 215, 84, 0.2), transparent 42%),
+    radial-gradient(ellipse at 50% 100%, rgba(214, 154, 30, 0.12), transparent 50%);
+  background-size: 250% 100%, 100% 100%, 100% 100%;
+  background-position: 100% 0, center, center;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+body.hall-of-fame-mode::after {
+  opacity: 1;
+  animation: hall-of-fame-sweep 1.4s ease-out both;
+}
+
+@keyframes hall-of-fame-sweep {
+  from { background-position: 100% 0, center, center; }
+  to { background-position: 0 0, center, center; }
 }
 
 body::before {
@@ -551,6 +677,9 @@ h2 { font-size: 21px; }
   .player-card { padding: 0.9rem 0.65rem; }
   .search-row { gap: 8px; }
   .search-input { min-width: 100%; }
+  .players-search-row { gap: 6px; }
+  .players-search-row #search { min-width: 130px; }
+  .players-search-row .search-input { min-width: 0; }
   #sort-select { min-width: 0; flex: 1 !important; width: auto !important; }
   .team-profile-header { align-items: flex-start; gap: 1rem; }
   .team-profile-logo { width: 76px; height: 76px; }
@@ -565,6 +694,7 @@ h2 { font-size: 21px; }
     min-height: 0;
     padding: 1rem;
   }
+
   .player-profile-hero .player-header-photo { width: 92px; height: 92px; }
   .player-profile-hero .player-header-info {
     display: flex;
@@ -601,6 +731,12 @@ h2 { font-size: 21px; }
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "titles" "accolades" "career";
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body::after { transition: none; }
+  body.hall-of-fame-mode::after { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

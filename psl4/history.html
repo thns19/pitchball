@@ -160,11 +160,11 @@ const LOGOS={
   "Fintani":"logos/fintani.png","NFFC":"logos/nffc.png","Basement Boys":"logos/basement.png",
   "Nanoi":"logos/nanoi.png","Spasmena Mila":"logos/spasmena.png","Mpesala":"logos/mpesala.png",
   "Y&Y":"logos/yy.png","Didymoi Pyrgoi":"logos/didymoi.png","Axtarmades":"logos/axtarmades.png",
-  "Warriors":"logos/warriors.png","Mini Kidz":"logos/minikidz.png","SWMG":"logos/swmg.png"
+  "Warriors":"logos/warriors.png","Midi Kidz":"../players/logos/midi.png","SWMG":"logos/swmg.png"
 };
 function tlogo(name,size=16){return LOGOS[name]?`<img src="${LOGOS[name]}" onerror="this.style.display='none'" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:2px;vertical-align:middle;margin-right:4px;">`:''}
 
-const TEAMS=["Kleftes","BADiles","Russia","R1","AXR","MAKFI","Fintani","NFFC","Basement Boys","Nanoi","Spasmena Mila","Mpesala","Y&Y","Didymoi Pyrgoi","Axtarmades","Warriors","Mini Kidz","SWMG"];
+const TEAMS=["Kleftes","BADiles","Russia","R1","AXR","MAKFI","Fintani","NFFC","Basement Boys","Nanoi","Spasmena Mila","Mpesala","Y&Y","Didymoi Pyrgoi","Axtarmades","Warriors","Midi Kidz","SWMG"];
 
 const PENALTY={
   "SWMG":-15,"Didymoi Pyrgoi":-15,"Mpesala":-6,"Warriors":-3,"AXR":-7
@@ -183,7 +183,7 @@ const fixtures=[
   {md:1,h:"Basement Boys",a:"Russia",hs:2,as:5},
   {md:1,h:"Y&Y",a:"AXR",hs:2,as:5},
   {md:1,h:"Fintani",a:"Nanoi",hs:5,as:1},
-  {md:1,h:"Mini Kidz",a:"SWMG",hs:0,as:5},
+  {md:1,h:"Midi Kidz",a:"SWMG",hs:0,as:5},
   {md:1,h:"Didymoi Pyrgoi",a:"MAKFI",hs:6,as:4},
   {md:1,h:"Warriors",a:"Axtarmades",hs:2,as:5},
   {md:1,h:"BADiles",a:"Kleftes",hs:6,as:8},
@@ -194,7 +194,7 @@ const fixtures=[
   {md:2,h:"Nanoi",a:"Basement Boys",hs:4,as:6},
   {md:2,h:"SWMG",a:"Y&Y",hs:1,as:5},
   {md:2,h:"MAKFI",a:"Fintani",hs:5,as:1},
-  {md:2,h:"Axtarmades",a:"Mini Kidz",hs:5,as:0},
+  {md:2,h:"Axtarmades",a:"Midi Kidz",hs:5,as:0},
   {md:2,h:"Kleftes",a:"Didymoi Pyrgoi",hs:5,as:2},
   {md:2,h:"NFFC",a:"Warriors",hs:5,as:0},
   {md:2,h:"Spasmena Mila",a:"BADiles",hs:0,as:5},
@@ -205,7 +205,7 @@ const fixtures=[
   {md:3,h:"Basement Boys",a:"MAKFI",hs:1,as:5},
   {md:3,h:"Y&Y",a:"Axtarmades",hs:5,as:2},
   {md:3,h:"Fintani",a:"Kleftes",hs:1,as:5},
-  {md:3,h:"Mini Kidz",a:"NFFC",hs:0,as:5},
+  {md:3,h:"Midi Kidz",a:"NFFC",hs:0,as:5},
   {md:3,h:"Didymoi Pyrgoi",a:"Spasmena Mila",hs:5,as:2},
   {md:3,h:"Warriors",a:"BADiles",hs:1,as:5},
   // Round 4
@@ -216,7 +216,7 @@ const fixtures=[
   {md:4,h:"Kleftes",a:"Basement Boys",hs:5,as:2},
   {md:4,h:"NFFC",a:"Y&Y",hs:8,as:6},
   {md:4,h:"Spasmena Mila",a:"Fintani",hs:5,as:2},
-  {md:4,h:"BADiles",a:"Mini Kidz",hs:5,as:0},
+  {md:4,h:"BADiles",a:"Midi Kidz",hs:5,as:0},
   {md:4,h:"Warriors",a:"Didymoi Pyrgoi",hs:0,as:5},
   // Round 5
   {md:5,h:"R1",a:"SWMG",hs:5,as:1},
@@ -227,7 +227,7 @@ const fixtures=[
   {md:5,h:"Basement Boys",a:"Spasmena Mila",hs:2,as:5},
   {md:5,h:"Y&Y",a:"BADiles",hs:2,as:5},
   {md:5,h:"Fintani",a:"Warriors",hs:5,as:1},
-  {md:5,h:"Mini Kidz",a:"Didymoi Pyrgoi",hs:2,as:5},
+  {md:5,h:"Midi Kidz",a:"Didymoi Pyrgoi",hs:2,as:5},
   // Round 6
   {md:6,h:"MAKFI",a:"R1",hs:0,as:5},
   {md:6,h:"Axtarmades",a:"SWMG",hs:5,as:2},
@@ -237,7 +237,7 @@ const fixtures=[
   {md:6,h:"BADiles",a:"Mpesala",hs:5,as:1},
   {md:6,h:"Warriors",a:"Basement Boys",hs:2,as:5},
   {md:6,h:"Didymoi Pyrgoi",a:"Y&Y",hs:5,as:2},
-  {md:6,h:"Mini Kidz",a:"Fintani",hs:1,as:5},
+  {md:6,h:"Midi Kidz",a:"Fintani",hs:1,as:5},
   // Round 7
   {md:7,h:"R1",a:"Axtarmades",hs:6,as:4},
   {md:7,h:"MAKFI",a:"Kleftes",hs:4,as:6},
@@ -246,7 +246,7 @@ const fixtures=[
   {md:7,h:"AXR",a:"BADiles",hs:5,as:3},
   {md:7,h:"Russia",a:"Warriors",hs:5,as:1},
   {md:7,h:"Mpesala",a:"Didymoi Pyrgoi",hs:9,as:10},
-  {md:7,h:"Basement Boys",a:"Mini Kidz",hs:5,as:1},
+  {md:7,h:"Basement Boys",a:"Midi Kidz",hs:5,as:1},
   {md:7,h:"Y&Y",a:"Fintani",hs:1,as:5},
   // Round 8
   {md:8,h:"Kleftes",a:"R1",hs:5,as:2},
@@ -255,7 +255,7 @@ const fixtures=[
   {md:8,h:"BADiles",a:"SWMG",hs:5,as:1},
   {md:8,h:"Warriors",a:"Nanoi",hs:2,as:5},
   {md:8,h:"Didymoi Pyrgoi",a:"AXR",hs:3,as:5},
-  {md:8,h:"Mini Kidz",a:"Russia",hs:0,as:5},
+  {md:8,h:"Midi Kidz",a:"Russia",hs:0,as:5},
   {md:8,h:"Fintani",a:"Mpesala",hs:1,as:5},
   {md:8,h:"Y&Y",a:"Basement Boys",hs:6,as:4},
   // Round 9
@@ -264,7 +264,7 @@ const fixtures=[
   {md:9,h:"Axtarmades",a:"BADiles",hs:1,as:5},
   {md:9,h:"MAKFI",a:"Warriors",hs:5,as:2},
   {md:9,h:"SWMG",a:"Didymoi Pyrgoi",hs:1,as:5},
-  {md:9,h:"Nanoi",a:"Mini Kidz",hs:5,as:2},
+  {md:9,h:"Nanoi",a:"Midi Kidz",hs:5,as:2},
   {md:9,h:"AXR",a:"Fintani",hs:6,as:4},
   {md:9,h:"Russia",a:"Y&Y",hs:5,as:2},
   {md:9,h:"Mpesala",a:"Basement Boys",hs:5,as:3},
@@ -273,7 +273,7 @@ const fixtures=[
   {md:10,h:"BADiles",a:"NFFC",hs:5,as:2},
   {md:10,h:"Warriors",a:"Kleftes",hs:2,as:5},
   {md:10,h:"Didymoi Pyrgoi",a:"Axtarmades",hs:6,as:4},
-  {md:10,h:"Mini Kidz",a:"MAKFI",hs:1,as:5},
+  {md:10,h:"Midi Kidz",a:"MAKFI",hs:1,as:5},
   {md:10,h:"Fintani",a:"SWMG",hs:5,as:1},
   {md:10,h:"Y&Y",a:"Nanoi",hs:2,as:5},
   {md:10,h:"Basement Boys",a:"AXR",hs:1,as:5},
@@ -282,7 +282,7 @@ const fixtures=[
   {md:11,h:"R1",a:"BADiles",hs:6,as:4},
   {md:11,h:"Spasmena Mila",a:"Warriors",hs:5,as:3},
   {md:11,h:"NFFC",a:"Didymoi Pyrgoi",hs:5,as:3},
-  {md:11,h:"Kleftes",a:"Mini Kidz",hs:5,as:0},
+  {md:11,h:"Kleftes",a:"Midi Kidz",hs:5,as:0},
   {md:11,h:"Axtarmades",a:"Fintani",hs:2,as:5},
   {md:11,h:"MAKFI",a:"Y&Y",hs:6,as:4},
   {md:11,h:"SWMG",a:"Basement Boys",hs:3,as:5},
@@ -291,7 +291,7 @@ const fixtures=[
   // Round 12
   {md:12,h:"Warriors",a:"R1",hs:0,as:5},
   {md:12,h:"Didymoi Pyrgoi",a:"BADiles",hs:1,as:5},
-  {md:12,h:"Mini Kidz",a:"Spasmena Mila",hs:2,as:5},
+  {md:12,h:"Midi Kidz",a:"Spasmena Mila",hs:2,as:5},
   {md:12,h:"Fintani",a:"NFFC",hs:6,as:4},
   {md:12,h:"Y&Y",a:"Kleftes",hs:1,as:5},
   {md:12,h:"Basement Boys",a:"Axtarmades",hs:5,as:3},
@@ -300,7 +300,7 @@ const fixtures=[
   {md:12,h:"AXR",a:"Nanoi",hs:5,as:1},
   // Round 13
   {md:13,h:"R1",a:"Didymoi Pyrgoi",hs:5,as:0},
-  {md:13,h:"Warriors",a:"Mini Kidz",hs:5,as:3},
+  {md:13,h:"Warriors",a:"Midi Kidz",hs:5,as:3},
   {md:13,h:"BADiles",a:"Fintani",hs:6,as:4},
   {md:13,h:"Spasmena Mila",a:"Y&Y",hs:5,as:1},
   {md:13,h:"NFFC",a:"Basement Boys",hs:2,as:5},
@@ -309,7 +309,7 @@ const fixtures=[
   {md:13,h:"MAKFI",a:"AXR",hs:5,as:7},
   {md:13,h:"SWMG",a:"Nanoi",hs:0,as:5},
   // Round 14
-  {md:14,h:"Mini Kidz",a:"R1",hs:2,as:5},
+  {md:14,h:"Midi Kidz",a:"R1",hs:2,as:5},
   {md:14,h:"Fintani",a:"Didymoi Pyrgoi",hs:5,as:0},
   {md:14,h:"Y&Y",a:"Warriors",hs:5,as:0},
   {md:14,h:"Basement Boys",a:"BADiles",hs:0,as:5},
@@ -320,7 +320,7 @@ const fixtures=[
   {md:14,h:"SWMG",a:"MAKFI",hs:0,as:5},
   // Round 15
   {md:15,h:"R1",a:"Fintani",hs:3,as:5},
-  {md:15,h:"Mini Kidz",a:"Y&Y",hs:2,as:5},
+  {md:15,h:"Midi Kidz",a:"Y&Y",hs:2,as:5},
   {md:15,h:"Didymoi Pyrgoi",a:"Basement Boys",hs:0,as:5},
   {md:15,h:"Warriors",a:"Mpesala",hs:2,as:5},
   {md:15,h:"BADiles",a:"Russia",hs:7,as:5},
@@ -331,7 +331,7 @@ const fixtures=[
   // Round 16
   {md:16,h:"Y&Y",a:"R1",hs:4,as:6},
   {md:16,h:"Basement Boys",a:"Fintani",hs:5,as:1},
-  {md:16,h:"Mpesala",a:"Mini Kidz",hs:0,as:5},
+  {md:16,h:"Mpesala",a:"Midi Kidz",hs:0,as:5},
   {md:16,h:"Russia",a:"Didymoi Pyrgoi",hs:5,as:0},
   {md:16,h:"AXR",a:"Warriors",hs:5,as:0},
   {md:16,h:"Nanoi",a:"BADiles",hs:0,as:5},
@@ -342,7 +342,7 @@ const fixtures=[
   {md:17,h:"R1",a:"Basement Boys",hs:4,as:6},
   {md:17,h:"Y&Y",a:"Mpesala",hs:5,as:0},
   {md:17,h:"Fintani",a:"Russia",hs:1,as:5},
-  {md:17,h:"Mini Kidz",a:"AXR",hs:1,as:5},
+  {md:17,h:"Midi Kidz",a:"AXR",hs:1,as:5},
   {md:17,h:"Didymoi Pyrgoi",a:"Nanoi",hs:0,as:5},
   {md:17,h:"Warriors",a:"SWMG",hs:5,as:0},
   {md:17,h:"BADiles",a:"MAKFI",hs:9,as:7},
@@ -387,7 +387,7 @@ const cup=[
   {
     title:"Play-in",
     matches:[
-      {h:"Mini Kidz",a:"SWMG",hs:2,as:5},
+      {h:"Midi Kidz",a:"SWMG",hs:2,as:5},
       {h:"Warriors",a:"Nanoi",hs:3,as:5},
     ]
   },

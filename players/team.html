@@ -71,6 +71,9 @@ const seasons = Array.from(teamSeasons, ([season, data]) => ({season, ...data}))
     return a.season.localeCompare(b.season);
   });
 const teamLogo = [...seasons].reverse().find(season => season.logo)?.logo;
+const teamInfo = teamProfiles?.[teamName] || {};
+const teamDescription = (teamInfo.description || '').trim();
+const teamOwner = (teamInfo.owner || '').trim();
 const teamContent = document.getElementById('team-content');
 
 if (!teamName || seasons.length === 0) {
@@ -127,6 +130,11 @@ if (!teamName || seasons.length === 0) {
   }).join('');
 
   document.title = `${teamName} | Pitchball Encyclopedia`;
+  const metaCards = teamOwner
+    ? `<div class="team-profile-meta-item"><span class="team-profile-meta-label">Owner</span><strong>${teamOwner}</strong></div>`
+    : '';
+  const descriptionBlock = teamDescription ? `<p class="team-profile-description">${teamDescription}</p>` : '';
+
   teamContent.innerHTML = `
     <header class="team-profile-header">
       ${teamLogo ? `<img class="team-profile-logo" src="logos/${teamLogo}" alt="${teamName} logo" onerror="this.hidden=true">` : ''}
@@ -136,6 +144,10 @@ if (!teamName || seasons.length === 0) {
         <p class="team-profile-summary">${seasons.length} season${seasons.length === 1 ? '' : 's'} recorded · ${memberCount} player${memberCount === 1 ? '' : 's'} recorded</p>
       </div>
     </header>
+    ${descriptionBlock || metaCards ? `<section class="section-card team-profile-details">
+      ${descriptionBlock}
+      ${metaCards ? `<div class="team-profile-meta-grid">${metaCards}</div>` : ''}
+    </section>` : ''}
     <h2 class="team-history-heading">Season history</h2>
     ${seasonCards}`;
 }

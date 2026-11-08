@@ -33,14 +33,18 @@
   </div>
 
   <section id="players-panel" class="encyclopedia-panel" role="tabpanel" aria-labelledby="players-tab">
-    <p class="section-intro">Every player in Pitchball history.</p>
-    <div class="search-row">
+    <p class="section-intro" id="players-intro">Every player in Pitchball history.</p>
+    <div class="search-row players-search-row">
       <input type="text" class="search-input" id="search" placeholder="Search players..." oninput="renderGrid()">
       <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
       <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
       <button class="filter-btn" onclick="setFilter('retired',this)">Retired</button>
       <button class="filter-btn" onclick="setFilter('inactive',this)">Inactive</button>
       <button class="filter-btn" onclick="setFilter('unknown',this)">Unknown</button>
+      <div class="hall-of-fame-filters" role="group" aria-label="Filter by Hall of Fame induction">
+        <span>Hall of Fame:</span>
+        <label><input type="checkbox" name="hall-of-fame-filter" value="yes" onchange="renderGrid()"> Yes</label>
+      </div>
       <select class="search-input" id="sort-select" aria-label="Sort players" onchange="renderGrid()" style="flex:0;width:130px;">
         <option value="az">A → Z</option>
         <option value="za">Z → A</option>
@@ -54,6 +58,15 @@
     <p class="section-intro">Teams gathered from player career records. Open a season archive to explore its results.</p>
     <div class="search-row">
       <input type="search" class="search-input" id="team-search" placeholder="Search teams..." oninput="renderTeams()">
+      <select class="search-input" id="season-search" aria-label="Filter teams by season" onchange="renderTeams()" style="max-width: 220px;">
+        <option value="">All seasons</option>
+        <option value="PSL1">PSL 1</option>
+        <option value="PSL2">PSL 2</option>
+        <option value="PSL3">PSL 3</option>
+        <option value="PSL4">PSL 4</option>
+        <option value="PSL5">PSL 5</option>
+        <option value="PSL6">PSL 6</option>
+      </select>
     </div>
     <div class="teams-grid" id="teams-grid"></div>
   </section>
@@ -82,6 +95,7 @@
 // To add a player, copy a block and fill in the fields.
 // id: lowercase, hyphens only â€” must match their photo filename (id.png)
 // status: "active", "inactive", or "retired"
+// hallofFame: "yes" when inducted; omit otherwise
 // titles: array of title strings e.g. ["PSL1 Champion", "PSL3 MVP"]
 // seasons: array of {season, team, detail} â€” detail is optional note
 // upcoming: only for active players â€” {opponent, date, competition} or null
@@ -112,11 +126,17 @@ function setFilter(f, btn) {
 
 function renderGrid() {
   const query = document.getElementById('search').value.toLowerCase();
+  const hallOfFameOnly = document.querySelector('input[name="hall-of-fame-filter"]').checked;
+  document.body.classList.toggle('hall-of-fame-mode', hallOfFameOnly);
+  document.getElementById('players-intro').textContent = hallOfFameOnly
+    ? 'The players who redefined the sport. Skill, domination, contribution.'
+    : 'Every player in Pitchball history.';
   const filtered = players.filter(p => {
     const normalizedStatus = (p.status || '').toLowerCase();
     const matchFilter = currentFilter === 'all' || (currentFilter === 'unknown' ? (normalizedStatus === 'unknown' || normalizedStatus === 'tbd') : normalizedStatus === currentFilter);
     const matchSearch = p.name.toLowerCase().includes(query);
-    return matchFilter && matchSearch;
+    const matchHallOfFame = !hallOfFameOnly || (p.hallofFame || '').toLowerCase() === 'yes';
+    return matchFilter && matchSearch && matchHallOfFame;
   });
 
   const sort = document.getElementById('sort-select').value;
@@ -137,7 +157,8 @@ if(sort === 'titles') filtered.sort((a,b) => getPlayerAwards(b).length - getPlay
 }
 
 function renderTeams() {
-  const query = document.getElementById('team-search').value.trim().toLowerCase();
+  const teamQuery = document.getElementById('team-search').value.trim().toLowerCase();
+  const seasonQuery = document.getElementById('season-search').value;
   const teamMap = new Map();
   players.forEach(player => {
     (player.seasons || []).filter(Boolean).forEach(season => {
@@ -157,17 +178,27 @@ function renderTeams() {
   });
 
   const teams = Array.from(teamMap.values())
-    .filter(team => team.name.toLowerCase().includes(query))
+    .filter(team => {
+      const matchesTeam = team.name.toLowerCase().includes(teamQuery);
+      const matchesSeason = !seasonQuery || team.seasons.has(seasonQuery);
+      return matchesTeam && matchesSeason;
+    })
     .sort((a, b) => a.name.localeCompare(b.name));
+
   document.getElementById('total-teams').textContent = teams.length;
   document.getElementById('teams-grid').innerHTML = teams.map(team => {
+    const profile = teamProfiles?.[team.name] || {};
+    const description = (profile.description || '').trim();
+    const briefDescription = description ? `${description.slice(0, 100)}${description.length > 100 ? '…' : ''}` : 'No team summary added yet.';
+    const seasonList = Array.from(team.seasons).sort((a, b) => Number(a.replace(/\D/g, '')) - Number(b.replace(/\D/g, ''))).join(' · ');
     return `<a class="team-card" href="team.html?name=${encodeURIComponent(team.name)}">
       <div class="team-card-heading">
         ${team.logo ? `<img class="team-logo" src="logos/${team.logo}" alt="${team.name} logo" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'team-logo-fallback',textContent:'Logo unavailable'}))">` : ''}
         <h2>${team.name}</h2>
       </div>
       <p class="team-meta">${team.seasons.size} season${team.seasons.size === 1 ? '' : 's'} recorded</p>
-      <p class="team-seasons">${Array.from(team.seasons).sort((a, b) => Number(a.replace(/\D/g, '')) - Number(b.replace(/\D/g, ''))).join(' · ')}</p>
+      <p class="team-card-description">${briefDescription}</p>
+      <p class="team-seasons">${seasonList}</p>
       <p class="team-archive-link">View team profile →</p>
     </a>`;
   }).join('') || '<p class="empty-state">No teams found.</p>';

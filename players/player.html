@@ -43,6 +43,10 @@ if(!p) {
   const playerAwards = getPlayerAwards(p);
   const titles = playerAwards.filter(award => award.category === 'Cup' || award.category === 'League');
   const accolades = playerAwards.filter(award => !['Cup', 'League'].includes(award.category));
+  const ownedTeams = Object.entries(teamProfiles)
+    .filter(([, profile]) => (profile.owner || '').trim().toLowerCase() === p.name.trim().toLowerCase())
+    .map(([team]) => `<a class="badge badge-owner" href="team.html?name=${encodeURIComponent(team)}">Owner · ${team}</a>`)
+    .join('');
 
   const renderAwardGroups = (items, categories) => categories.map(category => {
     const categoryItems = items.filter(item => item.category === category);
@@ -85,6 +89,7 @@ if(!p) {
         <div class="player-badges">
           <span class="badge ${p.status==='active'?'badge-active':p.status==='retired'?'badge-retired':p.status==='inactive'?'badge-inactive':'badge-unknown'}">${p.status==='active'?'Active':p.status==='retired'?'Retired':p.status==='inactive'?'Inactive':'Unknown'}</span>
           ${playerAwards.length ? `<span class="badge badge-title">🏆 ${playerAwards.length} Titles &amp; Accolades</span>` : ''}
+          ${ownedTeams}
         </div>
         <div class="player-description">
           <p class="player-desc is-collapsed">${p.description}</p>

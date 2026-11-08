@@ -1,4 +1,61 @@
-﻿const players = [
+﻿const teamProfiles = {
+  "AXR": { owner: "Achilleas Filios" },
+  "Aetoi": { owner: "Odysseas Georgakopoulos" },
+  "Air Condition": { owner: "Giannis Kordopatis" },
+  "Axtarmades": { owner: "Harris Rigas" },
+  "Babiniotes": { owner: "Stavros Stavropoulos" },
+  "BADiles": { owner: "Dimitris Gavalas" },
+  "Basement Boys": { owner: "Jordan Aslanis" },
+  "Brazil": { owner: "Thanos Chatziiordanou" },
+  "Chewbacca": { owner: "Vasilis Mavraganis" },
+  "Clippers": { owner: "Kostas Kapetanios" },
+  "Didymoi Pyrgoi": { owner: "Dimitris Filippou" },
+  "EX7T": { owner: "Avaris Ntzamilis" },
+  "Fintani": { owner: "Daniel Chortikoglou" },
+  "Golden Bullet": { owner: "Giannis Katsavounis" },
+  "Hitters": { owner: "Iro Ganti" },
+  "Hoopers": { owner: "Petros Mpogeas" },
+  "Hornets": { owner: "Christos Katopodis" },
+  "Kalyma": { owner: "Nikos Kalisperis" },
+  "Karronios": { owner: "Kostis Vasileiou" },
+  "Kleftes": { owner: "Giorgos Melidis" },
+  "Koseveikos": { owner: "Konstantinos Kalfiotis" },
+  "Kritsinia": { owner: "Orfeas Maragkos" },
+  "Ksades": { owner: "Konstantinos Sfikas" },
+  "Lampater": { owner: "Tzannis Mermigas" },
+  "MAKFI": { owner: "Makis Makris" },
+  "Maralers": { owner: "Marios Kapsopoulos" },
+  "Melpon": { owner: "Vaggelis Poniros" },
+  "Midi Kidz": { owner: "Stefanos Mavrogiannis" },
+  "Mpesala": { owner: "Tzo Stavridis" },
+  "NFFC": { owner: "Petros Papaspyropoulos" },
+  "Nanoi": { owner: "Christos Nikolopoulos" },
+  "Niki Alimou": { owner: "Dionysis Chalikias" },
+  "Nikolado": { owner: "Nikos Nikolaou" },
+  "Oi Thryloi": { owner: "Vasilis Efstathiou" },
+  "Pagkavliakos": { owner: "Odysseas Argyrakis" },
+  "Phoenix": { owner: "Filippos Efstathiou" },
+  "Polo": { owner: "Dimitris Antoninis" },
+  "R1": { owner: "Michalis Lerogiannis" },
+  "Russia": { owner: "Teo Gkaniatsos" },
+  "S Tiers": { owner: "Thodoris Telloglou" },
+  "Sapioi": { owner: "Panagiotis Perdikis" },
+  "Shadow Wizard Money Gang": { owner: "Giorgos Rontogiannis" },
+  "Skiouroi PC": { owner: "Nikolas Moschonas" },
+  "Snipers": { owner: "Giannis Stefanis" },
+  "Spasmena Mila": { owner: "Aris Tsertos" },
+  "Taximi": { owner: "Taxiarchis Kassotakis" },
+  "Team Name": { owner: "" },
+  "Team Till Death": { owner: "Giorgos Karamolegkos" },
+  "Temachio": { owner: "Marios Georgakas" },
+  "Trixes": { owner: "Marios Arkadopoulos" },
+  "Volos Drummers": { owner: "Giorgos Zacharopoulos" },
+  "Warriors": { owner: "Panos Chardas" },
+  "Y&Y": { owner: "Giannis Akridas" },
+  "eee": { owner: "Nikos Parnassas" }
+};
+
+const players = [
   {
     id: "dimitris-gavalas",
     name: "Dimitris Gavalas",
@@ -35,6 +92,7 @@
     id: "kostas-kapetanios",
     name: "Kostas Kapetanios",
     status: "retired",
+    hallofFame: "yes",
     titles: ["PSL2 Champion", "PSL2 MVP", "PSL4 Champion", "PSL4 MVP", "PSL4 Top Scorer"],
     seasons: [
       {season:"PSL1", team:"Clippers", logo:"clippers.png", detail:""},
@@ -49,6 +107,7 @@
     id: "giorgos-melidis",
     name: "Giorgos Melidis",
     status: "retired",
+    hallofFame: "yes",
     titles: ["PSL3 Cup Champion", "PSL3 MVP"],
     seasons: [
       {season:"PSL2", team:"Melpon", logo:"melpon.png", detail:"Debut season"},
@@ -137,7 +196,7 @@
     status: "active",
     titles: [],
     seasons: [
-      {season:"PSL2", team:"Oi Kapoioi", logo:"ok.png", detail:""},
+      {season:"PSL2", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
       {season:"PSL3", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
       {season:"PSL4", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
       {season:"PSL5", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
@@ -229,7 +288,7 @@
     status: "active",
     titles: [],
     seasons: [
-      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
+      {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:""},
       {season:"PSL5", team:"Midi Kidz", logo:"midi.png", detail:""},
       {season:"PSL6", team:"Lampater", logo:"lpc.png", detail:""},
     ],
@@ -242,7 +301,7 @@
     status: "active",
     titles: [],
     seasons: [
-      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
+      {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:""},
       {season:"PSL5", team:"Midi Kidz", logo:"midi.png", detail:""},
       {season:"PSL6", team:"Midi Kidz", logo:"midi.png", detail:""},
     ],
@@ -255,7 +314,7 @@
     status: "inactive",
     titles: [],
     seasons: [
-      {season:"PSL2", team:"Panannaikos", logo:"panann.png", detail:""},
+      {season:"PSL2", team:"Warriors", logo:"warriors.png", detail:""},
       {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
       {season:"PSL5", team:"Warriors", logo:"warriors.png", detail:""},
     ],
@@ -381,7 +440,7 @@
     status: "inactive",
     titles: [],
     seasons: [
-      {season:"PSL2", team:"Grivnikikos", logo:"grivnik.png", detail:""},
+      {season:"PSL2", team:"Nanoi", logo:"nanoi.png", detail:""},
       {season:"PSL3", team:"Trixes", logo:"trixes.png", detail:""},
     ],
     upcoming: null,
@@ -404,7 +463,7 @@
     status: "inactive",
     titles: [],
     seasons: [
-      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:""},
+      {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:""},
       {season:"PSL5", team:"Hoopers", logo:"hoopers.png", detail:""},
     ],
     upcoming: null,
@@ -570,6 +629,7 @@
     id: "joestav",
     name: "Tzo Stavridis",
     status: "retired",
+    hallofFame: "yes",
     titles: ["PSL1 Champion"],
     seasons: [
       {season:"PSL1", team:"R1", logo:"r1.png", detail:""},
@@ -584,6 +644,7 @@
     id: "xkapet",
     name: "Christos Kapetanios",
     status: "retired",
+    hallofFame: "yes",
     titles: [],
     seasons: [
       {season:"PSL1", team:"AXR", logo:"axr.png", detail:""},
@@ -597,6 +658,7 @@
     id: "filios",
     name: "Achilleas Filios",
     status: "retired",
+    hallofFame: "yes",
     titles: ["PSL4 Cup Champion"],
     seasons: [
       {season:"PSL1", team:"AXR", logo:"axr.png", detail:""},
@@ -650,6 +712,7 @@
     id: "filp",
     name: "Dimitris Filippou",
     status: "retired",
+    hallofFame: "yes",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Didymoi Pyrgoi", logo:"ddm.png", detail:""},
@@ -730,7 +793,7 @@
     status: "inactive",
     titles: [],
     seasons: [
-      {season:"PSL2", team:"Grivnikikos", logo:"grivnik.png", detail:""},
+      {season:"PSL2", team:"Nanoi", logo:"nanoi.png", detail:""},
       {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:""},
     ],
     upcoming: null,
@@ -742,7 +805,7 @@
     status: "retired",
     titles: [],
     seasons: [
-      {season:"PSL2", team:"Panannaikos", logo:"panann.png", detail:""},
+      {season:"PSL2", team:"Warriors", logo:"warriors.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
@@ -753,7 +816,7 @@
     status: "retired",
     titles: [],
     seasons: [
-      {season:"PSL2", team:"Oi Kapoioi", logo:"ok.png", detail:""},
+      {season:"PSL2", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
       {season:"PSL4", team:"Shadow Wizard Money Gang", logo:"swmg.png", detail:""},
     ],
     upcoming: null,
@@ -774,6 +837,7 @@
     id: "kvas",
     name: "Kostis Vasileiou",
     status: "retired",
+    hallofFame: "yes",
     titles: ["PSL4 Cup Champion"],
     seasons: [
       {season:"PSL2", team:"Karronios", logo:"karron.png", detail:""},
@@ -859,7 +923,7 @@
     status: "retired",
     titles: [],
     seasons: [
-      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:"Retired mid-season"},
+      {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:"Retired mid-season"},
     ],
     upcoming: null,
     description: "TBA"
@@ -870,7 +934,7 @@
     status: "retired",
     titles: [],
     seasons: [
-      {season:"PSL4", team:"Mini Kidz", logo:"mini.png", detail:"Retired mid-season"},
+      {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:"Retired mid-season"},
     ],
     upcoming: null,
     description: "TBA"

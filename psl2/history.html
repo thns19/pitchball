@@ -75,9 +75,9 @@
 <script>
 const LOGOS = {
   "AXR":"logos/axr.png","Melpon":"logos/melpon.png","Nikolado":"logos/nikolado.png",
-  "Grivnikikos":"logos/grivnikikos.png","R1":"logos/r1.png","Taximi":"logos/taximi.png",
-  "Kalyma":"logos/kalyma.png","Panannaikos":"logos/panannaikos.png","Brazil":"logos/brazil.png",
-  "Mpesala":"logos/mpesala.png","Oi Kapoioi":"logos/oikapoioi.png","Karronios":"logos/karronios.png",
+  "Nanoi":"../players/logos/nanoi.png","R1":"logos/r1.png","Taximi":"logos/taximi.png",
+  "Kalyma":"logos/kalyma.png","Warriors":"../players/logos/warriors.png","Brazil":"logos/brazil.png",
+  "Mpesala":"logos/mpesala.png","Spasmena Mila":"../players/logos/spasmena.png","Karronios":"logos/karronios.png",
   "Temachio":"logos/temachio.png","Maralers":"logos/maralers.png","S Tiers":"logos/stiers.png",
   "Koseveikos":"logos/koseveikos.png"
 };
@@ -86,49 +86,49 @@ function tlogo(name, size=14){
 }
 
 const PENALTY = {
-  "AXR": -1, "Nikolado": -1, "Panannaikos": -9
+  "AXR": -1, "Nikolado": -1, "Warriors": -9
 };
 const PENALTY_INFO = {
   "AXR": "1 point deducted by\nPitchball Administration",
   "Nikolado": "1 point deducted by\nPitchball Administration",
-  "Panannaikos": "Forfeited all league matches\n(-9 points deducted)"
+  "Warriors": "Forfeited all league matches\n(-9 points deducted)"
 };
 
 const groups = [
   {
     name: "Group A",
-    teams: ["AXR","Melpon","Nikolado","Grivnikikos"],
+    teams: ["AXR","Melpon","Nikolado","Nanoi"],
     fixtures: [
       {md:1, h:"AXR",       a:"Nikolado",    hs:5, as:3},
-      {md:1, h:"Grivnikikos",a:"Melpon",      hs:2, as:5},
-      {md:2, h:"AXR",       a:"Grivnikikos",  hs:5, as:0},
+      {md:1, h:"Nanoi",     a:"Melpon",       hs:2, as:5},
+      {md:2, h:"AXR",       a:"Nanoi",        hs:5, as:0},
       {md:2, h:"Nikolado",  a:"Melpon",       hs:3, as:5},
       {md:3, h:"AXR",       a:"Melpon",       hs:5, as:3},
-      {md:3, h:"Nikolado",  a:"Grivnikikos",  hs:5, as:0},
+      {md:3, h:"Nikolado",  a:"Nanoi",        hs:5, as:0},
     ]
   },
   {
     name: "Group B",
-    teams: ["R1","Taximi","Kalyma","Panannaikos"],
+    teams: ["R1","Taximi","Kalyma","Warriors"],
     fixtures: [
-      {md:1, h:"R1",         a:"Panannaikos", hs:5, as:0},
+      {md:1, h:"R1",         a:"Warriors",    hs:5, as:0},
       {md:1, h:"Taximi",     a:"Kalyma",      hs:5, as:2},
       {md:2, h:"R1",         a:"Kalyma",      hs:5, as:3},
-      {md:2, h:"Panannaikos",a:"Taximi",      hs:0, as:5},
+      {md:2, h:"Warriors",   a:"Taximi",      hs:0, as:5},
       {md:3, h:"R1",         a:"Taximi",      hs:5, as:3},
-      {md:3, h:"Panannaikos",a:"Kalyma",      hs:0, as:5},
+      {md:3, h:"Warriors",   a:"Kalyma",      hs:0, as:5},
     ]
   },
   {
     name: "Group C",
-    teams: ["Brazil","Mpesala","Oi Kapoioi","Karronios"],
+    teams: ["Brazil","Mpesala","Spasmena Mila","Karronios"],
     fixtures: [
-      {md:1, h:"Brazil",    a:"Oi Kapoioi", hs:5, as:0},
+      {md:1, h:"Brazil",    a:"Spasmena Mila", hs:5, as:0},
       {md:1, h:"Mpesala",   a:"Karronios",  hs:5, as:0},
       {md:2, h:"Brazil",    a:"Karronios",  hs:5, as:0},
-      {md:2, h:"Mpesala",   a:"Oi Kapoioi", hs:5, as:0},
+      {md:2, h:"Mpesala",   a:"Spasmena Mila", hs:5, as:0},
       {md:3, h:"Brazil",    a:"Mpesala",    hs:5, as:1},
-      {md:3, h:"Oi Kapoioi",a:"Karronios",  hs:5, as:0},
+      {md:3, h:"Spasmena Mila",a:"Karronios", hs:5, as:0},
     ]
   },
   {

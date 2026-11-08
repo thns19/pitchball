@@ -15,8 +15,8 @@ const cupMatchData = [
 
   // ── PLAY-IN ───────────────────────────────────────────────
   // {
-  //   id: "CUP_PlayIn_MiniKidz_SWMG",
-  //   home: "Mini Kidz", away: "SWMG", hs: 2, as: 5,
+  //   id: "CUP_PlayIn_MidiKidz_SWMG",
+  //   home: "Midi Kidz", away: "SWMG", hs: 2, as: 5,
   //   date: null, mvp: null, round: "Play-in",
   //   events: []
   // },
