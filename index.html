@@ -385,13 +385,22 @@ body::before {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: linear-gradient(135deg, transparent 60%, rgba(57,200,119,0.04));
   pointer-events: none;
 }
+.season-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.season-card > * { position: relative; z-index: 1; }
 .season-card:hover {
   border-color: var(--green);
   transform: translateY(-2px);
-  background: #1a1f0f;
+  background-color: #1a1f0f;
 }
 .season-card.featured {
   grid-column: 1 / -1;
@@ -465,6 +474,174 @@ body::before {
 .season-card:hover .arrow { transform: translateX(4px); color: var(--green); }
 .season-card.special:hover .arrow { color: var(--gold); }
 .season-card.playoffs:hover .arrow { color: var(--gold); }
+
+.season-card.season-psl6 {
+  background-color: #100b22;
+  background-image: url("psl6/bg.png");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: rgba(179, 102, 255, 0.42);
+}
+.season-card.season-psl6::before {
+  background: rgba(5, 1, 15, 0.63);
+}
+.season-card.season-psl6 .card-season { color: #c58aff; }
+.season-card.season-psl6 .card-desc { color: rgba(225,220,245,0.68); }
+.season-card.season-psl6 .arrow { color: #00cfe0; }
+.season-card.season-psl6:hover { background-color: #100b22; border-color: #b366ff; }
+
+.season-card.season-encyclopedia {
+  background:
+    radial-gradient(ellipse at 50% -18%, rgba(245,200,66,0.2), transparent 58%),
+    linear-gradient(rgba(245,200,66,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,200,66,0.045) 1px, transparent 1px),
+    #171107;
+  background-size: auto, 48px 48px, 48px 48px, auto;
+  border-color: rgba(245,200,66,0.32);
+}
+.season-card.season-encyclopedia .card-season { color: #ffd95c; }
+.season-card.season-encyclopedia .card-desc { color: #b89c5d; }
+.season-card.season-encyclopedia .pill-special {
+  background: rgba(245,200,66,0.1);
+  border-color: rgba(245,200,66,0.32);
+  color: #ffd95c;
+}
+.season-card.season-encyclopedia .arrow { color: #f5c842; }
+.season-card.season-encyclopedia::before {
+  background: linear-gradient(115deg, transparent 35%, rgba(255,233,153,0.09) 50%, transparent 65%);
+  opacity: 0.55;
+}
+.season-card.season-encyclopedia:hover {
+  background:
+    radial-gradient(ellipse at 50% -18%, rgba(245,200,66,0.24), transparent 58%),
+    linear-gradient(rgba(245,200,66,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,200,66,0.055) 1px, transparent 1px),
+    #211907;
+  background-size: auto, 48px 48px, 48px 48px, auto;
+  border-color: #f5c842;
+}
+
+.season-card.season-news {
+  background-color: #1a0a00;
+  background-image: url("news/bg.png");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: rgba(255,140,0,0.38);
+}
+.season-card.season-news::before {
+  background: rgba(26, 10, 0, 0.56);
+}
+.season-card.season-news::after { background: linear-gradient(120deg, rgba(255,140,0,0.08), transparent 70%); }
+.season-card.season-news .card-season { color: #ffad42; }
+.season-card.season-news .card-desc { color: rgba(255,220,150,0.62); }
+.season-card.season-news .arrow { color: #ff8c00; }
+.season-card.season-news:hover {
+  background-color: #1a0a00;
+  background-image: url("news/bg.png");
+  border-color: #ff8c00;
+}
+
+.season-card.season-psl5 {
+  background-color: #1a2110;
+  background-image: url("psl5/bg.png");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: rgba(99,137,65,0.48);
+}
+.season-card.season-psl5::before {
+  background: rgba(11, 14, 6, 0.48);
+}
+.season-card.season-psl5 .card-season { color: #72d998; }
+.season-card.season-psl5 .card-desc { color: rgba(215,219,200,0.62); }
+.season-card.season-psl5 .arrow { color: #39c877; }
+.season-card.season-psl5:hover { background-color: #1a2110; border-color: #39c877; }
+
+.season-card.season-legacy {
+  background: #f8f8f6;
+  border-color: #deded7;
+  color: #1a1a1a;
+}
+.season-card.season-legacy::before { background: linear-gradient(135deg, transparent 55%, rgba(76,175,125,0.08)); }
+.season-card.season-legacy .card-season { color: #30362e; }
+.season-card.season-legacy .card-desc { color: #666b63; }
+.season-card.season-legacy .pill-done { color: #69736b; border-color: rgba(76,175,125,0.3); }
+.season-card.season-legacy .arrow { color: #4caf7d; }
+.season-card.season-legacy:hover { background-color: #fff; border-color: #4caf7d; }
+
+.season-card.season-psl4 {
+  background-color: #686b6b;
+  background-image: url("psl4/bg.png");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: #858888;
+  color: #fff;
+}
+.season-card.season-psl4::before {
+  background: rgba(15, 17, 18, 0.38);
+}
+.season-card.season-psl4 .card-season { color: #fff; }
+.season-card.season-psl4 .card-desc { color: rgba(255,255,255,0.74); }
+.season-card.season-psl4 .pill-done { color: #fff; border-color: rgba(255,255,255,0.36); }
+.season-card.season-psl4 .arrow { color: #fff; }
+.season-card.season-psl4:hover {
+  background-color: #686b6b;
+  background-image: url("psl4/bg.png");
+  border-color: #b1b5b5;
+}
+
+.season-card.season-psl3 {
+  background: #fff;
+  background-image: url("psl3/bg.png");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: #e4e6e2;
+  color: #242824;
+}
+.season-card.season-psl3::before {
+  background: rgba(255, 255, 255, 0.28);
+}
+.season-card.season-psl3 .card-season { color: #30362e; }
+.season-card.season-psl3 .card-desc { color: #666b63; }
+.season-card.season-psl3 .pill-done { color: #69736b; border-color: rgba(76,175,125,0.3); }
+.season-card.season-psl3 .arrow { color: #4caf7d; }
+.season-card.season-psl3:hover {
+  background-color: #fff;
+  background-image: url("psl3/bg.png");
+  border-color: #4caf7d;
+}
+
+.season-card.season-psl2 {
+  background: #fff;
+  background-image: url("psl2/bg.png");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: #e4e6e2;
+  color: #242824;
+}
+.season-card.season-psl2::before {
+  background: rgba(255,255,255,0.68);
+}
+.season-card.season-psl2 .card-season { color: #30362e; }
+.season-card.season-psl2 .card-desc { color: #666b63; }
+.season-card.season-psl2 .pill-done { color: #69736b; border-color: rgba(76,175,125,0.3); }
+.season-card.season-psl2 .arrow { color: #4caf7d; }
+.season-card.season-psl2:hover {
+  background-color: #fff;
+  background-image: url("psl2/bg.png");
+  border-color: #4caf7d;
+}
+.season-card.season-psl1 {
+  background: #fff;
+  border-color: #e4e6e2;
+  color: #242824;
+}
+.season-card.season-psl1::before { background: none; }
+.season-card.season-psl1 .card-season { color: #30362e; }
+.season-card.season-psl1 .card-desc { color: #666b63; }
+.season-card.season-psl1 .pill-done { color: #69736b; border-color: rgba(76,175,125,0.3); }
+.season-card.season-psl1 .arrow { color: #4caf7d; }
+.season-card.season-psl1:hover { background-color: #fff; border-color: #4caf7d; }
+
 
 /* ── FOOTER BAR ── */
 .footer-bar {
@@ -637,7 +814,7 @@ body::before {
     <div class="section-label">PAGES</div>
     <div class="seasons-grid">
 
-      <a href="psl6/index.html" class="season-card featured">
+      <a href="psl6/index.html" class="season-card featured season-psl6">
         <div class="card-left">
           <div class="card-season">PSL6</div>
           <div class="card-desc">The sixth season is on its way — check out the registered teams, ratings and simulator before kickoff.</div>
@@ -648,7 +825,7 @@ body::before {
         </div>
       </a>
 
-      <a href="players/index.html" class="season-card special">
+      <a href="players/index.html" class="season-card special season-encyclopedia">
         <div class="card-left">
           <div class="card-season">Pitchball Encyclopedia</div>
           <div class="card-desc">Explore players, teams, and the history of the league.</div>
@@ -659,7 +836,7 @@ body::before {
         </div>
       </a>
 
-            <a href="news/newsindex.html" class="season-card special">
+            <a href="news/newsindex.html" class="season-card special season-news">
         <div class="card-left">
           <div class="card-season">News</div>
           <div class="card-desc">Articles about PSL.</div>
@@ -670,7 +847,7 @@ body::before {
         </div>
       </a>
 
-      <a href="psl5/index.html" class="season-card">
+      <a href="psl5/index.html" class="season-card season-psl5">
         <div class="card-left">
           <div class="card-season">PSL5</div>
           <div class="card-desc">The fifth season — 18 teams, group stage, cup, league stage and play-offs.</div>
@@ -681,7 +858,7 @@ body::before {
         </div>
       </a>
 
-      <a href="psl4/hub.html" class="season-card">
+      <a href="psl4/hub.html" class="season-card season-legacy season-psl4">
         <div class="card-left">
           <div class="card-season">PSL4</div>
           <div class="card-desc">Fourth season.</div>
@@ -692,7 +869,7 @@ body::before {
         </div>
       </a>
 
-      <a href="psl3/hub.html" class="season-card">
+      <a href="psl3/hub.html" class="season-card season-legacy season-psl3">
         <div class="card-left">
           <div class="card-season">PSL3</div>
           <div class="card-desc">The greatest season of all time.</div>
@@ -703,7 +880,7 @@ body::before {
         </div>
       </a>
 
-      <a href="psl2/hub.html" class="season-card">
+      <a href="psl2/hub.html" class="season-card season-legacy season-psl2">
         <div class="card-left">
           <div class="card-season">PSL2</div>
           <div class="card-desc">Second season.</div>
@@ -714,7 +891,7 @@ body::before {
         </div>
       </a>
 
-      <a href="psl1/hub.html" class="season-card">
+      <a href="psl1/hub.html" class="season-card season-legacy season-psl1">
         <div class="card-left">
           <div class="card-season">PSL1</div>
           <div class="card-desc">Where it all began.</div>

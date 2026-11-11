@@ -381,7 +381,7 @@ const players = [
       {season:"PSL3", team:"MAKFI", logo:"makfi.png", detail:""},
       {season:"PSL4", team:"MAKFI", logo:"makfi.png", detail:""},
       {season:"PSL5", team:"Phoenix", logo:"phoenix.png", detail:""},
-      {season:"PSL5", team:"Axtarmades", logo:"axtarmades.png", detail:""},
+      {season:"PSL6", team:"Axtarmades", logo:"axtarmades.png", detail:""},
     ],
     upcoming: null,
     description: "TBA"
