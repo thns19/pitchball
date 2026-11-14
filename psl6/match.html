@@ -247,7 +247,7 @@ function buildCupChanceTimeline() {
   let homeScore = 0;
   let awayScore = 0;
   const points = [];
-  events.forEach(event => {
+  [...events].reverse().forEach(event => {
     const homeScored = getCupPointScorer(event, home, away);
     if (homeScored === null) return;
     if (homeScored) homeScore++;
@@ -364,13 +364,12 @@ function drawCupChanceChart(context, points, home, away, top, width) {
       context.fill();
     });
   });
-  const labelIndices = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])];
   context.font = '14px Arial, sans-serif';
   context.fillStyle = '#775b4c';
-  labelIndices.forEach(index => {
+  points.forEach((point, index) => {
     const x = xFor(index);
     context.textAlign = index === 0 ? 'left' : index === points.length - 1 ? 'right' : 'center';
-    context.fillText(`Event ${index}`, x, chartBottom + 28);
+    context.fillText(`${point.homeScore}-${point.awayScore}`, x, chartBottom + 28);
   });
   context.textAlign = 'left';
 }
