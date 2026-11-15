@@ -671,18 +671,72 @@ h2 { font-size: 21px; }
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   grid-template-areas:
     "titles career"
-    "accolades career";
+    "accolades career"
+    "birthday career";
   align-items: start;
   gap: 12px;
 }
 .player-profile-grid .section-card { min-width: 0; margin-bottom: 0; }
 .player-titles-section { grid-area: titles; }
 .player-accolades-section { grid-area: accolades; }
+.player-birthday-section { grid-area: birthday; }
 .player-career-section { grid-area: career; }
 .player-upcoming-card { margin-top: 12px; }
+.player-birthday-date { color: var(--page-text); font-size: 16px; font-weight: 600; }
+.player-birthday-note { color: var(--page-muted); font-size: 11px; margin-top: 5px; }
+.player-birthday-greeting {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 0.85rem;
+  padding: 8px 12px;
+  border: 1px solid rgba(245, 200, 66, 0.45);
+  border-radius: 999px;
+  background: rgba(245, 200, 66, 0.12);
+  color: #f5c842;
+  font-size: 13px;
+  font-weight: 600;
+}
+body.birthday-today .player-profile-hero {
+  border-color: #f5c842;
+  box-shadow: 0 0 30px rgba(245, 200, 66, 0.22);
+  animation: birthday-profile-glow 2s ease-in-out infinite alternate;
+}
+body.birthday-today .player-profile-hero .player-header-photo {
+  border-color: #f5c842;
+  box-shadow: 0 0 22px rgba(245, 200, 66, 0.42);
+}
+@keyframes birthday-profile-glow {
+  from { box-shadow: 0 0 16px rgba(245, 200, 66, 0.16); }
+  to { box-shadow: 0 0 34px rgba(245, 200, 66, 0.38); }
+}
+.birthday-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+}
+.birthday-confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: birthday-confetti-fall 3s ease-in var(--confetti-delay, 0s) forwards;
+}
+@keyframes birthday-confetti-fall {
+  10% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-drift), 105vh, 0) rotate(var(--confetti-spin));
+  }
+}
 .player-section-nav,
 .player-titles-section,
 .player-accolades-section,
+.player-birthday-section,
 .player-career-section { scroll-margin-top: 1rem; }
 
 @media (max-width: 600px) {
@@ -744,7 +798,7 @@ h2 { font-size: 21px; }
   }
   .player-profile-grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "titles" "accolades" "career";
+    grid-template-areas: "titles" "accolades" "birthday" "career";
   }
 }
 
@@ -752,6 +806,7 @@ h2 { font-size: 21px; }
   body,
   body::after { transition: none; }
   body.hall-of-fame-mode::after { animation: none; }
+  body.birthday-today .player-profile-hero { animation: none; }
   .badge-hall-of-fame { animation: none; }
 }
 

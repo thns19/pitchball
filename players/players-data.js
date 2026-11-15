@@ -60,6 +60,7 @@ const players = [
     id: "dimitris-gavalas",
     name: "Dimitris Gavalas",
     status: "active",
+    birthday: "05-28",
     titles: ["PSL3 Champion", "PSL1 League MVP", "PSL5 Champion", "PSL5 Top Scorer", "PSL5 MVP"],
     seasons: [
       {season:"PSL1", team:"BADiles", logo:"badiles.png", detail:"Finalist. League MVP"},
@@ -76,6 +77,7 @@ const players = [
     id: "thanos-chatziiordanou",
     name: "Thanos Chatziiordanou",
     status: "active",
+    birthday: "02-12",
     titles: ["PSL2 Champion", "PSL5 Champion"],
     seasons: [
       {season:"PSL1", team:"BADiles", logo:"badiles.png", detail:"Finalist"},
@@ -86,12 +88,13 @@ const players = [
       {season:"PSL6", team:"BADiles", logo:"badiles.png", detail:""},
     ],
     upcoming: null,
-    description: "From playmaker excellence to zonal master, Thanos has evolved his game throughout his 2.5 year long career. His championship-winning PSL2 with Kapetanios is one to remember. He also won PSL5. With his career coming to a close in PSL6, it would be a perfect scenario for him to win one this season with his best friend, Dimitris Gavalas."
+    description: "From playmaker excellence to zonal master, Thanos has evolved his game throughout his 3.5 year long career. His championship-winning PSL2 with Kapetanios is one to remember. He also won PSL5. With his career coming to a close in PSL6, it would be a perfect scenario for him to win one this season with his best friend, Dimitris Gavalas."
   },
   {
     id: "kostas-kapetanios",
     name: "Kostas Kapetanios",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: ["PSL2 Champion", "PSL2 MVP", "PSL4 Champion", "PSL4 MVP", "PSL4 Top Scorer"],
     seasons: [
@@ -107,6 +110,7 @@ const players = [
     id: "giorgos-melidis",
     name: "Giorgos Melidis",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: ["PSL3 Cup Champion", "PSL3 MVP"],
     seasons: [
@@ -121,6 +125,7 @@ const players = [
     id: "mike-lerogiannis",
     name: "Michalis Lerogiannis",
     status: "active",
+    birthday: "09-19",
     titles: ["PSL1 Champion", "PSL1 Final Four MVP"],
     seasons: [
       {season:"PSL1", team:"R1", logo:"r1.png", detail:"Champion. Final Four MVP."},
@@ -137,6 +142,7 @@ const players = [
     id: "yman",
     name: "Nikolas Moschonas",
     status: "active",
+    birthday: "01-07",
     titles: [],
     seasons: [,
       {season:"PSL2", team:"Kalyma", logo:"kalyma.png", detail:""},
@@ -152,6 +158,7 @@ const players = [
     id: "filippoujr",
     name: "Giorgos Filippou",
     status: "active",
+    birthday: "",
     titles: ["PSL4 Rookie of the Season", "PSL5 Cup Champion"],
     seasons: [
       {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:""},
@@ -166,6 +173,7 @@ const players = [
     id: "akridas",
     name: "Giannis Akridas",
     status: "active",
+    birthday: "",
     titles: ["PSL5 Cup Champion"],
     seasons: [
       {season:"PSL3", team:"Aetoi", logo:"aetoi.png", detail:""},
@@ -180,6 +188,7 @@ const players = [
     id: "tax",
     name: "Taxiarchis Kassotakis",
     status: "active",
+    birthday: "",
     titles: ["PSL4 Champion"],
     seasons: [
       {season:"PSL1", team:"Taximi", logo:"taximi.png", detail:""},
@@ -194,6 +203,7 @@ const players = [
     id: "aribaba",
     name: "Aris Tsertos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
@@ -209,6 +219,7 @@ const players = [
     id: "applej",
     name: "Iasonas Miliaras",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"S Tiers", logo:"stier.png", detail:""},
@@ -223,6 +234,7 @@ const players = [
     id: "nb74",
     name: "Petros Papaspyropoulos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"NFFC", logo:"nffc.png", detail:""},
@@ -236,6 +248,7 @@ const players = [
     id: "aslanis",
     name: "Jordan Aslanis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Basement Boys", logo:"basement.png", detail:""},
@@ -249,6 +262,7 @@ const players = [
     id: "koskinas",
     name: "Spyros Koskinas",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Basement Boys", logo:"basement.png", detail:""},
@@ -262,6 +276,7 @@ const players = [
     id: "zacharo",
     name: "Giorgos Zacharopoulos",
     status: "active",
+    birthday: "",
     titles: ["PSL5 Rookie of the Season"],
     seasons: [
       {season:"PSL5", team:"Volos Drummers", logo:"volos.png", detail:""},
@@ -274,6 +289,7 @@ const players = [
     id: "tziovanis",
     name: "Vasilis Tziovanis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Volos Drummers", logo:"volos.png", detail:""},
@@ -286,6 +302,7 @@ const players = [
     id: "mermigas",
     name: "Tzannis Mermigas",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:""},
@@ -299,6 +316,7 @@ const players = [
     id: "mavrogiannis",
     name: "Stefanos Mavrogiannis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:""},
@@ -312,6 +330,7 @@ const players = [
     id: "chardas",
     name: "Panos Chardas",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Warriors", logo:"warriors.png", detail:""},
@@ -325,6 +344,7 @@ const players = [
     id: "gkiolias",
     name: "Sokratis Gkiolias",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
@@ -337,6 +357,7 @@ const players = [
     id: "stavropoulos",
     name: "Stavros Stavropoulos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Axtarmades", logo:"axtarmades.png", detail:""},
@@ -350,6 +371,7 @@ const players = [
     id: "johanito",
     name: "Johan Pilichos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Babiniotes", logo:"babiniotes.png", detail:""},
@@ -362,6 +384,7 @@ const players = [
     id: "kalisperis",
     name: "Nikos Kalisperis",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Kalyma", logo:"kalyma.png", detail:""},
@@ -376,6 +399,7 @@ const players = [
     id: "efstajr",
     name: "Filippos Efstathiou",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"MAKFI", logo:"makfi.png", detail:""},
@@ -390,6 +414,7 @@ const players = [
     id: "stefanis",
     name: "Giannis Stefanis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Snipers", logo:"snipers.png", detail:""},
@@ -402,6 +427,7 @@ const players = [
     id: "iliadis",
     name: "Antonis Iliadis",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Snipers", logo:"snipers.png", detail:""},
@@ -413,6 +439,7 @@ const players = [
     id: "maragkos",
     name: "Orfeas Maragkos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
@@ -426,6 +453,7 @@ const players = [
     id: "kordopat",
     name: "Giannis Kordopatis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Air Condition", logo:"ac.png", detail:""},
@@ -438,6 +466,7 @@ const players = [
     id: "zois",
     name: "Grigoris Zois",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Nanoi", logo:"nanoi.png", detail:""},
@@ -450,6 +479,7 @@ const players = [
     id: "arkado",
     name: "Marios Arkadopoulos",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Trixes", logo:"trixes.png", detail:""},
@@ -461,6 +491,7 @@ const players = [
     id: "mpog",
     name: "Petros Mpogeas",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:""},
@@ -473,6 +504,7 @@ const players = [
     id: "loverdos",
     name: "Ilias Loverdos",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Hoopers", logo:"hoopers.png", detail:""},
@@ -484,6 +516,7 @@ const players = [
     id: "karamolegkos",
     name: "Giorgos Karamolegkos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:"Mid-season signing"},
@@ -497,6 +530,7 @@ const players = [
     id: "kapnakis",
     name: "Miltos Kapnakis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Team Till Death", logo:"ttd.png", detail:""},
@@ -509,6 +543,7 @@ const players = [
     id: "mavraganis",
     name: "Vasilis Mavraganis",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Chewbacca", logo:"chewbacca.png", detail:""},
@@ -520,6 +555,7 @@ const players = [
     id: "paliouras",
     name: "Spyros Paliouras",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Chewbacca", logo:"chewbacca.png", detail:""},
@@ -531,6 +567,7 @@ const players = [
     id: "kepe",
     name: "Iasonas Kepelyan",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Warriors", logo:"warriors.png", detail:""},
@@ -543,6 +580,7 @@ const players = [
     id: "chorti",
     name: "Daniel Chortikoglou",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:""},
@@ -555,6 +593,7 @@ const players = [
     id: "harrisrigas",
     name: "Harris Rigas",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Axtarmades", logo:"axtarmades.png", detail:""},
@@ -569,6 +608,7 @@ const players = [
     id: "antoninis",
     name: "Dimitris Antoninis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL5", team:"Axtarmades", logo:"axtarmades.png", detail:""},
@@ -581,6 +621,7 @@ const players = [
     id: "laskaris",
     name: "Filippos Laskaris",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Polo", logo:"polo.png", detail:""},
@@ -592,6 +633,7 @@ const players = [
     id: "glezos",
     name: "Nikos Glezos",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:"Mid-season signing"},
@@ -604,6 +646,7 @@ const players = [
     id: "bekos",
     name: "Manos Mpekos",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL1", team:"Taximi", logo:"taximi.png", detail:""},
@@ -617,6 +660,7 @@ const players = [
     id: "makis",
     name: "Makis Makris",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"MAKFI", logo:"makfi.png", detail:""},
@@ -629,6 +673,7 @@ const players = [
     id: "joestav",
     name: "Tzo Stavridis",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: ["PSL1 Champion"],
     seasons: [
@@ -644,6 +689,7 @@ const players = [
     id: "xkapet",
     name: "Christos Kapetanios",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: [],
     seasons: [
@@ -658,6 +704,7 @@ const players = [
     id: "filios",
     name: "Achilleas Filios",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: ["PSL4 Cup Champion"],
     seasons: [
@@ -673,6 +720,7 @@ const players = [
     id: "georgakas",
     name: "Marios Georgakas",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL1", team:"Temachio", logo:"temachio.png", detail:""},
@@ -685,6 +733,7 @@ const players = [
     id: "teogan",
     name: "Teo Gkaniatsos",
     status: "retired",
+    birthday: "",
     titles: ["PSL3 Cup Champion"],
     seasons: [
       {season:"PSL1", team:"Temachio", logo:"temachio.png", detail:""},
@@ -699,6 +748,7 @@ const players = [
     id: "poniros",
     name: "Vaggelis Poniros",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Melpon", logo:"melpon.png", detail:""},
@@ -712,6 +762,7 @@ const players = [
     id: "filp",
     name: "Dimitris Filippou",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: [],
     seasons: [
@@ -725,6 +776,7 @@ const players = [
     id: "efsta",
     name: "Vasilis Efstathiou",
     status: "active",
+    birthday: "",
     titles: ["PSL3 Champion"],
     seasons: [
       {season:"PSL1", team:"Oi Thryloi", logo:"thryloi.png", detail:""},
@@ -740,6 +792,7 @@ const players = [
     id: "kalofo",
     name: "Alexandros Kalofolias",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL1", team:"Oi Thryloi", logo:"thryloi.png", detail:""},
@@ -754,6 +807,7 @@ const players = [
     id: "kapsopoulos",
     name: "Marios Kapsopoulos",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL1", team:"Clippers", logo:"clippers.png", detail:""},
@@ -766,6 +820,7 @@ const players = [
     id: "niknik",
     name: "Nikos Nikolaou",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL1", team:"Nikolado", logo:"nikolado.png", detail:""},
@@ -779,6 +834,7 @@ const players = [
     id: "ladas",
     name: "Giorgos Ladas",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL1", team:"Nikolado", logo:"nikolado.png", detail:""},
@@ -791,6 +847,7 @@ const players = [
     id: "vnikos",
     name: "Christos Nikolopoulos",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Nanoi", logo:"nanoi.png", detail:""},
@@ -803,6 +860,7 @@ const players = [
     id: "mantikou",
     name: "Anna Mantikou",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Warriors", logo:"warriors.png", detail:""},
@@ -814,6 +872,7 @@ const players = [
     id: "ronto",
     name: "Giorgos Rontogiannis",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
@@ -826,6 +885,7 @@ const players = [
     id: "karababas",
     name: "Giannis Karampampas",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Karronios", logo:"karron.png", detail:""},
@@ -837,6 +897,7 @@ const players = [
     id: "kvas",
     name: "Kostis Vasileiou",
     status: "retired",
+    birthday: "",
     hallofFame: "yes",
     titles: ["PSL4 Cup Champion"],
     seasons: [
@@ -852,6 +913,7 @@ const players = [
     id: "teotell",
     name: "Thodoris Telloglou",
     status: "inactive",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"S Tiers", logo:"stier.png", detail:""},
@@ -865,6 +927,7 @@ const players = [
     id: "kalf",
     name: "Konstantinos Kalfiotis",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Koseveikos", logo:"koseve.png", detail:""},
@@ -876,6 +939,7 @@ const players = [
     id: "evelyn",
     name: "Evelyn Alexandropoulou",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL2", team:"Koseveikos", logo:"koseve.png", detail:""},
@@ -887,6 +951,7 @@ const players = [
     id: "ody",
     name: "Odysseas Georgakopoulos",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Aetoi", logo:"aetoi.png", detail:""},
@@ -899,6 +964,7 @@ const players = [
     id: "vozidis",
     name: "Thomas Vozidis",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Fintani", logo:"fintani.png", detail:"Mid-season signing"},
@@ -910,6 +976,7 @@ const players = [
     id: "paterakis",
     name: "Grigoris Paterakis",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Nanoi", logo:"nanoi.png", detail:"Retired mid-season"},
@@ -921,6 +988,7 @@ const players = [
     id: "xifaras",
     name: "Pavlos Ksifaras",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:"Retired mid-season"},
@@ -932,6 +1000,7 @@ const players = [
     id: "passas",
     name: "Lambros Passas",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Midi Kidz", logo:"midi.png", detail:"Retired mid-season"},
@@ -943,6 +1012,7 @@ const players = [
     id: "argyrakis",
     name: "Odysseas Argyrakis",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Pagkavliakos", logo:"pagkav.png", detail:""},
@@ -954,6 +1024,7 @@ const players = [
     id: "pavloskap",
     name: "Pavlos Kapetanios",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"Pagkavliakos", logo:"pagkav.png", detail:""},
@@ -965,6 +1036,7 @@ const players = [
     id: "mpoutaras",
     name: "Nikos Mpoutaras",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"eee", logo:"eee.png", detail:""},
@@ -976,6 +1048,7 @@ const players = [
     id: "parnassas",
     name: "Nikos Parnassas",
     status: "retired",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL3", team:"eee", logo:"eee.png", detail:""},
@@ -987,6 +1060,7 @@ const players = [
     id: "cali",
     name: "Kalliopi Tsertou",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
@@ -998,6 +1072,7 @@ const players = [
     id: "gkioliajr",
     name: "Sokratis Gkiolias Jr",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"EX7T", logo:"ex7t.png", detail:""},
@@ -1009,6 +1084,7 @@ const players = [
     id: "avaris",
     name: "Avaris Ntzamilis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"EX7T", logo:"ex7t.png", detail:""},
@@ -1020,6 +1096,7 @@ const players = [
     id: "katopodis",
     name: "Christos Katopodis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Hornets", logo:"hornets.png", detail:""},
@@ -1031,6 +1108,7 @@ const players = [
     id: "ennio",
     name: "Ennio Georgopoulos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Hornets", logo:"hornets.png", detail:""},
@@ -1042,6 +1120,7 @@ const players = [
     id: "dousis",
     name: "Foivos Dousis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Ksades", logo:"ksades.png", detail:""},
@@ -1053,6 +1132,7 @@ const players = [
     id: "sfikas",
     name: "Konstantinos Sfikas",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Ksades", logo:"ksades.png", detail:""},
@@ -1064,6 +1144,7 @@ const players = [
     id: "katsavou",
     name: "Giannis Katsavounis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Golden Bullet", logo:"gb.png", detail:""},
@@ -1075,6 +1156,7 @@ const players = [
     id: "kanelidis",
     name: "Markos Kanellidis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Golden Bullet", logo:"gb.png", detail:""},
@@ -1086,6 +1168,7 @@ const players = [
     id: "chalikias",
     name: "Dionysis Chalikias",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
@@ -1097,6 +1180,7 @@ const players = [
     id: "perdikis",
     name: "Panagiotis Perdikis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
@@ -1109,6 +1193,7 @@ const players = [
     id: "tsonis",
     name: "Pavlos Tsonis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Air Condition", logo:"ac.png", detail:""},
@@ -1120,6 +1205,7 @@ const players = [
     id: "indomi",
     name: "Stavros Moutaftsidis",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Midi Kidz", logo:"midi.png", detail:""},
@@ -1131,6 +1217,7 @@ const players = [
     id: "iro",
     name: "Iro Ganti",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Hitters", logo:"hitters.png", detail:""},
@@ -1142,6 +1229,7 @@ const players = [
     id: "theof",
     name: "Theofania Sotiropoulou",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Hitters", logo:"hitters.png", detail:""},
@@ -1153,6 +1241,7 @@ const players = [
     id: "toussi",
     name: "Polixeni Toussi",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Hitters", logo:"hitters.png", detail:""},
@@ -1164,6 +1253,7 @@ const players = [
     id: "konstantinos-megalooikonomou",
     name: "Konstantinos Megalooikonomou",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Sapioi", logo:"sapioi.png", detail:""},
@@ -1175,6 +1265,7 @@ const players = [
     id: "leonidas-amplas",
     name: "Leonidas Amplas",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Kritsinia", logo:"kritsinia.png", detail:""},
@@ -1186,6 +1277,7 @@ const players = [
     id: "priovolos",
     name: "Priovolos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL6", team:"Niki Alimou", logo:"alimou.png", detail:""},
@@ -1197,6 +1289,7 @@ const players = [
     id: "chiclap-cartel",
     name: "Nikolas Koletsos",
     status: "active",
+    birthday: "",
     titles: [],
     seasons: [
       {season:"PSL4", team:"Shadow Wizard Money Gang", logo:"swmg.png", detail:""},

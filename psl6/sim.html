@@ -168,6 +168,8 @@
   .row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .row:last-child { margin-bottom: 0; }
   .row label { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+  .win-by-two { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; cursor: pointer; }
+  .win-by-two input { accent-color: var(--neon-cyan); }
   .vs { font-size: 12px; color: var(--text-dim); font-weight: 600; flex-shrink: 0; }
 
   select, button {
@@ -183,6 +185,7 @@
     border-radius: 8px;
     padding: 9px 12px;
   }
+  select option { background: #151020; color: var(--text-main); }
   select:focus { outline: none; border-color: var(--neon-cyan); }
 
   button {
@@ -349,7 +352,7 @@
           <option value="5">5</option>
           <option value="7">7</option>
         </select>
-        <label>— win by 2</label>
+        <label class="win-by-two"><input id="sm-win-by-2" type="checkbox" checked> Win By 2</label>
         <button onclick="simulate()">Simulate match</button>
       </div>
     </div>
@@ -394,6 +397,7 @@
           <option value="5">5</option>
           <option value="7">7</option>
         </select>
+        <label class="win-by-two"><input id="mc-win-by-2" type="checkbox" checked> Win By 2</label>
         <label>Simulations</label>
         <select id="sims" style="flex:0;width:110px;">
           <option value="1000">1,000</option>
@@ -468,6 +472,19 @@
 </div>
 
 <script src="../news/bg-export-data.js"></script>
+<script>
+function isPslAdmin() {
+  try {
+    const session = JSON.parse(localStorage.getItem('psl_session') || 'null');
+    return Boolean(session && ['thanos', 'yman', 'pitchball'].includes(
+      String(session.username || '').trim().toLowerCase()
+    ));
+  } catch (error) {
+    console.error('Unable to read the simulator admin session.', error);
+    return false;
+  }
+}
+</script>
 <script src="../simulation-export.js"></script>
 <script src="teams.js"></script>
 <script>
@@ -538,6 +555,7 @@ function simulate() {
   if(n1===n2){ alert("Pick two different teams."); return; }
   const t1=teams[n1], t2=teams[n2];
   const target=parseInt(document.getElementById('sm-target').value);
+  const winByTwo=document.getElementById('sm-win-by-2').checked;
   let sc1=0,sc2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
   let totalTime=0,totalRallies=0,err1=0,err2=0,cp1=0,cp2=0;
   const log=[];
@@ -558,7 +576,7 @@ function simulate() {
       log.push({cls:'log-error',text:`${lname} ${reason==='out'?pick(outWords):pick(netWords)} — point to ${scorer}. (${sc1}-${sc2})`});
     }
     serving=winner;
-    if(Math.max(sc1,sc2)>=target && Math.abs(sc1-sc2)>=2) break;
+    if(Math.max(sc1,sc2)>=target && (!winByTwo || Math.abs(sc1-sc2)>=2)) break;
     if(totalRallies>300) break;
   }
   const winner=sc1>sc2?n1:n2;
@@ -593,7 +611,7 @@ function exportMatchPng() {
   const winner = score1 > score2 ? name1 : name2;
   downloadSimulationPng({
     title: 'PSL6 Match Result',
-    subtitle: `${name1} vs ${name2} · First to ${document.getElementById('sm-target').value}`,
+    subtitle: `${name1} vs ${name2} · First to ${document.getElementById('sm-target').value} · ${document.getElementById('sm-win-by-2').checked ? 'Win by 2' : 'No win-by-2 requirement'}`,
     scaleMax: Math.max(score1, score2),
     items: [
       {label: name1, value: score1, display: `${score1} pts`, detail: `${winner === name1 ? 'Winner' : 'Final score'} · ${document.getElementById('breakdown1').textContent}`},
@@ -614,7 +632,7 @@ function exportMonteCarloPng() {
   }));
   downloadSimulationPng({
     title: 'PSL6 Match Probabilities',
-    subtitle: `${name1} vs ${name2} · ${document.getElementById('sim-count').textContent} simulations`,
+    subtitle: `${name1} vs ${name2} · ${document.getElementById('sim-count').textContent} simulations · ${document.getElementById('mc-win-by-2').checked ? 'Win by 2' : 'No win-by-2 requirement'}`,
     scaleMax: 100,
     items: [
       {label: name1, value: parseFloat(document.getElementById('rpct1').textContent), display: document.getElementById('rpct1').textContent, detail: `${document.getElementById('rwins1').textContent} · average score ${document.getElementById('avg-score1').textContent}`},
@@ -626,7 +644,7 @@ function exportMonteCarloPng() {
 }
 
 // ── MONTE CARLO ──────────────────────────────────────────────────
-function simMatch(t1, t2, target) {
+function simMatch(t1, t2, target, winByTwo = true) {
   let s1=0,s2=0,f1=0,f2=0,serving=rand()<0.5?1:2;
   let rallies=0,time=0,err1=0,err2=0,cp1=0,cp2=0;
   const avgTen=((t1.ten||50)+(t2.ten||50))/2;
@@ -646,7 +664,7 @@ function simMatch(t1, t2, target) {
       if(loser===1){s2++;err1++;}else{s1++;err2++;}
     }
     serving=winner;
-    if(Math.max(s1,s2)>=target && Math.abs(s1-s2)>=2) break;
+    if(Math.max(s1,s2)>=target && (!winByTwo || Math.abs(s1-s2)>=2)) break;
     if(rallies>300) break;
   }
   return {w:s1>s2?1:2,s1,s2,err1,err2,cp1,cp2,time};
@@ -658,6 +676,7 @@ function runMonteCarlo() {
   if(n1===n2){ alert("Pick two different teams."); return; }
   const t1=teams[n1], t2=teams[n2];
   const target=parseInt(document.getElementById('mc-target').value);
+  const winByTwo=document.getElementById('mc-win-by-2').checked;
   const numSims=parseInt(document.getElementById('sims').value);
   document.getElementById('runbtn').disabled=true;
   document.getElementById('running').classList.remove('hidden');
@@ -666,7 +685,7 @@ function runMonteCarlo() {
     let wins1=0,wins2=0,totErr1=0,totErr2=0,totCp1=0,totCp2=0,totTime=0,totS1=0,totS2=0;
     const scorelines={};
     for(let i=0;i<numSims;i++){
-      const r=simMatch(t1,t2,target);
+      const r=simMatch(t1,t2,target,winByTwo);
       if(r.w===1) wins1++; else wins2++;
       totErr1+=r.err1; totErr2+=r.err2;
       totCp1+=r.cp1; totCp2+=r.cp2;

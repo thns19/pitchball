@@ -32,6 +32,16 @@
 <script>
 // â”€â”€ Same player data as index.html â€” keep both in sync â”€â”€
 
+function parsePlayerBirthday(value) {
+  const match = /^(\d{2})-(\d{2})$/.exec(value || '');
+  if (!match) return null;
+  const month = Number(match[1]);
+  const day = Number(match[2]);
+  const date = new Date(Date.UTC(2000, month - 1, day));
+  if (date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+  return { month, day, date };
+}
+
 const id = new URLSearchParams(window.location.search).get('id');
 const p = players.find(x => x.id === id);
 
@@ -40,9 +50,16 @@ if(!p) {
     <p style="color:#888;font-size:14px;">Player not found. <a href="index.html" style="color:#39c877;">â† Back to players</a></p>`;
 } else {
   const isHallOfFame = (p.hallofFame || '').toLowerCase() === 'yes';
+  const birthday = parsePlayerBirthday(p.birthday);
+  const today = new Date();
+  const birthdayIsToday = Boolean(birthday && birthday.month === today.getMonth() + 1 && birthday.day === today.getDate());
   document.body.classList.toggle('hall-of-fame-mode', isHallOfFame);
   document.body.classList.toggle('hall-of-fame-profile', isHallOfFame);
+  document.body.classList.toggle('birthday-today', birthdayIsToday);
   const photoSrc = `photos/${p.id}.png`;
+  const birthdayLabel = birthday
+    ? new Intl.DateTimeFormat('en', { month: 'long', day: 'numeric', timeZone: 'UTC' }).format(birthday.date)
+    : 'Not provided';
   const playerAwards = getPlayerAwards(p);
   const titles = playerAwards.filter(award => award.category === 'Cup' || award.category === 'League');
   const accolades = playerAwards.filter(award => !['Cup', 'League'].includes(award.category));
@@ -99,6 +116,7 @@ if(!p) {
           <p class="player-desc is-collapsed">${p.description}</p>
           <button class="player-description-toggle" type="button" aria-expanded="false">more...</button>
         </div>
+        ${birthdayIsToday ? `<div class="player-birthday-greeting" role="status">🎉 Happy Birthday, ${p.name}! 🎂</div>` : ''}
       </div>
     </header>
 
@@ -106,6 +124,7 @@ if(!p) {
       <a href="#profile-overview">Profile</a>
       <a href="#titles">Titles</a>
       <a href="#accolades">Accolades</a>
+      <a href="#birthday">Birthday</a>
       <a href="#career">Career</a>
     </nav>
 
@@ -120,6 +139,12 @@ if(!p) {
         ${accoladesHTML}
       </section>
 
+      <section class="section-card player-birthday-section" id="birthday">
+        <div class="section-label">Birthday</div>
+        <p class="player-birthday-date">${birthdayLabel}</p>
+        ${birthday ? `<p class="player-birthday-note">${birthdayIsToday ? 'Celebrate with us today!' : 'Month and day'}</p>` : '<p class="player-birthday-note">Date not set yet.</p>'}
+      </section>
+
       <section class="section-card player-career-section" id="career">
         <div class="section-label">Career</div>
         ${careerHTML}
@@ -127,6 +152,25 @@ if(!p) {
     </div>
 
     ${upcomingHTML}`;
+
+  if (birthdayIsToday && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const colors = ['#f5c842', '#39c877', '#57d8ff', '#ff6f91', '#b77cff'];
+    const confetti = document.createElement('div');
+    confetti.className = 'birthday-confetti';
+    confetti.setAttribute('aria-hidden', 'true');
+    for (let index = 0; index < 32; index++) {
+      const piece = document.createElement('span');
+      piece.className = 'birthday-confetti-piece';
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.backgroundColor = colors[index % colors.length];
+      piece.style.animationDelay = `${Math.random() * 0.8}s`;
+      piece.style.setProperty('--confetti-drift', `${Math.random() * 140 - 70}px`);
+      piece.style.setProperty('--confetti-spin', `${Math.random() * 720 - 360}deg`);
+      confetti.appendChild(piece);
+    }
+    document.body.appendChild(confetti);
+    window.setTimeout(() => confetti.remove(), 4000);
+  }
 
   const description = document.querySelector('.player-desc');
   const descriptionToggle = document.querySelector('.player-description-toggle');
