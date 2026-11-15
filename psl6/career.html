@@ -8,17 +8,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #05010f;
-    --panel: rgba(24, 17, 36, .9);
-    --panel-soft: rgba(255, 255, 255, .035);
-    --cyan: #00f0ff;
-    --purple: #b366ff;
-    --green: #39ff88;
+    --bg: #040911;
+    --bg-2: #090d1d;
+    --panel: rgba(12, 18, 33, .82);
+    --panel-strong: rgba(18, 25, 43, .96);
+    --panel-soft: rgba(255, 255, 255, .04);
+    --cyan: #63f1ff;
+    --purple: #b778ff;
+    --green: #74f2a4;
     --gold: #ffd166;
-    --red: #ff6b81;
-    --text: #fff;
-    --muted: rgba(255, 255, 255, .58);
-    --line: rgba(255, 255, 255, .1);
+    --red: #ff728a;
+    --text: #f5f8ff;
+    --muted: rgba(224, 233, 255, .7);
+    --line: rgba(151, 171, 255, .18);
+    --shadow: 0 24px 70px rgba(4, 7, 17, .52);
   }
   * { box-sizing: border-box; }
   body {
@@ -26,13 +29,25 @@
     min-height: 100vh;
     color: var(--text);
     font-family: 'Space Grotesk', sans-serif;
-    background: var(--bg) url('bg.png') center / cover fixed;
+    background:
+      radial-gradient(circle at top, rgba(92, 120, 255, .22), transparent 25%),
+      radial-gradient(circle at bottom right, rgba(0, 240, 255, .12), transparent 30%),
+      linear-gradient(180deg, var(--bg-2), var(--bg));
   }
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: rgba(5, 1, 15, .88);
+    background: rgba(4, 9, 17, .70);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url('bg.png') center / cover fixed no-repeat;
+    mix-blend-mode: overlay;
+    opacity: .9;
     pointer-events: none;
   }
   button, select { font: inherit; }
@@ -40,55 +55,93 @@
   .shell { position: relative; z-index: 1; width: min(1120px, 100%); margin: auto; padding: 28px 22px 56px; }
   a { color: var(--muted); text-decoration: none; }
   a:hover { color: var(--cyan); }
-  .back { display: inline-block; margin-bottom: 24px; font-size: .85rem; }
-  .eyebrow { color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
-  h1 { margin: 5px 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; letter-spacing: -.05em; }
+  .back { display: inline-block; margin-bottom: 24px; font-size: .85rem; font-weight: 600; }
+  .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+  h1 { margin: 5px 0; font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 300; letter-spacing: -.06em; }
   h1 span { color: var(--cyan); font-weight: 700; }
-  .subtitle { margin: 0 0 24px; color: var(--muted); }
-  .panel, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+  .subtitle { margin: 0 0 26px; color: var(--muted); font-size: 1.02rem; }
+  .panel, .card { background: linear-gradient(180deg, rgba(17, 24, 40, .95), rgba(10, 15, 25, .92)); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
   .panel { padding: 22px; }
   .card { padding: 18px; }
-  .setup { max-width: 660px; margin: 42px auto; }
-  .setup h2, .section-head h2 { margin: 0 0 8px; font-size: 1.35rem; font-weight: 600; }
+  .setup {
+    max-width: 700px;
+    margin: 42px auto;
+    padding: 28px 26px 22px;
+    background: linear-gradient(180deg, rgba(18, 25, 43, .96), rgba(12, 18, 31, .98));
+  }
+  .setup h2, .section-head h2 { margin: 0 0 8px; font-size: 1.38rem; font-weight: 600; }
   .muted { color: var(--muted); }
   label { display: block; margin: 16px 0 7px; font-size: .82rem; color: var(--muted); }
   select {
-    width: 100%; min-height: 42px; padding: 9px 12px;
-    color: var(--text); background: #171020; border: 1px solid var(--line); border-radius: 8px;
+    width: 100%; min-height: 46px; padding: 10px 12px;
+    color: var(--text); background: rgba(8, 12, 21, .85); border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: inset 0 1px 8px rgba(0,0,0,.22);
   }
-  option { color: #fff; background: #171020; }
+  option { color: #fff; background: #111a2e; }
   .primary, .secondary, .danger {
-    border: 0; border-radius: 8px; padding: 11px 16px; font-weight: 700; transition: transform .15s, filter .15s;
+    border: 0; border-radius: 10px; padding: 11px 16px; font-weight: 700; transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
   }
-  .primary { color: #041015; background: var(--cyan); }
-  .secondary { color: #fff; background: rgba(179, 102, 255, .24); border: 1px solid rgba(179, 102, 255, .5); }
-  .danger { color: #fff; background: rgba(255, 107, 129, .18); border: 1px solid rgba(255, 107, 129, .4); }
+  .primary {
+    color: #041015;
+    background: linear-gradient(135deg, var(--cyan), #8af3ff 60%, #68d9ff);
+    box-shadow: 0 12px 26px rgba(99, 241, 255, .35);
+  }
+  .secondary {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(183, 120, 255, .28), rgba(120, 103, 255, .22));
+    border: 1px solid rgba(183, 120, 255, .4);
+  }
+  .danger {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(255, 114, 138, .22), rgba(255, 92, 120, .18));
+    border: 1px solid rgba(255, 114, 138, .45);
+  }
   button:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
   button:disabled { cursor: not-allowed; opacity: .45; }
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-  .notice { margin: 14px 0; padding: 12px 14px; border: 1px solid rgba(0, 240, 255, .26); border-radius: 9px; background: rgba(0, 240, 255, .07); color: #c8fbff; }
-  .notice.error { border-color: rgba(255, 107, 129, .4); background: rgba(255, 107, 129, .08); color: #ffd0d7; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .notice {
+    margin: 14px 0;
+    padding: 12px 14px;
+    border: 1px solid rgba(99, 241, 255, .35);
+    border-radius: 10px;
+    background: rgba(99, 241, 255, .09);
+    color: #dffcff;
+    box-shadow: inset 0 0 0 1px rgba(99,241,255,.12), 0 10px 30px rgba(0,0,0,.12);
+  }
+  .notice.error { border-color: rgba(255, 114, 138, .42); background: rgba(255, 114, 138, .08); color: #ffd5dd; }
   .hidden { display: none !important; }
   .topline { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .topline h1 { margin-bottom: 2px; }
   .team-mark { display: flex; align-items: center; gap: 12px; }
-  .team-mark img { width: 52px; height: 52px; object-fit: contain; }
+  .team-mark img { width: 52px; height: 52px; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,.33)); }
   .meta { color: var(--muted); font-size: .85rem; }
-  .tabs { display: flex; gap: 6px; margin: 22px 0 18px; padding: 5px; overflow-x: auto; background: var(--panel-soft); border: 1px solid var(--line); border-radius: 11px; }
-  .tab { flex: 1; min-width: 95px; padding: 10px; color: var(--muted); background: none; border: 0; border-radius: 8px; font-weight: 600; }
-  .tab.active { color: var(--cyan); background: rgba(0, 240, 255, .09); }
+  .tabs {
+    display: flex; gap: 6px; margin: 22px 0 18px; padding: 5px; overflow-x: auto;
+    background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .tab {
+    flex: 1; min-width: 100px; padding: 10px 12px; color: var(--muted); background: transparent; border: 0; border-radius: 10px;
+    font-weight: 700; letter-spacing: .02em;
+  }
+  .tab.active { color: var(--cyan); background: linear-gradient(135deg, rgba(99,241,255,.1), rgba(183,120,255,.08)); }
   .view { display: none; }
   .view.active { display: block; }
   .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-  .stat { padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
-  .stat span { display: block; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; }
-  .stat strong { display: block; margin-top: 7px; font-size: 1.55rem; }
+  .stat {
+    position: relative; overflow: hidden; padding: 16px; background: linear-gradient(180deg, rgba(17,24,40,.96), rgba(8,12,20,.96)); border: 1px solid var(--line);
+    border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .stat::before { content: ''; position: absolute; inset: 0 auto auto 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--cyan), transparent); }
+  .stat span { display: block; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; }
+  .stat strong { display: block; margin-top: 8px; font-size: 1.65rem; letter-spacing: -.04em; }
   .feature-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 14px; margin-top: 14px; }
   .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 14px; }
   .section-head h2 { margin: 0; }
   .rating { color: var(--cyan); font-weight: 700; }
-  .bar { height: 6px; margin-top: 8px; overflow: hidden; background: rgba(255,255,255,.09); border-radius: 9px; }
-  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--purple), var(--cyan)); border-radius: inherit; }
+  .bar { height: 8px; margin-top: 8px; overflow: hidden; background: rgba(255,255,255,.08); border-radius: 999px; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--purple), var(--cyan)); border-radius: inherit; box-shadow: 0 0 20px rgba(99, 241, 255, .45); }
   .match-card { min-height: 205px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
   .versus { display: flex; align-items: center; justify-content: space-around; gap: 10px; margin: 18px 0; }
   .versus strong { display: block; font-size: 1.1rem; }
@@ -101,11 +154,27 @@
   th:nth-child(2), td:nth-child(2) { text-align: left; }
   tr.user-team td { color: var(--cyan); font-weight: 700; }
   .player-list { display: grid; gap: 10px; }
-  .player { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 13px 14px; background: var(--panel-soft); border: 1px solid var(--line); border-radius: 10px; }
+  .player {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 13px 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)); border: 1px solid var(--line); border-radius: 12px;
+    transition: transform .12s ease, border-color .12s ease;
+  }
+  .player:hover { transform: translateY(-1px); border-color: rgba(99, 241, 255, .18); }
+  .player-main { flex: 1; min-width: 0; }
   .player-name { font-weight: 600; }
   .player-sub { color: var(--muted); font-size: .78rem; margin-top: 3px; }
+  .player-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
   .player-rating { text-align: right; font-size: 1.12rem; font-weight: 700; color: var(--cyan); }
   .player-rating small { display: block; color: var(--muted); font-size: .68rem; font-weight: 400; }
+  .player-edit { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .player-edit label {
+    display: flex; align-items: center; gap: 6px; margin: 0; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px;
+    background: rgba(10, 15, 25, .8); color: var(--muted); font-size: .7rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .player-edit input {
+    width: 52px; padding: 4px 5px; border: 1px solid rgba(255,255,255,.08); border-radius: 6px; background: rgba(255,255,255,.02);
+    color: var(--text); font: inherit; font-weight: 700; text-align: center;
+  }
   .transfer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .empty { padding: 24px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
   .footer-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
@@ -127,6 +196,7 @@
   <p class="subtitle">Build a squad, outsmart the league, and play your season.</p>
   <div id="app"></div>
 </main>
+<script src="career-player-data.js"></script>
 <script src="teams.js"></script>
 <script src="../players/players-data.js"></script>
 <script>
@@ -136,6 +206,7 @@
   const teams = window.PSL6_DATA.teams;
   const teamNames = window.PSL6_DATA.names;
   const logos = window.PSL6_DATA.logos;
+  const presetPlayerData = window.CAREER_PLAYER_DATA || {};
   const app = document.getElementById('app');
   let career = null;
   let setupMode = false;
@@ -154,24 +225,51 @@
     return hash >>> 0;
   }
 
-  function makePlayer(name, club, index, isReal) {
-    const base = teams[club];
+  const FREE_AGENTS = '__free_agents__';
+
+  function getPresetPlayerData(club, name) {
+    const playerPresets = club === FREE_AGENTS
+      ? presetPlayerData.freeAgents
+      : presetPlayerData[club] || presetPlayerData[club.toLowerCase()];
+    if (!playerPresets) return null;
+    const exact = playerPresets[name] || playerPresets[name.toLowerCase()] || null;
+    if (exact) return exact;
+    const normalized = Object.keys(playerPresets).find(key => key.toLowerCase() === name.toLowerCase());
+    return normalized ? playerPresets[normalized] : null;
+  }
+
+  function makePlayer(name, club, index, isReal, sourceStatus) {
+    const base = teams[club] || teams[teamNames[seededValue(name) % teamNames.length]];
     const seed = seededValue(club + ':' + name);
     const drift = offset => ((seed >>> offset) % 13) - 6;
-    const rating = {
+    let rating = {
       att: clamp(base.att + drift(0), 8, 99),
       def: clamp(base.def + drift(5), 8, 99),
       con: clamp(base.con + drift(10), 8, 99),
       stm: clamp(base.stm + drift(15), 8, 99)
     };
-    const overall = playerOverall(rating);
+    const preset = getPresetPlayerData(club, name) || null;
+    if (preset) {
+      rating = {
+        att: clamp(typeof preset.att === 'number' ? preset.att : rating.att, 8, 99),
+        def: clamp(typeof preset.def === 'number' ? preset.def : rating.def, 8, 99),
+        con: clamp(typeof preset.con === 'number' ? preset.con : rating.con, 8, 99),
+        stm: clamp(typeof preset.stm === 'number' ? preset.stm : rating.stm, 8, 99)
+      };
+    }
+    const overall = clamp(Math.round(typeof preset?.overall === 'number' ? preset.overall : preset?.ovr ?? playerOverall(rating)), 1, 99);
+    const potential = clamp(Math.round(typeof preset?.potential === 'number' ? preset.potential : clamp(Math.round(overall + ((seed >>> 9) % 18) - 7 + (isReal ? 6 : 10)), 40, 99)), 1, 99);
+    const age = clamp(Math.round(typeof preset?.age === 'number' ? preset.age : 17 + ((seed >>> 12) % 15)), 16, 40);
     return {
       id: club + '-' + seed.toString(36) + '-' + index,
       name,
       rating,
       overall,
-      value: Math.max(8, Math.round(overall * .72)),
-      real: isReal
+      potential,
+      age,
+      value: Math.max(8, Math.round(overall * .72 + (potential - overall) * .9)),
+      real: isReal,
+      sourceStatus: sourceStatus || 'academy'
     };
   }
 
@@ -197,16 +295,28 @@
   }
 
   function makeCareer(club) {
-    const squads = {};
+    const squads = Object.fromEntries(teamNames.map(name => [name, []]));
+    const freeAgents = [];
+    const eligiblePlayers = players.filter(player => player.status === 'active' || player.status === 'inactive');
+    eligiblePlayers.forEach((player, index) => {
+      const seasons = player.seasons || [];
+      const currentSeason = seasons.find(season => season && season.season === 'PSL6');
+      const latestSeason = seasons.slice().reverse().find(season => season && season.team);
+      const currentClub = player.status === 'active'
+        ? (currentSeason && teamNames.includes(currentSeason.team)
+          ? currentSeason.team
+          : latestSeason && teamNames.includes(latestSeason.team) ? latestSeason.team : null)
+        : null;
+      if (currentClub) {
+        squads[currentClub].push(makePlayer(player.name, currentClub, index, true, player.status));
+      } else {
+        freeAgents.push(makePlayer(player.name, FREE_AGENTS, index, true, player.status));
+      }
+    });
     for (const name of teamNames) {
-      const realPlayers = players
-        .filter(player => player.status === 'active' && (player.seasons || []).some(season => season && season.season === 'PSL6' && season.team === name))
-        .map(player => player.name);
-      const uniqueNames = Array.from(new Set(realPlayers));
-      squads[name] = uniqueNames.map((playerName, index) => makePlayer(playerName, name, index, true));
-      const realPlayerCount = squads[name].length;
-      for (let index = squads[name].length; index < 3; index++) {
-        squads[name].push(makePlayer(name + ' Academy ' + (index - realPlayerCount + 1), name, index, false));
+      const rosterSize = squads[name].length;
+      for (let index = rosterSize; index < 3; index++) {
+        squads[name].push(makePlayer(name + ' Academy ' + (index - rosterSize + 1), name, index, false));
       }
     }
     return {
@@ -214,6 +324,7 @@
       budget: 120,
       round: 0,
       squads,
+      freeAgents,
       schedule: makeSchedule(),
       results: [],
       activeTab: 'overview'
@@ -224,13 +335,14 @@
     const roster = career.squads[club];
     const sorted = roster.slice().sort((a, b) => b.overall - a.overall);
     const starters = sorted.slice(0, 2);
-    const average = key => roster.reduce((sum, player) => sum + player.rating[key], 0) / roster.length;
-    const starterAverage = key => starters.reduce((sum, player) => sum + player.rating[key], 0) / starters.length;
+    const playerRating = (player, key) => key === 'overall' ? player.overall : player.rating[key];
+    const average = key => roster.reduce((sum, player) => sum + playerRating(player, key), 0) / roster.length;
+    const starterAverage = key => starters.reduce((sum, player) => sum + playerRating(player, key), 0) / starters.length;
     const stats = {};
     for (const key of ['att', 'def', 'con', 'stm']) {
       stats[key] = Math.round(starterAverage(key) * .75 + average(key) * .25);
     }
-    stats.overall = Math.round(stats.att * .35 + stats.def * .3 + stats.stm * .15 + stats.con * .2);
+    stats.overall = Math.round(starterAverage('overall') * .75 + average('overall') * .25);
     return stats;
   }
 
@@ -289,6 +401,22 @@
     }
   }
 
+  function normalizePlayer(player, fallbackClub, fallbackIndex) {
+    const rated = player && typeof player === 'object' ? player : {};
+    const base = playerOverall(rated.rating || { att: 40, def: 40, con: 40, stm: 40 });
+    const overall = typeof rated.overall === 'number' ? rated.overall : base;
+    const potential = typeof rated.potential === 'number' ? rated.potential : clamp(Math.round(overall + 8 + (fallbackIndex % 10)), 40, 99);
+    const age = typeof rated.age === 'number' ? rated.age : clamp(17 + ((seededValue((fallbackClub || 'club') + ':' + (rated.name || 'player')) >>> 11) % 15), 17, 35);
+    return {
+      ...rated,
+      overall,
+      potential,
+      age,
+      value: typeof rated.value === 'number' ? rated.value : Math.max(8, Math.round(overall * .72 + (potential - overall) * .9)),
+      real: typeof rated.real === 'boolean' ? rated.real : true
+    };
+  }
+
   function load() {
     try {
       const saved = localStorage.getItem(SAVE_KEY);
@@ -297,7 +425,35 @@
       if (!parsed || !teams[parsed.team] || !parsed.squads || !parsed.schedule || !Array.isArray(parsed.results)) {
         throw new Error('Invalid career save');
       }
+      if (!Array.isArray(parsed.freeAgents)) parsed.freeAgents = [];
+      for (const club of teamNames) {
+        if (!Array.isArray(parsed.squads[club])) {
+          parsed.squads[club] = [];
+          continue;
+        }
+        parsed.squads[club] = parsed.squads[club].map((player, index) => normalizePlayer(player, club, index));
+      }
+      parsed.freeAgents = parsed.freeAgents.map((player, index) => normalizePlayer(player, FREE_AGENTS, index));
+      const knownPlayers = new Set(parsed.freeAgents.map(player => player.name));
+      for (const club of teamNames) {
+        if (Array.isArray(parsed.squads[club])) {
+          parsed.squads[club].forEach(player => knownPlayers.add(player.name));
+        }
+      }
+      players.filter(player => (player.status === 'active' || player.status === 'inactive') && !knownPlayers.has(player.name))
+        .forEach((player, index) => {
+          const currentSeason = (player.seasons || []).find(season => season && season.season === 'PSL6');
+          const latestSeason = (player.seasons || []).slice().reverse().find(season => season && season.team);
+          const club = player.status === 'active'
+            ? (currentSeason && teamNames.includes(currentSeason.team)
+              ? currentSeason.team
+              : latestSeason && teamNames.includes(latestSeason.team) ? latestSeason.team : null)
+            : null;
+          if (club) parsed.squads[club].push(makePlayer(player.name, club, index, true, player.status));
+          else parsed.freeAgents.push(makePlayer(player.name, FREE_AGENTS, index, true, player.status));
+        });
       career = parsed;
+      save();
     } catch (error) {
       notice = 'Could not load the saved career. Start a new career to replace the damaged save.';
       noticeIsError = true;
@@ -311,9 +467,10 @@
   }
 
   function playerOptions(club, selectedId) {
-    return career.squads[club].map(player =>
+    const roster = club === FREE_AGENTS ? career.freeAgents : career.squads[club];
+    return roster.map(player =>
       '<option value="' + escapeHtml(player.id) + '"' + (player.id === selectedId ? ' selected' : '') + '>' +
-      escapeHtml(player.name) + ' · ' + player.overall + ' OVR · ' + player.value + ' credits</option>'
+      escapeHtml(player.name) + ' · ' + player.overall + ' OVR · POT ' + player.potential + ' · Age ' + player.age + ' · ' + player.value + ' credits</option>'
     ).join('');
   }
 
@@ -378,9 +535,10 @@
 
   function renderSquad() {
     const playersHtml = career.squads[career.team].slice().sort((a, b) => b.overall - a.overall).map(player =>
-      '<div class="player"><div><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-sub">' +
-      (player.real ? 'PSL6 player' : 'Career-mode academy player') + ' · ATT ' + player.rating.att + ' · DEF ' + player.rating.def +
-      ' · CON ' + player.rating.con + ' · STM ' + player.rating.stm + '</div></div><div class="player-rating">' + player.overall + '<small>OVERALL</small></div></div>'
+      '<div class="player"><div class="player-main"><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-sub">' +
+      (player.real ? 'PSL6 player' : 'Career-mode academy player') + ' · Age ' + player.age + ' · OVR ' + player.overall + ' · POT ' + player.potential +
+      ' · ATT ' + player.rating.att + ' · DEF ' + player.rating.def + ' · CON ' + player.rating.con + ' · STM ' + player.rating.stm + '</div></div>' +
+      '<div class="player-controls"><div class="player-rating">' + player.overall + '<small>OVERALL</small></div></div></div>'
     ).join('');
     app.innerHTML = '<section class="panel"><div class="section-head"><div><h2>' + escapeHtml(career.team) + ' squad</h2><div class="muted">' + career.squads[career.team].length + ' players · Club rating ' + getRating(career.team).overall + '</div></div></div>' +
       '<div class="player-list">' + playersHtml + '</div></section>';
@@ -390,9 +548,10 @@
     const rival = teamNames.find(name => name !== career.team);
     const allPlayers = career.squads[career.team];
     app.innerHTML = '<div class="transfer-grid">' +
-      '<section class="panel"><h2>Transfer market</h2><p class="muted">Buy a player directly from another club. Their asking price is shown in credits.</p>' +
-      '<label for="buy-club">Selling club</label><select id="buy-club" onchange="careerMode.refreshTransferOptions(\'buy\')">' + teamOptions(rival, career.team) + '</select>' +
-      '<label for="buy-player">Player</label><select id="buy-player">' + playerOptions(rival) + '</select>' +
+      '<section class="panel"><h2>Transfer market</h2><p class="muted">Sign free agents or buy a player directly from another club.</p>' +
+      '<label for="buy-club">Player source</label><select id="buy-club" onchange="careerMode.refreshTransferOptions(\'buy\')">' +
+      '<option value="' + FREE_AGENTS + '">Free agents (' + career.freeAgents.length + ')</option>' + teamOptions(null, career.team) + '</select>' +
+      '<label for="buy-player">Player</label><select id="buy-player">' + playerOptions(FREE_AGENTS) + '</select>' +
       '<div id="buy-price" class="notice">Transfer budget: ' + career.budget + ' credits.</div>' +
       '<button class="primary" onclick="careerMode.buyPlayer()">Complete transfer</button></section>' +
       '<section class="panel"><h2>Player swap</h2><p class="muted">Offer one of your players in a direct one-for-one trade.</p>' +
@@ -402,8 +561,17 @@
       '<button class="secondary" style="margin-top:15px" onclick="careerMode.tradePlayers()">Propose & complete swap</button></section>' +
       '</div><section class="panel" style="margin-top:14px"><div class="section-head"><h2>Available at your club</h2><span class="muted">' + allPlayers.length + ' players</span></div><div class="player-list">' +
       allPlayers.slice().sort((a, b) => b.overall - a.overall).map(player =>
-        '<div class="player"><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-rating">' + player.overall + '<small>' + player.value + ' credits</small></div></div>'
-      ).join('') + '</div></section>';
+        '<div class="player"><div><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-sub">Age ' + player.age + ' · OVR ' + player.overall + ' · POT ' + player.potential + '</div></div><div class="player-rating">' + player.overall + '<small>' + player.value + ' credits</small></div></div>'
+      ).join('') + '</div></section>' +
+      '<section class="panel" style="margin-top:14px"><div class="section-head"><h2>Free agents</h2><span class="muted">' + career.freeAgents.length + ' available</span></div>' +
+      (career.freeAgents.length
+        ? '<div class="player-list">' + career.freeAgents.slice().sort((a, b) => b.overall - a.overall).map(player =>
+          '<div class="player"><div><div class="player-name">' + escapeHtml(player.name) + '</div><div class="player-sub">' +
+          (player.sourceStatus === 'inactive' ? 'Inactive · Free agent' : 'Unassigned · Free agent') +
+          ' · Age ' + player.age + ' · OVR ' + player.overall + ' · POT ' + player.potential + '</div></div><div class="player-rating">' +
+          player.overall + '<small>' + player.value + ' credits</small></div></div>'
+        ).join('') + '</div>'
+        : '<div class="empty">There are no free agents available.</div>') + '</section>';
     updateBuyPrice();
   }
 
@@ -412,14 +580,17 @@
     const playerSelect = document.getElementById('buy-player');
     const price = document.getElementById('buy-price');
     if (!club || !playerSelect || !price) return;
-    const player = career.squads[club.value].find(item => item.id === playerSelect.value);
+    const isFreeAgent = club.value === FREE_AGENTS;
+    const sellingRoster = isFreeAgent ? career.freeAgents : career.squads[club.value];
+    const player = sellingRoster.find(item => item.id === playerSelect.value);
     price.textContent = player
-      ? player.value + ' credits · Your budget: ' + career.budget + ' credits.'
-      : 'No players are available at this club.';
+      ? (isFreeAgent ? 'Signing fee: ' : 'Transfer fee: ') + player.value + ' credits · Your budget: ' + career.budget + ' credits.'
+      : (isFreeAgent ? 'No free agents are available.' : 'No players are available at this club.');
     playerSelect.disabled = !player;
     const button = price.parentElement.querySelector('button');
-    button.disabled = !player || player.value > career.budget || career.squads[club.value].length <= 2;
-    if (career.squads[club.value].length <= 2) price.textContent += ' The club cannot sell below two players.';
+    const cannotSell = !isFreeAgent && sellingRoster.length <= 2;
+    button.disabled = !player || player.value > career.budget || cannotSell;
+    if (cannotSell) price.textContent += ' The club cannot sell below two players.';
     else if (player && player.value > career.budget) price.textContent += ' Not enough credits.';
   }
 
@@ -516,9 +687,10 @@
   function buyPlayer() {
     const club = document.getElementById('buy-club').value;
     const id = document.getElementById('buy-player').value;
-    const rivalRoster = career.squads[club];
+    const isFreeAgent = club === FREE_AGENTS;
+    const rivalRoster = isFreeAgent ? career.freeAgents : career.squads[club];
     const index = rivalRoster.findIndex(player => player.id === id);
-    if (index < 0 || rivalRoster.length <= 2) return;
+    if (index < 0 || (!isFreeAgent && rivalRoster.length <= 2)) return;
     const player = rivalRoster[index];
     if (player.value > career.budget) return;
     rivalRoster.splice(index, 1);
@@ -527,7 +699,7 @@
     const saved = save();
     career.activeTab = 'transfers';
     render();
-    if (saved) notice = player.name + ' has joined ' + career.team + '.';
+    if (saved) notice = player.name + (isFreeAgent ? ' has signed for ' : ' has joined ') + career.team + '.';
     addNotice();
   }
 
@@ -592,6 +764,6 @@
   render();
 })();
 </script>
-<script src="/legal-ui.js"></script>
+<script src="../legal-ui.js"></script>
 </body>
 </html>
