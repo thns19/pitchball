@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XNNGKMS578');
-</script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -160,5 +152,6 @@ function injectAuthStyles(){if(document.getElementById('psl-auth-styles'))return
 function renderWidget(){if(!document.body){setTimeout(renderWidget,50);return;}const ex=document.getElementById('psl-auth-widget');if(ex)ex.remove();const w=document.createElement('div');w.id='psl-auth-widget';if(pslCurrentUser){const avatarBtn=pslCurrentUser.avatar?`<img src="${pslCurrentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;">`:`<div class="psl-aw-avatar">${pslCurrentUser.username[0].toUpperCase()}</div>`;w.innerHTML=`<div class="psl-aw-btn" onclick="location.href='newsindex_2.html'">${avatarBtn}<span>${pslCurrentUser.username}</span></div>`;}else{w.innerHTML=`<div class="psl-aw-btn" onclick="location.href='newsindex_2.html'"><div class="psl-aw-avatar guest">👤</div><span>Sign in</span></div>`;}document.body.appendChild(w);}
 injectAuthStyles();
 </script>
+<script src="/legal-ui.js"></script>
 </body>
 </html>

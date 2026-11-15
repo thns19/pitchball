@@ -24,22 +24,6 @@ if ('serviceWorker' in navigator) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XNNGKMS578');
-  function loadAnalytics() {
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config','G-XNNGKMS578');
-  }
-</script>
-
 <style>
 :root {
   --bg:       #0e1009;
@@ -781,15 +765,6 @@ body::before {
   </div>
 </div>
 
-<!-- Cookie Banner -->
-<div id="cookie-banner" style="display:none;">
-  <span>This site uses cookies for analytics.</span>
-  <div style="display:flex;gap:8px;">
-    <button class="btn-accept" onclick="acceptCookies()">Accept</button>
-    <button class="btn-reject" onclick="rejectCookies()">Reject</button>
-  </div>
-</div>
-
 <!-- Hero -->
 <div class="hero">
   <div class="hero-inner">
@@ -931,29 +906,16 @@ body::before {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
       YouTube
     </a>
-    <a href="https://tiktok.com/@p1tchball" target="_blank" class="social-btn">
+    <a href="https://tiktok.com/@pitchball.gr" target="_blank" class="social-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
       TikTok
     </a>
     <a href="changelog.html" class="social-btn">Changelog</a>
+    <a href="privacy.html" class="social-btn">Privacy &amp; Cookies</a>
+    <a href="terms.html" class="social-btn">Terms of Use</a>
   </div>
   <div class="footer-copy">Created by Thanos · Pitchball © 2026</div>
 </div>
-
-<script>
-function acceptCookies() {
-  localStorage.setItem("cookieConsent", "accepted");
-  document.getElementById("cookie-banner").style.display = "none";
-  loadAnalytics();
-}
-function rejectCookies() {
-  localStorage.setItem("cookieConsent", "rejected");
-  document.getElementById("cookie-banner").style.display = "none";
-}
-const consent = localStorage.getItem("cookieConsent");
-if (!consent) document.getElementById("cookie-banner").style.display = "flex";
-else if (consent === "accepted") loadAnalytics();
-</script>
 
 <style>body{position:relative;}</style>
 <script>
@@ -987,5 +949,6 @@ async function pslAuthInit(){injectAuthStyles();const session=pslLoadSession();i
 injectAuthStyles();
 document.addEventListener('DOMContentLoaded',pslAuthInit);
 </script>
+<script src="/legal-ui.js"></script>
 </body>
 </html>

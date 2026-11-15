@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNNGKMS578"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XNNGKMS578');
-</script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -757,5 +749,6 @@ async function pslDoRegister(){const username=document.getElementById('psl-rg-us
 function pslLogout(){pslClearSession();pslCurrentUser=null;pslDbInvalidate();renderWidget();location.reload();}
 injectAuthStyles();
 </script>
+<script src="/legal-ui.js"></script>
 </body>
 </html>
