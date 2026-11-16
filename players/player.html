@@ -21,6 +21,7 @@
 
 <script src="players-data.js"></script>
 <script src="awards.js"></script>
+<script src="team-stats.js"></script>
 <script>
 // â”€â”€ Same player data as index.html â€” keep both in sync â”€â”€
 
@@ -53,6 +54,7 @@ if(!p) {
     ? new Intl.DateTimeFormat('en', { month: 'long', day: 'numeric', timeZone: 'UTC' }).format(birthday.date)
     : 'Not provided';
   const playerAwards = getPlayerAwards(p);
+  const careerStats = getArchivedCareerStats(p);
   const titles = playerAwards.filter(award => award.category === 'Cup' || award.category === 'League');
   const accolades = playerAwards.filter(award => !['Cup', 'League'].includes(award.category));
   const ownedTeams = Object.entries(teamProfiles)
@@ -114,6 +116,7 @@ if(!p) {
 
     <nav class="player-section-nav" aria-label="Player profile sections">
       <a href="#profile-overview">Profile</a>
+      <a href="#stats">Stats</a>
       <a href="#titles">Titles</a>
       <a href="#accolades">Accolades</a>
       <a href="#birthday">Birthday</a>
@@ -121,6 +124,12 @@ if(!p) {
     </nav>
 
     <div class="player-profile-grid">
+      <section class="section-card player-stats-section" id="stats">
+        <div class="section-label">All-Time Stats</div>
+        <div class="player-stats-grid" id="player-stats">${renderCareerStats(careerStats)}</div>
+        <p class="player-stats-note" id="player-stats-note">${careerStatsNote(careerStats)}</p>
+      </section>
+
       <section class="section-card player-titles-section" id="titles">
         <div class="section-label">Titles</div>
         ${titlesHTML}
@@ -144,6 +153,43 @@ if(!p) {
     </div>
 
     ${upcomingHTML}`;
+
+  if (p.seasons.some(season => season.season === 'PSL6')) {
+    const loadCurrentSeasonData = (url, label, isValid) => fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error(`${label} request failed: ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        if (!isValid(data)) throw new Error(`${label} response was invalid.`);
+        return data;
+      })
+      .catch(error => {
+        console.error(`Unable to load current-season ${label.toLowerCase()}.`, error);
+        return null;
+      });
+
+    Promise.all([
+      loadCurrentSeasonData(
+        'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/matches.json',
+        'Match data',
+        data => data && typeof data === 'object' && !Array.isArray(data)
+      ),
+      loadCurrentSeasonData(
+        'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/psl6Cup.json',
+        'Cup data',
+        data => data && Array.isArray(data.participants) && data.results
+          && typeof data.results === 'object' && !Array.isArray(data.results)
+      )
+    ]).then(([matchRecords, cupData]) => {
+      addPsl6CareerSeasonStats(careerStats, p, matchRecords, cupData);
+      document.getElementById('player-stats').innerHTML = renderCareerStats(careerStats);
+      document.getElementById('player-stats-note').textContent = careerStatsNote(
+        careerStats,
+        !matchRecords || !cupData
+      );
+    });
+  }
 
   if (birthdayIsToday && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const colors = ['#f5c842', '#39c877', '#57d8ff', '#ff6f91', '#b77cff'];

@@ -240,6 +240,7 @@ const players = [
       {season:"PSL3", team:"NFFC", logo:"nffc.png", detail:""},
       {season:"PSL4", team:"NFFC", logo:"nffc.png", detail:""},
       {season:"PSL5", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
+      {season:"PSL6", team:"Spasmena Mila", logo:"spasmena.png", detail:""},
     ],
     upcoming: null,
     description: "Petros Papaspyropoulos is a player that has been around for a while, but has never really made a big impact in the sport."

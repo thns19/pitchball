@@ -41,6 +41,8 @@
         <option value="az">A → Z</option>
         <option value="za">Z → A</option>
         <option value="titles">Most Titles</option>
+        <option value="win-rate">Highest Win Rate</option>
+        <option value="wins">Most Wins</option>
       </select>
     </div>
     <div class="players-grid" id="players-grid"></div>
@@ -81,6 +83,7 @@
 
 <script src="players-data.js"></script>
 <script src="awards.js"></script>
+<script src="team-stats.js"></script>
 <script>
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // PLAYER DATA
@@ -96,6 +99,11 @@
 let currentFilter = 'all';
 
 document.getElementById('total-players').textContent = players.length;
+const careerStatsByPlayer = new Map(players.map(player => [player.id, getArchivedCareerStats(player)]));
+
+function getPlayerWinRate(stats) {
+  return stats.games > 0 ? stats.wins / stats.games : 0;
+}
 
 function showSection(section) {
   document.querySelectorAll('.encyclopedia-tab').forEach(tab => {
@@ -132,9 +140,25 @@ function renderGrid() {
   });
 
   const sort = document.getElementById('sort-select').value;
-if(sort === 'az') filtered.sort((a,b) => a.name.localeCompare(b.name));
-if(sort === 'za') filtered.sort((a,b) => b.name.localeCompare(a.name));
-if(sort === 'titles') filtered.sort((a,b) => getPlayerAwards(b).length - getPlayerAwards(a).length);
+  if (sort === 'az') filtered.sort((a,b) => a.name.localeCompare(b.name));
+  if (sort === 'za') filtered.sort((a,b) => b.name.localeCompare(a.name));
+  if (sort === 'titles') filtered.sort((a,b) => getPlayerAwards(b).length - getPlayerAwards(a).length);
+  if (sort === 'win-rate') filtered.sort((a, b) => {
+    const firstStats = careerStatsByPlayer.get(a.id);
+    const secondStats = careerStatsByPlayer.get(b.id);
+    return getPlayerWinRate(secondStats) - getPlayerWinRate(firstStats)
+      || secondStats.wins - firstStats.wins
+      || secondStats.games - firstStats.games
+      || a.name.localeCompare(b.name);
+  });
+  if (sort === 'wins') filtered.sort((a, b) => {
+    const firstStats = careerStatsByPlayer.get(a.id);
+    const secondStats = careerStatsByPlayer.get(b.id);
+    return secondStats.wins - firstStats.wins
+      || getPlayerWinRate(secondStats) - getPlayerWinRate(firstStats)
+      || secondStats.games - firstStats.games
+      || a.name.localeCompare(b.name);
+  });
 
   document.getElementById('players-grid').innerHTML = filtered.map(p => {
     const awardCount = getPlayerAwards(p).length;
@@ -146,6 +170,46 @@ if(sort === 'titles') filtered.sort((a,b) => getPlayerAwards(b).length - getPlay
       <div class="player-titles">${awardCount>0?`<span class="title-icon">🏆</span> ${awardCount} Titles &amp; Accolades` : 'No titles or accolades'}</div>
     </a>`;
   }).join('') || '<p style="color:#535c2f;font-size:13px;">No players found.</p>';
+}
+
+function loadCurrentSeasonCareerStats() {
+  const currentSeasonPlayers = players.filter(player => (player.seasons || [])
+    .some(season => season.season === 'PSL6'));
+  if (!currentSeasonPlayers.length) return;
+
+  const loadData = (url, label, isValid) => fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error(`${label} request failed: ${response.status}`);
+      return response.json();
+    })
+    .then(data => {
+      if (!isValid(data)) throw new Error(`${label} response was invalid.`);
+      return data;
+    })
+    .catch(error => {
+      console.error(`Unable to load current-season ${label.toLowerCase()} for player sorting.`, error);
+      return null;
+    });
+
+  Promise.all([
+    loadData(
+      'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/matches.json',
+      'Match data',
+      data => data && typeof data === 'object' && !Array.isArray(data)
+    ),
+    loadData(
+      'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/psl6Cup.json',
+      'Cup data',
+      data => data && Array.isArray(data.participants) && data.results
+        && typeof data.results === 'object' && !Array.isArray(data.results)
+    )
+  ]).then(([matchRecords, cupData]) => {
+    currentSeasonPlayers.forEach(player => {
+      const stats = careerStatsByPlayer.get(player.id);
+      addPsl6CareerSeasonStats(stats, player, matchRecords, cupData);
+    });
+    renderGrid();
+  });
 }
 
 function renderTeams() {
@@ -198,6 +262,7 @@ function renderTeams() {
 
 renderGrid();
 renderTeams();
+loadCurrentSeasonCareerStats();
 </script>
 <style>body{position:relative;}</style>
 <script>
