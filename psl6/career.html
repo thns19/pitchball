@@ -349,8 +349,9 @@
   function simulate(home, away) {
     const homeRating = getRating(home);
     const awayRating = getRating(away);
-    const edge = (homeRating.att - awayRating.def) * .025
-      + (homeRating.overall - awayRating.overall) * .018 + .025;
+    const attackDefenseEdge = (homeRating.att - awayRating.def) - (awayRating.att - homeRating.def);
+    const edge = attackDefenseEdge * .0125
+      + (homeRating.overall - awayRating.overall) * .018;
     const homeChance = clamp(1 / (1 + Math.exp(-edge)), .18, .82);
     let homeScore = 0;
     let awayScore = 0;

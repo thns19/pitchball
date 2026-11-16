@@ -56,7 +56,32 @@
   .match-team-logo { width: 56px; height: 56px; object-fit: contain; border-radius: 10px; padding: 4px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border); }
   .match-team-name { color: var(--text); font-size: 14px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
   .match-score { color: var(--text); font-size: 42px; font-weight: 700; line-height: 1; min-width: 90px; }
+  .match-score.preview { color: var(--cyan); font-size: 18px; letter-spacing: 0.12em; }
   .match-meta { color: var(--muted); font-size: 11px; line-height: 1.6; margin-top: 1rem; }
+  .preview-card { padding: 1.2rem 1rem; text-align: center; }
+  .preview-status { color: var(--cyan); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .preview-message { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 8px; }
+  .preview-details { padding-bottom: 1rem; }
+  .chance-summary { padding: 1rem; }
+  .chance-labels { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
+  .chance-labels strong { color: var(--text); font-size: 16px; margin-left: 4px; }
+  .chance-bar { display: flex; overflow: hidden; height: 10px; margin-top: 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); }
+  .chance-home { background: var(--cyan); }
+  .chance-away { background: var(--purple); }
+  .chance-note { color: var(--muted); font-size: 11px; line-height: 1.5; margin: 9px 0 0; }
+  .preview-team-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 1rem; }
+  .preview-team-panel { min-width: 0; padding: 11px; border: 1px solid var(--border); border-radius: 9px; background: var(--panel-soft); }
+  .preview-team-heading { display: flex; align-items: center; gap: 7px; min-height: 30px; font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
+  .preview-team-heading .match-team-logo { width: 26px; height: 26px; padding: 2px; border-radius: 6px; }
+  .form-list, .player-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+  .form-result { display: flex; align-items: center; gap: 5px; padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 10px; }
+  .form-result strong { color: var(--text); }
+  .form-result.win { border-color: rgba(57, 200, 119, 0.4); color: var(--green); }
+  .form-result.draw { border-color: rgba(245, 200, 66, 0.4); color: var(--gold); }
+  .form-result.loss { border-color: rgba(231, 121, 109, 0.4); color: #e7796d; }
+  .player-list li { padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; color: rgba(255, 255, 255, 0.82); font-size: 10px; line-height: 1.35; }
+  .preview-empty { color: var(--muted); font-size: 11px; line-height: 1.5; margin: 10px 0 0; }
+  .preview-caption { color: var(--muted); font-size: 10px; line-height: 1.5; margin: 0 1rem; }
   .match-meta span { display: inline-block; margin: 0 5px; }
   .match-export-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 1rem; }
   .match-export-controls[hidden] { display: none; }
@@ -116,6 +141,7 @@
     .match-team-name { font-size: 12px; }
     .match-score { font-size: 34px; min-width: 64px; }
     .stats-grid { grid-template-columns: 1fr; }
+    .preview-team-grid { grid-template-columns: 1fr; }
     .comment-replies { margin-left: 0; }
   }
 </style>
@@ -174,6 +200,166 @@ function readMatch(db, id) {
     if (db.matches && db.matches[key]) return db.matches[key];
   }
   return {};
+}
+function hasFinalScore(match) {
+  return [match.hs, match.as].every(score =>
+    score !== null && score !== undefined && score !== '' && Number.isFinite(Number(score)));
+}
+function normalizedTeamName(name) {
+  const normalized = String(name ?? '').trim().toLowerCase().replace(/\.$/, '');
+  return ({
+    'thryloi': 'oi thryloi',
+    'golden b': 'golden bullet',
+    'volos dr': 'volos drummers'
+  })[normalized] || normalized;
+}
+function getTeamProfile(name) {
+  const teams = window.PSL6_DATA && window.PSL6_DATA.teams;
+  if (!teams) return null;
+  const key = Object.keys(teams).find(team => normalizedTeamName(team) === normalizedTeamName(name));
+  return key ? teams[key] : null;
+}
+function getCompletedResults(db) {
+  const results = [];
+  const seenIds = new Set();
+  const completedGroupFixtures = new Set();
+  let fallbackOrder = 0;
+  const groupFixtures = window.PSL6_DATA && window.PSL6_DATA.groupFixtures;
+  if (Array.isArray(groupFixtures)) {
+    groupFixtures.forEach((fixture, index) => {
+      const match = readMatch(db, String(index + 1000));
+      if (!hasFinalScore(match)) return;
+      const home = fixture.h;
+      const away = fixture.a;
+      completedGroupFixtures.add(`${normalizedTeamName(home)}|${normalizedTeamName(away)}`);
+      const date = Date.parse(match.date || '');
+      results.push({
+        home,
+        away,
+        homeScore: Number(match.hs),
+        awayScore: Number(match.as),
+        order: Number.isFinite(date) ? date : Number(fixture.md) * 100000 + index
+      });
+    });
+  }
+  Object.entries(db.matches || {}).forEach(([id, match]) => {
+    if (!/^PSL6CUP\d+$/i.test(id) || !match.home || !match.away || !hasFinalScore(match)) return;
+    if (seenIds.has(id)) return;
+    seenIds.add(id);
+    const date = Date.parse(match.date || '');
+    const idTimestamp = Number((id.match(/\d{10,}/) || [])[0]);
+    results.push({
+      home: match.home,
+      away: match.away,
+      homeScore: Number(match.hs),
+      awayScore: Number(match.as),
+      order: Number.isFinite(date) ? date : Number.isFinite(idTimestamp) ? idTimestamp : fallbackOrder++
+    });
+  });
+  [db.matchdays, db.psl6Matchdays].forEach((matchdays, sourceIndex) => {
+    if (!Array.isArray(matchdays)) return;
+    matchdays.forEach(day => {
+      const status = String(day.status || '').toLowerCase();
+      if (status && !['scored', 'complete', 'completed'].includes(status)) return;
+      if (!Array.isArray(day.matches)) return;
+      day.matches.forEach(match => {
+        const order = fallbackOrder++;
+        if (!match || !match.home || !match.away || !hasFinalScore(match)) return;
+        const fixtureKey = `${normalizedTeamName(match.home)}|${normalizedTeamName(match.away)}`;
+        if (sourceIndex === 1 && completedGroupFixtures.has(fixtureKey)) return;
+        const id = String(match.id || '');
+        if (id && seenIds.has(id)) return;
+        if (id) seenIds.add(id);
+        const date = Date.parse(match.date || day.date || '');
+        const idTimestamp = Number((id.match(/\d{10,}/) || [])[0]);
+        results.push({
+          home: match.home,
+          away: match.away,
+          homeScore: Number(match.hs),
+          awayScore: Number(match.as),
+          order: Number.isFinite(date) ? date : Number.isFinite(idTimestamp) ? idTimestamp : order
+        });
+      });
+    });
+  });
+  return results.sort((a, b) => b.order - a.order);
+}
+function getRecentForm(results, team) {
+  const teamKey = normalizedTeamName(team);
+  return results.filter(match =>
+    normalizedTeamName(match.home) === teamKey || normalizedTeamName(match.away) === teamKey
+  ).slice(0, 5).map(match => {
+    const isHome = normalizedTeamName(match.home) === teamKey;
+    const score = isHome
+      ? [match.homeScore, match.awayScore]
+      : [match.awayScore, match.homeScore];
+    return {
+      opponent: isHome ? match.away : match.home,
+      teamScore: score[0],
+      opponentScore: score[1],
+      result: score[0] > score[1] ? 'W' : score[0] < score[1] ? 'L' : 'D'
+    };
+  });
+}
+function renderFormPanel(team, results) {
+  const form = getRecentForm(results, team);
+  const formMarkup = form.length
+    ? `<ul class="form-list">${form.map(match => `<li class="form-result ${match.result === 'W' ? 'win' : match.result === 'L' ? 'loss' : 'draw'}" title="vs ${escapeHtml(match.opponent)}"><strong>${match.result}</strong><span>${match.teamScore}-${match.opponentScore}</span></li>`).join('')}</ul>`
+    : '<p class="preview-empty">No completed matches are recorded yet.</p>';
+  return `<div class="preview-team-panel"><div class="preview-team-heading">${logoFor(team)}<span>${escapeHtml(team)}</span></div>${formMarkup}</div>`;
+}
+function renderPlayersPanel(team) {
+  const profile = getTeamProfile(team);
+  const players = profile && typeof profile.notes === 'string'
+    ? profile.notes.split(',').map(player => player.trim()).filter(Boolean)
+    : [];
+  const playerMarkup = players.length
+    ? `<ul class="player-list">${players.map(player => `<li>${escapeHtml(player)}</li>`).join('')}</ul>`
+    : '<p class="preview-empty">Player information is not available for this team.</p>';
+  return `<div class="preview-team-panel"><div class="preview-team-heading">${logoFor(team)}<span>${escapeHtml(team)}</span></div>${playerMarkup}</div>`;
+}
+function overallRating(team) {
+  return team.att * 0.35 + team.def * 0.3 + team.stm * 0.15 + team.con * 0.2;
+}
+function estimateWinChances(homeName, awayName) {
+  const home = getTeamProfile(homeName);
+  const away = getTeamProfile(awayName);
+  if (!home || !away) return null;
+  const simulations = 10000;
+  let homeWins = 0;
+  const random = Math.random;
+  for (let simulation = 0; simulation < simulations; simulation++) {
+    let homeScore = 0, awayScore = 0, homeFatigue = 0, awayFatigue = 0;
+    let serving = random() < 0.5 ? 1 : 2;
+    let rallies = 0;
+    while (true) {
+      const homeRating = overallRating(home) * (1 - homeFatigue * 0.25);
+      const awayRating = overallRating(away) * (1 - awayFatigue * 0.25);
+      const homeExpected = homeRating * (0.85 + random() * 0.3) * (serving === 1 ? 1.04 : 0.96);
+      const awayExpected = awayRating * (0.85 + random() * 0.3) * (serving === 2 ? 1.04 : 0.96);
+      const homeWinsRally = random() < Math.max(0.04, Math.min(0.96, 0.5 + (homeExpected - awayExpected) * 0.007));
+      homeFatigue = Math.min(0.7, homeFatigue + 0.018);
+      awayFatigue = Math.min(0.7, awayFatigue + 0.018);
+      if (homeWinsRally) homeScore++;
+      else awayScore++;
+      serving = homeWinsRally ? 1 : 2;
+      rallies++;
+      if ((Math.max(homeScore, awayScore) >= 5 && Math.abs(homeScore - awayScore) >= 2) || rallies > 300) break;
+    }
+    if (homeScore > awayScore) homeWins++;
+  }
+  const homePercent = Math.round(homeWins / simulations * 100);
+  return {home: homePercent, away: 100 - homePercent};
+}
+function renderPreviewDetails(db, home, away) {
+  const chances = estimateWinChances(home, away);
+  const results = getCompletedResults(db);
+  const chancesMarkup = chances
+    ? `<div class="content-card"><div class="card-title">Winning chances</div><div class="chance-summary"><div class="chance-labels"><span>${escapeHtml(home)}<strong>${chances.home}%</strong></span><span>${escapeHtml(away)}<strong>${chances.away}%</strong></span></div><div class="chance-bar" role="img" aria-label="${escapeHtml(home)} ${chances.home}%, ${escapeHtml(away)} ${chances.away}%"><span class="chance-home" style="width:${chances.home}%"></span><span class="chance-away" style="width:${chances.away}%"></span></div><p class="chance-note">Estimated from the PSL6 team ratings and match simulation; not a guarantee.</p></div></div>`
+    : '<div class="content-card"><div class="card-title">Winning chances</div><div class="no-data">Win chances are unavailable because team rating data is missing.</div></div>';
+  return `${chancesMarkup}
+    <section class="content-card preview-details"><div class="card-title">Recent form · last 5 completed matches (all competitions)</div><div class="preview-team-grid">${renderFormPanel(home, results)}${renderFormPanel(away, results)}</div></section>
+    <section class="content-card preview-details"><div class="card-title">Squad players</div><div class="preview-team-grid">${renderPlayersPanel(home)}${renderPlayersPanel(away)}</div><p class="preview-caption">Squad information is not a confirmed match lineup.</p></section>`;
 }
 function eventCounts(events, home) {
   let homeGoals = 0, awayGoals = 0, homeOwnGoals = 0, awayOwnGoals = 0;
@@ -548,12 +734,15 @@ async function initMatch() {
   const md = params.get('md') || '-';
   const isCupMatch = params.get('cup') === '1';
   const round = params.get('round') || group;
+  const competition = isCupMatch
+    ? 'PSL6 Cup'
+    : params.get('competition') === 'league'
+      ? 'PSL6 League Phase'
+      : 'PSL6 Group Stage';
   const content = document.getElementById('match-content');
-  if (isCupMatch) {
-    const backLink = document.getElementById('match-back-link');
-    backLink.href = 'cup.html';
-    backLink.innerHTML = '&larr; PSL6 Cup';
-  }
+  const backLink = document.getElementById('match-back-link');
+  backLink.href = isCupMatch ? 'cup.html' : competition === 'PSL6 Group Stage' ? 'groups.html' : 'table.html';
+  backLink.innerHTML = `&larr; ${isCupMatch ? 'PSL6 Cup' : competition === 'PSL6 Group Stage' ? 'Group Stage' : 'League Phase'}`;
   if (!id) {
     content.innerHTML = `<div class="no-data">Match not found. <a class="back" href="${isCupMatch ? 'cup.html' : 'table.html'}">Back to ${isCupMatch ? 'cup' : 'table'}</a></div>`;
     return;
@@ -561,30 +750,32 @@ async function initMatch() {
   try {
     const db = await getDb();
     const match = readMatch(db, id);
+    const isComplete = hasFinalScore(match);
+    const homeScore = isComplete ? match.hs : '-';
+    const awayScore = isComplete ? match.as : '-';
     const events = Array.isArray(match.events) ? match.events : [];
-    if (isCupMatch && match && Object.keys(match).length) {
+    if (isCupMatch && hasFinalScore(match)) {
       currentCupExport = {id, home, away, round, match, events};
       document.getElementById('match-export-controls').hidden = false;
     }
     const counts = eventCounts(events, home);
-    const homeScore = match.hs !== undefined && match.hs !== null ? match.hs : '-';
-    const awayScore = match.as !== undefined && match.as !== null ? match.as : '-';
     const eventRows = events.length ? events.map(event => renderEvent(event, home, away)).join('') : '<div class="no-data">No event data available yet.</div>';
-    const competition = isCupMatch ? 'PSL6 Cup' : 'PSL6 Group Stage';
-    document.title = `${home} vs ${away} - ${competition}`;
+    document.title = `${isComplete ? '' : 'Match Preview: '}${home} vs ${away} - ${competition}`;
     content.innerHTML = `
       <section class="match-header">
-        <div class="match-kicker">${isCupMatch ? `${escapeHtml(competition)} - ${escapeHtml(round)}` : `${escapeHtml(group)} - Matchday ${escapeHtml(md)}`}</div>
+        <div class="match-kicker">${isCupMatch ? `${escapeHtml(competition)} - ${escapeHtml(round)}` : competition === 'PSL6 League Phase' ? `${escapeHtml(competition)} - Matchday ${escapeHtml(md)}` : `${escapeHtml(group)} - Matchday ${escapeHtml(md)}`}</div>
         <div class="match-teams">
           <div class="match-team">${logoFor(home)}<div class="match-team-name">${escapeHtml(home)}</div></div>
-          <div class="match-score">${escapeHtml(homeScore)}-${escapeHtml(awayScore)}</div>
+          <div class="match-score${isComplete ? '' : ' preview'}">${isComplete ? `${escapeHtml(homeScore)}-${escapeHtml(awayScore)}` : 'VS'}</div>
           <div class="match-team">${logoFor(away)}<div class="match-team-name">${escapeHtml(away)}</div></div>
         </div>
         <div class="match-meta">${match.date ? `<span>${escapeHtml(formatDate(match.date))}</span>` : ''}<span>${escapeHtml(competition)}</span></div>
       </section>
-      ${match.mvp ? `<section class="content-card mvp-card"><span class="mvp-icon">&#127942;</span><div><div class="mvp-label">Match MVP</div><div class="mvp-name">${escapeHtml(match.mvp)}</div></div></section>` : ''}
-      <section class="content-card"><div class="card-title">Match statistics</div><div class="stats-grid"><div class="stat"><span class="stat-label">${escapeHtml(home)} goals</span><span class="stat-value">${counts.homeGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} goals</span><span class="stat-value">${counts.awayGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(home)} own goals</span><span class="stat-value">${counts.homeOwnGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} own goals</span><span class="stat-value">${counts.awayOwnGoals}</span></div></div></section>
-      <section class="content-card"><div class="card-title">Match events</div>${eventRows}</section>`;
+      ${isComplete
+        ? `${match.mvp ? `<section class="content-card mvp-card"><span class="mvp-icon">&#127942;</span><div><div class="mvp-label">Match MVP</div><div class="mvp-name">${escapeHtml(match.mvp)}</div></div></section>` : ''}
+          <section class="content-card"><div class="card-title">Match statistics</div><div class="stats-grid"><div class="stat"><span class="stat-label">${escapeHtml(home)} goals</span><span class="stat-value">${counts.homeGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} goals</span><span class="stat-value">${counts.awayGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(home)} own goals</span><span class="stat-value">${counts.homeOwnGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} own goals</span><span class="stat-value">${counts.awayOwnGoals}</span></div></div></section>
+          <section class="content-card"><div class="card-title">Match events</div>${eventRows}</section>`
+        : `<section class="content-card preview-card"><div class="preview-status">Match Preview</div><p class="preview-message">This match hasn't been completed yet. Match statistics and events will appear here after the result is recorded.</p></section>${renderPreviewDetails(db, home, away)}`}`;
   } catch (error) {
     content.innerHTML = `<div class="no-data">Unable to load this match right now. <a class="back" href="${isCupMatch ? 'cup.html' : 'table.html'}">Back to ${isCupMatch ? 'cup' : 'table'}</a></div>`;
   }

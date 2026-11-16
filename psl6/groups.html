@@ -238,6 +238,8 @@
   .projection-panel-header h3 { color: var(--text-main); font-size: 1rem; font-weight: 600; }
   .projection-panel-header p { margin-top: 0.35rem; color: var(--text-muted); font-size: 0.78rem; line-height: 1.5; }
   .projection-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+  .what-if-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 11px; border: 1px solid rgba(0,240,255,0.35); border-radius: 9px; color: var(--neon-cyan); font-size: 12px; font-weight: 600; cursor: pointer; }
+  .what-if-toggle input { width: 16px; height: 16px; margin: 0; accent-color: var(--neon-cyan); }
   .qualification-controls { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 12px; }
   .qualification-team-select {
     min-height: 40px;
@@ -447,9 +449,10 @@
       <div id="admin-projection-controls" class="projection-panel" hidden>
         <div class="projection-panel-header">
           <h3>Admin projections &amp; position odds</h3>
-          <p>Enter scores beside pending fixtures to preview how they change the standings, or simulate pending matches. Simulations use team ratings with no home advantage. Previews are temporary and are not saved.</p>
+          <p>Turn on What-If Scores to enter temporary fixture scores, or simulate pending matches. Simulations use team ratings with no home advantage. Previews are temporary and are not saved.</p>
         </div>
         <div class="projection-actions">
+          <label class="what-if-toggle"><input id="what-if-scores-mode" type="checkbox" onchange="setWhatIfScoresMode(this.checked)"> What-If Scores</label>
           <button class="projection-button" type="button" onclick="simulateAllProjections()">Simulate pending scores</button>
           <button id="run-position-simulations" class="projection-button" type="button" onclick="runPositionSimulations()">Run 50,000 position simulations</button>
           <button id="run-best-fourth-simulations" class="projection-button" type="button" onclick="runBestFourthSimulations()">Run 50,000 fourth-place cutoff simulations</button>
@@ -526,56 +529,9 @@
     const projectionRatings = window.PSL6_DATA.teams;
     const projectionRatingAliases = { 'Thryloi': 'Oi Thryloi', 'Golden B.': 'Golden Bullet' };
     let pslCurrentUser = null;
+    let whatIfScoresMode = false;
 
-    const rawFixtures = [
-      { group: 'Group A', md: 1, h: 'EX7T', a: 'Midi', hs: null, as: null },
-      { group: 'Group A', md: 1, h: 'Hornets', a: 'BAD', hs: null, as: null },
-      { group: 'Group A', md: 1, h: 'TTD', a: 'Volos', hs: null, as: null },
-      { group: 'Group A', md: 2, h: 'BAD', a: 'EX7T', hs: null, as: null },
-      { group: 'Group A', md: 2, h: 'Volos', a: 'Midi', hs: null, as: null },
-      { group: 'Group A', md: 2, h: 'TTD', a: 'Hornets', hs: null, as: null },
-      { group: 'Group A', md: 3, h: 'EX7T', a: 'Volos', hs: null, as: null },
-      { group: 'Group A', md: 3, h: 'BAD', a: 'TTD', hs: null, as: null },
-      { group: 'Group A', md: 3, h: 'Midi', a: 'Hornets', hs: null, as: null },
-      { group: 'Group A', md: 4, h: 'TTD', a: 'EX7T', hs: null, as: null },
-      { group: 'Group A', md: 4, h: 'Hornets', a: 'Volos', hs: null, as: null },
-      { group: 'Group A', md: 4, h: 'Midi', a: 'BAD', hs: null, as: null },
-      { group: 'Group A', md: 5, h: 'EX7T', a: 'Hornets', hs: null, as: null },
-      { group: 'Group A', md: 5, h: 'TTD', a: 'Midi', hs: null, as: null },
-      { group: 'Group A', md: 5, h: 'Volos', a: 'BAD', hs: null, as: null },
-
-      { group: 'Group B', md: 1, h: 'Lampater', a: 'Polo', hs: null, as: null },
-      { group: 'Group B', md: 1, h: 'A/C', a: 'Ksades', hs: null, as: null },
-      { group: 'Group B', md: 1, h: 'BMB', a: 'R1', hs: null, as: null },
-      { group: 'Group B', md: 2, h: 'Ksades', a: 'Lampater', hs: null, as: null },
-      { group: 'Group B', md: 2, h: 'R1', a: 'Polo', hs: null, as: null },
-      { group: 'Group B', md: 2, h: 'BMB', a: 'A/C', hs: null, as: null },
-      { group: 'Group B', md: 3, h: 'Lampater', a: 'R1', hs: null, as: null },
-      { group: 'Group B', md: 3, h: 'Ksades', a: 'BMB', hs: null, as: null },
-      { group: 'Group B', md: 3, h: 'Polo', a: 'A/C', hs: null, as: null },
-      { group: 'Group B', md: 4, h: 'BMB', a: 'Lampater', hs: null, as: null },
-      { group: 'Group B', md: 4, h: 'A/C', a: 'R1', hs: null, as: null },
-      { group: 'Group B', md: 4, h: 'Polo', a: 'Ksades', hs: null, as: null },
-      { group: 'Group B', md: 5, h: 'Lampater', a: 'A/C', hs: null, as: null },
-      { group: 'Group B', md: 5, h: 'BMB', a: 'Polo', hs: null, as: null },
-      { group: 'Group B', md: 5, h: 'R1', a: 'Ksades', hs: null, as: null },
-
-      { group: 'Group C', md: 1, h: 'Axtarm', a: 'Niki A.', hs: null, as: null },
-      { group: 'Group C', md: 1, h: 'Thryloi', a: 'GB', hs: null, as: null },
-      { group: 'Group C', md: 1, h: 'Mila', a: 'Hitters', hs: null, as: null },
-      { group: 'Group C', md: 2, h: 'GB', a: 'Axtarm', hs: null, as: null },
-      { group: 'Group C', md: 2, h: 'Hitters', a: 'Niki A.', hs: null, as: null },
-      { group: 'Group C', md: 2, h: 'Mila', a: 'Thryloi', hs: null, as: null },
-      { group: 'Group C', md: 3, h: 'Axtarm', a: 'Hitters', hs: null, as: null },
-      { group: 'Group C', md: 3, h: 'GB', a: 'Mila', hs: null, as: null },
-      { group: 'Group C', md: 3, h: 'Niki A.', a: 'Thryloi', hs: null, as: null },
-      { group: 'Group C', md: 4, h: 'Mila', a: 'Axtarm', hs: null, as: null },
-      { group: 'Group C', md: 4, h: 'Thryloi', a: 'Hitters', hs: null, as: null },
-      { group: 'Group C', md: 4, h: 'Niki A.', a: 'GB', hs: null, as: null },
-      { group: 'Group C', md: 5, h: 'Axtarm', a: 'Thryloi', hs: null, as: null },
-      { group: 'Group C', md: 5, h: 'Mila', a: 'Niki A.', hs: null, as: null },
-      { group: 'Group C', md: 5, h: 'Hitters', a: 'GB', hs: null, as: null }
-    ];
+    const rawFixtures = window.PSL6_DATA.groupFixtures.map(fixture => ({ ...fixture, hs: null, as: null }));
 
     function normalizeTeamName(teamName) {
       const key = String(teamName || '').trim();
@@ -621,6 +577,12 @@
       return Boolean(pslCurrentUser && pslCurrentUser.isAdmin);
     }
 
+    function setWhatIfScoresMode(enabled) {
+      if (!isPslAdmin()) return;
+      whatIfScoresMode = Boolean(enabled);
+      renderGroups();
+    }
+
     function getProjectionScore(fixture) {
       if (!isPslAdmin() || !fixture.projected) return null;
       return { hs: fixture.projectedHs, as: fixture.projectedAs };
@@ -664,7 +626,7 @@
     }
 
     function updatePreviewScore(fixtureId, side, input) {
-      if (!isPslAdmin()) return;
+      if (!isPslAdmin() || !whatIfScoresMode) return;
       const fixture = fixtures.find(item => item.id === fixtureId);
       if (!fixture || (fixture.hs !== null && fixture.as !== null) || !input.checkValidity()) {
         input.reportValidity();
@@ -702,7 +664,7 @@
     }
 
     function togglePreviewScoreLock(fixtureId) {
-      if (!isPslAdmin()) return;
+      if (!isPslAdmin() || !whatIfScoresMode) return;
       const fixture = fixtures.find(item => item.id === fixtureId);
       if (!fixture || (fixture.hs !== null && fixture.as !== null)) return;
       if (!hasValidPreviewScore(fixture)) return;
@@ -784,9 +746,11 @@
                     ? `${fixture.hs} - ${fixture.as}`
                     : projectedScore
                       ? `${projectedScore.hs} - ${projectedScore.as}`
-                      : 'TBD';
+                      : 'Preview';
                   const projectionBadge = projectedScore ? '<span style="display:block;font-size:9px;color:var(--neon-purple);">PROJECTED</span>' : '';
-                  const previewInputs = isPslAdmin() && !hasConfirmedScore
+                  const showWhatIfInputs = isPslAdmin() && whatIfScoresMode && !hasConfirmedScore;
+                  const fixtureUrl = `match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}`;
+                  const previewInputs = showWhatIfInputs
                     ? `<span class="preview-score-control">
                         <span class="preview-score-inputs">
                           <input class="preview-score-input" type="number" min="0" step="1" aria-label="${escapeAttribute(fixture.home)} preview score" value="${escapeAttribute(fixture.previewDraftHs ?? (fixture.projected ? fixture.projectedHs : ''))}" onchange="updatePreviewScore('${escapeAttribute(fixture.id)}', 'hs', this)">
@@ -795,13 +759,20 @@
                         </span>
                         <button id="preview-lock-${escapeAttribute(fixture.id)}" class="preview-score-lock${fixture.tempLocked ? ' locked' : ''}" type="button" aria-label="${fixture.tempLocked ? 'Unlock score for simulations' : 'Lock score for simulations'}" aria-pressed="${Boolean(fixture.tempLocked)}" ${!hasValidPreviewScore(fixture) ? 'disabled' : ''} onclick="togglePreviewScoreLock('${escapeAttribute(fixture.id)}')">${fixture.tempLocked ? 'Locked for sims' : 'Lock for sims'}</button>
                       </span>${projectionBadge}`
-                    : `${score}${projectionBadge}`;
-                  const fixtureUrl = `match.html?id=${encodeURIComponent(fixture.id)}&group=${encodeURIComponent(group.name)}&md=${encodeURIComponent(fixture.md)}&home=${encodeURIComponent(fixture.home)}&away=${encodeURIComponent(fixture.away)}`;
+                    : hasConfirmedScore
+                      ? `${score}${projectionBadge}`
+                      : `<a href="${fixtureUrl}" target="_top" aria-label="Preview ${escapeAttribute(fixture.home)} vs ${escapeAttribute(fixture.away)}" style="color:inherit;text-decoration:none;">${score}${projectionBadge}</a>`;
+                  const homeLabel = hasConfirmedScore
+                    ? escapeHtml(fixture.home)
+                    : `<a href="${fixtureUrl}" target="_top" style="color:inherit;text-decoration:none;">${escapeHtml(fixture.home)}</a>`;
+                  const awayLabel = hasConfirmedScore
+                    ? escapeHtml(fixture.away)
+                    : `<a href="${fixtureUrl}" target="_top" style="color:inherit;text-decoration:none;">${escapeHtml(fixture.away)}</a>`;
                   return `
                     <div class="fixture-match">
-                      <span class="fixture-team home">${escapeHtml(fixture.home)}</span>
+                      <span class="fixture-team home">${homeLabel}</span>
                       <span class="fixture-score">${hasConfirmedScore ? `<a href="${fixtureUrl}" target="_top" style="color:inherit;text-decoration:none;">${score}</a>` : previewInputs}</span>
-                      <span class="fixture-team away">${escapeHtml(fixture.away)}</span>
+                      <span class="fixture-team away">${awayLabel}</span>
                     </div>`;
                 }).join('')}
               </div>
@@ -1638,6 +1609,11 @@
       const isAdmin = isPslAdmin();
       const projectionControls = document.getElementById('admin-projection-controls');
       projectionControls.hidden = !isAdmin;
+      const whatIfToggle = document.getElementById('what-if-scores-mode');
+      if (!isAdmin) {
+        whatIfScoresMode = false;
+        whatIfToggle.checked = false;
+      }
       const qualificationTeam = document.getElementById('qualification-team');
       const selectedTeam = qualificationTeam.value;
       qualificationTeam.innerHTML = `<option value="">Choose a team</option>${groups.flatMap(group => group.teams).map(team => `<option value="${escapeAttribute(team)}">${escapeHtml(teamData[team]?.name || team)}</option>`).join('')}`;

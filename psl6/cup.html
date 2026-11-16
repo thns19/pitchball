@@ -1048,8 +1048,8 @@
       const matchUrl = `match.html?id=${encodeURIComponent(match.id)}&cup=1&round=${encodeURIComponent(match.round)}&home=${encodeURIComponent(match.home)}&away=${encodeURIComponent(match.away)}`;
       const matchContent = `<div class="match-label"><span>M${matchIndex + 1}</span></div>
         ${renderTeam(match.home, match, homeScore)}${renderTeam(match.away, match, awayScore)}`;
-      const viewLink = savedResult && hasGame
-        ? `<a class="match-view-link" href="${matchUrl}" aria-label="View ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}">${matchContent}</a>`
+      const viewLink = hasGame
+        ? `<a class="match-view-link" href="${matchUrl}" aria-label="${savedResult ? 'View' : 'Preview'} ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}">${matchContent}</a>`
         : matchContent;
       const editButton = cupIsAdmin && hasGame
         ? `<button class="button match-edit-button" type="button" aria-label="Edit ${escapeHtml(match.home)} vs ${escapeHtml(match.away)}" title="Edit match" onclick="openCupMatchEditor('${match.id}')">✎</button>`

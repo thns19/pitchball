@@ -235,6 +235,113 @@ body::before {
   animation: fadeUp 0.8s 0.8s forwards;
 }
 
+.featured-match[hidden],
+.featured-match-admin[hidden],
+.featured-match-form[hidden],
+.featured-match-logos[hidden],
+.featured-match-logos img[hidden] { display: none; }
+
+.featured-match {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 auto 1rem;
+  padding: 1.25rem 1.6rem;
+  border: 1px solid rgba(245, 200, 66, 0.42);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 82% 25%, rgba(245, 200, 66, 0.12), transparent 30%),
+    linear-gradient(135deg, rgba(25, 28, 16, 0.98), rgba(15, 20, 12, 0.96));
+  box-shadow: 0 0 24px rgba(245, 200, 66, 0.08);
+}
+
+.featured-match-copy { display: flex; flex: 1; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.featured-match-label { color: var(--gold); font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+.featured-match-title { color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: clamp(23px, 3vw, 32px); letter-spacing: 0.5px; line-height: 1; overflow-wrap: anywhere; }
+.featured-match-description { color: rgba(255,255,255,0.68); font-size: 12px; line-height: 1.5; }
+.featured-match-logos { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.featured-match-logos img {
+  display: block;
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+.featured-match-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 11px 15px;
+  border: 1px solid rgba(245, 200, 66, 0.5);
+  border-radius: 999px;
+  color: #ffe48c;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.2s, transform 0.2s;
+}
+.featured-match-link:hover { background: rgba(245, 200, 66, 0.12); transform: translateY(-1px); }
+.featured-match-admin { margin: 0 auto 1rem; text-align: right; }
+.featured-match-admin-toggle,
+.featured-match-cancel,
+.featured-match-remove {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+}
+.featured-match-admin-toggle:hover,
+.featured-match-cancel:hover { border-color: var(--green); }
+.featured-match-form {
+  margin-top: 10px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg2);
+  text-align: left;
+}
+.featured-match-form h2 { margin-bottom: 12px; color: var(--text); font-size: 14px; font-weight: 500; }
+.featured-match-field { margin-bottom: 12px; }
+.featured-match-field label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 11px; }
+.featured-match-field input,
+.featured-match-field textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.featured-match-field textarea { min-height: 64px; resize: vertical; }
+.featured-match-field input:focus,
+.featured-match-field textarea:focus { outline: 1px solid var(--green); }
+.featured-match-logo-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.featured-match-form-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.featured-match-save {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--green);
+  color: #07110a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+}
+.featured-match-save:disabled { cursor: wait; opacity: 0.6; }
+.featured-match-remove { border-color: rgba(231,76,60,0.4); color: #ff8a7e; }
+.featured-match-status { min-height: 1em; margin-top: 8px; color: var(--green); font-size: 11px; text-align: left; }
+.featured-match-status.error { color: var(--red); }
+
 .fantasy-cta {
   position: relative;
   display: block;
@@ -753,6 +860,8 @@ body::before {
   .logo-super { display: none; }
   .ticker-item { padding: 0 20px; }
   #cookie-banner { flex-direction: column; white-space: normal; text-align: center; bottom: 0; border-radius: 12px 12px 0 0; width: 100%; left: 0; transform: none; }
+  .featured-match { align-items: flex-start; flex-direction: column; padding: 1.1rem; }
+  .featured-match-logo-fields { grid-template-columns: 1fr; gap: 0; }
 }
 </style>
 </head>
@@ -798,6 +907,52 @@ body::before {
 
   <!-- Seasons -->
   <div class="seasons-section">
+    <section id="featured-match" class="featured-match" aria-labelledby="featured-match-title" hidden>
+      <div id="featured-match-logos" class="featured-match-logos" hidden aria-label="Featured match team logos" role="group">
+        <img id="featured-match-home-logo" alt="Home team logo" hidden>
+        <img id="featured-match-away-logo" alt="Away team logo" hidden>
+      </div>
+      <div class="featured-match-copy">
+        <span class="featured-match-label">Featured Match</span>
+        <h2 id="featured-match-title" class="featured-match-title"></h2>
+        <p id="featured-match-description" class="featured-match-description" hidden></p>
+      </div>
+      <a id="featured-match-link" class="featured-match-link">View match <span aria-hidden="true">→</span></a>
+    </section>
+    <div id="featured-match-admin" class="featured-match-admin" hidden>
+      <button id="featured-match-admin-toggle" class="featured-match-admin-toggle" type="button">Add Featured Match</button>
+      <form id="featured-match-form" class="featured-match-form" hidden>
+        <h2>Featured Match</h2>
+        <div class="featured-match-field">
+          <label for="featured-match-title-input">Match title</label>
+          <input id="featured-match-title-input" name="title" maxlength="100" required>
+        </div>
+        <div class="featured-match-field">
+          <label for="featured-match-description-input">Details (optional)</label>
+          <textarea id="featured-match-description-input" name="description" maxlength="240"></textarea>
+        </div>
+        <div class="featured-match-logo-fields">
+          <div class="featured-match-field">
+            <label for="featured-match-home-logo-input">Home team logo URL (optional)</label>
+            <input id="featured-match-home-logo-input" name="homeLogo" maxlength="500" placeholder="psl6/logos/ttd.png">
+          </div>
+          <div class="featured-match-field">
+            <label for="featured-match-away-logo-input">Away team logo URL (optional)</label>
+            <input id="featured-match-away-logo-input" name="awayLogo" maxlength="500" placeholder="psl6/logos/badiles.png">
+          </div>
+        </div>
+        <div class="featured-match-field">
+          <label for="featured-match-url-input">Match link</label>
+          <input id="featured-match-url-input" name="url" maxlength="500" placeholder="psl6/match.html?id=..." required>
+        </div>
+        <div class="featured-match-form-actions">
+          <button class="featured-match-save" type="submit">Save Featured Match</button>
+          <button id="featured-match-cancel" class="featured-match-cancel" type="button">Cancel</button>
+          <button id="featured-match-remove" class="featured-match-remove" type="button" hidden>Remove Featured Match</button>
+        </div>
+      </form>
+      <p id="featured-match-status" class="featured-match-status" role="status" aria-live="polite"></p>
+    </div>
     <a href="https://fantasy.pitchball.gr" target="_blank" rel="noopener noreferrer" class="fantasy-cta" aria-label="Go to Pitchball Fantasy">
       <div class="fantasy-cta-inner">
         <div class="fantasy-cta-copy">
@@ -929,6 +1084,7 @@ body::before {
 <style>body{position:relative;}</style>
 <script>
 const PSL_DB_URL = 'https://ptchbl4-default-rtdb.europe-west1.firebasedatabase.app/.json';
+const PSL_FEATURED_MATCH_URL = PSL_DB_URL.replace('/.json', '/featuredMatch.json');
 const PSL_ADMIN   = 'pitchball';
 const REACTIONS   = ['❤️','🥎','🔥','😂','💥','😭','👏'];
 let _pslDbCache=null,_pslDbFetching=null;
@@ -936,6 +1092,7 @@ async function pslDbGet(){if(_pslDbCache)return _pslDbCache;if(_pslDbFetching)re
 async function pslDbSet(data){_pslDbCache=data;await fetch(PSL_DB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
 function pslDbInvalidate(){_pslDbCache=null;}
 let pslCurrentUser=null;
+let featuredMatchRecord=null;
 function pslLoadSession(){const s=localStorage.getItem('psl_session');return s?JSON.parse(s):null;}
 function pslSaveSession(u){localStorage.setItem('psl_session',JSON.stringify(u));}
 function pslClearSession(){localStorage.removeItem('psl_session');}
@@ -955,7 +1112,170 @@ async function pslDoLogin(){const raw=document.getElementById('psl-li-user').val
 async function pslDoRegister(){const username=document.getElementById('psl-rg-user').value.trim();const email=document.getElementById('psl-rg-email').value.trim().toLowerCase();const pass=document.getElementById('psl-rg-pass').value;const e=document.getElementById('psl-rg-err');e.style.display='none';if(!username||!email||!pass){e.textContent='Please fill in all fields.';e.style.display='block';return;}if(username.length<2){e.textContent='Username too short.';e.style.display='block';return;}if(pass.length<6){e.textContent='Password must be 6+ characters.';e.style.display='block';return;}const btn=document.getElementById('psl-rg-btn');btn.disabled=true;btn.textContent='Creating...';try{const db=await pslDbGet();const users=db.users||{};if(users[username.toLowerCase()]){e.textContent='Username taken.';e.style.display='block';return;}const passHash=await pslHashPass(pass);users[username.toLowerCase()]={username,email,passHash,avatar:null,joined:new Date().toISOString()};await pslDbSet({...db,users});pslDbInvalidate();pslCurrentUser={username,email,avatar:null,isAdmin:username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);pslCloseAuth();renderWidget();if(typeof onPslLogin==='function')onPslLogin(pslCurrentUser);}catch(err){e.textContent='Connection error. Try again.';e.style.display='block';}finally{btn.disabled=false;btn.textContent='Create Account';}}
 function pslLogout(){pslClearSession();pslCurrentUser=null;pslDbInvalidate();renderWidget();if(typeof onPslLogout==='function')onPslLogout();}
 async function pslAuthInit(){injectAuthStyles();const session=pslLoadSession();if(session){try{const db=await pslDbGet();const uData=(db.users||{})[session.username.toLowerCase()];if(uData){pslCurrentUser={username:uData.username,email:uData.email,avatar:uData.avatar||null,isAdmin:uData.username.toLowerCase()===PSL_ADMIN};pslSaveSession(pslCurrentUser);}else{pslClearSession();}}catch(err){pslCurrentUser=session;}}renderWidget();if(pslCurrentUser&&typeof onPslLogin==='function')onPslLogin(pslCurrentUser);}
+function normalizeFeaturedMatch(record){
+  if(!record||typeof record!=='object')return null;
+  const title=String(record.title||'').trim().slice(0,100);
+  const url=featuredMatchUrl(record.url);
+  if(!title||!url)return null;
+  return {
+    title,
+    description:String(record.description||'').trim().slice(0,240),
+    url,
+    homeLogo:featuredMatchUrl(record.homeLogo),
+    awayLogo:featuredMatchUrl(record.awayLogo)
+  };
+}
+function featuredMatchUrl(value){
+  const url=String(value||'').trim();
+  if(!url||url.startsWith('//'))return '';
+  if(/^[a-z][a-z\d+.-]*:/i.test(url)){
+    try{
+      const parsed=new URL(url);
+      return (parsed.protocol==='http:'||parsed.protocol==='https:')&&parsed.hostname?url:'';
+    }catch(error){return '';}
+  }
+  try{new URL(url,location.href);return url;}catch(error){return '';}
+}
+function renderFeaturedMatch(){
+  const card=document.getElementById('featured-match');
+  const description=document.getElementById('featured-match-description');
+  const link=document.getElementById('featured-match-link');
+  if(!featuredMatchRecord){card.hidden=true;return;}
+  document.getElementById('featured-match-title').textContent=featuredMatchRecord.title;
+  description.textContent=featuredMatchRecord.description;
+  description.hidden=!featuredMatchRecord.description;
+  const logos=document.getElementById('featured-match-logos');
+  const homeLogo=document.getElementById('featured-match-home-logo');
+  const awayLogo=document.getElementById('featured-match-away-logo');
+  const updateLogoVisibility=()=>{logos.hidden=homeLogo.hidden&&awayLogo.hidden;};
+  [[homeLogo,featuredMatchRecord.homeLogo],[awayLogo,featuredMatchRecord.awayLogo]].forEach(([image,source])=>{
+    image.hidden=!source;
+    image.onerror=()=>{
+      image.hidden=true;
+      updateLogoVisibility();
+    };
+    if(source)image.src=source;
+    else image.removeAttribute('src');
+  });
+  updateLogoVisibility();
+  link.href=featuredMatchRecord.url;
+  card.hidden=false;
+}
+function renderFeaturedMatchAdmin(){
+  const adminPanel=document.getElementById('featured-match-admin');
+  const toggle=document.getElementById('featured-match-admin-toggle');
+  const form=document.getElementById('featured-match-form');
+  const remove=document.getElementById('featured-match-remove');
+  const isAdmin=Boolean(pslCurrentUser&&pslCurrentUser.isAdmin);
+  adminPanel.hidden=!isAdmin;
+  if(!isAdmin){form.hidden=true;return;}
+  toggle.textContent=featuredMatchRecord?'Edit Featured Match':'Add Featured Match';
+  toggle.hidden=!form.hidden;
+  remove.hidden=!featuredMatchRecord;
+}
+function onPslLogin(){renderFeaturedMatchAdmin();}
+function onPslLogout(){renderFeaturedMatchAdmin();}
+function openFeaturedMatchEditor(){
+  if(!pslCurrentUser||!pslCurrentUser.isAdmin)return;
+  document.getElementById('featured-match-title-input').value=featuredMatchRecord?.title||'';
+  document.getElementById('featured-match-description-input').value=featuredMatchRecord?.description||'';
+  document.getElementById('featured-match-home-logo-input').value=featuredMatchRecord?.homeLogo||'';
+  document.getElementById('featured-match-away-logo-input').value=featuredMatchRecord?.awayLogo||'';
+  document.getElementById('featured-match-url-input').value=featuredMatchRecord?.url||'';
+  document.getElementById('featured-match-status').textContent='';
+  document.getElementById('featured-match-status').classList.remove('error');
+  document.getElementById('featured-match-form').hidden=false;
+  renderFeaturedMatchAdmin();
+}
+function closeFeaturedMatchEditor(){
+  document.getElementById('featured-match-form').hidden=true;
+  renderFeaturedMatchAdmin();
+}
+function setFeaturedMatchStatus(message,isError=false){
+  const status=document.getElementById('featured-match-status');
+  status.textContent=message;
+  status.classList.toggle('error',isError);
+}
+async function writeFeaturedMatch(record){
+  const response=await fetch(PSL_FEATURED_MATCH_URL,{
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(record)
+  });
+  if(!response.ok)throw new Error(`Featured match save failed (${response.status}).`);
+  featuredMatchRecord=normalizeFeaturedMatch(record);
+  if(_pslDbCache){
+    if(record)_pslDbCache.featuredMatch=record;
+    else delete _pslDbCache.featuredMatch;
+  }
+  renderFeaturedMatch();
+  renderFeaturedMatchAdmin();
+}
+async function loadFeaturedMatch(){
+  try{
+    const response=await fetch(PSL_FEATURED_MATCH_URL);
+    if(!response.ok)throw new Error(`Featured match load failed (${response.status}).`);
+    const record=await response.json();
+    featuredMatchRecord=normalizeFeaturedMatch(record);
+    if(_pslDbCache)_pslDbCache.featuredMatch=record;
+    renderFeaturedMatch();
+    renderFeaturedMatchAdmin();
+  }catch(error){
+    console.error('Unable to load featured match.',error);
+    setFeaturedMatchStatus('Unable to load the featured match right now.',true);
+  }
+}
+async function saveFeaturedMatch(event){
+  event.preventDefault();
+  if(!pslCurrentUser||!pslCurrentUser.isAdmin)return;
+  const title=document.getElementById('featured-match-title-input').value.trim();
+  const description=document.getElementById('featured-match-description-input').value.trim();
+  const homeLogoInput=document.getElementById('featured-match-home-logo-input').value.trim();
+  const awayLogoInput=document.getElementById('featured-match-away-logo-input').value.trim();
+  const homeLogo=featuredMatchUrl(homeLogoInput);
+  const awayLogo=featuredMatchUrl(awayLogoInput);
+  const url=featuredMatchUrl(document.getElementById('featured-match-url-input').value);
+  if(!title){setFeaturedMatchStatus('Enter a match title.',true);return;}
+  if(!url){setFeaturedMatchStatus('Enter a valid match link.',true);return;}
+  if((homeLogoInput&&!homeLogo)||(awayLogoInput&&!awayLogo)){
+    setFeaturedMatchStatus('Enter valid HTTP(S) or relative logo URLs.',true);
+    return;
+  }
+  const button=document.querySelector('#featured-match-form [type="submit"]');
+  button.disabled=true;
+  try{
+    await writeFeaturedMatch({title,description,url,homeLogo:homeLogo||null,awayLogo:awayLogo||null});
+    document.getElementById('featured-match-form').hidden=true;
+    renderFeaturedMatchAdmin();
+    setFeaturedMatchStatus('Featured match saved.');
+  }catch(error){
+    console.error('Unable to save featured match.',error);
+    setFeaturedMatchStatus('Unable to save the featured match. Please try again.',true);
+  }finally{button.disabled=false;}
+}
+async function removeFeaturedMatch(){
+  if(!pslCurrentUser||!pslCurrentUser.isAdmin)return;
+  const button=document.getElementById('featured-match-remove');
+  button.disabled=true;
+  try{
+    await writeFeaturedMatch(null);
+    document.getElementById('featured-match-form').hidden=true;
+    renderFeaturedMatchAdmin();
+    setFeaturedMatchStatus('Featured match removed.');
+  }catch(error){
+    console.error('Unable to remove featured match.',error);
+    setFeaturedMatchStatus('Unable to remove the featured match. Please try again.',true);
+  }finally{button.disabled=false;}
+}
+function initFeaturedMatch(){
+  document.getElementById('featured-match-admin-toggle').addEventListener('click',openFeaturedMatchEditor);
+  document.getElementById('featured-match-cancel').addEventListener('click',closeFeaturedMatchEditor);
+  document.getElementById('featured-match-form').addEventListener('submit',saveFeaturedMatch);
+  document.getElementById('featured-match-remove').addEventListener('click',removeFeaturedMatch);
+  loadFeaturedMatch();
+}
 injectAuthStyles();
+document.addEventListener('DOMContentLoaded',initFeaturedMatch);
 document.addEventListener('DOMContentLoaded',pslAuthInit);
 </script>
 <script src="/legal-ui.js"></script>
