@@ -284,6 +284,10 @@
   }
 
   @media (max-width: 600px) {
+    html, body {
+      overscroll-behavior: none;
+      touch-action: none;
+    }
     .num, .icon { min-width: 35px; }
     .text p { display: none; } /* Hide descriptions on tiny mobile screens to maintain zero-scroll constraint */
   }
