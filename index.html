@@ -40,6 +40,11 @@ if ('serviceWorker' in navigator) {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
 body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
@@ -738,6 +743,10 @@ body::before {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
+  html, body {
+    touch-action: pan-y pinch-zoom;
+    overscroll-behavior-x: none;
+  }
   .seasons-grid { grid-template-columns: 1fr; }
   .season-card.featured { grid-column: 1; }
   .footer-bar { justify-content: center; text-align: center; }
