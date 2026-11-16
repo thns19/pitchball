@@ -73,12 +73,54 @@
   .preview-team-panel { min-width: 0; padding: 11px; border: 1px solid var(--border); border-radius: 9px; background: var(--panel-soft); }
   .preview-team-heading { display: flex; align-items: center; gap: 7px; min-height: 30px; font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
   .preview-team-heading .match-team-logo { width: 26px; height: 26px; padding: 2px; border-radius: 6px; }
-  .form-list, .player-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
-  .form-result { display: flex; align-items: center; gap: 5px; padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 10px; }
-  .form-result strong { color: var(--text); }
-  .form-result.win { border-color: rgba(57, 200, 119, 0.4); color: var(--green); }
-  .form-result.draw { border-color: rgba(245, 200, 66, 0.4); color: var(--gold); }
-  .form-result.loss { border-color: rgba(231, 121, 109, 0.4); color: #e7796d; }
+  .match-form-list, .player-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 0; padding: 0; list-style: none; }
+  .match-form-result {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .match-form-result.win { color: var(--green); }
+  .match-form-result.draw { color: var(--muted); }
+  .match-form-result.loss { color: #e7796d; }
+  .match-form-result:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  .match-form-tooltip {
+    position: absolute;
+    z-index: 20;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    width: max-content;
+    max-width: min(230px, calc(100vw - 32px));
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    transform: translateX(-50%);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .match-form-result:focus-visible .match-form-tooltip,
+  .match-form-result[aria-expanded="true"] .match-form-tooltip { visibility: visible; opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .match-form-result:hover .match-form-tooltip { visibility: visible; opacity: 1; }
+  }
+  .player-list { margin-top: 10px; }
   .player-list li { padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; color: rgba(255, 255, 255, 0.82); font-size: 10px; line-height: 1.35; }
   .preview-empty { color: var(--muted); font-size: 11px; line-height: 1.5; margin: 10px 0 0; }
   .preview-caption { color: var(--muted); font-size: 10px; line-height: 1.5; margin: 0 1rem; }
@@ -143,6 +185,10 @@
     .stats-grid { grid-template-columns: 1fr; }
     .preview-team-grid { grid-template-columns: 1fr; }
     .comment-replies { margin-left: 0; }
+    .match-form-tooltip { top: calc(100% + 6px); bottom: auto; }
+    .match-team:first-child .match-form-tooltip { left: 0; transform: none; }
+    .match-team:last-child .match-form-tooltip { left: auto; right: 0; transform: none; }
+    .match-header.has-open-form-tooltip .match-meta { margin-top: 3rem; }
   }
 </style>
 </head>
@@ -301,12 +347,14 @@ function getRecentForm(results, team) {
     };
   });
 }
-function renderFormPanel(team, results) {
+function renderTeamForm(team, results) {
   const form = getRecentForm(results, team);
-  const formMarkup = form.length
-    ? `<ul class="form-list">${form.map(match => `<li class="form-result ${match.result === 'W' ? 'win' : match.result === 'L' ? 'loss' : 'draw'}" title="vs ${escapeHtml(match.opponent)}"><strong>${match.result}</strong><span>${match.teamScore}-${match.opponentScore}</span></li>`).join('')}</ul>`
-    : '<p class="preview-empty">No completed matches are recorded yet.</p>';
-  return `<div class="preview-team-panel"><div class="preview-team-heading">${logoFor(team)}<span>${escapeHtml(team)}</span></div>${formMarkup}</div>`;
+  if (!form.length) return '';
+  return `<ul class="match-form-list" aria-label="${escapeHtml(team)} recent form">${form.map(match => {
+    const resultLabel = match.result === 'W' ? 'Win' : match.result === 'L' ? 'Loss' : 'Draw';
+    const details = `${resultLabel} ${match.teamScore}-${match.opponentScore} vs ${match.opponent}`;
+    return `<li><button class="match-form-result ${match.result === 'W' ? 'win' : match.result === 'L' ? 'loss' : 'draw'}" type="button" aria-label="${escapeHtml(details)}" aria-expanded="false">${match.result}<span class="match-form-tooltip" role="tooltip" aria-hidden="true">${escapeHtml(details)}</span></button></li>`;
+  }).join('')}</ul>`;
 }
 function renderPlayersPanel(team) {
   const profile = getTeamProfile(team);
@@ -351,15 +399,17 @@ function estimateWinChances(homeName, awayName) {
   const homePercent = Math.round(homeWins / simulations * 100);
   return {home: homePercent, away: 100 - homePercent};
 }
-function renderPreviewDetails(db, home, away) {
+function renderPreviewDetails(home, away) {
   const chances = estimateWinChances(home, away);
-  const results = getCompletedResults(db);
   const chancesMarkup = chances
     ? `<div class="content-card"><div class="card-title">Winning chances</div><div class="chance-summary"><div class="chance-labels"><span>${escapeHtml(home)}<strong>${chances.home}%</strong></span><span>${escapeHtml(away)}<strong>${chances.away}%</strong></span></div><div class="chance-bar" role="img" aria-label="${escapeHtml(home)} ${chances.home}%, ${escapeHtml(away)} ${chances.away}%"><span class="chance-home" style="width:${chances.home}%"></span><span class="chance-away" style="width:${chances.away}%"></span></div><p class="chance-note">Estimated from the PSL6 team ratings and match simulation; not a guarantee.</p></div></div>`
     : '<div class="content-card"><div class="card-title">Winning chances</div><div class="no-data">Win chances are unavailable because team rating data is missing.</div></div>';
   return `${chancesMarkup}
-    <section class="content-card preview-details"><div class="card-title">Recent form · last 5 completed matches (all competitions)</div><div class="preview-team-grid">${renderFormPanel(home, results)}${renderFormPanel(away, results)}</div></section>
     <section class="content-card preview-details"><div class="card-title">Squad players</div><div class="preview-team-grid">${renderPlayersPanel(home)}${renderPlayersPanel(away)}</div><p class="preview-caption">Squad information is not a confirmed match lineup.</p></section>`;
+}
+function syncFormTooltipLayout() {
+  const hasOpenTooltip = document.querySelector('.match-form-result[aria-expanded="true"]');
+  document.querySelector('.match-header')?.classList.toggle('has-open-form-tooltip', Boolean(hasOpenTooltip));
 }
 function eventCounts(events, home) {
   let homeGoals = 0, awayGoals = 0, homeOwnGoals = 0, awayOwnGoals = 0;
@@ -753,6 +803,9 @@ async function initMatch() {
     const isComplete = hasFinalScore(match);
     const homeScore = isComplete ? match.hs : '-';
     const awayScore = isComplete ? match.as : '-';
+    const recentResults = isComplete ? [] : getCompletedResults(db);
+    const homeForm = isComplete ? '' : renderTeamForm(home, recentResults);
+    const awayForm = isComplete ? '' : renderTeamForm(away, recentResults);
     const events = Array.isArray(match.events) ? match.events : [];
     if (isCupMatch && hasFinalScore(match)) {
       currentCupExport = {id, home, away, round, match, events};
@@ -765,9 +818,9 @@ async function initMatch() {
       <section class="match-header">
         <div class="match-kicker">${isCupMatch ? `${escapeHtml(competition)} - ${escapeHtml(round)}` : competition === 'PSL6 League Phase' ? `${escapeHtml(competition)} - Matchday ${escapeHtml(md)}` : `${escapeHtml(group)} - Matchday ${escapeHtml(md)}`}</div>
         <div class="match-teams">
-          <div class="match-team">${logoFor(home)}<div class="match-team-name">${escapeHtml(home)}</div></div>
+          <div class="match-team">${logoFor(home)}<div class="match-team-name">${escapeHtml(home)}</div>${homeForm}</div>
           <div class="match-score${isComplete ? '' : ' preview'}">${isComplete ? `${escapeHtml(homeScore)}-${escapeHtml(awayScore)}` : 'VS'}</div>
-          <div class="match-team">${logoFor(away)}<div class="match-team-name">${escapeHtml(away)}</div></div>
+          <div class="match-team">${logoFor(away)}<div class="match-team-name">${escapeHtml(away)}</div>${awayForm}</div>
         </div>
         <div class="match-meta">${match.date ? `<span>${escapeHtml(formatDate(match.date))}</span>` : ''}<span>${escapeHtml(competition)}</span></div>
       </section>
@@ -775,11 +828,29 @@ async function initMatch() {
         ? `${match.mvp ? `<section class="content-card mvp-card"><span class="mvp-icon">&#127942;</span><div><div class="mvp-label">Match MVP</div><div class="mvp-name">${escapeHtml(match.mvp)}</div></div></section>` : ''}
           <section class="content-card"><div class="card-title">Match statistics</div><div class="stats-grid"><div class="stat"><span class="stat-label">${escapeHtml(home)} goals</span><span class="stat-value">${counts.homeGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} goals</span><span class="stat-value">${counts.awayGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(home)} own goals</span><span class="stat-value">${counts.homeOwnGoals}</span></div><div class="stat"><span class="stat-label">${escapeHtml(away)} own goals</span><span class="stat-value">${counts.awayOwnGoals}</span></div></div></section>
           <section class="content-card"><div class="card-title">Match events</div>${eventRows}</section>`
-        : `<section class="content-card preview-card"><div class="preview-status">Match Preview</div><p class="preview-message">This match hasn't been completed yet. Match statistics and events will appear here after the result is recorded.</p></section>${renderPreviewDetails(db, home, away)}`}`;
+        : `<section class="content-card preview-card"><div class="preview-status">Match Preview</div><p class="preview-message">This match hasn't been completed yet. Match statistics and events will appear here after the result is recorded.</p></section>${renderPreviewDetails(home, away)}`}`;
   } catch (error) {
     content.innerHTML = `<div class="no-data">Unable to load this match right now. <a class="back" href="${isCupMatch ? 'cup.html' : 'table.html'}">Back to ${isCupMatch ? 'cup' : 'table'}</a></div>`;
   }
 }
+document.addEventListener('click', event => {
+  const selected = event.target instanceof Element ? event.target.closest('.match-form-result') : null;
+  document.querySelectorAll('.match-form-result[aria-expanded="true"]').forEach(button => {
+    if (button !== selected) button.setAttribute('aria-expanded', 'false');
+  });
+  if (selected) {
+    selected.setAttribute('aria-expanded', selected.getAttribute('aria-expanded') !== 'true');
+  }
+  syncFormTooltipLayout();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    document.querySelectorAll('.match-form-result[aria-expanded="true"]').forEach(button => {
+      button.setAttribute('aria-expanded', 'false');
+    });
+    syncFormTooltipLayout();
+  }
+});
 window.addEventListener('DOMContentLoaded', initMatch);
 </script>
 <script>
