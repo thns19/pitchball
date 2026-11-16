@@ -100,6 +100,7 @@ const careerPlayerSeasonOverrides = {
   filippoujr: { PSL4: [26, 16, 0, 10] },
   xifaras: { PSL4: [2, 0, 0, 2] },
   loverdos: { PSL5: [3, 0, 0, 3] },
+  kvas: { PSL5: [1, 0, 0, 1] },
   mpog: { PSL4: [2, 1, 0, 1] },
   passas: { PSL4: [7, 0, 0, 7] },
   mermigas: { PSL4: [7, 0, 0, 7] },
