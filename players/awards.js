@@ -76,6 +76,11 @@ const historicalCompetitions = [
     placements: [{place: 1, team: 'Y&Y', players: ['filippoujr', 'akridas']}],
   },
   {
+      name: 'PSL6 Cup',
+    kind: 'cup',
+    placements: [{place: 1, team: 'BADiles', players: ['thanos-chatziiordanou', 'dimitris-gavalas']}],
+  },
+  {
     name: 'PSL 1v1 S1',
     kind: 'medal',
     placements: [
